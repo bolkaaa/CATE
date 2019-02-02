@@ -1,111 +1,92 @@
-#include <cstdio>
-#include <cstdlib>
-#include <cmath>
-#include <thread>
 #include <iostream>
+#include <thread>
 
-#include "Wave.hpp"
+#include "AudioFile.hpp"
+#include "AudioBuffer.hpp"
 
-#include "portaudio.h"
-#include "sndfile.h"
+#include "../lib/portaudio.h"
+#include "../lib/PortAudioCpp.hxx"
+#include "../lib/sndfile.h"
+#include "../lib/sndfile.hh"
 
-namespace CATE
+class CATE
 {
-    int sampleRate = 44100;
-    int framesPerBuffer = 256;
-
-    class WavePlayerData
+public:
+    CATE(AudioBuffer buffer)
+	: buffer(buffer), index(0)
     {
-    public:
-	WavePlayerData(CATE::Wave wave)
-	    : wave(wave)
-	{
-	}
-	CATE::Wave wave;
-	int position = 0;
-	bool loop = true;
-    };
 
-    static int wavePlayer(const void *input, void *output,
-			  unsigned long framesPerBuffer,
-			  const PaStreamCallbackTimeInfo* timeInfo,
-			  PaStreamCallbackFlags statusFlags, void *userData)
+    }
+
+    int process(const void *input, void *output, unsigned long frames_per_buffer, 
+		const PaStreamCallbackTimeInfo *time_info, PaStreamCallbackFlags status_flags)
     {
-	WavePlayerData *data = static_cast<WavePlayerData*>(userData);
-	float *out = static_cast<float*>(output);
- 
-	for(unsigned long i = 0; i < framesPerBuffer; ++i)
+	assert(output != nullptr);
+
+	float **out = static_cast<float**>(output);
+
+	for (unsigned int i = 0; i < frames_per_buffer; ++i)
 	{
-	    /* Looping position back to beginning when end is reached */
-	    if (data->loop)
-	    {
-		if (data->position > data->wave.length)
-		{
-		    data->position = 0;
-		}
-	    }
+	    out[0][i] = buffer[index];
+	    index += 1;
 
-	    /* Finished playing */
-	    if (data->position > data->wave.length)
-	    {
-		return paComplete;
-	    }
+	    out[1][i] = buffer[index];
+	    index += 1;
 
-	    /* Left channel */
-	    *out++ = data->wave.data[data->position];
-	    data->position += 1;
-
-	    /* Right channel */
-	    *out++ = data->wave.data[data->position];
-	    data->position += 1;
+	    if (index >= buffer.size())
+		index -= buffer.size();
 	}
 
 	return paContinue;
     }
-}
+
+    AudioBuffer buffer;
+    unsigned int index;
+
+private:
+};
 
 int main(int argc, char *argv[])
 {
-    Pa_Initialize();
+    std::string input_path = argv[1];
+    unsigned long sample_rate = 48000;
+    unsigned long frames_per_buffer = 256;
+    unsigned int channels = 2;
+    AudioBuffer buffer(input_path);
+    CATE cate(buffer);
 
-    if (argc < 2)
-    {
-	std::cout << "Usage: CATE <audio file path>" << '\n';
-	std::exit(0);
-    }
+    // Audio Setup
+    portaudio::AutoSystem autoSys;
+    portaudio::System &sys = portaudio::System::instance();
 
-    PaStream *stream = nullptr;
-    PaStreamParameters outputParams;
-    std::string audioFilePath = argv[1];
-    CATE::Wave wave(audioFilePath);
-    CATE::WavePlayerData wavePlayerData(wave);
+    // Output Parameters
+    portaudio::DirectionSpecificStreamParameters outParams(
+	sys.defaultOutputDevice(),
+	channels,
+	portaudio::FLOAT32,
+	false,
+	sys.defaultOutputDevice().defaultLowOutputLatency(),
+	NULL);
 
-    outputParams.device = Pa_GetDefaultOutputDevice();
-    outputParams.channelCount = 2;      
-    outputParams.sampleFormat = paFloat32;
-    outputParams.suggestedLatency = Pa_GetDeviceInfo(outputParams.device)->defaultLowOutputLatency;
-    outputParams.hostApiSpecificStreamInfo = nullptr;
+    // Stream parameters
+    portaudio::StreamParameters params(
+	portaudio::DirectionSpecificStreamParameters::null(),
+	outParams,
+	sample_rate,
+	frames_per_buffer,
+	paClipOff);
 
-    Pa_OpenStream(
-	&stream,
-	nullptr,
-	&outputParams,
-	CATE::sampleRate,
-	CATE::framesPerBuffer,
-	paClipOff, 
-	CATE::wavePlayer,
-	&wavePlayerData);
+    portaudio::MemFunCallbackStream<CATE> stream(params, cate, &CATE::process);
 
-    std::thread audioThread(Pa_StartStream, stream);
+    stream.start();
 
-    audioThread.detach();
+    sys.sleep(1000 * ((buffer.size() / sample_rate) / 2));
 
-    while (true)
-    {
-	std::cout << "Waiting for input...\r";
-    }
+    stream.stop();
 
-    Pa_Terminate();
+    stream.close();
+
+    sys.terminate();
 
     return 0;
 }
