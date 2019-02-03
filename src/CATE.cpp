@@ -11,28 +11,29 @@
 #include "Synth.hpp"
 
 typedef portaudio::MemFunCallbackStream<Synth> Stream;
+typedef portaudio::System AudioBackend;
 
-class StreamParameters
+class AudioParameters
 {
 public:
-    StreamParameters(portaudio::System &sys, unsigned long sample_rate,
-		     unsigned long frames_per_buffer,
-		     unsigned int input_channels, unsigned int output_channels)
+    AudioParameters(AudioBackend &backend)
+	: input_channels(2), output_channels(2), sample_rate(44100),
+	  frames_per_buffer(256)
     {
 	input = portaudio::DirectionSpecificStreamParameters(
-	    sys.defaultInputDevice(),
-	    input_channels,
+	    backend.defaultInputDevice(),
+	    2,
 	    portaudio::FLOAT32,
 	    false,
-	    sys.defaultInputDevice().defaultLowInputLatency(),
+	    backend.defaultInputDevice().defaultLowInputLatency(),
 	    nullptr);
 
 	output = portaudio::DirectionSpecificStreamParameters(
-	    sys.defaultOutputDevice(),
+	    backend.defaultOutputDevice(),
 	    output_channels,
 	    portaudio::FLOAT32,
 	    false,
-	    sys.defaultOutputDevice().defaultLowOutputLatency(),
+	    backend.defaultOutputDevice().defaultLowOutputLatency(),
 	    nullptr);
 
 	stream = portaudio::StreamParameters(
@@ -43,29 +44,57 @@ public:
 	    paClipOff);
     }
 
-    portaudio::StreamParameters stream;
+    AudioParameters(AudioBackend &backend, unsigned long sample_rate,
+		     unsigned long frames_per_buffer,
+		     unsigned int input_channels, unsigned int output_channels)
+	: input_channels(input_channels), output_channels(output_channels),
+	  sample_rate(sample_rate), frames_per_buffer(frames_per_buffer)
+    {
+	input = portaudio::DirectionSpecificStreamParameters(
+	    backend.defaultInputDevice(),
+	    input_channels,
+	    portaudio::FLOAT32,
+	    false,
+	    backend.defaultInputDevice().defaultLowInputLatency(),
+	    nullptr);
+
+	output = portaudio::DirectionSpecificStreamParameters(
+	    backend.defaultOutputDevice(),
+	    output_channels,
+	    portaudio::FLOAT32,
+	    false,
+	    backend.defaultOutputDevice().defaultLowOutputLatency(),
+	    nullptr);
+
+	stream = portaudio::StreamParameters(
+	    input,
+	    output,
+	    sample_rate,
+	    frames_per_buffer,
+	    paClipOff);
+    }
+
+    portaudio::DirectionSpecificStreamParameters get_input() { return input; }
+
+    portaudio::DirectionSpecificStreamParameters get_output() { return output; }
+
+    portaudio::StreamParameters get_stream() { return stream; }
 
 private:
+    unsigned int input_channels;
+    unsigned int output_channels;
+    unsigned long sample_rate;
+    unsigned long frames_per_buffer;
     portaudio::DirectionSpecificStreamParameters input;
     portaudio::DirectionSpecificStreamParameters output;
+    portaudio::StreamParameters stream;
 };
 
 int main(int argc, char *argv[])
 {
-    unsigned long sample_rate = 44100;
-    unsigned long frames_per_buffer = 256;
-    unsigned int input_channels = 2;
-    unsigned int output_channels = 2;
-
-    portaudio::AutoSystem auto_sys;
-    portaudio::System &system = portaudio::System::instance();
-
-    StreamParameters stream_parameters(
-	system,
-	sample_rate,
-	frames_per_buffer,
-	input_channels,
-	output_channels);
+    portaudio::AutoSystem auto_system;
+    AudioBackend &audio_backend = portaudio::System::instance();
+    AudioParameters audio_parameters(audio_backend);
 
     /* Load an audio file into an AudioBuffer container and pass it to the 
        CATE object. */
@@ -74,7 +103,7 @@ int main(int argc, char *argv[])
     Synth synth(buffer);
 
     /* Create a PortAudio stream for the CATE callback and start it on a new thread. */
-    Stream stream(stream_parameters.stream, synth, &Synth::process);
+    Stream stream(audio_parameters.get_stream(), synth, &Synth::process);
     std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth>::start, &stream);
     audio_thread.detach();
 
@@ -85,7 +114,7 @@ int main(int argc, char *argv[])
 
     stream.stop();
     stream.close();
-    system.terminate();
+    audio_backend.terminate();
 
     return 0;
 }
