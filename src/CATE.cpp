@@ -47,52 +47,81 @@ public:
 private:
 };
 
+class StreamParameters
+{
+public:
+    StreamParameters(portaudio::System &sys, unsigned long sample_rate,
+		     unsigned long frames_per_buffer,
+		     unsigned int input_channels, unsigned int output_channels)
+    {
+	input = portaudio::DirectionSpecificStreamParameters(
+	    sys.defaultInputDevice(),
+	    input_channels,
+	    portaudio::FLOAT32,
+	    false,
+	    sys.defaultInputDevice().defaultLowInputLatency(),
+	    nullptr);
+
+	output = portaudio::DirectionSpecificStreamParameters(
+	    sys.defaultOutputDevice(),
+	    output_channels,
+	    portaudio::FLOAT32,
+	    false,
+	    sys.defaultOutputDevice().defaultLowOutputLatency(),
+	    nullptr);
+
+	stream = portaudio::StreamParameters(
+	    input,
+	    output,
+	    sample_rate,
+	    frames_per_buffer,
+	    paClipOff);
+    }
+
+    portaudio::StreamParameters stream;
+
+private:
+    portaudio::DirectionSpecificStreamParameters input;
+    portaudio::DirectionSpecificStreamParameters output;
+};
+
+
 int main(int argc, char *argv[])
 {
-    std::string input_path = argv[1];
     unsigned long sample_rate = 44100;
     unsigned long frames_per_buffer = 256;
-    unsigned int channels = 2;
-    AudioBuffer buffer(input_path);
-    CATE cate(buffer);
+    unsigned int input_channels = 2;
+    unsigned int output_channels = 2;
 
-    // Audio Setup
-    portaudio::AutoSystem autoSys;
-    portaudio::System &sys = portaudio::System::instance();
+    portaudio::AutoSystem auto_sys;
+    portaudio::System &system = portaudio::System::instance();
 
-    // Output Parameters
-    portaudio::DirectionSpecificStreamParameters outParams(
-	sys.defaultOutputDevice(),
-	channels,
-	portaudio::FLOAT32,
-	false,
-	sys.defaultOutputDevice().defaultLowOutputLatency(),
-	NULL);
-
-    // Stream parameters
-    portaudio::StreamParameters params(
-	portaudio::DirectionSpecificStreamParameters::null(),
-	outParams,
+    StreamParameters stream_parameters(
+	system,
 	sample_rate,
 	frames_per_buffer,
-	paClipOff);
+	input_channels,
+	output_channels);
 
-    portaudio::MemFunCallbackStream<CATE> stream(params, cate, &CATE::process);
+    /* Load an audio file into an AudioBuffer container and pass it to the 
+       CATE object. */
+    std::string audio_file_path = argv[1];
+    AudioBuffer buffer(audio_file_path);
+    CATE cate(buffer);
 
+    /* Create a PortAudio stream for the CATE callback and start it on a new thread. */
+    portaudio::MemFunCallbackStream<CATE> stream(stream_parameters.stream, cate, &CATE::process);
     std::thread audio_thread(&portaudio::MemFunCallbackStream<CATE>::start, &stream);
-
     audio_thread.detach();
 
     while (1)
     {
-	/* ... */
+
     }
 
     stream.stop();
-
     stream.close();
-
-    sys.terminate();
+    system.terminate();
 
     return 0;
 }
