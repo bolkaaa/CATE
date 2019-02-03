@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Audio Programming in C++ | CATE</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Audio Programming in C++" />
+<meta name="author" content="Liam Wyllie" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Starting Out" />
+<meta property="og:description" content="Starting Out" />
+<meta property="og:site_name" content="CATE" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-02-02T00:00:00+00:00" />
+<script type="application/ld+json">
+{"description":"Starting Out","mainEntityOfPage":{"@type":"WebPage","@id":"/2019/02/02/audio-programming-in-c++.html"},"@type":"BlogPosting","author":{"@type":"Person","name":"Liam Wyllie"},"url":"/2019/02/02/audio-programming-in-c++.html","headline":"Audio Programming in C++","dateModified":"2019-02-02T00:00:00+00:00","datePublished":"2019-02-02T00:00:00+00:00","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="CATE" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">CATE</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Audio Programming in C++</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-02-02T00:00:00+00:00" itemprop="datePublished">Feb 2, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h3 id="starting-out">Starting Out</h3>
+
+<p>My main goal when starting the project was to first establish which
+libraries for working with audio in C++ would form the basis of the
+program, and how I would design and structure the audio backend of the
+program. I have found that when creating audio applications in C++,
+choosing between C and C++ libraries is an important choice. Usually,
+the option is to either use established, widely-used C libraries like
+portaudio and libsndfile, and hide their C functions behind a C++
+interface, or use native C++ libraries. I have noticed that certain
+applications like SuperCollider opt for the former, however wrapping C
+code in C++ can be time consuming and error-prone and should generally
+be avoided when possible, as I have discussed with my supervisor. In
+general, I think that it’s better to use the STL and modern C++
+features, rather than using the backward-compatible C parts of
+C++. This post recaps my experiences with exploring both options,
+comparing them and expanding upon my motivations for ultimately
+deciding upon using the native C++ bindings for the portaudio and
+libsndfile libraries.</p>
+
+<h3 id="reading-audio-file-data">Reading Audio File Data</h3>
+<p>My first objective was dealing with uncompressed audio file formats
+like WAV and AIFF; Implementing functionality for reading existing
+files and storing their sample values in data structures, as well as
+creating output files from sequences of samples.</p>
+
+<p>I initially used the C library libsndfile, which provides an easy way
+of dealing with audio files without having to worry about issues like
+file headers and endianness. This involved creating a wrapper class
+that hid the C functions behind a C++ interface.</p>
+
+<p>One immediate issue I found was that due to C’s lack of templates and
+function overloading, each return type for the sf_read functions has a
+separate function. Working around this to create generic functions
+would add unnecessary complexity, if I wanted my functions to work
+with both floats and doubles for instance.</p>
+
+<p>Therefore, I eventually decided to use the C++ API instead, which
+provides a SndfileHandle class with overloaded member functions,
+fitting better into a C++ program.</p>
+
+<h3 id="audio-io-api">Audio I/O API</h3>
+
+<p>Prior to starting the project, I decided upon using the C PortAudio
+library as I had experience using it in the past. I achieved good
+results initially, using it in a procedural manner to play back audio
+file data. When I wanted to adapt the code to a more templated
+object-oriented C++ style that I intended the rest of my program to be
+written in, I encountered some challenges that made me reassess my
+options going forwards. Wrapping the functionality in C++ classes was
+proving to be time consuming and requiring a lot of workarounds, so I
+decided to use the C++ bindings for the library rather than create my
+own wrappers. As well as being less time-consuming and allowing me to
+focus more on writing the application itself, this has the advantage
+of being better tested and more reliable due to being created by the
+developers of the library.</p>
+
+<h3 id="progress-summary">Progress Summary</h3>
+
+<p>So far, the program is able to load audio file data into an
+AudioBuffer class, and output them through the Synth::process member
+function of the Synth class. Later, these components will be expanded
+upon, so that the AudioBuffers can be split into smaller segmented
+buffers that can be played back simultaneously.</p>
+
+<p>The program also has some basic multithreading capabilities so far using the std::thread class from C++11, with the audio stream starting on a separate thread while the main thread continues (as a while (true) loop for now as user input isn’t needed yet).</p>
+
+<p>My plans moving forward are to add functionality for storing multiple
+AudioBuffers in memory from a directory of audio files, in preparation
+for the audio analysis part of my program. I may use the Boost library
+for a portable way of interacting with the filesystem to achieve
+this. I will also look ahead to how I can store the analysis data in
+some kind of lightweight database, which may involve utilising the SDIF file format.</p>
+
+  </div><a class="u-url" href="/2019/02/02/audio-programming-in-c++.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">CATE</h2>
+        <ul class="contact-list">
+          <li class="p-name">Liam Wyllie</li><li><a class="u-email" href="mailto:lwyll002@gold.ac.uk">lwyll002@gold.ac.uk</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>Project blog for the CATE program, updated with my progress and findings.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://github.com/lrwz" title="lrwz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
