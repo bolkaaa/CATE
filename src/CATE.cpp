@@ -8,44 +8,9 @@
 #include "../lib/sndfile.hh"
 
 #include "AudioBuffer.hpp"
+#include "Synth.hpp"
 
-class CATE
-{
-public:
-    CATE(AudioBuffer buffer)
-	: buffer(buffer), index(0)
-    {
-    }
-
-    int process(const void *input, void *output, unsigned long frames_per_buffer, 
-		const PaStreamCallbackTimeInfo *time_info, PaStreamCallbackFlags status_flags)
-    {
-	float **out = static_cast<float**>(output);
-
-	for (unsigned int i = 0; i < frames_per_buffer; ++i)
-	{
-	    /* Left Channel */
-	    out[0][i] = buffer[index];
-	    ++index;
-
-	    /* Right Channel */
-	    out[1][i] = buffer[index];
-	    ++index;
-
-	    if (index >= buffer.size())
-	    {
-		index -= buffer.size();
-	    }
-	}
-
-	return paContinue;
-    }
-
-    AudioBuffer buffer;
-    unsigned int index;
-
-private:
-};
+typedef portaudio::MemFunCallbackStream<Synth> Stream;
 
 class StreamParameters
 {
@@ -85,7 +50,6 @@ private:
     portaudio::DirectionSpecificStreamParameters output;
 };
 
-
 int main(int argc, char *argv[])
 {
     unsigned long sample_rate = 44100;
@@ -107,11 +71,11 @@ int main(int argc, char *argv[])
        CATE object. */
     std::string audio_file_path = argv[1];
     AudioBuffer buffer(audio_file_path);
-    CATE cate(buffer);
+    Synth synth(buffer);
 
     /* Create a PortAudio stream for the CATE callback and start it on a new thread. */
-    portaudio::MemFunCallbackStream<CATE> stream(stream_parameters.stream, cate, &CATE::process);
-    std::thread audio_thread(&portaudio::MemFunCallbackStream<CATE>::start, &stream);
+    Stream stream(stream_parameters.stream, synth, &Synth::process);
+    std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth>::start, &stream);
     audio_thread.detach();
 
     while (1)
