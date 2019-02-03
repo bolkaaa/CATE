@@ -1,2 +1,2 @@
-add_executable(CATE CATE.cpp AudioBuffer.cpp AudioBuffer.hpp AudioParameters.hpp AudioParameters.cpp Synth.cpp Synth.hpp)
+add_executable(CATE CATE.cpp AudioBuffer.hpp Synth.hpp AudioParameters.hpp AudioParameters.cpp)
 target_link_libraries(CATE portaudio portaudiocpp sndfile)

@@ -20,14 +20,14 @@ int main(int argc, char *argv[])
     /* Load an audio file into an AudioBuffer container and pass it to the 
        Synth object. */
     std::string audio_file_path = argv[1];
-    AudioBuffer buffer(audio_file_path);
-    Synth synth(buffer);
+    AudioBuffer<float> buffer(audio_file_path);
+    Synth<float> synth(buffer);
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
-    portaudio::MemFunCallbackStream<Synth> stream(audio_parameters.get_stream(),
+    portaudio::MemFunCallbackStream<Synth<float>> stream(audio_parameters.get_stream(),
 						  synth,
-						  &Synth::process);
-    std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth>::start, &stream);
+							 &Synth<float>::process);
+    std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<float>>::start, &stream);
     audio_thread.detach();
 
     while (1)
