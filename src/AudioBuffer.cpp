@@ -17,7 +17,7 @@ void AudioBuffer::read(const std::string &path)
 {
     SndfileHandle file(path);
     unsigned long size = file.frames() * file.channels();
-    data.resize(size);
+    data = std::vector<float>(size);
     file.read(&data[0], size);
 }
 

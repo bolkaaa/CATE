@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     AudioBuffer buffer(audio_file_path);
     Synth synth(buffer);
 
-    /* Create a PortAudio stream for the CATE callback and start it on a new thread. */
+    /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
     portaudio::MemFunCallbackStream<Synth> stream(audio_parameters.get_stream(),
 						  synth,
 						  &Synth::process);
@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
 
     }
 
+    /* Clean up stream and terminate PortAudio */
     stream.stop();
     stream.close();
     system.terminate();
