@@ -1,13 +1,13 @@
 #include <iostream>
 #include <thread>
-
-#include "AudioFile.hpp"
-#include "AudioBuffer.hpp"
+#include <vector>
 
 #include "../lib/portaudio.h"
 #include "../lib/PortAudioCpp.hxx"
 #include "../lib/sndfile.h"
 #include "../lib/sndfile.hh"
+
+#include "AudioBuffer.hpp"
 
 class CATE
 {

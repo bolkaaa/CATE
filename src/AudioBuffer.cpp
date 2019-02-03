@@ -1,36 +1,34 @@
 #include <iostream>
 
-#include "sndfile.h"
+#include "sndfile.hh"
 
 #include "AudioBuffer.hpp"
-#include "AudioFile.hpp"
+
+AudioBuffer::AudioBuffer()
+{
+}
 
 AudioBuffer::AudioBuffer(const std::string &path)
 {
     read(path);
 }
 
-AudioBuffer::~AudioBuffer()
-{
-    free(data);
-}
-
 void AudioBuffer::read(const std::string &path)
 {
-    AudioFile file(path);
-    sz = file.samples() * file.channels();
-    data = new float[sz];
-    file.read(data);
+    SndfileHandle file(path);
+    unsigned long size = file.frames() * file.channels();
+    data.resize(size);
+    file.read(&data[0], size);
 }
 
 void AudioBuffer::write(const std::string &path, int sample_rate, int channels, int format)
 {
-    AudioFile file(path, sample_rate, channels, format);
-    file.write(data, sz);
+    SndfileHandle file(path, SFM_WRITE, format, channels, sample_rate);
+    file.write(&data[0], data.size());
 }
 
 
-float& AudioBuffer::operator[](unsigned int index)
+float& AudioBuffer::operator[](unsigned int i)
 {
-    return data[index];
+    return data[i];
 }

@@ -1,32 +1,28 @@
 #ifndef AUDIO_BUFFER_HPP
 #define AUDIO_BUFFER_HPP
 
+#include <vector>
 #include <string>
 
 class AudioBuffer
 {
 public:
+    AudioBuffer();
+
+    AudioBuffer(float *data, unsigned int sz);
+
     AudioBuffer(const std::string &path);
 
-    ~AudioBuffer();
+    unsigned long size() { return data.size(); }
 
     void write(const std::string &path, int sample_rate, int channels, int format);
 
-    unsigned int size() { return sz; }
-
     float& operator[](unsigned int index);
-
-    float* begin() { return &data[0]; }
-
-    float* end() { return &data[sz]; }
-
-    float* d() { return data; }
 
 private:
     void read(const std::string &path);
 
-    float *data;
-    unsigned int sz;
+    std::vector<float> data;
 };
 
 #endif
