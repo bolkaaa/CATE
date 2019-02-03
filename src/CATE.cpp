@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
     portaudio::MemFunCallbackStream<Synth<float>> stream(audio_parameters.get_stream(),
-						  synth,
+							 synth,
 							 &Synth<float>::process);
     std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<float>>::start, &stream);
     audio_thread.detach();
