@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
     AudioParameters audio_parameters(audio_backend);
 
     /* Load an audio file into an AudioBuffer container and pass it to the 
-       CATE object. */
+       Synth object. */
     std::string audio_file_path = argv[1];
     AudioBuffer buffer(audio_file_path);
     Synth synth(buffer);
