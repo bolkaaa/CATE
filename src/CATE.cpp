@@ -15,26 +15,27 @@ public:
     CATE(AudioBuffer buffer)
 	: buffer(buffer), index(0)
     {
-
     }
 
     int process(const void *input, void *output, unsigned long frames_per_buffer, 
 		const PaStreamCallbackTimeInfo *time_info, PaStreamCallbackFlags status_flags)
     {
-	assert(output != nullptr);
-
 	float **out = static_cast<float**>(output);
 
 	for (unsigned int i = 0; i < frames_per_buffer; ++i)
 	{
+	    /* Left Channel */
 	    out[0][i] = buffer[index];
-	    index += 1;
+	    ++index;
 
+	    /* Right Channel */
 	    out[1][i] = buffer[index];
-	    index += 1;
+	    ++index;
 
 	    if (index >= buffer.size())
+	    {
 		index -= buffer.size();
+	    }
 	}
 
 	return paContinue;
@@ -49,7 +50,7 @@ private:
 int main(int argc, char *argv[])
 {
     std::string input_path = argv[1];
-    unsigned long sample_rate = 48000;
+    unsigned long sample_rate = 44100;
     unsigned long frames_per_buffer = 256;
     unsigned int channels = 2;
     AudioBuffer buffer(input_path);
@@ -78,9 +79,14 @@ int main(int argc, char *argv[])
 
     portaudio::MemFunCallbackStream<CATE> stream(params, cate, &CATE::process);
 
-    stream.start();
+    std::thread audio_thread(&portaudio::MemFunCallbackStream<CATE>::start, &stream);
 
-    sys.sleep(1000 * ((buffer.size() / sample_rate) / 2));
+    audio_thread.detach();
+
+    while (1)
+    {
+	/* ... */
+    }
 
     stream.stop();
 
