@@ -1,0 +1,50 @@
+
+AudioBuffer.cpp,164
+AudioBuffer::AudioBuffer(AudioBuffer8,96
+AudioBuffer::~AudioBuffer(~AudioBuffer13,167
+void AudioBuffer::read(read18,216
+void AudioBuffer::write(write26,385
+
+AudioBuffer.hpp,209
+#define AUDIO_BUFFER_HPP2,25
+class AudioBuffer6,70
+    unsigned int size(15,247
+    float* begin(19,331
+    float* end(21,372
+    float* d(23,412
+    float *data;data28,495
+    unsigned int sz;29,512
+
+AudioFile.cpp,146
+AudioFile::AudioFile(AudioFile5,56
+AudioFile::AudioFile(AudioFile14,240
+void AudioFile::read(read21,416
+void AudioFile::write(write27,529
+
+AudioFile.hpp,292
+#define AUDIO_FILE_HPP2,23
+class AudioFile8,105
+    unsigned int channels(20,343
+    unsigned long samples(22,394
+    unsigned int sampleRate(24,444
+    SndfileHandle file;27,508
+    unsigned int _channels;28,532
+    unsigned long _samples;29,560
+    unsigned int _sampleRate;30,588
+
+CATE.cpp,424
+class CATE12,215
+    CATE(15,236
+    int process(20,306
+    AudioBuffer buffer;44,826
+    unsigned int index;45,850
+private:private47,875
+portaudio::DirectionSpecificStreamParameters define_out_params(50,888
+class StreamParameters63,1173
+    StreamParameters(66,1206
+    portaudio::DirectionSpecificStreamParameters input;85,1681
+    portaudio::DirectionSpecificStreamParameters output;86,1737
+int main(90,1799
+
+CMakeLists.txt,20
+add_executable(1,0
