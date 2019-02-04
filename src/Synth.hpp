@@ -25,17 +25,15 @@ public:
 
 	for (unsigned long i = 0; i < frames_per_buffer; ++i)
 	{
-	    /* Left Channel */
+	    /* Monophonic playback. */
 	    out[0][i] = buffer[index];
 	    ++index;
 
+	    /* Exit loop when EOF reached. */
 	    if (index > buffer.size())
 	    {
 		return paComplete;
 	    }
-	    /* Right Channel */
-	    // out[1][i] = buffer[index];
-	    // ++index;
 	}
 
 	return paContinue;
