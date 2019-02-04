@@ -1,2 +1,11 @@
-add_executable(CATE CATE.cpp AudioBuffer.hpp Synth.hpp AudioParameters.hpp AudioParameters.cpp)
-target_link_libraries(CATE portaudio portaudiocpp sndfile)
+set(Boost_USE_STATIC_LIBS OFF) 
+set(Boost_USE_MULTITHREADED ON)  
+set(Boost_USE_STATIC_RUNTIME OFF) 
+
+find_package(Boost 1.68.0 COMPONENTS filesystem REQUIRED)
+
+include_directories(${Boost_INCLUDE_DIRS})
+
+add_executable(CATE CATE.cpp AudioBuffer.hpp Synth.hpp AudioParameters.hpp AudioParameters.cpp FileTree.cpp FileTree.hpp)
+
+target_link_libraries(CATE portaudio portaudiocpp sndfile boost_filesystem ${Boost_Libraries})

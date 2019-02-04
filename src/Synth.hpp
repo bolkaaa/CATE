@@ -29,22 +29,25 @@ public:
 	    out[0][i] = buffer[index];
 	    ++index;
 
-	    /* Right Channel */
-	    out[1][i] = buffer[index];
-	    ++index;
-
-	    if (index >= buffer.size())
+	    if (index > buffer.size())
 	    {
-		index -= buffer.size();
+		return paComplete;
 	    }
+	    /* Right Channel */
+	    // out[1][i] = buffer[index];
+	    // ++index;
 	}
 
 	return paContinue;
     }
 
+    T& operator[](unsigned long i) { return buffer[i]; }
+
+    unsigned long get_index() { return index; }
+
 private:
     AudioBuffer<T> buffer;
-    unsigned long index;
+    unsigned long index = 0;
 
 };
 
