@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 	std::exit(0);
     }
 
-    unsigned long db_index = std::atoi(argv[1]);
+    unsigned int db_index = std::atoi(argv[1]);
 
     if (db_index > (db.size()-1))
     {
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     audio_thread.detach();
 
     std::string filename = db[db_index].get_filename();
-    std::cout << "Playing file: " << filename << '\n' << "Press Ctrl-C to exit.\n";
+    std::cout << "Playing file: " << filename << ".\nPress Ctrl-C to exit.\n";
     while(true)
     {
     } 
