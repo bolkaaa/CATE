@@ -25,8 +25,10 @@ public:
 
 	for (unsigned long i = 0; i < frames_per_buffer; ++i)
 	{
-	    /* Monophonic playback. */
+	    /* Monophonic playback. (sample index increments once per sample as 
+	       same sample is used for both channels. */
 	    out[0][i] = buffer[index];
+	    out[1][i] = buffer[index];
 	    ++index;
 
 	    /* Exit loop when EOF reached. */

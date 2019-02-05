@@ -12,22 +12,7 @@
 #include "AudioParameters.hpp"
 #include "AudioBuffer.hpp"
 #include "FileTree.hpp"
-
-template <class T>
-std::vector<AudioBuffer<T>> create_buffers(const std::string &audio_dir)
-/* Example of creating container of AudioBuffers from a nested directory. */
-{
-    std::vector<std::string> file_list;
-    get_nested_files(file_list, audio_dir);
-    std::vector<AudioBuffer<T>> buffers;
-
-    for (auto audio_file : file_list)
-    {
-	buffers.push_back(AudioBuffer<T>(audio_file));
-    }
-
-    return buffers;
-}
+#include "Database.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -37,9 +22,10 @@ int main(int argc, char *argv[])
 
     /* Create std::vector of AudioBuffers and test Synth with one of the buffers. */
     std::string audio_file_dir = "./audio_files";
-    std::vector<AudioBuffer<float>> buffers = create_buffers<float>(audio_file_dir);
-    unsigned int test_buffer_index = 0;
-    Synth<float> synth(buffers[test_buffer_index]);
+    Database<float> db;
+    db.add_directory(audio_file_dir);
+
+    Synth<float> synth(db[0]);
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
     portaudio::MemFunCallbackStream<Synth<float>> stream(audio_parameters.get_stream(),
