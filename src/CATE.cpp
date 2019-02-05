@@ -20,12 +20,13 @@ int main(int argc, char *argv[])
     portaudio::System &system = portaudio::System::instance();
     AudioParameters audio_parameters(system, 20000, 256, 2, 2);
 
-    /* Create std::vector of AudioBuffers and test Synth with one of the buffers. */
+    /* Load database of buffers from root directory path. */
     std::string audio_file_dir = "./audio_files";
     Database<float> db;
     db.add_directory(audio_file_dir);
 
-    Synth<float> synth(db[0]);
+    /* Pass the database and a db file index to the Synth object. */
+    Synth<float> synth(db, 50);
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
     portaudio::MemFunCallbackStream<Synth<float>> stream(audio_parameters.get_stream(),
@@ -37,8 +38,7 @@ int main(int argc, char *argv[])
     std::cout << "Press Ctrl-C to exit.\n";
     while(true)
     {
-	std::cout << "OUTPUT: " << synth[synth.get_index()] << '\r';
-    } // ...
+    } 
 
     stream.stop();
     stream.close();

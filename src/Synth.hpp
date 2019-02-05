@@ -2,6 +2,7 @@
 #define SYNTH_HPP
 
 #include "AudioBuffer.hpp"
+#include "Database.hpp"
 
 #include "../lib/PortAudioCpp.hxx"
 
@@ -11,8 +12,8 @@ class Synth
 public:
     Synth();
 
-    Synth(AudioBuffer<T> buffer)
-	: buffer(buffer)
+    Synth(Database<T> db, unsigned int db_index)
+	: db(db), db_index(db_index)
     {
     }
 
@@ -27,12 +28,15 @@ public:
 	{
 	    /* Monophonic playback. (sample index increments once per sample as 
 	       same sample is used for both channels. */
-	    out[0][i] = buffer[index];
-	    out[1][i] = buffer[index];
-	    ++index;
+	    T mix = db[db_index][buffer_pos];
+
+	    out[0][i] = mix;
+	    out[1][i] = mix;
+
+	    buffer_pos += 1;
 
 	    /* Exit loop when EOF reached. */
-	    if (index > buffer.size())
+	    if (buffer_pos > db[db_index].size())
 	    {
 		return paComplete;
 	    }
@@ -41,13 +45,12 @@ public:
 	return paContinue;
     }
 
-    T& operator[](unsigned long i) { return buffer[i]; }
-
-    unsigned long get_index() { return index; }
+    AudioBuffer<T>& operator[](unsigned long i) { return db[i]; }
 
 private:
-    AudioBuffer<T> buffer;
-    unsigned long index = 0;
+    Database<T> db;
+    unsigned int db_index;
+    unsigned long buffer_pos = 0;
 
 };
 
