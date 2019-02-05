@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
+#include <boost/filesystem.hpp>
 
 #include "../lib/sndfile.hh"
 
@@ -28,6 +30,8 @@ public:
 
     unsigned long size() { return data.size(); }
 
+    std::string get_filename() { return filename; }
+
 private:
     void read(const std::string &path)
     {
@@ -35,9 +39,12 @@ private:
 	unsigned long size = file.frames() * file.channels();
 	data = std::vector<T>(size);
 	file.read(&data[0], size);
+	boost::filesystem::path p(path);
+	filename = p.stem().string();
     }
 
     std::vector<T> data;
+    std::string filename;
 };
 
 #endif

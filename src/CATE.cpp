@@ -26,7 +26,8 @@ int main(int argc, char *argv[])
     db.add_directory(audio_file_dir);
 
     /* Pass the database and a db file index to the Synth object. */
-    Synth<float> synth(db, 50);
+    unsigned int db_index = 10;
+    Synth<float> synth(db, db_index);
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
     portaudio::MemFunCallbackStream<Synth<float>> stream(audio_parameters.get_stream(),
@@ -35,7 +36,8 @@ int main(int argc, char *argv[])
     std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<float>>::start, &stream);
     audio_thread.detach();
 
-    std::cout << "Press Ctrl-C to exit.\n";
+    std::string filename = db[db_index].get_filename();
+    std::cout << "Playing file: " << filename << '\n' << "Press Ctrl-C to exit.\n";
     while(true)
     {
     } 

@@ -32,6 +32,23 @@ public:
 
     }
 
+    void clear()
+    {
+	buffers.clear();
+    }
+
+    std::vector<std::string> get_filenames()
+    {
+	std::vector<std::string> filenames;
+
+	for (auto b : buffers)
+	{
+	    filenames.push_back(b.get_filename());
+	}
+
+	return filenames;
+    }
+
     AudioBuffer<T>& operator[](unsigned int i)
     {
 	return buffers[i];
