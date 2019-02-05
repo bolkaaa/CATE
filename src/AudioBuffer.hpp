@@ -23,7 +23,7 @@ public:
 	file.write(&data[0], data.size());
     }
 
-    T& operator[](unsigned int i)
+    T& operator[](unsigned long i)
     {
 	return data[i];
     }

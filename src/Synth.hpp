@@ -13,7 +13,7 @@ public:
     Synth();
 
     Synth(Database<T> db, unsigned int db_index)
-	: db(db), db_index(db_index)
+	: db(db), db_index(db_index), buffer_pos(0)
     {
     }
 
@@ -45,12 +45,12 @@ public:
 	return paContinue;
     }
 
-    AudioBuffer<T>& operator[](unsigned long i) { return db[i]; }
+    AudioBuffer<T>& operator[](unsigned int i) { return db[i]; }
 
 private:
     Database<T> db;
     unsigned int db_index;
-    unsigned long buffer_pos = 0;
+    unsigned long buffer_pos;
 
 };
 
