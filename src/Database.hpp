@@ -54,6 +54,8 @@ public:
 	return buffers[i];
     }
 
+    unsigned long size() { return buffers.size(); }
+
 private:
     std::vector<AudioBuffer<T> > buffers;
 };

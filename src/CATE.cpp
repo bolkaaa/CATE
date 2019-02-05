@@ -16,6 +16,7 @@
 
 int main(int argc, char *argv[])
 {
+    /* Initialise the PortAudio system and define audio parameters. */
     portaudio::AutoSystem auto_system;
     portaudio::System &system = portaudio::System::instance();
     AudioParameters audio_parameters(system, 20000, 256, 2, 2);
@@ -25,8 +26,20 @@ int main(int argc, char *argv[])
     Database<float> db;
     db.add_directory(audio_file_dir);
 
-    /* Pass the database and a db file index to the Synth object. */
-    unsigned int db_index = 10;
+    if (argc < 2)
+    {
+	std::cout << "Usage: ./CATE <buffer index>\n";
+	std::exit(0);
+    }
+
+    unsigned long db_index = std::atoi(argv[1]);
+
+    if (db_index > (db.size()-1))
+    {
+	std::cout << "db index must be less than " << db.size() << ".\n";
+	std::exit(0);
+    }
+
     Synth<float> synth(db, db_index);
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
