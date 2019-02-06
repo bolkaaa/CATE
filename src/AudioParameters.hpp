@@ -1,7 +1,7 @@
 #ifndef AUDIO_PARAMETERS_HPP
 #define AUDIO_PARAMETERS_HPP
 
-#include "../lib/PortAudioCpp.hxx"
+#include "portaudiocpp/PortAudioCpp.hxx"
 
 class AudioParameters
 {

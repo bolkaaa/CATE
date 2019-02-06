@@ -6,7 +6,7 @@
 #include "AudioBuffer.hpp"
 #include "Database.hpp"
 
-#include "../lib/PortAudioCpp.hxx"
+#include "portaudio.h"
 
 template <class T>
 class Synth

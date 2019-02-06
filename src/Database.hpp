@@ -37,6 +37,14 @@ public:
 	buffers.clear();
     }
 
+    void convert_sample_rates(unsigned int new_sr)
+    {
+	for (auto &b : buffers)
+	{
+	    b.convert_sample_rate(new_sr);
+	}
+    }
+
     std::vector<std::string> get_filenames()
     {
 	std::vector<std::string> filenames;

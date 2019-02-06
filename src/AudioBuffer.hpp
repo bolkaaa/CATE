@@ -6,7 +6,8 @@
 #include <iostream>
 #include <boost/filesystem.hpp>
 
-#include "../lib/sndfile.hh"
+#include "sndfile.hh"
+#include "samplerate.h"
 
 template <class T>
 class AudioBuffer
@@ -30,7 +31,26 @@ public:
 
     unsigned long size() { return data.size(); }
 
+    unsigned int chan() { return channels; }
+
     std::string get_filename() { return filename; }
+
+    void convert_sample_rate(unsigned int new_sr)
+    {
+	double sr_ratio = static_cast<double> (new_sr / sr);
+	std::vector<T> out(sr_ratio * data.size());
+	SRC_DATA conv;
+
+	conv.data_in = &data[0];
+	conv.data_out = &out[0];
+	conv.input_frames = (data.size() / channels);
+	conv.output_frames = ((sr_ratio * data.size()) / channels);
+	conv.src_ratio = sr_ratio;
+
+	src_simple(&conv, SRC_SINC_BEST_QUALITY, channels);
+
+	data = out;
+    }
 
 private:
     void read(const std::string &path)
@@ -41,9 +61,13 @@ private:
 	file.read(&data[0], size);
 	boost::filesystem::path p(path);
 	filename = p.stem().string();
+	sr = file.samplerate();
+	channels = file.channels();
     }
 
     std::vector<T> data;
+    unsigned int channels;
+    unsigned int sr;
     std::string filename;
 };
 

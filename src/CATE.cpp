@@ -3,10 +3,10 @@
 #include <vector>
 #include <boost/filesystem.hpp>
 
-#include "../lib/portaudio.h"
-#include "../lib/PortAudioCpp.hxx"
-#include "../lib/sndfile.h"
-#include "../lib/sndfile.hh"
+#include "portaudiocpp/PortAudioCpp.hxx"
+#include "portaudio.h"
+#include "sndfile.hh"
+#include "samplerate.h"
 
 #include "Synth.hpp"
 #include "AudioParameters.hpp"
@@ -19,12 +19,18 @@ int main(int argc, char *argv[])
     /* Initialise the PortAudio system and define audio parameters. */
     portaudio::AutoSystem auto_system;
     portaudio::System &system = portaudio::System::instance();
-    AudioParameters audio_parameters(system, 20000, 256, 2, 2);
+    unsigned int sample_rate = 44100;
+    unsigned int frames_per_buffer = 256;
+    unsigned int input_channels = 2;
+    unsigned int output_channels = 2;
+    AudioParameters audio_parameters(system, sample_rate, frames_per_buffer,
+				     input_channels, output_channels);
 
     /* Load database of buffers from root directory path. */
     std::string audio_file_dir = "./audio_files";
     Database<float> db;
     db.add_directory(audio_file_dir);
+    db.convert_sample_rates(sample_rate);
 
     if (argc < 2)
     {
