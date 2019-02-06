@@ -8,15 +8,6 @@
 
 #include "../lib/PortAudioCpp.hxx"
 
-float foldback(float in, float threshold)
-{
-    if (in > threshold || in <= threshold)
-    {
-	in = fabs(fabs(std::fmod(in - threshold, threshold * 4)) - threshold * 2) - threshold;
-    }
-    return in;
-}
-
 template <class T>
 class Synth
 {
@@ -37,15 +28,13 @@ public:
 
 	for (unsigned long i = 0; i < frames_per_buffer; ++i)
 	{
-	    /* Monophonic playback. (sample index increments once per sample as 
-	       same sample is used for both channels. */
-	    T source = db[db_index][buffer_pos];
-	    T mix = foldback(source, 0.1);
+	    T mix = db[db_index][buffer_pos];
 
+	    /* Monophonic */
 	    out[0][i] = mix;
 	    out[1][i] = mix;
 
-	    buffer_pos += 1;
+	    ++buffer_pos;
 
 	    /* Exit loop when EOF reached. */
 	    if (buffer_pos > db[db_index].size())
