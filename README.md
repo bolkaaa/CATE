@@ -17,4 +17,5 @@ A corpus-based concatenative synthesis application written in C++ (work in progr
 1. cd ./scripts
 2. python3 -m venv venv
 3. source ./venv/bin/activate
-4. python3 ./script.py
+4. pip3 install matplotlib librosa
+5. python3 ./script.py
