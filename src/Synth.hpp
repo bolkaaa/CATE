@@ -1,10 +1,21 @@
 #ifndef SYNTH_HPP
 #define SYNTH_HPP
 
+#include <cmath>
+
 #include "AudioBuffer.hpp"
 #include "Database.hpp"
 
 #include "../lib/PortAudioCpp.hxx"
+
+float foldback(float in, float threshold)
+{
+    if (in > threshold || in <= threshold)
+    {
+	in = fabs(fabs(std::fmod(in - threshold, threshold * 4)) - threshold * 2) - threshold;
+    }
+    return in;
+}
 
 template <class T>
 class Synth
@@ -28,7 +39,8 @@ public:
 	{
 	    /* Monophonic playback. (sample index increments once per sample as 
 	       same sample is used for both channels. */
-	    T mix = db[db_index][buffer_pos];
+	    T source = db[db_index][buffer_pos];
+	    T mix = foldback(source, 0.1);
 
 	    out[0][i] = mix;
 	    out[1][i] = mix;
