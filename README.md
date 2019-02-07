@@ -5,6 +5,7 @@ A corpus-based concatenative synthesis application written in C++ (work in progr
 - portaudio
 - portaudiocpp
 - libsndfile
+- libsamplerate
 - boost/filesystem
 
 ### Building with CMake
