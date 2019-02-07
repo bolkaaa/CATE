@@ -14,22 +14,35 @@
 #include "FileTree.hpp"
 #include "Database.hpp"
 
-std::string test_args(int argc, char *argv[])
-/* Basic command line arguments for testing audio files. */
+std::string choose_file(int argc, char *argv[], Database<float> &db)
 {
-    if (argc < 2)
+    if (argc != 2)
     {
-	std::cout << "Usage: ./CATE <file path>\n";
-	std::exit(0);
+	std::string usage = "Usage: ./CATE <audio_file_path>";
+	throw std::invalid_argument(usage);
     }
 
-    std::string file_path = argv[1];
+    std::string file = argv[1];
 
-    return file_path;
+    bool exists = db.exists(file);
+
+    if (!exists)
+    {
+	throw std::invalid_argument("File not found.");
+    }
+
+    return file;
 }
-
+	
 int main(int argc, char *argv[])
 {
+    bool test = false;
+
+    if (test)
+    {
+	// ...
+    }
+
     /* Initialise the PortAudio system and define audio parameters. */
     portaudio::AutoSystem auto_system;
     portaudio::System &system = portaudio::System::instance();
@@ -46,18 +59,28 @@ int main(int argc, char *argv[])
     db.add_directory(audio_file_dir);
     db.convert_sample_rates(sample_rate);
 
-    /* Passing database to Synth object, currently just takes arbitrary filename. */
-    std::string file = test_args(argc, argv);
-    Synth<float> synth(db, file);
+    /* Choose file from database to pass to Synth object. */
+    std::string filename;
+    try
+    {
+	filename = choose_file(argc, argv, db);
+    }
+    catch (std::invalid_argument &a)
+    {
+	std::cout << a.what() << '\n';
+	return -1;
+    }
+
+    Synth<float> synth(db, filename);
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
     portaudio::MemFunCallbackStream<Synth<float>> stream(audio_parameters.get_stream(),
-    							 synth,
-    							 &Synth<float>::process);
+							 synth,
+							 &Synth<float>::process);
     std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<float>>::start, &stream);
     audio_thread.detach();
 
-    std::cout << "Playing file: " << file << ".\nPress Ctrl-C to exit.\n";
+    std::cout << "Playing file: " << filename << ".\nPress Ctrl-C to exit.\n";
     while(true)
     {
     } 

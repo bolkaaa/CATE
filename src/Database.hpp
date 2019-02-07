@@ -57,6 +57,18 @@ public:
 
     unsigned int size() const { return buffers.size(); }
 
+    bool exists(std::string key)
+    {
+	auto it = buffers.find(key);
+
+	if (it != buffers.end())
+	{
+	    return true;
+	}
+
+	return false;
+    }
+
 private:
     std::unordered_map<std::string, AudioBuffer<T>> buffers;
 
