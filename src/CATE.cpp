@@ -14,7 +14,9 @@
 #include "FileTree.hpp"
 #include "Database.hpp"
 
+
 std::string choose_file(int argc, char *argv[], Database<float> &db)
+/* Basic command line arguments for choosing a file, for testing playback. */
 {
     if (argc != 2)
     {
@@ -41,6 +43,8 @@ int main(int argc, char *argv[])
     if (test)
     {
 	// ...
+
+	return 0;
     }
 
     /* Initialise the PortAudio system and define audio parameters. */
@@ -59,7 +63,7 @@ int main(int argc, char *argv[])
     db.add_directory(audio_file_dir);
     db.convert_sample_rates(sample_rate);
 
-    /* Choose file from database to pass to Synth object. */
+    /* Choose file from database to test audio processing with. */
     std::string filename;
     try
     {
@@ -71,7 +75,12 @@ int main(int argc, char *argv[])
 	return -1;
     }
 
-    Synth<float> synth(db, filename);
+    /* Testing segmentation of audio buffers from the audio file database.  */
+    std::vector<AudioBuffer<float>> grains;
+    unsigned int grain_size = 200;
+    AudioBuffer<float> buffer = db.get_buffer(filename);
+    buffer.segment(grains, grain_size, sample_rate);
+    Synth<float> synth(grains, filename);
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
     portaudio::MemFunCallbackStream<Synth<float>> stream(audio_parameters.get_stream(),
@@ -83,6 +92,7 @@ int main(int argc, char *argv[])
     std::cout << "Playing file: " << filename << ".\nPress Ctrl-C to exit.\n";
     while(true)
     {
+	// ...
     } 
 
     stream.stop();

@@ -10,6 +10,13 @@
 #include "samplerate.h"
 
 template <class T>
+constexpr T ms_to_samp(unsigned int ms, unsigned long sr)
+/* Conversion millisecond time period to sample number. */
+{
+    return (ms / 1000.) * sr;
+}
+
+template <class T>
 class AudioBuffer
 {
 public:
@@ -46,7 +53,7 @@ public:
 
     void convert_sample_rate(unsigned int new_sr)
     {
-	double sr_ratio = static_cast<double> (new_sr / sr);
+	double sr_ratio = new_sr / sr;
 	std::vector<T> out(sr_ratio * data.size());
 	SRC_DATA conv;
 
@@ -61,12 +68,14 @@ public:
 	data = out;
     }
 
-    void segment(std::vector<AudioBuffer<T>> &segments, unsigned long grain_size)
-    /* Naive version with no windowing. */
+    void segment(std::vector<AudioBuffer<T>> &segments, unsigned int grain_size, unsigned long sample_rate)
+    /* Naive version with no windowing yet. */
     {
-	for (auto it = data.begin(); it < data.end(); it += grain_size)
+	unsigned int samples = ms_to_samp<T>(grain_size, sample_rate);
+
+	for (auto it = data.begin(); it < data.end(); it += samples)
 	{
-	    std::vector<T> grain(it, it + grain_size);
+	    std::vector<T> grain(it, it + samples);
 	    AudioBuffer<T> buffer(grain);
 	    segments.push_back(buffer);
 	}
@@ -81,15 +90,17 @@ private:
 	data = std::vector<T>(size);
 	file.read(&data[0], size);
 	boost::filesystem::path p(path);
+
 	filename = p.stem().string();
 	sr = file.samplerate();
 	channels = file.channels();
     }
 
     std::vector<T> data;
-    unsigned int channels;
-    unsigned int sr;
     std::string filename;
+    unsigned int sr;
+    unsigned int channels;
+    
 };
 
 #endif

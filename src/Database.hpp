@@ -69,6 +69,11 @@ public:
 	return false;
     }
 
+    AudioBuffer<T> get_buffer(std::string buffer_name)
+    {
+	return buffers[buffer_name];
+    }
+
 private:
     std::unordered_map<std::string, AudioBuffer<T>> buffers;
 

@@ -14,8 +14,8 @@ class Synth
 public:
     Synth();
 
-    Synth(Database<T> db, std::string file)
-	: db(db), file(file), buffer_pos(0)
+    Synth(std::vector<AudioBuffer<T>> buffers, std::string file)
+	: buffers(buffers), file(file), buffer_index(0), buffer_pos(0)
     {
     }
 
@@ -28,7 +28,7 @@ public:
 
 	for (unsigned long i = 0; i < frames_per_buffer; ++i)
 	{
-	    T mix = db[file][buffer_pos];
+	    T mix = buffers[buffer_index][buffer_pos];
 
 	    /* Monophonic */
 	    out[0][i] = mix;
@@ -37,21 +37,22 @@ public:
 	    ++buffer_pos;
 
 	    /* Exit loop when EOF reached. */
-	    if (buffer_pos > db[file].size())
+	    if (buffer_pos > buffers[buffer_index].size())
 	    {
-		return paComplete;
+		buffer_pos = 0;
 	    }
 	}
 
 	return paContinue;
     }
 
-    AudioBuffer<T>& operator[](std::string file) { return db[file]; }
-
 private:
-    Database<T> db;
+    std::vector<AudioBuffer<T>> buffers;
     std::string file;
+    unsigned int buffer_index;
     unsigned long buffer_pos;
+    
+    
 
 };
 
