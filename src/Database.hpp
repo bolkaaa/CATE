@@ -57,10 +57,8 @@ public:
 
     unsigned int size() const { return buffers.size(); }
 
-    std::unordered_map<std::string, AudioBuffer<T>> buffers;
-
 private:
-    // std::unordered_map<std::string, AudioBuffer<T>> buffers;
+    std::unordered_map<std::string, AudioBuffer<T>> buffers;
 
 };
 
