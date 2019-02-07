@@ -14,6 +14,20 @@
 #include "FileTree.hpp"
 #include "Database.hpp"
 
+std::string test_args(int argc, char *argv[])
+/* Basic command line arguments for testing audio files. */
+{
+    if (argc < 2)
+    {
+	std::cout << "Usage: ./CATE <file path>\n";
+	std::exit(0);
+    }
+
+    std::string file_path = argv[1];
+
+    return file_path;
+}
+
 int main(int argc, char *argv[])
 {
     /* Initialise the PortAudio system and define audio parameters. */
@@ -32,31 +46,18 @@ int main(int argc, char *argv[])
     db.add_directory(audio_file_dir);
     db.convert_sample_rates(sample_rate);
 
-    if (argc < 2)
-    {
-	std::cout << "Usage: ./CATE <buffer index>\n";
-	std::exit(0);
-    }
-
-    unsigned int db_index = std::atoi(argv[1]);
-
-    if (db_index > (db.size()-1))
-    {
-	std::cout << "db index must be less than " << db.size() << ".\n";
-	std::exit(0);
-    }
-
-    Synth<float> synth(db, db_index);
+    /* Passing database to Synth object, currently just takes arbitrary filename. */
+    std::string file = test_args(argc, argv);
+    Synth<float> synth(db, file);
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
     portaudio::MemFunCallbackStream<Synth<float>> stream(audio_parameters.get_stream(),
-							 synth,
-							 &Synth<float>::process);
+    							 synth,
+    							 &Synth<float>::process);
     std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<float>>::start, &stream);
     audio_thread.detach();
 
-    std::string filename = db[db_index].get_filename();
-    std::cout << "Playing file: " << filename << ".\nPress Ctrl-C to exit.\n";
+    std::cout << "Playing file: " << file << ".\nPress Ctrl-C to exit.\n";
     while(true)
     {
     } 
@@ -67,3 +68,4 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+

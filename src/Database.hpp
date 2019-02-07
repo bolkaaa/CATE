@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <utility>
 
 #include "AudioBuffer.hpp"
 #include "FileTree.hpp"
@@ -17,55 +19,49 @@ public:
 
     void add_file(const std::string &path)
     {
-	buffers.push_back(AudioBuffer<T>(path));
+	AudioBuffer<T> buffer(path);
+	std::pair<std::string, AudioBuffer<T>> pair(path, buffer);
+	buffers.insert(pair);
     }
 
-    void add_directory(const std::string &path)
+    void add_directory(const std::string &directory_path)
     {
-	std::vector<std::string> paths;
-	get_nested_files(paths, path);
+	std::vector<std::string> file_paths;
+	get_nested_files(file_paths, directory_path);
 
-	for (auto p : paths)
+	for (auto path :file_paths)
 	{
-	    buffers.push_back(AudioBuffer<T>(p));
+	    AudioBuffer<T> buffer(path);
+	    std::pair<std::string, AudioBuffer<T>> pair(path, buffer);
+	    buffers.insert(pair);
 	}
-
     }
 
     void clear()
     {
-	buffers.clear();
-    }
+    	buffers.clear();
+   }
 
     void convert_sample_rates(unsigned int new_sr)
     {
-	for (auto &b : buffers)
-	{
-	    b.convert_sample_rate(new_sr);
-	}
+    	for (auto &buffer : buffers)
+    	{
+    	    buffer.second.convert_sample_rate(new_sr);
+    	}
     }
 
-    std::vector<std::string> get_filenames()
+    AudioBuffer<T>& operator[](std::string filename)
     {
-	std::vector<std::string> filenames;
-
-	for (auto b : buffers)
-	{
-	    filenames.push_back(b.get_filename());
-	}
-
-	return filenames;
+    	return buffers[filename];
     }
 
-    AudioBuffer<T>& operator[](unsigned int i)
-    {
-	return buffers[i];
-    }
+    unsigned int size() const { return buffers.size(); }
 
-    unsigned int size() { return buffers.size(); }
+    std::unordered_map<std::string, AudioBuffer<T>> buffers;
 
 private:
-    std::vector<AudioBuffer<T> > buffers;
+    // std::unordered_map<std::string, AudioBuffer<T>> buffers;
+
 };
 
 #endif

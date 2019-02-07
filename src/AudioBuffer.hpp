@@ -13,9 +13,18 @@ template <class T>
 class AudioBuffer
 {
 public:
+    AudioBuffer<T>()
+    {
+    }
+
     AudioBuffer<T>(const std::string &path)
     {
 	read(path);
+    }
+
+    AudioBuffer<T>(std::vector<T> data)
+	: data(data)
+    {
     }
 
     void write(const std::string &path, int sample_rate, int channels, int format)
@@ -51,6 +60,18 @@ public:
 
 	data = out;
     }
+
+    void segment(std::vector<AudioBuffer<T>> &segments, unsigned long grain_size)
+    /* Naive version with no windowing. */
+    {
+	for (auto it = data.begin(); it < data.end(); it += grain_size)
+	{
+	    std::vector<T> grain(it, it + grain_size);
+	    AudioBuffer<T> buffer(grain);
+	    segments.push_back(buffer);
+	}
+    }
+
 
 private:
     void read(const std::string &path)
