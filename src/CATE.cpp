@@ -14,7 +14,6 @@
 #include "FileTree.hpp"
 #include "Database.hpp"
 
-
 std::string choose_file(int argc, char *argv[], Database<float> &db)
 /* Basic command line arguments for choosing a file, for testing playback. */
 {

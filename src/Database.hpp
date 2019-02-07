@@ -25,6 +25,8 @@ public:
     }
 
     void add_directory(const std::string &directory_path)
+    /* Walks a root directory and adds every file contained within. 
+       TODO: Add some way of ignoring non-audio files. */
     {
 	std::vector<std::string> file_paths;
 	get_nested_files(file_paths, directory_path);
@@ -40,11 +42,13 @@ public:
     void clear()
     {
     	buffers.clear();
-   }
+    }
 
     void convert_sample_rates(unsigned int new_sr)
+    /* Convert all buffers in database to new sample rate. */
     {
-    	for (auto &buffer : buffers)
+	/* Must be a reference to work correctly. */
+    	for (auto &buffer : buffers) 
     	{
     	    buffer.second.convert_sample_rate(new_sr);
     	}

@@ -36,10 +36,10 @@ public:
 
 	    ++buffer_pos;
 
-	    /* Exit loop when EOF reached. */
+	    /* Looping. */
 	    if (buffer_pos > buffers[buffer_index].size())
 	    {
-		buffer_pos = 0;
+		buffer_pos -= buffers[buffer_index].size();
 	    }
 	}
 

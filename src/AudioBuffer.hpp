@@ -11,7 +11,7 @@
 
 template <class T>
 constexpr T ms_to_samp(unsigned int ms, unsigned long sr)
-/* Conversion millisecond time period to sample number. */
+/* Convert millisecond time period to sample number. */
 {
     return (ms / 1000.) * sr;
 }
