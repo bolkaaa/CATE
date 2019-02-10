@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Handling the Audio Database | CATE</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Handling the Audio Database" />
+<meta name="author" content="Liam Wyllie" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Loading a Directory of Audio Files My first objective was to find a way of automatically loading every audio file from a directory into memory in the program." />
+<meta property="og:description" content="Loading a Directory of Audio Files My first objective was to find a way of automatically loading every audio file from a directory into memory in the program." />
+<meta property="og:site_name" content="CATE" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-02-10T00:00:00+00:00" />
+<script type="application/ld+json">
+{"description":"Loading a Directory of Audio Files My first objective was to find a way of automatically loading every audio file from a directory into memory in the program.","author":{"@type":"Person","name":"Liam Wyllie"},"@type":"BlogPosting","url":"/2019/02/10/handling-audio-file-database.html","headline":"Handling the Audio Database","dateModified":"2019-02-10T00:00:00+00:00","datePublished":"2019-02-10T00:00:00+00:00","mainEntityOfPage":{"@type":"WebPage","@id":"/2019/02/10/handling-audio-file-database.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="CATE" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">CATE</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Handling the Audio Database</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-02-10T00:00:00+00:00" itemprop="datePublished">Feb 10, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h3 id="loading-a-directory-of-audio-files">Loading a Directory of Audio Files</h3>
+<p>My first objective was to find a way of automatically loading every
+audio file from a directory into memory in the program.</p>
+
+<p>After doing some research, I realised that this functionality only
+exists natively in C++ with the C++17 standard, and I am using the
+earlier C++14 standard in my project for compatibility
+purposes. Therefore, I decided to use the filesystem header from the
+boost library. This required installing the boost headers on my system
+as I have not used them before when working with C++, and modifying my
+CMakeLists file. After experimenting with the boost/filesystem
+functions, I eventually implemented a way of getting the path of every
+file deeper than a specified directory, using a recursive process:</p>
+
+<ol>
+  <li>A first, non-recursive function generates a list of all paths from a root directory.</li>
+  <li>The recursive function calls this function as its first statement.</li>
+  <li>It then iterates over that list.</li>
+  <li>If it encounters a directory path, the recursive function is called
+again, passing the path as a parameter.</li>
+  <li>Otherwise, the recursive function adds the path to the final path list.</li>
+</ol>
+
+<p>This has been working well for the particular directory of example
+sounds I am using. One particular issue that might arise is if the
+user has a directory filled with a mixture of audio files and
+non-audio files, which could result in the contents of those non-audio
+files being treated as sample data. I may have to test for this case
+and implement a way of checking if a file is an audio file or not.</p>
+
+<h3 id="pre-processing-the-audio-database">Pre-processing the Audio Database</h3>
+<p>My first idea was to convert every audio file loaded to the same
+sample rate (the standard 44.1kHz CD-quality rate). I chose to do
+this, as I had read in some papers relating to doing audio analysis on
+a database of sounds that this would result in more effective
+results. It also made it easier to test audio files with my program,
+as it means I don’t have to do any interpolation in the actual audio
+processing function. I implemented a function for converting an audio
+file to a new sample rate using the
+<a href="https://github.com/erikd/libsamplerate">libsamplerate</a>
+library. Although I have been generally sticking to my philosophy of
+avoiding C libraries and preferring native C++ code, I was only
+implementing a very small function contained within my AudioBuffer
+class, so I had no problems with it in this case. I found it
+preferable to use this library than implementing my own sample rate
+interpolation for a number of reasons:</p>
+
+<ol>
+  <li>Likely more efficient, faster, safer etc. than an implementation of my own.</li>
+  <li>Simplifies my own codebase by requiring less code.</li>
+</ol>
+
+<p>That being said, I did become interested in sample rate interpolation when looking into this, and it’s something that I would like to implement myself in the future.</p>
+
+<h3 id="python-utilities">Python Utilities</h3>
+<p>It has been my plan with this project to make use of the Numpy and
+Matplotlib libraries for the Python programming language, to help with
+the creation of C++ DSP code. This week I created some simple plotting
+tools which allow me to quickly view the waveform or spectrum of a
+given audio file. When I am developing the audio analysis functions,
+it will be helpful to prototype them in Python and plot their results
+before implementing them in C++.</p>
+
+<h3 id="sdif-files">SDIF Files</h3>
+<p>I began to research the SDIF file format more, thinking about how I
+could use it in my program. I plan to implement the simplest parts
+of its functionality to begin with, reading and writing files and
+printing their contents in my program. When I progress to the audio
+analysis aspects later, I will start to flesh out the SDIF code more.</p>
+
+<h3 id="audio-buffer-segmentation">Audio Buffer Segmentation</h3>
+<p>At this point I also wanted to experiment with splitting AudioBuffer
+objects into sub-objects and playing them back with a modified version
+of the Synth class. This was successful, and I was able to play back
+short snippets of files from the database. It made me think about how
+I will handle the segmentation process later on, as I realised that
+pre-segmenting every audio file will likely be impractical and
+inflexible. I looked back to how existing concatenative synthesis
+implementations such as CataRT deal with this, and realised that
+storing segmentation positions as numeric data may be the best
+option. I can then do the actual segmentation in real-time in the
+Synth::process function. Right now my understanding of this process
+based on my research into concatenative synthesis is as follows:</p>
+
+<ol>
+  <li>The audio database is analysed, and segmentation markers are
+generated along with descriptors.</li>
+  <li>The information is stored in files to be recalled later. Each
+segment may have its own row in the database along with columns of
+features extracted from the audio analysis process.</li>
+  <li>During the synthesis stage, the user specifies target parameters,
+and a combination of segments from the database are generated</li>
+</ol>
+
+<p>Once I begin working on the the analysis and synthesis stage of the
+program, I will be able to experiment with the approach more. I plan
+to first implement a non-realtime version which will allow me to
+experiment with different target parameters through the command line
+and create automated tests, which should make the process easier,
+although I will also need a way of testing its real-time capabilities.</p>
+
+<h3 id="moving-forwards">Moving Forwards</h3>
+<p>At this point I have already partially completed some goals from weeks
+3 and 4 of the production schedule. My goal at this point is to take
+some time to improve the code that I already written along with the
+rest of those production targets, while doing more reading and
+planning of the analysis and synthesis stage.</p>
+
+<p>I have still not implemented audio input recording, which I will
+definitely aim to achieve in the next two weeks. I also want to
+implement a better command line interface with best practises for C++
+CLI programs, expanding upon the simple interface I currently have,
+which directly uses the argc and argv parameters inherited from C.</p>
+
+  </div><a class="u-url" href="/2019/02/10/handling-audio-file-database.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">CATE</h2>
+        <ul class="contact-list">
+          <li class="p-name">Liam Wyllie</li><li><a class="u-email" href="mailto:lwyll002@gold.ac.uk">lwyll002@gold.ac.uk</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>Project blog for the CATE program, updated with my progress and findings.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://github.com/lrwz" title="lrwz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -4,7 +4,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
 <title>Audio Programming in C++ | CATE</title>
-<meta name="generator" content="Jekyll v3.8.5" />
+<meta name="generator" content="Jekyll v3.7.4" />
 <meta property="og:title" content="Audio Programming in C++" />
 <meta name="author" content="Liam Wyllie" />
 <meta property="og:locale" content="en_US" />
@@ -12,9 +12,9 @@
 <meta property="og:description" content="Starting Out" />
 <meta property="og:site_name" content="CATE" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2019-02-02T00:00:00+00:00" />
+<meta property="article:published_time" content="2019-02-03T00:00:00+00:00" />
 <script type="application/ld+json">
-{"description":"Starting Out","mainEntityOfPage":{"@type":"WebPage","@id":"/2019/02/02/audio-programming-in-c++.html"},"@type":"BlogPosting","author":{"@type":"Person","name":"Liam Wyllie"},"url":"/2019/02/02/audio-programming-in-c++.html","headline":"Audio Programming in C++","dateModified":"2019-02-02T00:00:00+00:00","datePublished":"2019-02-02T00:00:00+00:00","@context":"http://schema.org"}</script>
+{"description":"Starting Out","author":{"@type":"Person","name":"Liam Wyllie"},"@type":"BlogPosting","url":"/2019/02/03/audio-programming-in-c++.html","headline":"Audio Programming in C++","dateModified":"2019-02-03T00:00:00+00:00","datePublished":"2019-02-03T00:00:00+00:00","mainEntityOfPage":{"@type":"WebPage","@id":"/2019/02/03/audio-programming-in-c++.html"},"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="CATE" /></head>
 <body><header class="site-header">
@@ -39,7 +39,7 @@
   <header class="post-header">
     <h1 class="post-title p-name" itemprop="name headline">Audio Programming in C++</h1>
     <p class="post-meta">
-      <time class="dt-published" datetime="2019-02-02T00:00:00+00:00" itemprop="datePublished">Feb 2, 2019
+      <time class="dt-published" datetime="2019-02-03T00:00:00+00:00" itemprop="datePublished">Feb 3, 2019
       </time></p>
   </header>
 
@@ -109,7 +109,10 @@ function of the Synth class. Later, these components will be expanded
 upon, so that the AudioBuffers can be split into smaller segmented
 buffers that can be played back simultaneously.</p>
 
-<p>The program also has some basic multithreading capabilities so far using the std::thread class from C++11, with the audio stream starting on a separate thread while the main thread continues (as a while (true) loop for now as user input isn’t needed yet).</p>
+<p>The program also has some basic multithreading capabilities so far
+using the std::thread class from C++11, with the audio stream starting
+on a separate thread while the main thread continues (as a while
+(true) loop for now as user input isn’t needed yet).</p>
 
 <p>My plans moving forward are to add functionality for storing multiple
 AudioBuffers in memory from a directory of audio files, in preparation
@@ -118,7 +121,7 @@ for a portable way of interacting with the filesystem to achieve
 this. I will also look ahead to how I can store the analysis data in
 some kind of lightweight database, which may involve utilising the SDIF file format.</p>
 
-  </div><a class="u-url" href="/2019/02/02/audio-programming-in-c++.html" hidden></a>
+  </div><a class="u-url" href="/2019/02/03/audio-programming-in-c++.html" hidden></a>
 </article>
 
       </div>

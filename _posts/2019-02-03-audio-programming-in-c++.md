@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Audio Programming in C++
-date: '2019-02-02'
+date: '2019-02-03'
 ---
 ### Starting Out
 
@@ -68,7 +68,10 @@ function of the Synth class. Later, these components will be expanded
 upon, so that the AudioBuffers can be split into smaller segmented
 buffers that can be played back simultaneously.
 
-The program also has some basic multithreading capabilities so far using the std::thread class from C++11, with the audio stream starting on a separate thread while the main thread continues (as a while (true) loop for now as user input isn't needed yet).
+The program also has some basic multithreading capabilities so far
+using the std::thread class from C++11, with the audio stream starting
+on a separate thread while the main thread continues (as a while
+(true) loop for now as user input isn't needed yet).
 
 My plans moving forward are to add functionality for storing multiple
 AudioBuffers in memory from a directory of audio files, in preparation
