@@ -10,7 +10,7 @@
 #include "samplerate.h"
 
 template <class T>
-constexpr T ms_to_samp(unsigned int ms, unsigned long sr)
+constexpr T ms_to_samp(uint32_t ms, uint32_t sr)
 /* Convert millisecond time period to sample number. */
 {
     return (ms / 1000.) * sr;
@@ -30,29 +30,31 @@ public:
     AudioBuffer<T>(std::vector<T> data);
 
     /* Write buffer object to output file. */
-    void write(const std::string &path, int sample_rate, int channels, int format);
+    void write(const std::string &path, uint32_t sample_rate, uint8_t channels,
+	       uint8_t format);
 
     /* Get indexed sample value from private samples vector. */
-    T& operator[](unsigned long i) { return data[i]; }
+    T& operator[](uint32_t i) { return data[i]; }
 
     /* Get sample rate of buffer. */
-    unsigned int sample_rate() { return sr; }
+    uint32_t sample_rate() { return sr; }
 
     /* Get number of samples in buffer. */
-    unsigned long size() { return data.size(); }
+    uint64_t size() { return data.size(); }
 
     /* Get number of channels in buffer. */
-    unsigned int channels() { return chan; }
+    uint8_t channels() { return chan; }
 
     /* Get filename associated with buffer. */
     std::string filename() { return fname; }
 
     /* Interpolate sample rate of buffer to new sample rate. */
-    void convert_sample_rate(unsigned int new_sr);
+    void convert_sample_rate(uint32_t new_sr);
 
     /* Output a vector of buffers from original buffer. 
        (naive version with no windowing yet). */
-    void segment(std::vector<AudioBuffer<T>> &segments, unsigned int grain_size, unsigned long sample_rate);
+    void segment(std::vector<AudioBuffer<T>> &segments,
+		 uint16_t grain_size, uint32_t sample_rate);
 
 private:
     /* Read audio file from path. */
@@ -60,8 +62,8 @@ private:
 
     std::vector<T> data;
     std::string fname;
-    unsigned int sr;
-    unsigned int chan;
+    uint32_t sr;
+    uint8_t chan;
 };
 
 template <class T>
@@ -85,7 +87,7 @@ template <class T>
 void AudioBuffer<T>::read(const std::string &path)
 {
     SndfileHandle file(path);
-    unsigned long size = file.frames() * file.channels();
+    uint64_t size = file.frames() * file.channels();
     data = std::vector<T>(size);
     file.read(&data[0], size);
     boost::filesystem::path p(path);
@@ -96,7 +98,8 @@ void AudioBuffer<T>::read(const std::string &path)
 }
 
 template <class T>
-void AudioBuffer<T>::write(const std::string &path, int sample_rate, int channels, int format)
+void AudioBuffer<T>::write(const std::string &path, uint32_t sample_rate,
+			   uint8_t channels, uint8_t format)
 {
     SndfileHandle file(path, SFM_WRITE, format, channels, sample_rate);
     file.write(&data[0], data.size());
@@ -104,7 +107,7 @@ void AudioBuffer<T>::write(const std::string &path, int sample_rate, int channel
 
 
 template <class T>
-void AudioBuffer<T>::convert_sample_rate(unsigned int new_sr)
+void AudioBuffer<T>::convert_sample_rate(uint32_t new_sr)
 {
     double sr_ratio = new_sr / sr;
     std::vector<T> out(sr_ratio * data.size());
@@ -122,10 +125,10 @@ void AudioBuffer<T>::convert_sample_rate(unsigned int new_sr)
 }
 
 template <class T>
-void AudioBuffer<T>::segment(std::vector<AudioBuffer<T>> &segments, unsigned int grain_size, unsigned long sample_rate)
+void AudioBuffer<T>::segment(std::vector<AudioBuffer<T>> &segments, uint16_t grain_size, uint32_t sample_rate)
     
 {
-    unsigned int samples = ms_to_samp<T>(grain_size, sample_rate);
+    uint32_t samples = ms_to_samp<T>(grain_size, sample_rate);
 
     for (auto it = data.begin(); it < data.end(); it += samples)
     {

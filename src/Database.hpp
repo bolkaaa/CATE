@@ -27,13 +27,13 @@ public:
     void clear();
 
     /* Convert all buffers in database to new sample rate. */
-    void convert_sample_rates(unsigned int new_sr);
+    void convert_sample_rates(uint32_t new_sr);
 
     /* Get a particular buffer from the database, indexed by filename. */
     AudioBuffer<T>& operator[](std::string filename) { return buffers[filename]; }
 
     /* Get the size of the database. */
-    unsigned int size() const { return buffers.size(); }
+    uint16_t size() const { return buffers.size(); }
 
     /* Check if a particular file exists in the database. */
     bool exists(std::string key);
@@ -82,7 +82,7 @@ void Database<T>::clear()
 }
 
 template <class T>
-void Database<T>::convert_sample_rates(unsigned int new_sr)
+void Database<T>::convert_sample_rates(uint32_t new_sr)
     
 {
     /* Note: must be a reference to work correctly. */

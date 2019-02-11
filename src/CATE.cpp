@@ -49,10 +49,10 @@ int main(int argc, char *argv[])
     /* Initialise the PortAudio system and define audio parameters. */
     portaudio::AutoSystem auto_system;
     portaudio::System &system = portaudio::System::instance();
-    unsigned int sample_rate = 44100;
-    unsigned int frames_per_buffer = 256;
-    unsigned int input_channels = 2;
-    unsigned int output_channels = 2;
+    uint32_t sample_rate = 44100;
+    uint16_t frames_per_buffer = 256;
+    uint8_t input_channels = 2;
+    uint8_t output_channels = 2;
     AudioParameters audio_parameters(system, sample_rate, frames_per_buffer,
 				     input_channels, output_channels);
 
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 
     /* Testing segmentation of audio buffers from the audio file database.  */
     std::vector<AudioBuffer<float>> grains;
-    unsigned int grain_size = 200;
+    uint16_t grain_size = 200;
     AudioBuffer<float> buffer = db.get_buffer(filename);
     buffer.segment(grains, grain_size, sample_rate);
     Synth<float> synth(grains, filename);

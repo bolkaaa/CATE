@@ -24,8 +24,8 @@ public:
 private:
     std::vector<AudioBuffer<T> > buffers;
     std::string file;
-    unsigned int buffer_index;
-    unsigned long buffer_pos;
+    uint16_t buffer_ix = 0;
+    uint32_t buffer_pos = 0;
 };
 
 template <class T>
@@ -34,8 +34,8 @@ Synth<T>::Synth()
 }
 
 template <class T>
-Synth<T>::Synth(std::vector<AudioBuffer<T>> buffers, std::string file)
-    : buffers(buffers), file(file), buffer_index(0), buffer_pos(0)
+Synth<T>::Synth(std::vector<AudioBuffer<T> > buffers, std::string file)
+    : buffers(buffers), file(file)
 {
 }
 
@@ -45,26 +45,28 @@ int Synth<T>::process(const void *input, void *output,
 		      const PaStreamCallbackTimeInfo *time_info,
 		      PaStreamCallbackFlags status_flags)
 {
-    T **out = static_cast<T**>(output);
-
-    for (unsigned long i = 0; i < frames_per_buffer; ++i)
-    {
-	T mix = buffers[buffer_index][buffer_pos];
-
-	/* Monophonic */
-	out[0][i] = mix;
-	out[1][i] = mix;
-
+    const T **in = (const T**) (input);
+    T **out = static_cast<T**> (output);
+    uint32_t sz = buffers[buffer_ix].size();
+    
+    for (unsigned long i = 0; i < frames_per_buffer; i++) {
+	/* Monophonic output. */
+	out[0][i] = buffers[buffer_ix][buffer_pos];
+	out[1][i] = buffers[buffer_ix][buffer_pos];
 	++buffer_pos;
-
-	/* Looping. */
-	if (buffer_pos > buffers[buffer_index].size())
+	
+	if (buffer_pos > sz)
 	{
-	    buffer_pos -= buffers[buffer_index].size();
+	    /* Skipping through grains. */
+	    buffer_ix = (buffer_ix + 4) % buffers.size();
+
+	    /* Reset to beginning of next grain. */
+	    buffer_pos -= sz;
 	}
     }
 
-    return paContinue;
+    return paContinue;    
+
 }
 
 #endif
