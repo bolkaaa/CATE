@@ -9,14 +9,18 @@ A corpus-based concatenative synthesis application written in C++ (work in progr
 - boost/filesystem
 
 ### Building with CMake
-1. mkdir build
-2. cd build
-3. cmake ..
-4. make
+```
+mkdir build
+cd build
+cmake ..
+make
+```
 
 ### Using Python scripts
-1. cd ./scripts
-2. python3 -m venv venv
-3. source ./venv/bin/activate
-4. pip3 install matplotlib librosa
-5. python3 ./script.py
+```
+cd ./scripts
+python3 -m venv venv
+source ./venv/bin/activate
+pip3 install matplotlib librosa
+python3 ./script.py
+```
