@@ -14,7 +14,7 @@ class Synth
 public:
     Synth<T>();
 
-    Synth<T>(std::vector<AudioBuffer<T> > buffers, std::string file);
+    Synth<T>(std::vector<AudioBuffer<T> > buffers);
 
     int process(const void *input, void *output,
 		unsigned long frames_per_buffer,
@@ -23,7 +23,6 @@ public:
     
 private:
     std::vector<AudioBuffer<T> > buffers;
-    std::string file;
     uint16_t buffer_ix = 0;
     uint32_t buffer_pos = 0;
 };
@@ -34,8 +33,8 @@ Synth<T>::Synth()
 }
 
 template <class T>
-Synth<T>::Synth(std::vector<AudioBuffer<T> > buffers, std::string file)
-    : buffers(buffers), file(file)
+Synth<T>::Synth(std::vector<AudioBuffer<T> > buffers)
+    : buffers(buffers)
 {
 }
 

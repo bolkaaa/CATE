@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
     uint16_t grain_size = 200;
     AudioBuffer<float> buffer = db.get_buffer(filename);
     buffer.segment(grains, grain_size, sample_rate);
-    Synth<float> synth(grains, filename);
+    Synth<float> synth(grains);
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
     portaudio::MemFunCallbackStream<Synth<float>> stream(audio_parameters.get_stream(),
