@@ -22,9 +22,6 @@ public:
 		const PaStreamCallbackTimeInfo *time_info,
 		PaStreamCallbackFlags status_flags);
 
-    /* Temporary function to test ring buffer. */
-    void ring_buffer_test(T &ref) { ring_buffer.pop(ref); }
-
     /* Data member accessible from other thread, for testing. */
     T shared = 0;
     
