@@ -15,13 +15,6 @@
 #include "Database.hpp"
 #include "RingBuffer.hpp"
 
-/* Stop PortAudio safely when program terminates. */
-static void on_close(int signal, portaudio::System &system, portaudio::MemFunCallbackStream<Synth<float> > &stream)
-{
-    std::cout << "Stopping PortAudio...\n";
-    
-}
-
 std::string choose_file(int argc, char *argv[], Database<float> &db)
 /* Basic command line arguments for choosing a file, for testing playback. */
 {
@@ -95,6 +88,7 @@ int main(int argc, char *argv[])
     std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<float> >::start, &stream);
     audio_thread.detach();
 
+    /* Main thread. */
     std::cout << "Playing file: " << filename << ".\nEnter -1 to exit.\n";
     int terminate = 0;
     while (std::cin >> terminate)
@@ -112,4 +106,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
