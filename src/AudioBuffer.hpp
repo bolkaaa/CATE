@@ -51,7 +51,7 @@ public:
     /* Interpolate sample rate of buffer to new sample rate. */
     void convert_sample_rate(uint32_t new_sr);
 
-    /* Output a vector of buffers from original buffer. 
+    /* Output a vector of buffers from original buffer
        (naive version with no windowing yet). */
     void segment(std::vector<AudioBuffer<T>> &segments,
 		 uint16_t grain_size, uint32_t sample_rate);
@@ -125,7 +125,7 @@ void AudioBuffer<T>::convert_sample_rate(uint32_t new_sr)
 }
 
 template <class T>
-void AudioBuffer<T>::segment(std::vector<AudioBuffer<T>> &segments, uint16_t grain_size, uint32_t sample_rate)
+void AudioBuffer<T>::segment(std::vector<AudioBuffer<T> > &segments, uint16_t grain_size, uint32_t sample_rate)
     
 {
     uint32_t samples = ms_to_samp<T>(grain_size, sample_rate);

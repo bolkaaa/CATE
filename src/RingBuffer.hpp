@@ -5,9 +5,8 @@
 #include <memory>
 #include <algorithm>
 
-/*
-Based on lock-free ring buffer implementation in "Audio Anecdotes Volume 2 (Greenebaum, Barzel)."
-*/
+/* Based on lock-free ring buffer implementation in "Audio Anecdotes Volume 2 
+   (Greenebaum, Barzel)". */
 
 template <class T>
 class RingBuffer
@@ -65,7 +64,7 @@ void RingBuffer<T>::push(T elem)
     if (space_available())
     {
 	data[tail] = elem;
-	tail = ++tail % sz;
+	tail = (tail + 1) % sz;
     }
 }
 
@@ -96,6 +95,5 @@ uint32_t RingBuffer<T>::space_available()
 
     return space;
 }
-
 
 #endif

@@ -25,7 +25,7 @@ public:
     /* Temporary function to test ring buffer. */
     void ring_buffer_test(T &ref) { ring_buffer.pop(ref); }
 
-    /* Data member accessible from other thread. */
+    /* Data member accessible from other thread, for testing. */
     T shared = 0;
     
 private:
@@ -78,7 +78,7 @@ int Synth<T>::process(const void *input, void *output,
 	if (buffer_pos > sz)
 	{
 	    /* Testing skipping through grains (works better with longer 
-	       buffers.) */
+	       buffers). */
 	    uint8_t grain_skip = 4;
 	    buffer_ix = (buffer_ix + grain_skip) % buffers.size();
 
