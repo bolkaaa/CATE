@@ -11,9 +11,14 @@ template <class T>
 class RingBuffer
 {
 public:
+    /* Allocate memory for buffer. */
     RingBuffer<T>();
 
+    /* Allocate and set parameters. */
     RingBuffer<T>(uint32_t sz, uint32_t high_water_mark);
+
+    /* Delete data pointer. */
+    ~RingBuffer<T>();
 
     /* Insert element at head. */
     void push(T elem);
@@ -41,6 +46,12 @@ RingBuffer<T>::RingBuffer()
 {
     data = new T[sz];
     high_water_mark = (high_water_mark > sz) ? sz : high_water_mark;
+}
+
+template <class T>
+RingBuffer<T>::~RingBuffer()
+{
+    delete data;
 }
 
 template <class T>
