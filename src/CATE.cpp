@@ -88,7 +88,6 @@ int main(int argc, char *argv[])
     std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<float> >::start, &stream);
     audio_thread.detach();
 
-    /* Main thread. */
     std::cout << "Playing file: " << filename << ".\nEnter -1 to exit.\n";
     int terminate = 0;
     while (std::cin >> terminate)
