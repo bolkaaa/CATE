@@ -15,6 +15,13 @@
 #include "Database.hpp"
 #include "RingBuffer.hpp"
 
+/* Stop PortAudio safely when program terminates. */
+static void on_close(int signal, portaudio::System &system, portaudio::MemFunCallbackStream<Synth<float> > &stream)
+{
+    std::cout << "Stopping PortAudio...\n";
+    
+}
+
 std::string choose_file(int argc, char *argv[], Database<float> &db)
 /* Basic command line arguments for choosing a file, for testing playback. */
 {
@@ -42,7 +49,7 @@ int main(int argc, char *argv[])
 
     if (test)
     {
-
+	// ...
 	return 0;
     }
 
@@ -68,32 +75,37 @@ int main(int argc, char *argv[])
     {
 	filename = choose_file(argc, argv, db);
     }
-    catch (std::invalid_argument &a)
+    catch (const std::invalid_argument &a)
     {
 	std::cout << a.what() << '\n';
 	return -1;
     }
 
     /* Testing segmentation of audio buffers from the audio file database.  */
-    std::vector<AudioBuffer<float>> grains;
+    std::vector<AudioBuffer<float> > grains;
     uint16_t grain_size = 200;
     AudioBuffer<float> buffer = db.get_buffer(filename);
     buffer.segment(grains, grain_size, sample_rate);
     Synth<float> synth(grains);
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
-    portaudio::MemFunCallbackStream<Synth<float>> stream(audio_parameters.get_stream(),
-							 synth,
-							 &Synth<float>::process);
-    std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<float>>::start, &stream);
+    portaudio::MemFunCallbackStream<Synth<float> > stream(audio_parameters.get_stream(),
+							  synth,
+							  &Synth<float>::process);
+    std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<float> >::start, &stream);
     audio_thread.detach();
 
-    std::cout << "Playing file: " << filename << ".\nPress Ctrl-C to exit.\n";
-    while(true)
+    std::cout << "Playing file: " << filename << ".\nEnter -1 to exit.\n";
+    int terminate = 0;
+    while (std::cin >> terminate)
     {
-	std::cout << "Input sample value: " << synth.shared << '\r';
+	if (terminate == -1)
+	{
+	    break;
+	}
     } 
 
+    std::cout << "Stopping PortAudio...\n";
     stream.stop();
     stream.close();
     system.terminate();
