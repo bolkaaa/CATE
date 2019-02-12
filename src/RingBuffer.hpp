@@ -2,7 +2,6 @@
 #define RING_BUFFER_HPP
 
 #include <iostream>
-#include <memory>
 #include <algorithm>
 
 /* Based on lock-free ring buffer implementation in "Audio Anecdotes Volume 2 
