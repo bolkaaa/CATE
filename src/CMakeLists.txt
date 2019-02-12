@@ -6,6 +6,15 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 find_package (Threads)
 
-add_executable(CATE CATE.cpp AudioBuffer.hpp Synth.hpp AudioParameters.hpp AudioParameters.cpp FileTree.cpp FileTree.hpp)
+add_executable(CATE
+  CATE.cpp
+  AudioBuffer.hpp
+  Synth.hpp
+  AudioParameters.hpp
+  AudioParameters.cpp
+  FileTree.cpp
+  FileTree.hpp
+  RingBuffer.hpp)
+
 
 target_link_libraries(CATE portaudio portaudiocpp sndfile samplerate boost_filesystem ${Boost_Libraries} ${CMAKE_THREAD_LIBS_INIT})

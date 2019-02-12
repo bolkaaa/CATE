@@ -13,6 +13,7 @@
 #include "AudioBuffer.hpp"
 #include "FileTree.hpp"
 #include "Database.hpp"
+#include "RingBuffer.hpp"
 
 std::string choose_file(int argc, char *argv[], Database<float> &db)
 /* Basic command line arguments for choosing a file, for testing playback. */
@@ -41,7 +42,6 @@ int main(int argc, char *argv[])
 
     if (test)
     {
-	// ...
 
 	return 0;
     }
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     std::cout << "Playing file: " << filename << ".\nPress Ctrl-C to exit.\n";
     while(true)
     {
-	// ...
+	std::cout << "Input sample value: " << synth.shared << '\r';
     } 
 
     stream.stop();
