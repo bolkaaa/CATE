@@ -6,19 +6,19 @@
 class AudioParameters
 {
 public:
+    /* Use defaults for audio system settings. */
     AudioParameters(portaudio::System &system);
 
+    /* Use provided arguments for audio system settings. */
     AudioParameters(portaudio::System &system, uint64_t sample_rate,
                     uint32_t frames_per_buffer,
                     uint8_t input_channels, uint8_t output_channels);
 
-    portaudio::DirectionSpecificStreamParameters input() { return in; }
-
-    portaudio::DirectionSpecificStreamParameters output() { return out; }
-
+    /* Get stream object. */
     portaudio::StreamParameters stream() { return strm; }
 
 private:
+    /* Set stream objects from parameters. */
     void set(portaudio::System &system);
 
     uint8_t input_channels;
