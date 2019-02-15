@@ -8,24 +8,26 @@ class AudioParameters
 public:
     AudioParameters(portaudio::System &system);
 
-    AudioParameters(portaudio::System &system, unsigned long sample_rate,
-		    unsigned long frames_per_buffer,
-		    unsigned int input_channels, unsigned int output_channels);
+    AudioParameters(portaudio::System &system, uint64_t sample_rate,
+                    uint32_t frames_per_buffer,
+                    uint8_t input_channels, uint8_t output_channels);
 
-    portaudio::DirectionSpecificStreamParameters get_input() { return input; }
+    portaudio::DirectionSpecificStreamParameters input() { return in; }
 
-    portaudio::DirectionSpecificStreamParameters get_output() { return output; }
+    portaudio::DirectionSpecificStreamParameters output() { return out; }
 
-    portaudio::StreamParameters get_stream() { return stream; }
+    portaudio::StreamParameters stream() { return strm; }
 
 private:
-    unsigned int input_channels;
-    unsigned int output_channels;
-    unsigned long sample_rate;
-    unsigned long frames_per_buffer;
-    portaudio::DirectionSpecificStreamParameters input;
-    portaudio::DirectionSpecificStreamParameters output;
-    portaudio::StreamParameters stream;
+    void set(portaudio::System &system);
+
+    uint8_t input_channels;
+    uint8_t output_channels;
+    uint64_t sample_rate;
+    uint32_t frames_per_buffer;
+    portaudio::DirectionSpecificStreamParameters in;
+    portaudio::DirectionSpecificStreamParameters out;
+    portaudio::StreamParameters strm;
 };
 
 #endif
