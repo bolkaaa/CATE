@@ -17,4 +17,4 @@ add_executable(CATE
   RingBuffer.hpp)
 
 
-target_link_libraries(CATE portaudio portaudiocpp sndfile samplerate boost_filesystem ${Boost_Libraries} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(CATE portaudio portaudiocpp sndfile samplerate ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
