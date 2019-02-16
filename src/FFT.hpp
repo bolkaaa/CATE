@@ -20,8 +20,7 @@
 #ifndef FFT_HPP
 #define FFT_HPP
 
-#include <iostream>
-#include <fstream>
+#include <cstdlib>
 #include <cmath>
 
 #include <fftw3.h>
