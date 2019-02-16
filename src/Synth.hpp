@@ -13,79 +13,84 @@ template <class T>
 class Synth
 {
 public:
-    Synth<T>();
+    /* Instantiate by setting size in samples for audio processing buffers. */
+    Synth<T>(uint16_t buffer_size);
 
-    Synth<T>(std::vector<AudioBuffer<T> > buffers);
-
+    /* Main audio processing function to be called from outside class. */
     int process(const void *input, void *output,
-		unsigned long frames_per_buffer,
-		const PaStreamCallbackTimeInfo *time_info,
-		PaStreamCallbackFlags status_flags);
+                unsigned long frames_per_buffer,
+                const PaStreamCallbackTimeInfo *time_info,
+                PaStreamCallbackFlags status_flags);
 
-    /* Data member accessible from other thread, for testing. */
-    T shared = 0;
-    
 private:
-    std::vector<AudioBuffer<T> > buffers;
-    RingBuffer<T> ring_buffer;
-    uint16_t buffer_ix = 0;
-    uint32_t buffer_pos = 0;
-    
+    /* Provide data from audio input to ring buffer and pop to processing buffer. */
+    void prepare_buffers(T **in);
+
+    /* Placeholder function... */
+    void analyse();
+
+    uint16_t buffer_size = 4096;
+    RingBuffer<T> input_buffer;
+    T *process_buffer;
 };
 
 template <class T>
-Synth<T>::Synth()
+Synth<T>::Synth(uint16_t buffer_size)
+    : buffer_size(buffer_size), input_buffer(buffer_size, buffer_size/4),
+      process_buffer(new T[buffer_size])
 {
 }
 
 template <class T>
-Synth<T>::Synth(std::vector<AudioBuffer<T> > buffers)
-    : buffers(buffers)
+void Synth<T>::prepare_buffers(T **in)
 {
+    /* Get data from input into ring buffer. */
+    for (uint16_t i = 0; i < buffer_size; ++i)
+    {
+        input_buffer.push(in[0][i]);
+    }
+
+    /* Pop ring buffer data into process buffer. */
+    for (uint16_t i = 0; i < buffer_size; ++i)
+    {
+        input_buffer.pop(process_buffer[i]);
+    }
+}
+
+template <class T>
+void Synth<T>::analyse()
+{
+    for (uint16_t i = 0; i < buffer_size; ++i)
+    {
+        // ...
+    }
 }
 
 template <class T>
 int Synth<T>::process(const void *input, void *output,
-		      unsigned long frames_per_buffer,
-		      const PaStreamCallbackTimeInfo *time_info,
-		      PaStreamCallbackFlags status_flags)
+                      unsigned long frames_per_buffer,
+                      const PaStreamCallbackTimeInfo *time_info,
+                      PaStreamCallbackFlags status_flags)
 {
     (void) status_flags;
     (void) time_info;
-    
-    T **out = static_cast<T**> (output);
+    T **out = (T**) (output);
     T **in = (T**) (input);
-    uint32_t sz = buffers[buffer_ix].size();
-    
-    for (unsigned long i = 0; i < frames_per_buffer; i++)
+
+    /* Fill buffers from audio input. */
+    prepare_buffers(in);
+
+    /* Perform processing. */
+    analyse();
+
+    /* Main processing block. */
+    for (uint32_t i = 0; i < frames_per_buffer; i++)
     {
-	/* Testing simple audio file grain playback. */
-	T test_out = buffers[buffer_ix][buffer_pos];
-	out[0][i] = test_out;
-	out[1][i] = test_out;
-	++buffer_pos;
-
-	/* Pushing data from microphone into ring buffer, popping to
-	   shared data member to print value. Will mostly be useful
-	   later when real-time manipulation of input stream is
-	   needed. */
-	ring_buffer.push(**in);
-	ring_buffer.pop(shared);
-
-	if (buffer_pos > sz)
-	{
-	    /* Testing skipping through grains (works better with longer 
-	       buffers). */
-	    uint8_t grain_skip = 4;
-	    buffer_ix = (buffer_ix + grain_skip) % buffers.size();
-
-	    /* Reset to beginning of next grain. */
-	    buffer_pos -= sz;
-	}
+        out[0][i] = process_buffer[i];
+        out[1][i] = process_buffer[i];
     }
 
-    return paContinue;    
-
+    return paContinue;
 }
 
 #endif

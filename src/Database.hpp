@@ -62,16 +62,15 @@ void Database<T>::add_file(const std::string &path)
 
 template <class T>
 void Database<T>::add_directory(const std::string &directory_path)
-    
 {
     std::vector<std::string> file_paths;
     get_nested_files(file_paths, directory_path);
 
     for (auto path :file_paths)
     {
-	AudioBuffer<T> buffer(path);
-	std::pair<std::string, AudioBuffer<T>> pair(path, buffer);
-	buffers.insert(pair);
+        AudioBuffer<T> buffer(path);
+        std::pair<std::string, AudioBuffer<T>> pair(path, buffer);
+        buffers.insert(pair);
     }
 }
 
@@ -87,7 +86,7 @@ void Database<T>::convert_sample_rates(uint32_t new_sr)
     /* Note: must be a reference to work correctly. */
     for (auto &buffer : buffers)
     {
-	buffer.second.convert_sample_rate(new_sr);
+        buffer.second.convert_sample_rate(new_sr);
     }
 }
 
@@ -98,7 +97,7 @@ bool Database<T>::exists(std::string key)
 
     if (it != buffers.end())
     {
-	return true;
+        return true;
     }
 
     return false;

@@ -1,17 +1,15 @@
 #include "AudioParameters.hpp"
 
 AudioParameters::AudioParameters(portaudio::System &system)
-    : input_channels(2), output_channels(2), sample_rate(44100),
-      frames_per_buffer(256)
+    : sr(44100), frames_per_buf(256), in_chan(2), out_chan(2)
 {
     set(system);
 }
 
-AudioParameters::AudioParameters(portaudio::System &system, uint64_t sample_rate,
-                                 uint32_t frames_per_buffer,
-                                 uint8_t input_channels, uint8_t output_channels)
-    : input_channels(input_channels), output_channels(output_channels),
-      sample_rate(sample_rate), frames_per_buffer(frames_per_buffer)
+AudioParameters::AudioParameters(portaudio::System &system, uint64_t sr,
+                                 uint32_t frames_per_buf,
+                                 uint8_t in_chan, uint8_t out_chan)
+    : sr(sr), frames_per_buf(frames_per_buf), in_chan(in_chan), out_chan(out_chan)
 {
     set(system);
 }
@@ -20,7 +18,7 @@ void AudioParameters::set(portaudio::System &system)
 {
     in = portaudio::DirectionSpecificStreamParameters(
         system.defaultInputDevice(),
-        input_channels,
+        in_chan,
         portaudio::FLOAT32,
         false,
         system.defaultInputDevice().defaultLowInputLatency(),
@@ -28,7 +26,7 @@ void AudioParameters::set(portaudio::System &system)
 
     out = portaudio::DirectionSpecificStreamParameters(
         system.defaultOutputDevice(),
-        output_channels,
+        out_chan,
         portaudio::FLOAT32,
         false,
         system.defaultOutputDevice().defaultLowOutputLatency(),
@@ -37,7 +35,7 @@ void AudioParameters::set(portaudio::System &system)
     strm = portaudio::StreamParameters(
         in,
         out,
-        sample_rate,
-        frames_per_buffer,
+        sr,
+        frames_per_buf,
         paClipOff);
 }

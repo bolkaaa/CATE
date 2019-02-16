@@ -1,7 +1,6 @@
 #ifndef RING_BUFFER_HPP
 #define RING_BUFFER_HPP
 
-#include <iostream>
 #include <algorithm>
 
 /* Based on lock-free ring buffer implementation in "Audio Anecdotes Volume 2 
@@ -22,6 +21,11 @@ public:
 
     /* Get tail element. */
     void pop(T &ref);
+
+    uint32_t size() const { return sz; }
+
+    /* Index into buffer data. */
+    T operator [](const uint32_t i) { return data[i]; }
 
     /* Calculate samples available in buffer. */
     uint32_t samples_available();

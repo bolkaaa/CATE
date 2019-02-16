@@ -14,17 +14,24 @@ public:
                     uint32_t frames_per_buffer,
                     uint8_t input_channels, uint8_t output_channels);
 
-    /* Get stream object. */
+    uint64_t sample_rate() { return sr; }
+
+    uint32_t frames_per_buffer() { return frames_per_buf; }
+
+    uint8_t in_channels() { return in_chan; }
+
+    uint8_t out_channels() { return out_chan; }
+
     portaudio::StreamParameters stream() { return strm; }
 
 private:
     /* Set stream objects from parameters. */
     void set(portaudio::System &system);
 
-    uint8_t input_channels;
-    uint8_t output_channels;
-    uint64_t sample_rate;
-    uint32_t frames_per_buffer;
+    uint64_t sr;
+    uint32_t frames_per_buf;
+    uint8_t in_chan;
+    uint8_t out_chan;
     portaudio::DirectionSpecificStreamParameters in;
     portaudio::DirectionSpecificStreamParameters out;
     portaudio::StreamParameters strm;
