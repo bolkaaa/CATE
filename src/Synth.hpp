@@ -1,3 +1,22 @@
+/*
+  CATE: Concatenative Audio Processing Application
+  Copyright (c) 2019 Liam Wyllie. All rights reserved.
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+*/
+
 #ifndef SYNTH_HPP
 #define SYNTH_HPP
 
@@ -6,6 +25,7 @@
 #include "AudioBuffer.hpp"
 #include "Database.hpp"
 #include "RingBuffer.hpp"
+#include "FFT.hpp"
 
 #include "portaudio.h"
 
@@ -26,17 +46,18 @@ private:
     /* Provide data from audio input to ring buffer and pop to processing buffer. */
     void prepare_buffers(T **in);
 
-    /* Placeholder function... */
+    /* Take DFT of signal, TODO: add sliding window */
     void analyse();
 
-    uint16_t buffer_size = 4096;
+    uint16_t buffer_size;
     RingBuffer<T> input_buffer;
     T *process_buffer;
+    FFT<T> fft;
 };
 
 template <class T>
 Synth<T>::Synth(uint16_t buffer_size)
-    : buffer_size(buffer_size), input_buffer(buffer_size, buffer_size/4),
+    : buffer_size(buffer_size), fft(buffer_size), input_buffer(buffer_size, buffer_size/4),
       process_buffer(new T[buffer_size])
 {
 }
@@ -55,15 +76,14 @@ void Synth<T>::prepare_buffers(T **in)
     {
         input_buffer.pop(process_buffer[i]);
     }
+
+    fft.fill(process_buffer);
 }
 
 template <class T>
 void Synth<T>::analyse()
 {
-    for (uint16_t i = 0; i < buffer_size; ++i)
-    {
-        // ...
-    }
+    fft.compute();
 }
 
 template <class T>
@@ -77,10 +97,8 @@ int Synth<T>::process(const void *input, void *output,
     T **out = (T**) (output);
     T **in = (T**) (input);
 
-    /* Fill buffers from audio input. */
     prepare_buffers(in);
 
-    /* Perform processing. */
     analyse();
 
     /* Main processing block. */
