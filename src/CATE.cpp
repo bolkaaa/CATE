@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <cmath>
 #include <boost/filesystem.hpp>
 
 #include "portaudiocpp/PortAudioCpp.hxx"
@@ -11,6 +12,7 @@
 #include "Synth.hpp"
 #include "AudioParameters.hpp"
 #include "AudioBuffer.hpp"
+#include "AudioAnalysis.hpp"
 #include "FileTree.hpp"
 #include "Database.hpp"
 #include "RingBuffer.hpp"
@@ -36,13 +38,14 @@ std::string choose_file(int argc, char *argv[], Database<float> &db)
     return file;
 }
 
+
 int main(int argc, char *argv[])
 {
-    bool test = false;
+    bool test = true;
 
     if (test)
     {
-        // ...
+
         return 0;
     }
 

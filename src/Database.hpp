@@ -19,7 +19,7 @@ public:
     /* Add a single file to the database. */
     void add_file(const std::string &path);
 
-    /* Add all files deeper than specified directory to the database. 
+    /* Add all files deeper than specified directory to the database.
        TODO: Add some way of ignoring non-audio files. */
     void add_directory(const std::string &directory_path);
 
@@ -83,10 +83,9 @@ void Database<T>::clear()
 
 template <class T>
 void Database<T>::convert_sample_rates(uint32_t new_sr)
-    
 {
     /* Note: must be a reference to work correctly. */
-    for (auto &buffer : buffers) 
+    for (auto &buffer : buffers)
     {
 	buffer.second.convert_sample_rate(new_sr);
     }

@@ -17,9 +17,6 @@ public:
     /* Allocate and set parameters. */
     RingBuffer<T>(uint32_t sz, uint32_t high_water_mark);
 
-    /* Delete data pointer. */
-    ~RingBuffer<T>();
-
     /* Insert element at head. */
     void push(T elem);
 
@@ -42,16 +39,16 @@ private:
 
 template <class T>
 RingBuffer<T>::RingBuffer()
-    : high_water_mark(1024), sz(4096)
+    : sz(4064), high_water_mark(1024)
 {
     data = new T[sz];
-    high_water_mark = (high_water_mark > sz) ? sz : high_water_mark;
-}
 
-template <class T>
-RingBuffer<T>::~RingBuffer()
-{
-    delete data;
+    for (uint32_t i = 0; i < sz; ++i)
+    {
+        data[i] = 0;
+    }
+
+    high_water_mark = (high_water_mark > sz) ? sz : high_water_mark;
 }
 
 template <class T>
@@ -62,7 +59,7 @@ RingBuffer<T>::RingBuffer(uint32_t sz, uint32_t high_water_mark)
 
     for (uint32_t i = 0; i < sz; ++i)
     {
-	data[i] = 0;
+        data[i] = 0;
     }
 
     high_water_mark = (high_water_mark > sz) ? sz : high_water_mark;
@@ -73,8 +70,8 @@ void RingBuffer<T>::push(T elem)
 {
     if (space_available())
     {
-	data[tail] = elem;
-	tail = (tail + 1) % sz;
+        data[tail] = elem;
+        tail = (tail + 1) % sz;
     }
 }
 
@@ -83,8 +80,8 @@ void RingBuffer<T>::pop(T &ref)
 {
     if (samples_available())
     {
-	ref = data[head];
-	head = (head + 1) % sz;
+        ref = data[head];
+        head = (head + 1) % sz;
     }
 }
 

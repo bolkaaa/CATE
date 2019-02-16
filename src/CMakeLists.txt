@@ -14,7 +14,8 @@ add_executable(CATE
   AudioParameters.cpp
   FileTree.cpp
   FileTree.hpp
-  RingBuffer.hpp)
+  RingBuffer.hpp
+  AudioAnalysis.hpp)
 
 
 target_link_libraries(CATE portaudio portaudiocpp sndfile samplerate ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
