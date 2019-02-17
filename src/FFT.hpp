@@ -22,6 +22,7 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <iostream>
 
 #include <fftw3.h>
 
@@ -35,6 +36,9 @@ public:
 
     /* Fill data buffer with sample values from referenced buffer. */
     void fill(T *buffer);
+
+    /* Set FFT buffer size. */
+    void set_size(uint16_t new_sz);
 
     /* Get number of samples in buffers. */
     uint16_t size() { return sz; }
@@ -63,6 +67,11 @@ void FFT<T>::fill(T *buffer)
     }
 }
 
+template <class T>
+void FFT<T>::set_size(uint16_t new_sz)
+{
+    sz = new_sz;
+}
 
 template <class T>
 void FFT<T>::compute()

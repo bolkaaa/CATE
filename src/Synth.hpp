@@ -20,21 +20,21 @@
 #ifndef SYNTH_HPP
 #define SYNTH_HPP
 
-#include <cmath>
+#include <vector>
 
-#include "AudioBuffer.hpp"
 #include "Database.hpp"
 #include "RingBuffer.hpp"
-#include "FFT.hpp"
 
 #include "portaudio.h"
+
+using std::vector;
 
 template <class T>
 class Synth
 {
 public:
     /* Instantiate by setting size in samples for audio processing buffers. */
-    Synth<T>(uint16_t buffer_size);
+    Synth<T>(uint16_t buffer_size, uint8_t num_channels);
 
     /* Main audio processing function to be called from outside class. */
     int process(const void *input, void *output,
@@ -46,44 +46,52 @@ private:
     /* Provide data from audio input to ring buffer and pop to processing buffer. */
     void prepare_buffers(T **in);
 
-    /* Take DFT of signal, TODO: add sliding window */
+    /* Real-time analysis function. */
     void analyse();
 
     uint16_t buffer_size;
-    RingBuffer<T> input_buffer;
-    T *process_buffer;
-    FFT<T> fft;
+    uint8_t num_channels;
+    vector<vector<T> > input_buffer;
+    vector<vector<T> > output_buffer;
+    vector<RingBuffer<T> > ring_buffer;
 };
 
 template <class T>
-Synth<T>::Synth(uint16_t buffer_size)
-    : buffer_size(buffer_size), fft(buffer_size), input_buffer(buffer_size, buffer_size/4),
-      process_buffer(new T[buffer_size])
+Synth<T>::Synth(uint16_t buffer_size, uint8_t num_channels)
+    : buffer_size(buffer_size), num_channels(num_channels),
+      input_buffer(num_channels, vector<T>(buffer_size)),
+      output_buffer(num_channels, vector<T>(buffer_size)),
+      ring_buffer(num_channels, RingBuffer<T>(buffer_size))
 {
 }
 
 template <class T>
 void Synth<T>::prepare_buffers(T **in)
 {
-    /* Get data from input into ring buffer. */
-    for (uint16_t i = 0; i < buffer_size; ++i)
+    /* Fill ring buffer with data from microphone. */
+    for (uint8_t chan = 0; chan < num_channels; ++chan)
     {
-        input_buffer.push(in[0][i]);
+        for (uint16_t i = 0; i < buffer_size; ++i)
+        {
+            ring_buffer[chan].push(in[chan][i]);
+        }
     }
 
-    /* Pop ring buffer data into process buffer. */
-    for (uint16_t i = 0; i < buffer_size; ++i)
+    /* Pop available data from ring buffer into an auxillary buffer. */
+    for (uint8_t chan = 0; chan < num_channels; ++chan)
     {
-        input_buffer.pop(process_buffer[i]);
+        for (uint16_t i = 0; i < buffer_size; ++i)
+        {
+            ring_buffer[chan].pop(input_buffer[chan][i]);
+        }
     }
 
-    fft.fill(process_buffer);
 }
 
 template <class T>
 void Synth<T>::analyse()
 {
-    fft.compute();
+    /* Code for real-time analysis to go here later. */
 }
 
 template <class T>
@@ -94,18 +102,20 @@ int Synth<T>::process(const void *input, void *output,
 {
     (void) status_flags;
     (void) time_info;
-    T **out = (T**) (output);
     T **in = (T**) (input);
+    T **out = (T**) (output);
 
     prepare_buffers(in);
 
     analyse();
 
-    /* Main processing block. */
+    /* Main audio output block. */
     for (uint32_t i = 0; i < frames_per_buffer; i++)
     {
-        out[0][i] = process_buffer[i];
-        out[1][i] = process_buffer[i];
+        for (uint8_t chan = 0; chan < num_channels; ++chan)
+        {
+            out[chan][i] = input_buffer[chan][i];
+        }
     }
 
     return paContinue;

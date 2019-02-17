@@ -36,6 +36,8 @@
 #include "RingBuffer.hpp"
 #include "FFT.hpp"
 
+using std::string;
+
 int main(int argc, char *argv[])
 {
     bool test = false;
@@ -55,13 +57,14 @@ int main(int argc, char *argv[])
     /* Load database of buffers from root directory path. */
     if (init_db)
     {
-        std::string audio_file_dir = "./audio_files";
+        string audio_file_dir = "./audio_files";
         Database<float> db;
         db.add_directory(audio_file_dir);
         db.convert_sample_rates(audio_parameters.sample_rate());
     }
 
-    Synth<float> synth(1024);
+    uint16_t buffer_size = 1024;
+    Synth<float> synth(buffer_size, audio_parameters.out_channels());
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
     portaudio::MemFunCallbackStream<Synth<float> > stream(audio_parameters.stream(),

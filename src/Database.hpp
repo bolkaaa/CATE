@@ -20,10 +20,8 @@
 #ifndef DATABASE_HPP
 #define DATABASE_HPP
 
-#include <string>
 #include <vector>
 #include <unordered_map>
-#include <utility>
 
 #include "AudioBuffer.hpp"
 #include "FileTree.hpp"

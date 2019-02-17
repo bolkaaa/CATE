@@ -1,22 +1,3 @@
-/*
-  CATE: Concatenative Audio Processing Application
-  Copyright (c) 2019 Liam Wyllie. All rights reserved.
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
-*/
-
 #ifndef RING_BUFFER_HPP
 #define RING_BUFFER_HPP
 
@@ -29,11 +10,11 @@ template <class T>
 class RingBuffer
 {
 public:
-    /* Allocate memory for buffer. */
+    /* Allocate memory for buffer (defaults to 1024 samples). */
     RingBuffer<T>();
 
     /* Allocate and set parameters. */
-    RingBuffer<T>(uint32_t sz, uint32_t high_water_mark);
+    RingBuffer<T>(uint32_t sz);
 
     /* Insert element at head. */
     void push(T elem);
@@ -41,10 +22,8 @@ public:
     /* Get tail element. */
     void pop(T &ref);
 
+    /* Get number of elements in buffer. */
     uint32_t size() const { return sz; }
-
-    /* Index into buffer data. */
-    T operator [](const uint32_t i) { return data[i]; }
 
     /* Calculate samples available in buffer. */
     uint32_t samples_available();
@@ -62,21 +41,16 @@ private:
 
 template <class T>
 RingBuffer<T>::RingBuffer()
-    : sz(4064), high_water_mark(1024)
+    : sz(1024), high_water_mark(sz / 4)
 {
     data = new T[sz];
-
-    for (uint32_t i = 0; i < sz; ++i)
-    {
-        data[i] = 0;
-    }
 
     high_water_mark = (high_water_mark > sz) ? sz : high_water_mark;
 }
 
 template <class T>
-RingBuffer<T>::RingBuffer(uint32_t sz, uint32_t high_water_mark)
-    : sz(sz), head(0), tail(0), high_water_mark(high_water_mark)
+RingBuffer<T>::RingBuffer(uint32_t sz)
+    : sz(sz), head(0), tail(0), high_water_mark(sz / 4)
 {
     data = new T[sz];
 
