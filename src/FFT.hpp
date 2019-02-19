@@ -22,9 +22,13 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <complex>
 #include <iostream>
 
 #include <fftw3.h>
+
+using std::vector;
+using std::complex;
 
 template <class T>
 class FFT
@@ -34,14 +38,13 @@ public:
 
     ~FFT();
 
+    int show()
+    {
+        return data.size();
+    }
+
     /* Fill data buffer with sample values from referenced buffer. */
-    void fill(T *buffer);
-
-    /* Set FFT buffer size. */
-    void set_size(uint16_t new_sz);
-
-    /* Get number of samples in buffers. */
-    uint16_t size() { return sz; }
+    void fill(const vector<T> &buffer);
 
     /* Compute Discrete Fourier Transform of input buffer. */
     void compute();
@@ -51,26 +54,16 @@ public:
 
 private:
     uint16_t sz;
-    fftw_complex *data;
-    fftw_complex *spectrum;
+    vector<complex<T> > data;
+    vector<complex<T> > spectrum;
     fftw_plan plan;
-    enum { REAL, IMAG };
 };
 
 template <class T>
-void FFT<T>::fill(T *buffer)
+void FFT<T>::fill(const vector<T> &buffer)
 {
-    for (uint16_t i = 0; i < sz; ++i)
-    {
-        data[i][REAL] = buffer[i];
-        data[i][IMAG] = data[i][REAL];
-    }
-}
-
-template <class T>
-void FFT<T>::set_size(uint16_t new_sz)
-{
-    sz = new_sz;
+    auto to_complex = [](T x) { return complex<T>(x, x); };
+    std::transform(buffer.begin(), buffer.end(), data.begin(), to_complex);
 }
 
 template <class T>
@@ -82,9 +75,12 @@ void FFT<T>::compute()
 template <class T>
 FFT<T>::FFT(uint16_t sz)
     : sz(sz),
-      data(static_cast<fftw_complex*> (fftw_malloc(sizeof(fftw_complex) * sz))),
-      spectrum(static_cast<fftw_complex*> (fftw_malloc(sizeof(fftw_complex) * sz))),
-      plan(fftw_plan_dft_1d(sz, data, spectrum, FFTW_FORWARD, FFTW_ESTIMATE))
+      data(vector<complex<T> >(sz)),
+      spectrum(vector<complex<T> >(sz)),
+      plan(fftw_plan_dft_1d(sz,
+                            reinterpret_cast<fftw_complex*>(&data[0]),
+                            reinterpret_cast<fftw_complex*>(&spectrum[0]),
+                            FFTW_FORWARD, FFTW_ESTIMATE))
 {
 }
 
@@ -92,20 +88,6 @@ template <class T>
 FFT<T>::~FFT()
 {
     fftw_destroy_plan(plan);
-    fftw_free(data);
-    fftw_free(spectrum);
-}
-
-template <class T>
-void FFT<T>::magspec(T *buffer)
-{
-    for (uint16_t i = 0; i < sz; ++i)
-    {
-        T real_sq = spectrum[i][REAL] * spectrum[i][REAL];
-        T imag_sq = spectrum[i][IMAG] * spectrum[i][IMAG];
-        T sqrt = std::sqrt(real_sq + imag_sq);
-        buffer[i] = sqrt;
-    }
 }
 
 #endif

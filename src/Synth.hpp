@@ -24,6 +24,7 @@
 
 #include "Database.hpp"
 #include "RingBuffer.hpp"
+#include "FFT.hpp"
 
 #include "portaudio.h"
 
@@ -54,6 +55,7 @@ private:
     vector<vector<T> > input_buffer;
     vector<vector<T> > output_buffer;
     vector<RingBuffer<T> > ring_buffer;
+    vector<FFT<T> > fft_buffer;
 };
 
 template <class T>
@@ -61,7 +63,8 @@ Synth<T>::Synth(uint16_t buffer_size, uint8_t num_channels)
     : buffer_size(buffer_size), num_channels(num_channels),
       input_buffer(num_channels, vector<T>(buffer_size)),
       output_buffer(num_channels, vector<T>(buffer_size)),
-      ring_buffer(num_channels, RingBuffer<T>(buffer_size))
+      ring_buffer(num_channels, RingBuffer<T>(buffer_size)),
+      fft_buffer(num_channels, FFT<T>(buffer_size))
 {
 }
 
@@ -86,12 +89,17 @@ void Synth<T>::prepare_buffers(T **in)
         }
     }
 
+    /* Fill FFT buffer with data from input. */
+    for (uint8_t chan = 0; chan < num_channels; ++chan)
+    {
+        fft_buffer[chan].fill(input_buffer[chan]);
+    }
 }
 
 template <class T>
 void Synth<T>::analyse()
 {
-    /* Code for real-time analysis to go here later. */
+    fft_buffer[0].compute();
 }
 
 template <class T>
