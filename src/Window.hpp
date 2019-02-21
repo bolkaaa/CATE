@@ -14,7 +14,7 @@ public:
     /* Fill data vector with the output of the Hann function. */
     void generate();
 
-protected:
+private:
     vector<T> data;
 };
 

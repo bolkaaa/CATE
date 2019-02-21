@@ -24,6 +24,7 @@
 #include <cstdio>
 
 #include "Database.hpp"
+#include "AudioBuffer.hpp"
 #include "RingBuffer.hpp"
 #include "FFT.hpp"
 
@@ -44,21 +45,15 @@ public:
                 const PaStreamCallbackTimeInfo *time_info,
                 PaStreamCallbackFlags status_flags);
 
-    /* Call from other thread to get access to FFT data for logging. */
-    void log_fft(T &output);
-
-    /* Ring buffer accessed from other thread for logging. */
-    vector<RingBuffer<T> > log_buffer;
-
 private:
     /* Provide audio input to ring buffer and pop to processing buffer. */
     void prepare_buffers(T **in);
 
     uint16_t buffer_size;
     uint8_t num_channels;
-    vector<vector<T> > input_buffer;
-    vector<vector<T> > output_buffer;
-    vector<vector<T> > spectrum_buffer;
+    vector<AudioBuffer<T> > input_buffer;
+    vector<AudioBuffer<T> > output_buffer;
+    vector<AudioBuffer<T> > spectrum_buffer;
     vector<RingBuffer<T> > ring_buffer;
     vector<FFT<T> > fft_buffer;
 };
@@ -66,9 +61,9 @@ private:
 template <class T>
 Synth<T>::Synth(uint16_t buffer_size, uint8_t num_channels)
     : buffer_size(buffer_size), num_channels(num_channels),
-      input_buffer(num_channels, vector<T>(buffer_size)),
-      output_buffer(num_channels, vector<T>(buffer_size)),
-      spectrum_buffer(num_channels, vector<T>(buffer_size)),
+      input_buffer(num_channels, AudioBuffer<T>(buffer_size)),
+      output_buffer(num_channels, AudioBuffer<T>(buffer_size)),
+      spectrum_buffer(num_channels, AudioBuffer<T>(buffer_size)),
       ring_buffer(num_channels, RingBuffer<T>(buffer_size)),
       fft_buffer(num_channels, FFT<T>(buffer_size))
 {
@@ -98,16 +93,8 @@ void Synth<T>::prepare_buffers(T **in)
     /* Fill FFT buffer and compute spectrum. */
     for (uint8_t chan = 0; chan < num_channels; ++chan)
     {
-        fft_buffer[chan].fill(input_buffer[chan]);
+        fft_buffer[chan].fill(input_buffer[chan].get_data());
         fft_buffer[chan].compute();
-    }
-
-    /* Show magnitude spectrum. */
-    for (uint8_t chan = 0; chan < num_channels; ++chan)
-    {
-        fft_buffer[chan].magspec(spectrum_buffer[chan]);
-        T freq = (spectrum_buffer[chan][512]) * 1024;
-        std::cout << freq << "\n";
     }
 }
 
@@ -123,7 +110,7 @@ int Synth<T>::process(const void *input, void *output,
     T **out = (T**) (output);
 
     /* TODO: Update code for buffers */
-    // prepare_buffers(in);
+    prepare_buffers(in);
 
     /* Main audio output block. */
     for (uint32_t i = 0; i < frames_per_buffer; i++)

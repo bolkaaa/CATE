@@ -23,12 +23,12 @@
 #include <cstdlib>
 #include <cmath>
 #include <complex>
-#include <iostream>
 
 #include <fftw3.h>
 
-using std::vector;
+#include "AudioBuffer.hpp"
 
+using std::vector;
 using std::complex;
 
 template <class T>
@@ -39,50 +39,31 @@ public:
 
     ~FFT();
 
-    /* Fill data buffer with sample values from referenced buffer. */
-    void fill(const vector<T> &buffer);
-
-    /* Compute Discrete Fourier Transform of input buffer. */
+    /* Compute Discrete Fourier Transform of input data. */
     void compute();
 
-    T get_spectrum_real(uint16_t i) { return spectrum[i][REAL]; }
-
-    T get_spectrum_imag(uint16_t i) { return spectrum[i][IMAG]; }
+    void fill(const vector<T> &buffer)
+    {
+        data = buffer;
+    }
 
     /* Calculate magnitude spectrum and pass to output buffer. */
     void magspec(vector<T> &buffer);
 
 private:
-    uint16_t sz;
-    fftw_complex *data;
-    fftw_complex *spectrum;
+    vector<T> data;
+    vector<complex<T> > spectrum;
     fftw_plan plan;
-    enum { REAL, IMAG };
 };
 
 template <class T>
-void FFT<T>::fill(const vector<T> &buffer)
-{
-    for (uint16_t i = 0; i < sz; ++i)
-    {
-        data[i][REAL] = buffer[i];
-        data[i][IMAG] = buffer[i];
-    }
-}
-
-template <class T>
-void FFT<T>::compute()
-{
-    fftw_execute(plan);
-}
-
-
-template <class T>
 FFT<T>::FFT(uint16_t sz)
-    : sz(sz),
-      data(static_cast<fftw_complex*> (fftw_malloc(sizeof(fftw_complex) * sz))),
-      spectrum(static_cast<fftw_complex*> (fftw_malloc(sizeof(fftw_complex) * sz))),
-      plan(fftw_plan_dft_1d(sz, data, spectrum, FFTW_FORWARD, FFTW_ESTIMATE))
+    : data(vector<T>(sz)),
+      spectrum(vector<complex<T> >(sz)),
+      plan(fftw_plan_dft_r2c_1d(sz,
+                                reinterpret_cast<double*>(&data[0]),
+                                reinterpret_cast<fftw_complex*>(&spectrum[0]),
+                                FFTW_ESTIMATE))
 {
 }
 
@@ -93,12 +74,17 @@ FFT<T>::~FFT()
 }
 
 template <class T>
+void FFT<T>::compute()
+{
+    fftw_execute(plan);
+}
+
+template <class T>
 void FFT<T>::magspec(vector<T> &buffer)
 {
-    for (uint16_t i = 0; i < sz; ++i)
+    for (uint16_t i = 0; i < data.size(); ++i)
     {
-        T sum = (spectrum[REAL][i] * spectrum[REAL][i]) + (spectrum[IMAG][i] * spectrum[IMAG][i]);
-        buffer[i] = std::sqrt(sum);
+        buffer[i] = std::abs(spectrum[i]);
     }
 }
 

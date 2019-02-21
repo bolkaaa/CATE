@@ -46,22 +46,17 @@ public:
     /* Instantiate with vector of data. */
     AudioBuffer<T>(const vector<T> &data);
 
+    vector<T> get_data() { return data; }
+
+    /* Read audio file from path. */
+    void read(const string &path);
+
     /* Write buffer object to output file. */
     void write(const string &path, uint32_t sample_rate, uint8_t channels,
                uint8_t format);
 
     /* Write sample data to line-separated text file. */
     void to_file(const string &path);
-
-    /* Get indexed sample value from private samples vector. */
-    T& operator[](const uint32_t i) { return data[i]; }
-
-    /* Get indexed sample value from private samples vector (const version). */
-    const T& operator[](const uint32_t i) const { return data[i]; }
-
-    /* Output sample values through stream. */
-    template <class>
-    friend std::ostream& operator<<(std::ostream &os, const AudioBuffer &b);
 
     /* Get sample rate of buffer. */
     uint32_t sample_rate() { return sr; }
@@ -78,10 +73,13 @@ public:
     /* Interpolate sample rate of buffer to new sample rate. */
     void convert_sample_rate(uint32_t new_sr);
 
-private:
-    /* Read audio file from path. */
-    void read(const string &path);
+    T& operator[](const uint32_t i) { return data[i]; }
 
+    void operator=(const AudioBuffer<T> &b) { data = b.data; }
+
+    const T& operator[](const uint32_t i) const { return data[i]; }
+
+private:
     string fname;
     uint32_t sr;
     uint8_t chan;
@@ -147,7 +145,6 @@ void AudioBuffer<T>::to_file(const std::string &path)
         file << data[i] << "\n";
     }
 }
-
 
 template <class T>
 void AudioBuffer<T>::convert_sample_rate(uint32_t new_sr)
