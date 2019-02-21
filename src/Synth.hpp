@@ -51,11 +51,8 @@ public:
     vector<RingBuffer<T> > log_buffer;
 
 private:
-    /* Provide data from audio input to ring buffer and pop to processing buffer. */
+    /* Provide audio input to ring buffer and pop to processing buffer. */
     void prepare_buffers(T **in);
-
-    /* Real-time analysis function. */
-    void analyse();
 
     uint16_t buffer_size;
     uint8_t num_channels;
@@ -73,7 +70,6 @@ Synth<T>::Synth(uint16_t buffer_size, uint8_t num_channels)
       output_buffer(num_channels, vector<T>(buffer_size)),
       spectrum_buffer(num_channels, vector<T>(buffer_size)),
       ring_buffer(num_channels, RingBuffer<T>(buffer_size)),
-      log_buffer(num_channels, RingBuffer<T>(buffer_size)),
       fft_buffer(num_channels, FFT<T>(buffer_size))
 {
 }
@@ -99,23 +95,20 @@ void Synth<T>::prepare_buffers(T **in)
         }
     }
 
+    /* Fill FFT buffer and compute spectrum. */
     for (uint8_t chan = 0; chan < num_channels; ++chan)
     {
         fft_buffer[chan].fill(input_buffer[chan]);
         fft_buffer[chan].compute();
     }
 
+    /* Show magnitude spectrum. */
     for (uint8_t chan = 0; chan < num_channels; ++chan)
     {
         fft_buffer[chan].magspec(spectrum_buffer[chan]);
         T freq = (spectrum_buffer[chan][512]) * 1024;
         std::cout << freq << "\n";
     }
-}
-
-template <class T>
-void Synth<T>::analyse()
-{
 }
 
 template <class T>
@@ -129,9 +122,8 @@ int Synth<T>::process(const void *input, void *output,
     T **in = (T**) (input);
     T **out = (T**) (output);
 
-    prepare_buffers(in);
-
-    analyse();
+    /* TODO: Update code for buffers */
+    // prepare_buffers(in);
 
     /* Main audio output block. */
     for (uint32_t i = 0; i < frames_per_buffer; i++)

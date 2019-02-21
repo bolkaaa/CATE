@@ -22,17 +22,22 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <complex>
 #include <iostream>
 
 #include <fftw3.h>
 
 using std::vector;
 
+using std::complex;
+
 template <class T>
 class FFT
 {
 public:
     FFT(uint16_t sz);
+
+    ~FFT();
 
     /* Fill data buffer with sample values from referenced buffer. */
     void fill(const vector<T> &buffer);
@@ -71,6 +76,7 @@ void FFT<T>::compute()
     fftw_execute(plan);
 }
 
+
 template <class T>
 FFT<T>::FFT(uint16_t sz)
     : sz(sz),
@@ -78,6 +84,12 @@ FFT<T>::FFT(uint16_t sz)
       spectrum(static_cast<fftw_complex*> (fftw_malloc(sizeof(fftw_complex) * sz))),
       plan(fftw_plan_dft_1d(sz, data, spectrum, FFTW_FORWARD, FFTW_ESTIMATE))
 {
+}
+
+template <class T>
+FFT<T>::~FFT()
+{
+    fftw_destroy_plan(plan);
 }
 
 template <class T>
