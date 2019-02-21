@@ -33,23 +33,17 @@ using std::vector;
 using std::string;
 
 template <class T>
-constexpr T ms_to_samp(uint32_t ms, uint32_t sr)
-/* Convert millisecond time period to sample number. */
-{
-    return (ms / 1000.) * sr;
-}
-
-template <class T>
 class AudioBuffer
 {
 public:
-    /* Default constructor. */
     AudioBuffer<T>();
+
+    AudioBuffer<T>(uint32_t sz);
 
     /* Instantiate with file read from path. */
     AudioBuffer<T>(const string &path);
 
-    /* Instantiate with vector of sample data. */
+    /* Instantiate with vector of data. */
     AudioBuffer<T>(const vector<T> &data);
 
     /* Write buffer object to output file. */
@@ -100,6 +94,12 @@ protected:
 template <class T>
 AudioBuffer<T>::AudioBuffer()
     : data(vector<T>(1024))
+{
+}
+
+template <class T>
+AudioBuffer<T>::AudioBuffer(uint32_t sz)
+    : data(vector<T>(sz))
 {
 }
 

@@ -41,12 +41,12 @@ using std::string;
 
 int main(int argc, char *argv[])
 {
-    bool test = true;
-    bool init_db = false;
+    bool test = 0;
+    bool init_db = 0;
 
     if (test)
     {
-        HannWindow<float> h;
+        Window<float> w;
 
         return 0;
     }

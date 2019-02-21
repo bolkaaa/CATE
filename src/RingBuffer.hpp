@@ -3,11 +3,13 @@
 
 #include <algorithm>
 
-/* Based on lock-free ring buffer implementation in "Audio Anecdotes Volume 2 
+#include "AudioBuffer.hpp"
+
+/* Based on lock-free ring buffer implementation in "Audio Anecdotes Volume 2
    (Greenebaum, Barzel)". */
 
 template <class T>
-class RingBuffer
+class RingBuffer : public AudioBuffer<T>
 {
 public:
     /* Allocate memory for buffer (defaults to 1024 samples). */
@@ -22,9 +24,6 @@ public:
     /* Get tail element. */
     void pop(T &ref);
 
-    /* Get number of elements in buffer. */
-    uint32_t size() const { return sz; }
-
     /* Calculate samples available in buffer. */
     uint32_t samples_available();
 
@@ -32,34 +31,28 @@ public:
     uint32_t space_available();
 
 private:
-    T *data;
+    vector<T> data;
     uint32_t head;
     uint32_t tail;
     uint32_t high_water_mark;
-    const uint32_t sz;
 };
 
 template <class T>
 RingBuffer<T>::RingBuffer()
-    : sz(1024), high_water_mark(sz / 4)
+    : AudioBuffer<T>(1024), data(AudioBuffer<T>::data),
+      head(0), tail(0),
+      high_water_mark(data.size() / 4)
 {
-    data = new T[sz];
-
-    high_water_mark = (high_water_mark > sz) ? sz : high_water_mark;
+    high_water_mark = (high_water_mark > data.size()) ? data.size() : high_water_mark;
 }
 
 template <class T>
 RingBuffer<T>::RingBuffer(uint32_t sz)
-    : sz(sz), head(0), tail(0), high_water_mark(sz / 4)
+    : AudioBuffer<T>(sz), data(AudioBuffer<T>::data),
+      head(0), tail(0),
+      high_water_mark(data.size() / 4)
 {
-    data = new T[sz];
-
-    for (uint32_t i = 0; i < sz; ++i)
-    {
-        data[i] = 0;
-    }
-
-    high_water_mark = (high_water_mark > sz) ? sz : high_water_mark;
+    high_water_mark = (high_water_mark > data.size()) ? data.size() : high_water_mark;
 }
 
 template <class T>
@@ -68,7 +61,7 @@ void RingBuffer<T>::push(T elem)
     if (space_available())
     {
         data[tail] = elem;
-        tail = (tail + 1) % sz;
+        tail = (tail + 1) % data.size();
     }
 }
 
@@ -78,14 +71,14 @@ void RingBuffer<T>::pop(T &ref)
     if (samples_available())
     {
         ref = data[head];
-        head = (head + 1) % sz;
+        head = (head + 1) % data.size();
     }
 }
 
 template <class T>
 uint32_t RingBuffer<T>::samples_available()
 {
-    uint32_t samples = (tail - head + sz) % sz;
+    uint32_t samples = (tail - head + data.size()) % data.size();
 
     return samples;
 }
@@ -93,7 +86,7 @@ uint32_t RingBuffer<T>::samples_available()
 template <class T>
 uint32_t RingBuffer<T>::space_available()
 {
-    uint32_t free = (head - tail + sz - 1) % sz;
+    uint32_t free = (head - tail + data.size() - 1) % data.size();
     uint32_t undermark = high_water_mark - samples_available();
     uint32_t space = std::min(undermark, free);
 

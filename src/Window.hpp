@@ -11,6 +11,9 @@ class Window : public AudioBuffer<T>
 public:
     Window();
 
+    /* Fill data vector with the output of the Hann function. */
+    void generate();
+
 protected:
     vector<T> data;
 };
@@ -19,30 +22,11 @@ template <class T>
 Window<T>::Window()
     : data(AudioBuffer<T>::data)
 {
-}
-
-template <class T>
-class HannWindow : public Window<T>
-{
-public:
-    HannWindow();
-
-    /* Generate points of Hann window within data vector. */
-    void generate();
-
-private:
-    vector<T> data;
-};
-
-template <class T>
-HannWindow<T>::HannWindow()
-    : data(Window<T>::data)
-{
     generate();
 }
 
 template <class T>
-void HannWindow<T>::generate()
+void Window<T>::generate()
 {
     for (auto i = 0; i < data.size(); ++i)
     {
