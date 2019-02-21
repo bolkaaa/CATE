@@ -35,17 +35,19 @@
 #include "Database.hpp"
 #include "RingBuffer.hpp"
 #include "FFT.hpp"
+#include "Window.hpp"
 
 using std::string;
 
 int main(int argc, char *argv[])
 {
-    bool test = false;
+    bool test = true;
     bool init_db = false;
 
     if (test)
     {
-        // ...
+        HannWindow<float> h;
+
         return 0;
     }
 
@@ -71,19 +73,14 @@ int main(int argc, char *argv[])
                                                           synth,
                                                           &Synth<float>::process);
     std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<float> >::start, &stream);
-    audio_thread.detach();
 
     /* Main thread */
-    std::cout << "Enter any non-zero character to exit.\n";
-    int terminate = 0;
-    while (std::cin >> terminate)
+    while (true)
     {
-        if (terminate != 0)
-        {
-            break;
-        }
+
     }
 
+    audio_thread.join();
     std::cout << "Stopping PortAudio...\n";
     stream.stop();
     stream.close();

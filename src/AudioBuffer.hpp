@@ -23,6 +23,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <iostream>
 #include <boost/filesystem.hpp>
 
 #include "sndfile.hh"
@@ -64,6 +65,10 @@ public:
     /* Get indexed sample value from private samples vector (const version). */
     const T& operator[](const uint32_t i) const { return data[i]; }
 
+    /* Output sample values through stream. */
+    template <class>
+    friend std::ostream& operator<<(std::ostream &os, const AudioBuffer &b);
+
     /* Get sample rate of buffer. */
     uint32_t sample_rate() { return sr; }
 
@@ -83,14 +88,18 @@ private:
     /* Read audio file from path. */
     void read(const string &path);
 
-    vector<T> data;
     string fname;
     uint32_t sr;
     uint8_t chan;
+
+protected:
+    vector<T> data;
+
 };
 
 template <class T>
 AudioBuffer<T>::AudioBuffer()
+    : data(vector<T>(1024))
 {
 }
 

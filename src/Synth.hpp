@@ -21,9 +21,11 @@
 #define SYNTH_HPP
 
 #include <vector>
+#include <cstdio>
 
 #include "Database.hpp"
 #include "RingBuffer.hpp"
+#include "FFT.hpp"
 
 #include "portaudio.h"
 
@@ -42,6 +44,12 @@ public:
                 const PaStreamCallbackTimeInfo *time_info,
                 PaStreamCallbackFlags status_flags);
 
+    /* Call from other thread to get access to FFT data for logging. */
+    void log_fft(T &output);
+
+    /* Ring buffer accessed from other thread for logging. */
+    vector<RingBuffer<T> > log_buffer;
+
 private:
     /* Provide data from audio input to ring buffer and pop to processing buffer. */
     void prepare_buffers(T **in);
@@ -53,7 +61,9 @@ private:
     uint8_t num_channels;
     vector<vector<T> > input_buffer;
     vector<vector<T> > output_buffer;
+    vector<vector<T> > spectrum_buffer;
     vector<RingBuffer<T> > ring_buffer;
+    vector<FFT<T> > fft_buffer;
 };
 
 template <class T>
@@ -61,7 +71,10 @@ Synth<T>::Synth(uint16_t buffer_size, uint8_t num_channels)
     : buffer_size(buffer_size), num_channels(num_channels),
       input_buffer(num_channels, vector<T>(buffer_size)),
       output_buffer(num_channels, vector<T>(buffer_size)),
-      ring_buffer(num_channels, RingBuffer<T>(buffer_size))
+      spectrum_buffer(num_channels, vector<T>(buffer_size)),
+      ring_buffer(num_channels, RingBuffer<T>(buffer_size)),
+      log_buffer(num_channels, RingBuffer<T>(buffer_size)),
+      fft_buffer(num_channels, FFT<T>(buffer_size))
 {
 }
 
@@ -77,7 +90,7 @@ void Synth<T>::prepare_buffers(T **in)
         }
     }
 
-    /* Pop available data from ring buffer into an auxillary buffer. */
+    /* Fill an auxillary buffer with data from ring buffer. */
     for (uint8_t chan = 0; chan < num_channels; ++chan)
     {
         for (uint16_t i = 0; i < buffer_size; ++i)
@@ -86,12 +99,23 @@ void Synth<T>::prepare_buffers(T **in)
         }
     }
 
+    for (uint8_t chan = 0; chan < num_channels; ++chan)
+    {
+        fft_buffer[chan].fill(input_buffer[chan]);
+        fft_buffer[chan].compute();
+    }
+
+    for (uint8_t chan = 0; chan < num_channels; ++chan)
+    {
+        fft_buffer[chan].magspec(spectrum_buffer[chan]);
+        T freq = (spectrum_buffer[chan][512]) * 1024;
+        std::cout << freq << "\n";
+    }
 }
 
 template <class T>
 void Synth<T>::analyse()
 {
-    /* Code for real-time analysis to go here later. */
 }
 
 template <class T>
@@ -114,7 +138,7 @@ int Synth<T>::process(const void *input, void *output,
     {
         for (uint8_t chan = 0; chan < num_channels; ++chan)
         {
-            out[chan][i] = input_buffer[chan][i];
+            out[chan][i] = in[chan][i];
         }
     }
 

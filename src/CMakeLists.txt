@@ -15,7 +15,7 @@ add_executable(CATE
   FileTree.cpp
   FileTree.hpp
   RingBuffer.hpp
+  Window.hpp
   FFT.hpp)
-
 
 target_link_libraries(CATE portaudio portaudiocpp sndfile samplerate fftw3 ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})

@@ -26,28 +26,26 @@
 
 #include <fftw3.h>
 
+using std::vector;
+
 template <class T>
 class FFT
 {
 public:
     FFT(uint16_t sz);
 
-    ~FFT();
-
     /* Fill data buffer with sample values from referenced buffer. */
-    void fill(T *buffer);
-
-    /* Set FFT buffer size. */
-    void set_size(uint16_t new_sz);
-
-    /* Get number of samples in buffers. */
-    uint16_t size() { return sz; }
+    void fill(const vector<T> &buffer);
 
     /* Compute Discrete Fourier Transform of input buffer. */
     void compute();
 
-    /* Calculate magnitude spectrum and pass to reference buffer. */
-    void magspec(T *buffer);
+    T get_spectrum_real(uint16_t i) { return spectrum[i][REAL]; }
+
+    T get_spectrum_imag(uint16_t i) { return spectrum[i][IMAG]; }
+
+    /* Calculate magnitude spectrum and pass to output buffer. */
+    void magspec(vector<T> &buffer);
 
 private:
     uint16_t sz;
@@ -58,19 +56,13 @@ private:
 };
 
 template <class T>
-void FFT<T>::fill(T *buffer)
+void FFT<T>::fill(const vector<T> &buffer)
 {
     for (uint16_t i = 0; i < sz; ++i)
     {
         data[i][REAL] = buffer[i];
-        data[i][IMAG] = data[i][REAL];
+        data[i][IMAG] = buffer[i];
     }
-}
-
-template <class T>
-void FFT<T>::set_size(uint16_t new_sz)
-{
-    sz = new_sz;
 }
 
 template <class T>
@@ -89,22 +81,12 @@ FFT<T>::FFT(uint16_t sz)
 }
 
 template <class T>
-FFT<T>::~FFT()
-{
-    fftw_destroy_plan(plan);
-    fftw_free(data);
-    fftw_free(spectrum);
-}
-
-template <class T>
-void FFT<T>::magspec(T *buffer)
+void FFT<T>::magspec(vector<T> &buffer)
 {
     for (uint16_t i = 0; i < sz; ++i)
     {
-        T real_sq = spectrum[i][REAL] * spectrum[i][REAL];
-        T imag_sq = spectrum[i][IMAG] * spectrum[i][IMAG];
-        T sqrt = std::sqrt(real_sq + imag_sq);
-        buffer[i] = sqrt;
+        T sum = (spectrum[REAL][i] * spectrum[REAL][i]) + (spectrum[IMAG][i] * spectrum[IMAG][i]);
+        buffer[i] = std::sqrt(sum);
     }
 }
 
