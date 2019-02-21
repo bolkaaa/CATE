@@ -28,49 +28,47 @@
 
 #include "AudioBuffer.hpp"
 
-using std::vector;
-using std::complex;
-
 template <class T>
 class FFT
 {
 public:
     FFT(uint16_t sz);
 
-    ~FFT();
+    void fill(T *input);
 
     /* Compute Discrete Fourier Transform of input data. */
     void compute();
-
-    void fill(const vector<T> &buffer)
-    {
-        data = buffer;
-    }
 
     /* Calculate magnitude spectrum and pass to output buffer. */
     void magspec(vector<T> &buffer);
 
 private:
-    vector<T> data;
-    vector<complex<T> > spectrum;
+    uint16_t n;
+    T *data;
+    fftw_complex *spectrum;
     fftw_plan plan;
+    enum {REAL, IMAG};
 };
 
 template <class T>
-FFT<T>::FFT(uint16_t sz)
-    : data(vector<T>(sz)),
-      spectrum(vector<complex<T> >(sz)),
-      plan(fftw_plan_dft_r2c_1d(sz,
-                                reinterpret_cast<double*>(&data[0]),
-                                reinterpret_cast<fftw_complex*>(&spectrum[0]),
+FFT<T>::FFT(uint16_t n)
+    : n(n),
+      data(static_cast<T*>(fftw_malloc(sizeof(T) * n))),
+      spectrum(static_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * n))),
+      plan(fftw_plan_dft_r2c_1d(n,
+                                reinterpret_cast<double*>(data),
+                                spectrum,
                                 FFTW_ESTIMATE))
 {
 }
 
 template <class T>
-FFT<T>::~FFT()
+void FFT<T>::fill(T *input)
 {
-    fftw_destroy_plan(plan);
+    for (uint16_t i = 0; i < n; ++i)
+    {
+        data[i] = input[i];
+    }
 }
 
 template <class T>
@@ -82,10 +80,18 @@ void FFT<T>::compute()
 template <class T>
 void FFT<T>::magspec(vector<T> &buffer)
 {
-    for (uint16_t i = 0; i < data.size(); ++i)
+    for (uint16_t i = 0; i < buffer.size(); ++i)
     {
-        buffer[i] = std::abs(spectrum[i]);
+        buffer[i] = spectrum[i][REAL];
     }
+    /*
+    for (uint16_t i = 0; i < buffer.size(); ++i)
+    {
+        T mag = (spectrum[i][REAL] * spectrum[i][REAL]) + (spectrum[i][IMAG] * spectrum[i][IMAG]);
+        mag = std::sqrt(mag);
+        buffer[i] = mag;
+    }
+    */
 }
 
 #endif
