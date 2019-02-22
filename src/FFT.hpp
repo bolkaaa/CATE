@@ -20,13 +20,13 @@
 #ifndef FFT_HPP
 #define FFT_HPP
 
-#include <cstdlib>
-#include <cmath>
 #include <complex>
+#include <vector>
 
 #include <fftw3.h>
 
-#include "AudioBuffer.hpp"
+using std::vector;
+using std::complex;
 
 template <class T>
 class FFT
@@ -34,6 +34,8 @@ class FFT
 public:
     FFT(uint16_t sz);
 
+    /* Fill FFT buffer with first (n/2+1) elements of data.
+       Elements up to n must be padded with zeroes. */
     void fill(T *input);
 
     /* Compute Discrete Fourier Transform of input data. */
@@ -43,23 +45,31 @@ public:
     void magspec(vector<T> &buffer);
 
 private:
+    /* Apply Hanning window to data in buffer. */
+    void window(double &elem, uint16_t i);
+
     uint16_t n;
     double *data;
-    fftw_complex *spectrum;
+    complex<double> *spectrum;
     fftw_plan plan;
-    enum {REAL, IMAG};
 };
 
 template <class T>
 FFT<T>::FFT(uint16_t n)
     : n(n),
-      data(static_cast<double*> (fftw_malloc(sizeof(double) * n))),
-      spectrum(static_cast<fftw_complex*> (fftw_malloc(sizeof(fftw_complex) * (n / 2 + 1)))),
+      data(new double[n]),
+      spectrum(new complex<double>[n / 2 + 1]),
       plan(fftw_plan_dft_r2c_1d(n,
-                                data,
-                                spectrum,
+                                reinterpret_cast<double*>(data),
+                                reinterpret_cast<fftw_complex*>(spectrum),
                                 FFTW_ESTIMATE))
 {
+}
+
+template <class T>
+void FFT<T>::window(double &elem, uint16_t i)
+{
+    elem *= (1./2) * (1. - std::cos((2. * M_PI * i) / (n - 1.)));
 }
 
 template <class T>
@@ -67,9 +77,10 @@ void FFT<T>::fill(T *input)
 {
     for (uint16_t i = 0; i < n; ++i)
     {
-        if (i < (n/2+1))
+        if (i < (n / 2 + 1))
         {
-            data[i] = input[i] * (1./2) * (1. - std::cos((2. * M_PI * i) / (n - 1.)));
+            data[i] = input[i];
+            window(data[i], i);
         }
         else
         {
@@ -87,11 +98,9 @@ void FFT<T>::compute()
 template <class T>
 void FFT<T>::magspec(vector<T> &buffer)
 {
-    for (uint16_t i = 0; i < buffer.size(); ++i)
+    for (uint16_t i = 0; i < (n / 2 + 1); ++i)
     {
-        T mag = (spectrum[i][REAL] * spectrum[i][REAL]) + (spectrum[i][IMAG] * spectrum[i][IMAG]);
-        mag = std::sqrt(mag);
-        buffer[i] = mag;
+        buffer[i] = std::abs(spectrum[i]);
     }
 }
 

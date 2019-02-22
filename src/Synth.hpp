@@ -61,7 +61,7 @@ template <class T>
 Synth<T>::Synth(uint16_t buffer_size, uint8_t num_channels)
     : buffer_size(buffer_size), num_channels(num_channels),
       input_buffer(num_channels, vector<T>(buffer_size)),
-      spectrum_buffer(num_channels, vector<T>(buffer_size)),
+      spectrum_buffer(num_channels, vector<T>(buffer_size / 2 + 1)),
       ring_buffer(num_channels, RingBuffer<T>(buffer_size)),
       fft_buffer(num_channels, FFT<T>(buffer_size))
 {
@@ -85,11 +85,6 @@ void Synth<T>::prepare_buffers(T **in)
         fft_buffer[chan].fill(&input_buffer[chan][0]);
         fft_buffer[chan].compute();
         fft_buffer[chan].magspec(spectrum_buffer[chan]);
-        // for (uint16_t i = 0; i < buffer_size; ++i)
-        // {
-        //     std::cout << spectrum_buffer[chan][i] << " ";
-        // }
-        // std::cout << "\n\n\n\n";
     }
 }
 
@@ -111,7 +106,7 @@ int Synth<T>::process(const void *input, void *output,
     {
         for (uint8_t chan = 0; chan < num_channels; ++chan)
         {
-            out[chan][i] = in[chan][i];
+            out[chan][i] = input_buffer[chan][i];
         }
     }
 

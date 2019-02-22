@@ -46,7 +46,6 @@ int main(int argc, char *argv[])
 
     if (test)
     {
-        Window<float> w;
 
         return 0;
     }
@@ -62,22 +61,22 @@ int main(int argc, char *argv[])
         string audio_file_dir = "./audio_files";
         Database<float> db;
         db.add_directory(audio_file_dir);
-        //db.convert_sample_rates(audio_parameters.sample_rate());
+        db.convert_sample_rates(audio_parameters.sample_rate());
     }
 
     uint16_t buffer_size = 1024;
-    Synth<float> synth(buffer_size, audio_parameters.out_channels());
+    Synth<double> synth(buffer_size, audio_parameters.out_channels());
 
     /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
-    portaudio::MemFunCallbackStream<Synth<float> > stream(audio_parameters.stream(),
+    portaudio::MemFunCallbackStream<Synth<double> > stream(audio_parameters.stream(),
                                                           synth,
-                                                          &Synth<float>::process);
-    std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<float> >::start, &stream);
+                                                          &Synth<double>::process);
+    std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<double> >::start, &stream);
 
     /* Main thread */
     while (true)
     {
-
+        /* Temporary until UI stuff implemented. */
     }
 
     audio_thread.join();
