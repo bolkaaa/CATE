@@ -34,6 +34,8 @@ class FFT
 public:
     FFT(uint16_t sz);
 
+    ~FFT();
+
     /* Fill FFT buffer with first (n/2+1) elements of data.
        Elements up to n must be padded with zeroes. */
     void fill(T *input);
@@ -63,6 +65,11 @@ FFT<T>::FFT(uint16_t n)
                                 reinterpret_cast<double*>(data),
                                 reinterpret_cast<fftw_complex*>(spectrum),
                                 FFTW_ESTIMATE))
+{
+}
+
+template <class T>
+FFT<T>::~FFT()
 {
 }
 

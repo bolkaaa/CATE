@@ -21,6 +21,7 @@
 #include <thread>
 #include <vector>
 #include <cmath>
+#include <QApplication>
 #include <boost/filesystem.hpp>
 
 #include "portaudiocpp/PortAudioCpp.hxx"
@@ -35,6 +36,7 @@
 #include "Database.hpp"
 #include "RingBuffer.hpp"
 #include "FFT.hpp"
+#include "MainWindow.hpp"
 
 using std::string;
 
@@ -46,43 +48,39 @@ int main(int argc, char *argv[])
     if (test)
     {
 
-        return 0;
     }
+
+    /* Initialise GUI settings. */
+    QApplication app(argc, argv);
+    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+    QIcon appIcon;
+    appIcon.addFile(":/Icons/AppIcon32");
+    appIcon.addFile(":/Icons/AppIcon128");
+    app.setWindowIcon(appIcon);
+    MainWindow main_window;
 
     /* Initialise the PortAudio system and define audio parameters. */
     portaudio::AutoSystem auto_system;
     portaudio::System &system = portaudio::System::instance();
-    AudioParameters audio_parameters(system, 48000, 256, 2, 2);
+    AudioParameters audio_parameters(system, 48000, 1024, 2, 2);
 
-    /* Load database of buffers from root directory path. */
-    if (init_db)
-    {
-        string audio_file_dir = "./audio_files";
-        Database<float> db;
-        db.add_directory(audio_file_dir);
-        db.convert_sample_rates(audio_parameters.sample_rate());
-    }
+    Synth<double> synth(audio_parameters.frames_per_buffer(),
+                        audio_parameters.out_channels());
 
-    uint16_t buffer_size = 1024;
-    Synth<double> synth(buffer_size, audio_parameters.out_channels());
-
-    /* Create a PortAudio stream for the Synth instance and start it on a new thread. */
     portaudio::MemFunCallbackStream<Synth<double> > stream(audio_parameters.stream(),
-                                                          synth,
-                                                          &Synth<double>::process);
-    std::thread audio_thread(&portaudio::MemFunCallbackStream<Synth<double> >::start, &stream);
+                                                           synth,
+                                                           &Synth<double>::process);
 
-    /* Main thread */
-    while (true)
-    {
-        /* Temporary until UI stuff implemented. */
-    }
+    stream.start();
 
-    audio_thread.join();
+    system.sleep(2000);
+
     std::cout << "Stopping PortAudio...\n";
     stream.stop();
     stream.close();
     system.terminate();
 
-    return 0;
+    // main_window.show();
+
+    return app.exec();
 }

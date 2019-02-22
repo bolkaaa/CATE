@@ -84,6 +84,7 @@ void Synth<T>::prepare_buffers(T **in)
         fft_buffer[chan].compute();
         fft_buffer[chan].magspec(spectrum_buffer[chan]);
     }
+
 }
 
 template <class T>
