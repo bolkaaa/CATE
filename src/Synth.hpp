@@ -21,9 +21,7 @@
 #define SYNTH_HPP
 
 #include <vector>
-#include <cstdio>
 
-#include "Database.hpp"
 #include "AudioBuffer.hpp"
 #include "RingBuffer.hpp"
 #include "FFT.hpp"
@@ -46,7 +44,7 @@ public:
                 PaStreamCallbackFlags status_flags);
 
 private:
-    /* Provide audio input to auxillary buffers. */
+    /* Provide audio input to auxilary buffers. */
     void prepare_buffers(T **in);
 
     uint16_t buffer_size;
@@ -70,7 +68,7 @@ Synth<T>::Synth(uint16_t buffer_size, uint8_t num_channels)
 template <class T>
 void Synth<T>::prepare_buffers(T **in)
 {
-    /* Windowing. */
+    /* Copy input to input buffer. */
     for (uint8_t chan = 0; chan < num_channels; ++chan)
     {
         for (uint16_t i = 0; i < buffer_size; ++i)
@@ -79,7 +77,7 @@ void Synth<T>::prepare_buffers(T **in)
         }
     }
 
-    /* Computing DFT. */
+    /* Compute DFT and copy magnitude spectrum to buffer. */
     for (uint8_t chan = 0; chan < num_channels; ++chan)
     {
         fft_buffer[chan].fill(&input_buffer[chan][0]);
@@ -94,10 +92,10 @@ int Synth<T>::process(const void *input, void *output,
                       const PaStreamCallbackTimeInfo *time_info,
                       PaStreamCallbackFlags status_flags)
 {
-    (void) status_flags;
-    (void) time_info;
-    T **in = (T**) (input);
-    T **out = (T**) (output);
+    static_cast<void> (status_flags);
+    static_cast<void> (time_info);
+    T **in = reinterpret_cast<T**>(const_cast<void*>(input));
+    T **out = static_cast<T**> (output);
 
     prepare_buffers(in);
 
