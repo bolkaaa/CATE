@@ -30,6 +30,8 @@ set(SOURCE_FILES
   src/FFT.hpp
   src/MainWindow.hpp
   src/MainWindow.cpp
+  src/Worker.hpp
+  src/Worker.cpp
 )
 
 find_package(Qt5Widgets REQUIRED)

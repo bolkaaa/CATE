@@ -42,14 +42,6 @@ using std::string;
 
 int main(int argc, char *argv[])
 {
-    bool test = 0;
-    bool init_db = 0;
-
-    if (test)
-    {
-
-    }
-
     /* Initialise GUI settings. */
     QApplication app(argc, argv);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -59,28 +51,7 @@ int main(int argc, char *argv[])
     app.setWindowIcon(appIcon);
     MainWindow main_window;
 
-    /* Initialise the PortAudio system and define audio parameters. */
-    portaudio::AutoSystem auto_system;
-    portaudio::System &system = portaudio::System::instance();
-    AudioParameters audio_parameters(system, 48000, 1024, 2, 2);
-
-    Synth<double> synth(audio_parameters.frames_per_buffer(),
-                        audio_parameters.out_channels());
-
-    portaudio::MemFunCallbackStream<Synth<double> > stream(audio_parameters.stream(),
-                                                           synth,
-                                                           &Synth<double>::process);
-
-    stream.start();
-
-    system.sleep(2000);
-
-    std::cout << "Stopping PortAudio...\n";
-    stream.stop();
-    stream.close();
-    system.terminate();
-
-    // main_window.show();
+    main_window.show();
 
     return app.exec();
 }
