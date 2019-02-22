@@ -35,7 +35,6 @@
 #include "Database.hpp"
 #include "RingBuffer.hpp"
 #include "FFT.hpp"
-#include "Window.hpp"
 
 using std::string;
 

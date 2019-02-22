@@ -75,9 +75,9 @@ public:
 
     T& operator[](const uint32_t i) { return data[i]; }
 
-    void operator=(const AudioBuffer<T> &b) { data = b.data; }
-
     const T& operator[](const uint32_t i) const { return data[i]; }
+
+    void operator=(const AudioBuffer<T> &b) { data = b.data; }
 
 private:
     string fname;
