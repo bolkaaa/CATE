@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
         string audio_file_dir = "./audio_files";
         Database<float> db;
         db.add_directory(audio_file_dir);
-        db.convert_sample_rates(audio_parameters.sample_rate());
+        //db.convert_sample_rates(audio_parameters.sample_rate());
     }
 
     uint16_t buffer_size = 1024;

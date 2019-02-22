@@ -70,30 +70,26 @@ Synth<T>::Synth(uint16_t buffer_size, uint8_t num_channels)
 template <class T>
 void Synth<T>::prepare_buffers(T **in)
 {
+    /* Windowing. */
     for (uint8_t chan = 0; chan < num_channels; ++chan)
     {
         for (uint16_t i = 0; i < buffer_size; ++i)
         {
-            ring_buffer[chan].push(in[chan][i]);
+            input_buffer[chan][i] = in[chan][i];
         }
     }
 
+    /* Computing DFT. */
     for (uint8_t chan = 0; chan < num_channels; ++chan)
     {
-        for (uint16_t i = 0; i < buffer_size; ++i)
-        {
-            ring_buffer[chan].pop(input_buffer[chan][i]);
-        }
-    }
-
-
-    for (uint8_t chan = 0; chan < num_channels; ++chan)
-    {
-
         fft_buffer[chan].fill(&input_buffer[chan][0]);
         fft_buffer[chan].compute();
         fft_buffer[chan].magspec(spectrum_buffer[chan]);
-        std::cout << spectrum_buffer[chan][512] << "\n";
+        // for (uint16_t i = 0; i < buffer_size; ++i)
+        // {
+        //     std::cout << spectrum_buffer[chan][i] << " ";
+        // }
+        // std::cout << "\n\n\n\n";
     }
 }
 
@@ -115,7 +111,7 @@ int Synth<T>::process(const void *input, void *output,
     {
         for (uint8_t chan = 0; chan < num_channels; ++chan)
         {
-            out[chan][i] = input_buffer[chan][i];
+            out[chan][i] = in[chan][i];
         }
     }
 

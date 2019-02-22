@@ -44,7 +44,7 @@ public:
 
 private:
     uint16_t n;
-    T *data;
+    double *data;
     fftw_complex *spectrum;
     fftw_plan plan;
     enum {REAL, IMAG};
@@ -53,10 +53,10 @@ private:
 template <class T>
 FFT<T>::FFT(uint16_t n)
     : n(n),
-      data(static_cast<T*>(fftw_malloc(sizeof(T) * n))),
-      spectrum(static_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * n))),
+      data(static_cast<double*> (fftw_malloc(sizeof(double) * n))),
+      spectrum(static_cast<fftw_complex*> (fftw_malloc(sizeof(fftw_complex) * (n / 2 + 1)))),
       plan(fftw_plan_dft_r2c_1d(n,
-                                reinterpret_cast<double*>(data),
+                                data,
                                 spectrum,
                                 FFTW_ESTIMATE))
 {
@@ -67,7 +67,14 @@ void FFT<T>::fill(T *input)
 {
     for (uint16_t i = 0; i < n; ++i)
     {
-        data[i] = input[i];
+        if (i < (n/2+1))
+        {
+            data[i] = input[i] * (1./2) * (1. - std::cos((2. * M_PI * i) / (n - 1.)));
+        }
+        else
+        {
+            data[i] = 0;
+        }
     }
 }
 
@@ -82,16 +89,10 @@ void FFT<T>::magspec(vector<T> &buffer)
 {
     for (uint16_t i = 0; i < buffer.size(); ++i)
     {
-        buffer[i] = spectrum[i][REAL];
-    }
-    /*
-    for (uint16_t i = 0; i < buffer.size(); ++i)
-    {
         T mag = (spectrum[i][REAL] * spectrum[i][REAL]) + (spectrum[i][IMAG] * spectrum[i][IMAG]);
         mag = std::sqrt(mag);
         buffer[i] = mag;
     }
-    */
 }
 
 #endif
