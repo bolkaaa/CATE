@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Discrete Fourier Transforms and Starting on Qt GUI | CATE</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Discrete Fourier Transforms and Starting on Qt GUI" />
+<meta name="author" content="Liam Wyllie" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This Week This week, I’ve been working on the following parts of my program:" />
+<meta property="og:description" content="This Week This week, I’ve been working on the following parts of my program:" />
+<meta property="og:site_name" content="CATE" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-02-24T00:00:00+00:00" />
+<script type="application/ld+json">
+{"description":"This Week This week, I’ve been working on the following parts of my program:","author":{"@type":"Person","name":"Liam Wyllie"},"@type":"BlogPosting","url":"/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui.html","headline":"Discrete Fourier Transforms and Starting on Qt GUI","dateModified":"2019-02-24T00:00:00+00:00","datePublished":"2019-02-24T00:00:00+00:00","mainEntityOfPage":{"@type":"WebPage","@id":"/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="CATE" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">CATE</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Discrete Fourier Transforms and Starting on Qt GUI</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-02-24T00:00:00+00:00" itemprop="datePublished">Feb 24, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h3 id="this-week">This Week</h3>
+<p>This week, I’ve been working on the following parts of my program:</p>
+
+<ul>
+  <li>
+    <p><em>Discrete Fourier Transforms</em></p>
+  </li>
+  <li>
+    <p><em>Starting on the Qt GUI</em></p>
+  </li>
+  <li>
+    <p><em>Creating a More Generalised Audio Buffer Class</em></p>
+  </li>
+</ul>
+
+<h3 id="implementing-discrete-fourier-transforms">Implementing Discrete Fourier Transforms</h3>
+<p>For spectral audio analysis and visualisation, having some way of converting my
+audio sample data to the frequency domain will be essential.</p>
+
+<p>My requirements for a FFT library were that it should be a well-established,
+standard library used by high-profile open source programs, and that it should
+only offer functionality for doing discrete fourier transforms and not other
+unnecessary DSP functions that I was already implementing myself. The only
+library that really met this criteria was <a href="http://www.fftw.org/">fftw</a>. This is
+a very significant library within open source/free-as-in-freedom software,
+having been used by a lot of audio and signal processing applications in
+general. I felt that it was a good opportunity for me to learn how to use it.
+The only downside was that it’s natively a C library rather than a C++ library,
+but I could not find any natively C++ alternatives.</p>
+
+<p>The library can be quite unforgiving to use, with lots of potential for
+segmentation faults and other issues with array access due to how memory works
+in C. After some experimentation, I eventually got a good system working. The
+fftw library works in the following way:</p>
+
+<ol>
+  <li>Allocate memory for input and output arrays</li>
+  <li>Create a “plan” that defines the operations carried out, e.g
+<em>complex-to-complex</em> or <em>real-to-complex</em>, as well as specifying the arrays
+created in the last step.</li>
+  <li>Call the fftw_execute function to get the output spectrum array, which can be
+called as many times as needed (e.g, in a real-time loop).</li>
+  <li>Deallocate memory and call fftw_destroy_plan when done (e.g, when audio stream is finished).</li>
+</ol>
+
+<p>I used the <a href="http://www.fftw.org/fftw3_doc/One_002dDimensional-DFTs-of-Real-Data.html">one-dimensional
+real-to-complex</a>
+plan, which converts a one-dimensional input of floating point numbers to an
+output array of complex numbers. The specified input array is <em>n</em> real numbers,
+and the output is <em>n/2+1</em> complex numbers, which means the input array needs to
+be filled with <em>N/2+1</em> elements and then padded with zeros. Additionally, the
+array of data should be windowed, to avoid discontinuities at the starts and
+ends. I just included an application of the Hann function within the function
+that fills the data buffer, which is defined as:</p>
+
+<script type="math/tex; mode=display">w(n) = \frac{1} {2} \left(1 - cos\left(\frac {2\pi n} {N - 1}\right)\right)</script>
+
+<p>where <em>n</em> is the sample index and <em>N</em> is the total number of samples.</p>
+
+<p>Generally when using DFT data, the magnitude of the resultant complex output is taken. This can be calculated as follows:</p>
+
+<script type="math/tex; mode=display">\sqrt{r^2 + i^2}</script>
+
+<p>where <em>r</em> and <em>i</em> are the real and imaginary parts of a complex number
+respectively. When using std::complex in C++, you can just use the std::abs
+function from the standard library to get the magnitude, making for a more
+elegant implementation.</p>
+
+<p>To use my spectrum array in a meaningful way, I will need to convert the
+indicies to their respective frequencies. The following formula can be used for
+converting bin index to frequency:</p>
+
+<script type="math/tex; mode=display">\frac{n  \frac{Fs} {2}} {N}</script>
+
+<p>where <em>n</em> is the bin index, <em>Fs</em> is the sampling rate and <em>N</em> is the total number
+of bins. Hence, the 512th bin represents the magnitude of the frequency 11025Hz,
+given a bin size of 1024 and a sample rate of 44100.</p>
+
+<h3 id="starting-on-the-qt-gui">Starting on the Qt GUI</h3>
+<p>I decided to commit to using Qt in my project and start working on it ahead of
+schedule. This is mostly because I’ve realised that the backend of the code will
+need to be redesigned quite a lot around the general practises of Qt
+applications.</p>
+
+<p>I had to alter my CMake configuration to get Qt working, using the <a href="https://github.com/euler0/mini-cmake-qt">following
+github repo</a> as a guideline.</p>
+
+<p>I then aimed to get a program working where my audio process is running in a
+background thread with a Qt window interface in the foreground. I started with
+<a href="https://github.com/fabienpn/simple-qt-thread-example">the following example from a github
+repo</a></p>
+
+<p>I found <a href="http://www.martin-kumm.de/wiki/doku.php?id=05Misc:A_Template_for_Audio_DSP_Applications">this
+example</a>
+of combining PortAudio, Qt and FFTW which seems perfect for what I’m trying to
+do.</p>
+
+<p>My plan now is to just get my existing audio code working alongside a very
+simple Qt window. I will leave the actual bulk of the GUI design until much
+later, but I want to get Qt integrated into my program as soon as possible. Then
+I will continue to develop the analysis and synthesis parts of my program
+further. Hopefully, within the next month or so I will have a working prototype
+of the final system. Then, I can improve upon it while working on the GUI. The
+final GUI will likely be fairly simple, as I am new to Qt and it could be very
+time consuming to create something complex in it. Additionally, the idea for my
+program is that it should have a minimal interface and not require a lot of user
+input anyway!</p>
+
+<h3 id="creating-a-more-generalised-audio-buffer-class">Creating a More Generalised Audio Buffer Class</h3>
+<p>I have also been thinking about the overall design of my program and its data
+flow. As I’ve mostly been working on audio input, ring buffer and FFT code
+recently, the earlier code I had written to read and write data from sound files
+has become somewhat incompatible with the new code. My idea now is to have
+interoperability between my classes that work with sample data. RingBuffer, FFT,
+and AudioBuffer objects filled with data from audio files should be able to
+communicate and share data easily. Therefore, I have looked into making my
+AudioBuffer class a base class for the others and using inheritance to achieve
+this.</p>
+
+  </div><a class="u-url" href="/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui.html" hidden></a>
+</article>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">CATE</h2>
+        <ul class="contact-list">
+          <li class="p-name">Liam Wyllie</li><li><a class="u-email" href="mailto:lwyll002@gold.ac.uk">lwyll002@gold.ac.uk</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>Project blog for the CATE program, updated with my progress and findings.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://github.com/lrwz" title="lrwz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

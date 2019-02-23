@@ -1,4 +1,121 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-02-17T16:33:11+00:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Moving Onwards: Real-time Audio Analysis</title><link href="/2019/02/17/going-forwards-with-real-time-audio-analysis.html" rel="alternate" type="text/html" title="Moving Onwards: Real-time Audio Analysis" /><published>2019-02-17T00:00:00+00:00</published><updated>2019-02-17T00:00:00+00:00</updated><id>/2019/02/17/going-forwards-with-real-time-audio-analysis</id><content type="html" xml:base="/2019/02/17/going-forwards-with-real-time-audio-analysis.html">&lt;h3 id=&quot;thoughts-on-the-programs-direction&quot;&gt;Thoughts on the Program’s Direction&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-02-23T12:08:15+00:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Discrete Fourier Transforms and Starting on Qt GUI</title><link href="/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui.html" rel="alternate" type="text/html" title="Discrete Fourier Transforms and Starting on Qt GUI" /><published>2019-02-24T00:00:00+00:00</published><updated>2019-02-24T00:00:00+00:00</updated><id>/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui</id><content type="html" xml:base="/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui.html">&lt;h3 id=&quot;this-week&quot;&gt;This Week&lt;/h3&gt;
+&lt;p&gt;This week, I’ve been working on the following parts of my program:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Discrete Fourier Transforms&lt;/em&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Starting on the Qt GUI&lt;/em&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Creating a More Generalised Audio Buffer Class&lt;/em&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;implementing-discrete-fourier-transforms&quot;&gt;Implementing Discrete Fourier Transforms&lt;/h3&gt;
+&lt;p&gt;For spectral audio analysis and visualisation, having some way of converting my
+audio sample data to the frequency domain will be essential.&lt;/p&gt;
+
+&lt;p&gt;My requirements for a FFT library were that it should be a well-established,
+standard library used by high-profile open source programs, and that it should
+only offer functionality for doing discrete fourier transforms and not other
+unnecessary DSP functions that I was already implementing myself. The only
+library that really met this criteria was &lt;a href=&quot;http://www.fftw.org/&quot;&gt;fftw&lt;/a&gt;. This is
+a very significant library within open source/free-as-in-freedom software,
+having been used by a lot of audio and signal processing applications in
+general. I felt that it was a good opportunity for me to learn how to use it.
+The only downside was that it’s natively a C library rather than a C++ library,
+but I could not find any natively C++ alternatives.&lt;/p&gt;
+
+&lt;p&gt;The library can be quite unforgiving to use, with lots of potential for
+segmentation faults and other issues with array access due to how memory works
+in C. After some experimentation, I eventually got a good system working. The
+fftw library works in the following way:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Allocate memory for input and output arrays&lt;/li&gt;
+  &lt;li&gt;Create a “plan” that defines the operations carried out, e.g
+&lt;em&gt;complex-to-complex&lt;/em&gt; or &lt;em&gt;real-to-complex&lt;/em&gt;, as well as specifying the arrays
+created in the last step.&lt;/li&gt;
+  &lt;li&gt;Call the fftw_execute function to get the output spectrum array, which can be
+called as many times as needed (e.g, in a real-time loop).&lt;/li&gt;
+  &lt;li&gt;Deallocate memory and call fftw_destroy_plan when done (e.g, when audio stream is finished).&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I used the &lt;a href=&quot;http://www.fftw.org/fftw3_doc/One_002dDimensional-DFTs-of-Real-Data.html&quot;&gt;one-dimensional
+real-to-complex&lt;/a&gt;
+plan, which converts a one-dimensional input of floating point numbers to an
+output array of complex numbers. The specified input array is &lt;em&gt;n&lt;/em&gt; real numbers,
+and the output is &lt;em&gt;n/2+1&lt;/em&gt; complex numbers, which means the input array needs to
+be filled with &lt;em&gt;N/2+1&lt;/em&gt; elements and then padded with zeros. Additionally, the
+array of data should be windowed, to avoid discontinuities at the starts and
+ends. I just included an application of the Hann function within the function
+that fills the data buffer, which is defined as:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;w(n) = \frac{1} {2} \left(1 - cos\left(\frac {2\pi n} {N - 1}\right)\right)&lt;/script&gt;
+
+&lt;p&gt;where &lt;em&gt;n&lt;/em&gt; is the sample index and &lt;em&gt;N&lt;/em&gt; is the total number of samples.&lt;/p&gt;
+
+&lt;p&gt;Generally when using DFT data, the magnitude of the resultant complex output is taken. This can be calculated as follows:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\sqrt{r^2 + i^2}&lt;/script&gt;
+
+&lt;p&gt;where &lt;em&gt;r&lt;/em&gt; and &lt;em&gt;i&lt;/em&gt; are the real and imaginary parts of a complex number
+respectively. When using std::complex in C++, you can just use the std::abs
+function from the standard library to get the magnitude, making for a more
+elegant implementation.&lt;/p&gt;
+
+&lt;p&gt;To use my spectrum array in a meaningful way, I will need to convert the
+indicies to their respective frequencies. The following formula can be used for
+converting bin index to frequency:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\frac{n  \frac{Fs} {2}} {N}&lt;/script&gt;
+
+&lt;p&gt;where &lt;em&gt;n&lt;/em&gt; is the bin index, &lt;em&gt;Fs&lt;/em&gt; is the sampling rate and &lt;em&gt;N&lt;/em&gt; is the total number
+of bins. Hence, the 512th bin represents the magnitude of the frequency 11025Hz,
+given a bin size of 1024 and a sample rate of 44100.&lt;/p&gt;
+
+&lt;h3 id=&quot;starting-on-the-qt-gui&quot;&gt;Starting on the Qt GUI&lt;/h3&gt;
+&lt;p&gt;I decided to commit to using Qt in my project and start working on it ahead of
+schedule. This is mostly because I’ve realised that the backend of the code will
+need to be redesigned quite a lot around the general practises of Qt
+applications.&lt;/p&gt;
+
+&lt;p&gt;I had to alter my CMake configuration to get Qt working, using the &lt;a href=&quot;https://github.com/euler0/mini-cmake-qt&quot;&gt;following
+github repo&lt;/a&gt; as a guideline.&lt;/p&gt;
+
+&lt;p&gt;I then aimed to get a program working where my audio process is running in a
+background thread with a Qt window interface in the foreground. I started with
+&lt;a href=&quot;https://github.com/fabienpn/simple-qt-thread-example&quot;&gt;the following example from a github
+repo&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I found &lt;a href=&quot;http://www.martin-kumm.de/wiki/doku.php?id=05Misc:A_Template_for_Audio_DSP_Applications&quot;&gt;this
+example&lt;/a&gt;
+of combining PortAudio, Qt and FFTW which seems perfect for what I’m trying to
+do.&lt;/p&gt;
+
+&lt;p&gt;My plan now is to just get my existing audio code working alongside a very
+simple Qt window. I will leave the actual bulk of the GUI design until much
+later, but I want to get Qt integrated into my program as soon as possible. Then
+I will continue to develop the analysis and synthesis parts of my program
+further. Hopefully, within the next month or so I will have a working prototype
+of the final system. Then, I can improve upon it while working on the GUI. The
+final GUI will likely be fairly simple, as I am new to Qt and it could be very
+time consuming to create something complex in it. Additionally, the idea for my
+program is that it should have a minimal interface and not require a lot of user
+input anyway!&lt;/p&gt;
+
+&lt;h3 id=&quot;creating-a-more-generalised-audio-buffer-class&quot;&gt;Creating a More Generalised Audio Buffer Class&lt;/h3&gt;
+&lt;p&gt;I have also been thinking about the overall design of my program and its data
+flow. As I’ve mostly been working on audio input, ring buffer and FFT code
+recently, the earlier code I had written to read and write data from sound files
+has become somewhat incompatible with the new code. My idea now is to have
+interoperability between my classes that work with sample data. RingBuffer, FFT,
+and AudioBuffer objects filled with data from audio files should be able to
+communicate and share data easily. Therefore, I have looked into making my
+AudioBuffer class a base class for the others and using inheritance to achieve
+this.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This Week This week, I’ve been working on the following parts of my program:</summary></entry><entry><title type="html">Moving Onwards: Real-time Audio Analysis</title><link href="/2019/02/17/going-forwards-with-real-time-audio-analysis.html" rel="alternate" type="text/html" title="Moving Onwards: Real-time Audio Analysis" /><published>2019-02-17T00:00:00+00:00</published><updated>2019-02-17T00:00:00+00:00</updated><id>/2019/02/17/going-forwards-with-real-time-audio-analysis</id><content type="html" xml:base="/2019/02/17/going-forwards-with-real-time-audio-analysis.html">&lt;h3 id=&quot;thoughts-on-the-programs-direction&quot;&gt;Thoughts on the Program’s Direction&lt;/h3&gt;
 &lt;p&gt;I have been thinking a lot about my aims with the program and my report, and the
 particular niche of musical concatenative synthesis I would like to explore. One
 aspect I would like to focus more strongly on, is the notion of working with
