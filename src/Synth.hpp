@@ -34,7 +34,8 @@ template <class T>
 class Synth
 {
 public:
-    /* Instantiate by setting size in samples for audio processing buffers. */
+    Synth();
+
     Synth<T>(uint16_t buffer_size, uint8_t num_channels);
 
     /* Main audio processing function to be called from outside class. */
@@ -54,6 +55,16 @@ private:
     vector<RingBuffer<T> > ring_buffer;
     vector<FFT<T> > fft_buffer;
 };
+
+template <class T>
+Synth<T>::Synth()
+    : buffer_size(1024), num_channels(2),
+      input_buffer(num_channels, vector<T>(buffer_size)),
+      spectrum_buffer(num_channels, vector<T>(buffer_size / 2 + 1)),
+      ring_buffer(num_channels, RingBuffer<T>(buffer_size)),
+      fft_buffer(num_channels, FFT<T>(buffer_size))
+{
+}
 
 template <class T>
 Synth<T>::Synth(uint16_t buffer_size, uint8_t num_channels)

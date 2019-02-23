@@ -24,21 +24,15 @@
 #include <QApplication>
 #include <boost/filesystem.hpp>
 
-#include "portaudiocpp/PortAudioCpp.hxx"
-#include "portaudio.h"
-#include "sndfile.hh"
-#include "samplerate.h"
-
 #include "MainWindow.hpp"
-
-using std::string;
 
 int main(int argc, char *argv[])
 {
     /* Initialise GUI settings. */
     QApplication app(argc, argv);
-    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
     QIcon appIcon;
+
+    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
     appIcon.addFile(":/Icons/AppIcon32");
     appIcon.addFile(":/Icons/AppIcon128");
     app.setWindowIcon(appIcon);

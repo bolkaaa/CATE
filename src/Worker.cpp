@@ -40,8 +40,8 @@ void Worker::doWork()
 {
     qDebug() << "Starting worker process in Thread " << thread()->currentThreadId();
 
-    for (int i = 0; i < 60; i ++) {
-
+    for (int i = 0; i < 60; i ++)
+    {
         // Checks if the process should be aborted
         mutex.lock();
         bool abort = _abort;

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QThread>
 
+#include "AudioProcess.hpp"
 #include "Synth.hpp"
 #include "Worker.hpp"
 
@@ -21,19 +22,17 @@ public:
 
     ~MainWindow();
 
-    void set_audio_context()
-    {
-
-    }
-
 private:
+    AudioProcess *audio_process;
     Ui::MainWindow *ui;
-    QThread *thread;
-    Worker *worker;
+
+public slots:
+    void on_soundcard_settings_action();
+    void on_start_button_pressed();
+    void on_stop_button_pressed();
+    void on_frame_processed();
 
 private slots:
-    void on_startButton_clicked();
-
 };
 
 #endif

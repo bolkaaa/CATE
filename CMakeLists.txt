@@ -32,6 +32,10 @@ set(SOURCE_FILES
   src/MainWindow.cpp
   src/Worker.hpp
   src/Worker.cpp
+  src/AudioEngine.hpp
+  src/AudioEngine.cpp
+  src/AudioProcess.hpp
+  src/AudioProcess.cpp
 )
 
 find_package(Qt5Widgets REQUIRED)

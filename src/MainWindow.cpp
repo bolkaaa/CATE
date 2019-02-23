@@ -1,5 +1,7 @@
 #include <QDebug>
 
+#include "AudioProcess.hpp"
+#include "Synth.hpp"
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
 
@@ -8,36 +10,32 @@ MainWindow::MainWindow(QWidget *parent)
       ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    audio_process = new AudioProcess();
 
-    /* Allocation of new QThread and Worker objects happens in constructor. */
-    thread = new QThread();
-    worker = new Worker();
-
-    worker->moveToThread(thread);
-    connect(worker, SIGNAL(valueChanged(QString)), ui->label, SLOT(setText(QString)));
-    connect(worker, SIGNAL(workRequested()), thread, SLOT(start()));
-    connect(thread, SIGNAL(started()), worker, SLOT(doWork()));
-    connect(worker, SIGNAL(finished()), thread, SLOT(quit()), Qt::DirectConnection);
+    connect(ui->on_start_button_pressed, SIGNAL(pressed()), this, SLOT(on_start_button_pressed()));
+    connect(ui->on_stop_button_pressed, SIGNAL(pressed()), this, SLOT(on_stop_button_pressed()));
 }
 
 MainWindow::~MainWindow()
 {
-    worker->abort();
-    thread->wait();
-    qDebug() << "Deleting thread and worker in Thread " << this->QObject::thread()->currentThreadId();
-    delete thread;
-    delete worker;
+    delete audio_process;
     delete ui;
 }
 
-void MainWindow::on_startButton_clicked()
+void MainWindow::on_start_button_pressed()
 {
-    /* Previous thread is aborted to avoid having multiple threads running simultaneously. */
-    worker->abort();
+    int error = audio_process->start_stream();
+}
 
-    /* Will immediately return if thread not runnning. */
-    thread->wait();
+void MainWindow::on_stop_button_pressed()
+{
+    audio_process->stop_stream();
+}
 
-    /* Request new work from Worker object. */
-    worker->requestWork();
+void MainWindow::on_soundcard_settings_action()
+{
+}
+
+void MainWindow::on_frame_processed()
+{
 }
