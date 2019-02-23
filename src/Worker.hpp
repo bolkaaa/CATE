@@ -1,7 +1,14 @@
 #ifndef THREAD_TEST_HPP
 #define THREAD_TEST_HPP
 
+/*
+  Based on demo program at https://github.com/fabienpn/simple-qt-thread-example
+ */
+
 #include <QObject>
+
+#include "AudioParameters.hpp"
+#include "Synth.hpp"
 
 class Worker : public QObject
 {

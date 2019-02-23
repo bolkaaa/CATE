@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QThread>
 
+#include "Synth.hpp"
 #include "Worker.hpp"
 
 namespace Ui
@@ -20,15 +21,14 @@ public:
 
     ~MainWindow();
 
+    void set_audio_context()
+    {
+
+    }
+
 private:
     Ui::MainWindow *ui;
-    /**
-     * @brief Thread object which will let us manipulate the running thread
-     */
     QThread *thread;
-    /**
-     * @brief Object which contains methods that should be runned in another thread
-     */
     Worker *worker;
 
 private slots:

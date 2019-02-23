@@ -3,13 +3,13 @@
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent),
+      ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    // The thread and the worker are created in the constructor so it is always safe to delete them.
+    /* Allocation of new QThread and Worker objects happens in constructor. */
     thread = new QThread();
     worker = new Worker();
 
@@ -24,18 +24,20 @@ MainWindow::~MainWindow()
 {
     worker->abort();
     thread->wait();
-    qDebug()<<"Deleting thread and worker in Thread "<<this->QObject::thread()->currentThreadId();
+    qDebug() << "Deleting thread and worker in Thread " << this->QObject::thread()->currentThreadId();
     delete thread;
     delete worker;
-
     delete ui;
 }
 
 void MainWindow::on_startButton_clicked()
 {
-    // To avoid having two threads running simultaneously, the previous thread is aborted.
+    /* Previous thread is aborted to avoid having multiple threads running simultaneously. */
     worker->abort();
-    thread->wait(); // If the thread is not running, this will immediately return.
 
+    /* Will immediately return if thread not runnning. */
+    thread->wait();
+
+    /* Request new work from Worker object. */
     worker->requestWork();
 }

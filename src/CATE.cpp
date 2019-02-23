@@ -29,13 +29,6 @@
 #include "sndfile.hh"
 #include "samplerate.h"
 
-#include "Synth.hpp"
-#include "AudioParameters.hpp"
-#include "AudioBuffer.hpp"
-#include "FileTree.hpp"
-#include "Database.hpp"
-#include "RingBuffer.hpp"
-#include "FFT.hpp"
 #include "MainWindow.hpp"
 
 using std::string;
@@ -49,6 +42,7 @@ int main(int argc, char *argv[])
     appIcon.addFile(":/Icons/AppIcon32");
     appIcon.addFile(":/Icons/AppIcon128");
     app.setWindowIcon(appIcon);
+
     MainWindow main_window;
 
     main_window.show();
