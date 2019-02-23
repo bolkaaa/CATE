@@ -28,7 +28,6 @@
 using std::vector;
 using std::complex;
 
-template <class T>
 class FFT
 {
 public:
@@ -38,13 +37,13 @@ public:
 
     /* Fill FFT buffer with first (n/2+1) elements of data.
        Elements up to n must be padded with zeroes. */
-    void fill(T *input);
+    void fill(float *input);
 
     /* Compute Discrete Fourier Transform of input data. */
     void compute();
 
     /* Calculate magnitude spectrum and pass to output buffer. */
-    void magspec(vector<T> &buffer);
+    void magspec(vector<float> &buffer);
 
 private:
     /* Apply Hanning window to data in buffer. */
@@ -55,60 +54,5 @@ private:
     complex<double> *spectrum;
     fftw_plan plan;
 };
-
-template <class T>
-FFT<T>::FFT(uint16_t n)
-    : n(n),
-      data(new double[n]),
-      spectrum(new complex<double>[n / 2 + 1]),
-      plan(fftw_plan_dft_r2c_1d(n,
-                                reinterpret_cast<double*>(data),
-                                reinterpret_cast<fftw_complex*>(spectrum),
-                                FFTW_ESTIMATE))
-{
-}
-
-template <class T>
-FFT<T>::~FFT()
-{
-}
-
-template <class T>
-void FFT<T>::window(double &elem, uint16_t i)
-{
-    elem *= (1./2) * (1. - std::cos((2. * M_PI * i) / (n - 1.)));
-}
-
-template <class T>
-void FFT<T>::fill(T *input)
-{
-    for (uint16_t i = 0; i < n; ++i)
-    {
-        if (i < (n / 2 + 1))
-        {
-            data[i] = input[i];
-            window(data[i], i);
-        }
-        else
-        {
-            data[i] = 0;
-        }
-    }
-}
-
-template <class T>
-void FFT<T>::compute()
-{
-    fftw_execute(plan);
-}
-
-template <class T>
-void FFT<T>::magspec(vector<T> &buffer)
-{
-    for (uint16_t i = 0; i < (n / 2 + 1); ++i)
-    {
-        buffer[i] = std::abs(spectrum[i]);
-    }
-}
 
 #endif

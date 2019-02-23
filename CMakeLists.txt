@@ -16,8 +16,11 @@ set(SOURCE_FILES
   src/AudioProcess.hpp
   src/AudioProcess.cpp
   src/AudioBuffer.hpp
+  src/AudioBuffer.cpp
   src/RingBuffer.hpp
+  src/RingBuffer.cpp
   src/FFT.hpp
+  src/FFT.cpp
   src/Synth.hpp
   src/Synth.cpp
   src/FileTree.cpp

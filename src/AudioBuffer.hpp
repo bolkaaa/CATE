@@ -32,21 +32,20 @@
 using std::vector;
 using std::string;
 
-template <class T>
 class AudioBuffer
 {
 public:
-    AudioBuffer<T>();
+    AudioBuffer();
 
-    AudioBuffer<T>(uint32_t sz);
+    AudioBuffer(uint32_t sz);
 
     /* Instantiate with file read from path. */
-    AudioBuffer<T>(const string &path);
+    AudioBuffer(const string &path);
 
     /* Instantiate with vector of data. */
-    AudioBuffer<T>(const vector<T> &data);
+    AudioBuffer(const vector<float> &data);
 
-    vector<T> get_data() { return data; }
+    vector<float> get_data() { return data; }
 
     /* Read audio file from path. */
     void read(const string &path);
@@ -73,11 +72,11 @@ public:
     /* Interpolate sample rate of buffer to new sample rate. */
     void convert_sample_rate(uint32_t new_sr);
 
-    T& operator[](const uint32_t i) { return data[i]; }
+    float& operator[](const uint32_t i) { return data[i]; }
 
-    const T& operator[](const uint32_t i) const { return data[i]; }
+    const float& operator[](const uint32_t i) const { return data[i]; }
 
-    void operator=(const AudioBuffer<T> &b) { data = b.data; }
+    void operator=(const AudioBuffer &b) { data = b.data; }
 
 private:
     string fname;
@@ -85,83 +84,9 @@ private:
     uint8_t chan;
 
 protected:
-    vector<T> data;
+    vector<float> data;
 
 };
 
-template <class T>
-AudioBuffer<T>::AudioBuffer()
-    : data(vector<T>(1024))
-{
-}
-
-template <class T>
-AudioBuffer<T>::AudioBuffer(uint32_t sz)
-    : data(vector<T>(sz))
-{
-}
-
-template <class T>
-AudioBuffer<T>::AudioBuffer(const string &path)
-{
-    read(path);
-}
-
-template <class T>
-AudioBuffer<T>::AudioBuffer(const vector<T> &data)
-    : data(data)
-{
-}
-
-template <class T>
-void AudioBuffer<T>::read(const string &path)
-{
-    SndfileHandle file(path);
-    uint64_t size = file.frames() * file.channels();
-    data = vector<T>(size);
-    file.read(&data[0], size);
-    boost::filesystem::path p(path);
-
-    fname = p.stem().string();
-    sr = file.samplerate();
-    chan = file.channels();
-}
-
-template <class T>
-void AudioBuffer<T>::write(const string &path, uint32_t sample_rate,
-                           uint8_t channels, uint8_t format)
-{
-    SndfileHandle file(path, SFM_WRITE, format, channels, sample_rate);
-    file.write(&data[0], data.size());
-}
-
-template <class T>
-void AudioBuffer<T>::to_file(const std::string &path)
-{
-    std::ofstream file(path);
-
-    for (uint64_t i = 0; i < data.size(); ++i)
-    {
-        file << data[i] << "\n";
-    }
-}
-
-template <class T>
-void AudioBuffer<T>::convert_sample_rate(uint32_t new_sr)
-{
-    double sr_ratio = new_sr / sr;
-    vector<T> out(sr_ratio * data.size());
-    SRC_DATA conv;
-
-    conv.data_in = &data[0];
-    conv.data_out = &out[0];
-    conv.input_frames = (data.size() / chan);
-    conv.output_frames = ((sr_ratio * data.size()) / chan);
-    conv.src_ratio = sr_ratio;
-
-    src_simple(&conv, SRC_SINC_BEST_QUALITY, chan);
-
-    data = out;
-}
-
 #endif
+
