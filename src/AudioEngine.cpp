@@ -1,3 +1,22 @@
+/*
+  CATE: Concatenative Audio Processing Application
+  Copyright (c) 2019 Liam Wyllie. All rights reserved.
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+*/
+
 #include "AudioEngine.hpp"
 
 #include <cstdlib>
@@ -27,13 +46,13 @@ int AudioEngine::processing_callback(const void *input_buffer,
                                      const PaStreamCallbackTimeInfo* time_info,
                                      PaStreamCallbackFlags status_flags)
 {
-    (void) input_buffer;
-    (void) output_buffer;
-    (void) frames_per_buffer;
-    (void) time_info;
-    (void) status_flags;
+    static_cast<void>(input_buffer);
+    static_cast<void>(output_buffer);
+    static_cast<void>(frames_per_buffer);
+    static_cast<void>(time_info);
+    static_cast<void>(status_flags);
 
-    return 0;
+    return paContinue;
 }
 
 void AudioEngine::init()
@@ -110,14 +129,14 @@ int AudioEngine::start_stream()
         return error;
     }
 
-   error = Pa_StartStream(stream);
+    error = Pa_StartStream(stream);
 
-   if (error != paNoError)
-   {
+    if (error != paNoError)
+    {
         is_running = false;
-   }
+    }
 
-   return error;
+    return error;
 }
 
 int AudioEngine::stop_stream()

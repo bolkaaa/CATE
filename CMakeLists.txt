@@ -23,8 +23,10 @@ set(SOURCE_FILES
   src/FFT.cpp
   src/Synth.hpp
   src/Synth.cpp
-  src/FileTree.cpp
   src/FileTree.hpp
+  src/FileTree.cpp
+  src/Database.hpp
+  src/Database.cpp
   src/MainWindow.hpp
   src/MainWindow.cpp
 )
