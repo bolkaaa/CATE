@@ -17,110 +17,32 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+/*
+  The Synth class handles data used in the synthesis process, such as arrays of
+  audio samples and analysis data. The data is stored in std::vectors, which
+  have to be initialised with fixed sizes, since we cannot dynamically push
+  data into them in the audio callback function.
+ */
+
 #ifndef SYNTH_HPP
 #define SYNTH_HPP
 
 #include <vector>
 
-#include "AudioBuffer.hpp"
-#include "RingBuffer.hpp"
-#include "FFT.hpp"
-
-#include "portaudio.h"
-
 using std::vector;
 
-template <class T>
 class Synth
 {
 public:
+    Synth(uint16_t fft_bin_size, uint16_t audio_buffer_size);
+
     Synth();
 
-    Synth<T>(uint16_t buffer_size, uint8_t num_channels);
-
-    /* Main audio processing function to be called from outside class. */
-    int process(const void *input, void *output,
-                unsigned long frames_per_buffer,
-                const PaStreamCallbackTimeInfo *time_info,
-                PaStreamCallbackFlags status_flags);
-
 private:
-    /* Provide audio input to auxilary buffers. */
-    void prepare_buffers(T **in);
+    uint16_t fft_bin_size;
+    uint16_t audio_buffer_size;
+    vector<float> data;
 
-    uint16_t buffer_size;
-    uint8_t num_channels;
-    vector<vector<T> > input_buffer;
-    vector<vector<T> > spectrum_buffer;
-    vector<RingBuffer<T> > ring_buffer;
-    vector<FFT<T> > fft_buffer;
 };
-
-template <class T>
-Synth<T>::Synth()
-    : buffer_size(1024), num_channels(2),
-      input_buffer(num_channels, vector<T>(buffer_size)),
-      spectrum_buffer(num_channels, vector<T>(buffer_size / 2 + 1)),
-      ring_buffer(num_channels, RingBuffer<T>(buffer_size)),
-      fft_buffer(num_channels, FFT<T>(buffer_size))
-{
-}
-
-template <class T>
-Synth<T>::Synth(uint16_t buffer_size, uint8_t num_channels)
-    : buffer_size(buffer_size), num_channels(num_channels),
-      input_buffer(num_channels, vector<T>(buffer_size)),
-      spectrum_buffer(num_channels, vector<T>(buffer_size / 2 + 1)),
-      ring_buffer(num_channels, RingBuffer<T>(buffer_size)),
-      fft_buffer(num_channels, FFT<T>(buffer_size))
-{
-}
-
-template <class T>
-void Synth<T>::prepare_buffers(T **in)
-{
-    /* Copy input to input buffer. */
-    for (uint8_t chan = 0; chan < num_channels; ++chan)
-    {
-        for (uint16_t i = 0; i < buffer_size; ++i)
-        {
-            input_buffer[chan][i] = in[chan][i];
-        }
-    }
-
-    /* Compute DFT and copy magnitude spectrum to buffer. */
-    for (uint8_t chan = 0; chan < num_channels; ++chan)
-    {
-        fft_buffer[chan].fill(&input_buffer[chan][0]);
-        fft_buffer[chan].compute();
-        fft_buffer[chan].magspec(spectrum_buffer[chan]);
-    }
-
-}
-
-template <class T>
-int Synth<T>::process(const void *input, void *output,
-                      unsigned long frames_per_buffer,
-                      const PaStreamCallbackTimeInfo *time_info,
-                      PaStreamCallbackFlags status_flags)
-{
-    static_cast<void> (status_flags);
-    static_cast<void> (time_info);
-    T **in = reinterpret_cast<T**>(const_cast<void*>(input));
-    T **out = static_cast<T**> (output);
-
-    prepare_buffers(in);
-
-    /* Main audio output block. */
-    for (uint32_t i = 0; i < frames_per_buffer; i++)
-    {
-        for (uint8_t chan = 0; chan < num_channels; ++chan)
-        {
-            out[chan][i] = input_buffer[chan][i];
-        }
-    }
-
-    return paContinue;
-}
 
 #endif

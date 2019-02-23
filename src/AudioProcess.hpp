@@ -15,7 +15,7 @@ public:
 
     ~AudioProcess();
 
-    Synth<float> *synth;
+    Synth *synth;
 
 private:
 
@@ -29,11 +29,5 @@ protected:
 signals:
 
 };
-
-
-
-
-
-
 
 #endif

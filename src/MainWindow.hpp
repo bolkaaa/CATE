@@ -5,8 +5,6 @@
 #include <QThread>
 
 #include "AudioProcess.hpp"
-#include "Synth.hpp"
-#include "Worker.hpp"
 
 namespace Ui
 {

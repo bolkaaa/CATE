@@ -28,17 +28,14 @@
 
 int main(int argc, char *argv[])
 {
-    /* Initialise GUI settings. */
     QApplication app(argc, argv);
     QIcon appIcon;
-
-    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+    app.setAttribute(Qt::AA_UseHighDpiPixmaps); // Retina display
     appIcon.addFile(":/Icons/AppIcon32");
     appIcon.addFile(":/Icons/AppIcon128");
     app.setWindowIcon(appIcon);
 
     MainWindow main_window;
-
     main_window.show();
 
     return app.exec();
