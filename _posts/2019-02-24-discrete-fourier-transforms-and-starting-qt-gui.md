@@ -10,6 +10,8 @@ This week, I've been working on the following parts of my program:
 
 - *Starting on the Qt GUI*
 
+- *More Work on Python Utilities*
+
 - *Creating a More Generalised Audio Buffer Class*
 
 ### Implementing Discrete Fourier Transforms
@@ -68,7 +70,7 @@ function from the standard library to get the magnitude, making for a more
 elegant implementation.
 
 To use my spectrum array in a meaningful way, I will need to convert the
-indicies to their respective frequencies. The following formula can be used for
+indices to their respective frequencies. The following formula can be used for
 converting bin index to frequency:
 
 $$
@@ -83,31 +85,41 @@ given a bin size of 1024 and a sample rate of 44100.
 I decided to commit to using Qt in my project and start working on it ahead of
 schedule. This is mostly because I've realised that the backend of the code will
 need to be redesigned quite a lot around the general practises of Qt
-applications.
+applications, such as the idea of QObjects. My reasons for using Qt are mostly
+that it's a well-established GUI library/framework that has been used by a lot
+of applications, including notable audio software like
+[SuperCollider](https://supercollider.github.io) and
+[SonicVisualiser](https://www.sonicvisualiser.org/).
 
 I had to alter my CMake configuration to get Qt working, using the [following
 github repo](https://github.com/euler0/mini-cmake-qt) as a guideline.
 
 I then aimed to get a program working where my audio process is running in a
-background thread with a Qt window interface in the foreground. I started with
+background with a Qt window interface in the foreground. I started with
 [the following example from a github
-repo](https://github.com/fabienpn/simple-qt-thread-example)
+repo](https://github.com/fabienpn/simple-qt-thread-example).
 
-I found [this
+I also found [this
 example](http://www.martin-kumm.de/wiki/doku.php?id=05Misc:A_Template_for_Audio_DSP_Applications)
-of combining PortAudio, Qt and FFTW which seems perfect for what I'm trying to
-do.
+of combining PortAudio, Qt and FFTW which was perfect for what I'm trying to do.
 
-My plan now is to just get my existing audio code working alongside a very
-simple Qt window. I will leave the actual bulk of the GUI design until much
-later, but I want to get Qt integrated into my program as soon as possible. Then
-I will continue to develop the analysis and synthesis parts of my program
-further. Hopefully, within the next month or so I will have a working prototype
-of the final system. Then, I can improve upon it while working on the GUI. The
-final GUI will likely be fairly simple, as I am new to Qt and it could be very
-time consuming to create something complex in it. Additionally, the idea for my
-program is that it should have a minimal interface and not require a lot of user
-input anyway!
+Learning from those examples, I now have the Qt graphics framework implemented
+in my program. The program now launches as a window with buttons for starting
+and stopping the audio engine. The downside of this, is that I was forced to
+revert my audio code to use the C API of PortAudio rather than the C++ version.
+Integrating the C++ PortAudio code with Qt was proving troublesome, and it was
+considerably easier to wrap the low-level C code instead. I did want to avoid
+this, but after reading some discussions in the PortAudio mailing list, this
+seems to be what is generally done by people working with PortAudio in C++
+anyway.
+
+As for Qt, I will leave the actual bulk of the GUI design until much later, but
+I want to get Qt integrated into my program as soon as possible. Hopefully
+within the next month or so I will have a working prototype of the final system.
+Then, I can improve upon it while working on the GUI. The final GUI will likely
+be fairly simple, as I am new to Qt and it could be very time consuming to
+create something complex in it. Additionally, the idea for my program is that it
+should have a minimal interface and not require a lot of user input anyway!
 
 ### Creating a More Generalised Audio Buffer Class
 I have also been thinking about the overall design of my program and its data
@@ -119,3 +131,30 @@ and AudioBuffer objects filled with data from audio files should be able to
 communicate and share data easily. Therefore, I have looked into making my
 AudioBuffer class a base class for the others and using inheritance to achieve
 this.
+
+### More Python Utilities
+I also did a bit more work on the simple Python programs in the scripts
+directory. I plan to compare the results of my C++ program's outputs for things
+like magnitude spectrum and analysis data. With libraries like
+[librosa](https://librosa.github.io/librosa/), I can check what the output
+should look like for these processes very quickly and easily. My other
+motivation for doing this, is related to the overall ethos I have with this in
+project in thinking in the long-term as well as about the project itself. I
+think that improving my proficiency at using libraries with librosa and Python
+prototyping in general will be a useful skill for me in the future.
+
+### Moving Onwards
+My plan for the next week is to experiment with creating my own audio analysis
+system with fftw and other low-level libraries. As a fallback option, I have
+installed the Essentia library on my system and I will use it if this becomes
+too much work. I am also thinking ahead to some of the next steps I will need to
+take, such as the nearest-neighbours search of the parameter-space once I have
+my analysis functionality sorted out. I have covered the K-Nearest neighbours
+algorithm in other classes, where I learned that the K-d tree data structure
+allows for a more efficient implementation of the algorithm, which will likely
+be necessary so I can perform the comparisons efficiently in the audio loop.
+
+Additionally, I want to implement better error handling with my PortAudio code
+and clean it up in general. I will refrain from doing a lot of GUI work right
+now, although I might add some kind of text output in the main window for
+debugging pourposes.
