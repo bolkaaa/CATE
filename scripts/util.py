@@ -12,7 +12,7 @@ def show_usage(name: str, modes: dict):
 
 
 def check_args(num_expected: int) -> (str, str):
-    """Show usage information if invalid number of arguments."""
+    """Raise exception if wrong number of arguments, otherwise return them."""
     if (len(sys.argv)-1 != num_expected):
         raise ValueError
     else:
