@@ -6,7 +6,9 @@
 #include "AudioBuffer.hpp"
 
 /* Based on lock-free ring buffer implementation in "Audio Anecdotes Volume 2
-   (Greenebaum, Barzel)". */
+   (Greenebaum, Barzel)". Will be used if I do some concurrent audio processing
+   later on (not doing so at the moment).
+*/
 
 class RingBuffer : public AudioBuffer
 {

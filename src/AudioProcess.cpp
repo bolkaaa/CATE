@@ -19,14 +19,17 @@
 
 #include "AudioProcess.hpp"
 #include "Synth.hpp"
+#include "FFT.hpp"
 
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
 
-AudioProcess::AudioProcess()
+AudioProcess::AudioProcess(uint16_t sample_rate, uint16_t frames_per_buffer,
+                           uint16_t fft_bin_size)
+    : AudioEngine(sample_rate, frames_per_buffer)
 {
-    synth = new Synth();
+    synth = new Synth(fft_bin_size, frames_per_buffer);
 }
 
 AudioProcess::~AudioProcess()
@@ -44,8 +47,9 @@ int AudioProcess::processing_callback(const void *input_buffer,
     static_cast<void>(time_info);
     float *input = const_cast<float*>(static_cast<const float*>(input_buffer));
     float *output = static_cast<float*>(output_buffer);
-    auto i = 0;
+    unsigned long i = 0;
 
+    /* Basic Input -> Output (watch for feedback) */
     for (i = 0; i < frames_per_buffer; ++i)
     {
         output[i] = input[i];

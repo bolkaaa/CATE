@@ -23,7 +23,9 @@
 #include <cstdio>
 #include <iostream>
 
-AudioEngine::AudioEngine()
+AudioEngine::AudioEngine(uint16_t sample_rate, uint16_t frames_per_buffer)
+    : sample_rate(sample_rate),
+      frames_per_buffer(frames_per_buffer)
 {
     is_running = false;
     init();
@@ -88,17 +90,6 @@ void AudioEngine::init()
     output_params.sampleFormat = paFloat32;
     output_params.suggestedLatency = suggested_latency;
     output_params.hostApiSpecificStreamInfo = NULL;
-
-    if (output_params.device > 0)
-    {
-        sample_rate = Pa_GetDeviceInfo(output_params.device)->defaultSampleRate;
-    }
-    else
-    {
-        sample_rate = 48000.0;
-    }
-
-    frames_per_buffer = 1024;
 
     std::cout << "Default input device: " << Pa_GetDefaultInputDevice() << "\n";
     std::cout << "Default output device: " << Pa_GetDefaultOutputDevice() << "\n";

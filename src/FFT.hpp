@@ -22,11 +22,17 @@
 
 #include <complex>
 #include <vector>
+#include <iostream>
 
 #include <fftw3.h>
 
 using std::vector;
 using std::complex;
+
+/*
+  The FFT class wraps the fftw library, providing functionality for calculating
+  Discrete Fourier Fransforms of input data.
+ */
 
 class FFT
 {

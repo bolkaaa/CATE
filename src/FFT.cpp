@@ -40,6 +40,8 @@ FFT::FFT(uint16_t n)
 
 FFT::~FFT()
 {
+    delete[] data;
+    delete[] spectrum;
 }
 
 void FFT::window(double &elem, uint16_t i)

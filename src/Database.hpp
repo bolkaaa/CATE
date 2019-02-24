@@ -30,6 +30,11 @@ using std::vector;
 using std::unordered_map;
 using std::string;
 
+/*
+  The Database class handles functionality for working with a collection for
+  audio buffers. It will form the basis of the corpus used in the program.
+ */
+
 class Database
 {
 public:

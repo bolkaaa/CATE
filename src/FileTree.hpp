@@ -23,7 +23,16 @@
 #include <vector>
 #include <string>
 
-std::vector<std::string> get_subpaths(const std::string &root_path);
-void get_nested_files(std::vector<std::string> &paths, std::string root_path);
+using std::vector;
+using std::string;
+
+/*
+  These are some simple functions that together provide functionality for
+  getting a list of all paths deeper than a specified root path. The filesystem
+  part of the Boost library is used to achieve this.
+ */
+
+vector<string> get_subpaths(const string &root_path);
+void get_nested_files(vector<string> &paths, string root_path);
 
 #endif

@@ -25,18 +25,24 @@
 #include "AudioEngine.hpp"
 #include "Synth.hpp"
 
+/*
+The audio processing occurs in AudioProcess, which inherits from the audio
+engine class that wraps the PortAudio functionality. It has a Synth object as a
+member that contains the data used by the callback function
+(processing_callback).
+ */
+
 class AudioProcess : public QObject, public AudioEngine
 {
     Q_OBJECT
 
 public:
-    AudioProcess();
+    AudioProcess(uint16_t sample_rate, uint16_t frames_per_buffer,
+                 uint16_t fft_bin_size);
 
     ~AudioProcess();
 
     Synth *synth;
-
-private:
 
 protected:
     virtual int processing_callback(const void *input_buffer,
@@ -44,9 +50,6 @@ protected:
                                     unsigned long frames_per_buffer,
                                     const PaStreamCallbackTimeInfo* time_info,
                                     PaStreamCallbackFlags status_flags);
-
-signals:
-
 };
 
 #endif

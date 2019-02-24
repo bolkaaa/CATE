@@ -20,12 +20,21 @@
 #ifndef AUDIO_ENGINE_HPP
 #define AUDIO_ENGINE_HPP
 
+#include <cstdlib>
+
 #include <portaudio.h>
+
+/*
+  The AudioEngine class wraps the PortAudio C library, providing the
+  functionality for initialising PortAudio, and starting and stopping streams.
+  It defines the callback functions, which the AudioProcess class creates its
+  own versions of when it inherits from the base AudioEngine class.
+ */
 
 class AudioEngine
 {
 public:
-    AudioEngine();
+    AudioEngine(uint16_t sample_rate, uint16_t frames_per_buffer);
 
     ~AudioEngine();
 

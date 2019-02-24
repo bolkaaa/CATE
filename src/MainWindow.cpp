@@ -10,10 +10,14 @@ MainWindow::MainWindow(QWidget *parent)
       ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    audio_process = new AudioProcess();
+    audio_process = new AudioProcess(sample_rate, frames_per_buffer,
+                                     fft_bin_size);
 
-    connect(ui->on_start_button_pressed, SIGNAL(pressed()), this, SLOT(on_start_button_pressed()));
-    connect(ui->on_stop_button_pressed, SIGNAL(pressed()), this, SLOT(on_stop_button_pressed()));
+    connect(ui->on_start_button_pressed, SIGNAL(pressed()), this,
+            SLOT(on_start_button_pressed()));
+
+    connect(ui->on_stop_button_pressed, SIGNAL(pressed()), this,
+            SLOT(on_stop_button_pressed()));
 }
 
 MainWindow::~MainWindow()
@@ -24,7 +28,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_start_button_pressed()
 {
-    int error = audio_process->start_stream();
+    audio_process->start_stream();
 }
 
 void MainWindow::on_stop_button_pressed()

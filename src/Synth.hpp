@@ -17,32 +17,35 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-/*
-  The Synth class handles data used in the synthesis process, such as arrays of
-  audio samples and analysis data. The data is stored in std::vectors, which
-  have to be initialised with fixed sizes, since we cannot dynamically push
-  data into them in the audio callback function.
- */
-
 #ifndef SYNTH_HPP
 #define SYNTH_HPP
 
 #include <vector>
 
+#include "FFT.hpp"
+
 using std::vector;
+
+/*
+  The Synth class handles data used in the synthesis process, such as arrays of
+  audio samples and analysis data. The data is stored in std::vectors, which
+  have to be initialised with fixed sizes, since we cannot dynamically push data
+  into them in the audio callback function. The FFT object also needs to be
+  allocated on the heap, so must make sure that it's deleted in the destructor.
+*/
 
 class Synth
 {
 public:
     Synth(uint16_t fft_bin_size, uint16_t audio_buffer_size);
 
-    Synth();
+    ~Synth();
 
 private:
     uint16_t fft_bin_size;
     uint16_t audio_buffer_size;
     vector<float> data;
-
+    FFT *fft_data;
 };
 
 #endif

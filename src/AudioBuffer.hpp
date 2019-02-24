@@ -32,6 +32,14 @@
 using std::vector;
 using std::string;
 
+/*
+  The AudioBuffer class is intended to be a generalisation of a collection of
+  audio sample data, with associated member functions for working with it, such
+  as reading from audio files. At the moment, the data itself is stored in a
+  std::vector, with a number of public wrapper functions for manipulating it.
+  Other classes such as RingBuffer will inherit from the base AudioBuffer class.
+ */
+
 class AudioBuffer
 {
 public:
