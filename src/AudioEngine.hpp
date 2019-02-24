@@ -44,8 +44,6 @@ public:
 
     int stop_stream();
 
-private:
-
 protected:
     /* The main processing callback function. */
     virtual int processing_callback(const void *input_buffer,
@@ -70,8 +68,8 @@ protected:
                                                                status_flags);
     }
 
-    PaError error;
     PaStream *stream;
+    PaError error;
     PaTime suggested_latency;
     PaHostApiIndex selected_host_api;
     PaStreamParameters input_params;

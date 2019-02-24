@@ -23,6 +23,8 @@
 #include <cstdio>
 #include <iostream>
 
+/* TODO: Improve the error handling in these functions. */
+
 AudioEngine::AudioEngine(uint16_t sample_rate, uint16_t frames_per_buffer)
     : sample_rate(sample_rate),
       frames_per_buffer(frames_per_buffer)
@@ -33,14 +35,8 @@ AudioEngine::AudioEngine(uint16_t sample_rate, uint16_t frames_per_buffer)
 
 AudioEngine::~AudioEngine()
 {
-    error = Pa_Terminate();
-
-    if (error != paNoError)
-    {
-        std::cerr << "PortAudio error: " << Pa_GetErrorText(error) << "\n";
-    }
+    Pa_Terminate();
 }
-
 
 int AudioEngine::processing_callback(const void *input_buffer,
                                      void *output_buffer,
@@ -57,6 +53,7 @@ int AudioEngine::processing_callback(const void *input_buffer,
     return paContinue;
 }
 
+/* TODO: Clean up this code and separate into multiple functions. */
 void AudioEngine::init()
 {
     int device = Pa_GetDefaultOutputDevice();
@@ -94,7 +91,6 @@ void AudioEngine::init()
     std::cout << "Default input device: " << Pa_GetDefaultInputDevice() << "\n";
     std::cout << "Default output device: " << Pa_GetDefaultOutputDevice() << "\n";
 }
-
 
 int AudioEngine::start_stream()
 {
