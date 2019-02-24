@@ -31,7 +31,7 @@ using std::complex;
 
 /*
   The FFT class wraps the fftw library, providing functionality for calculating
-  Discrete Fourier Fransforms of input data.
+  Discrete Fourier Transforms of input data.
  */
 
 class FFT
