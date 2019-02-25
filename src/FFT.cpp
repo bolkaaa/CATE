@@ -17,6 +17,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#include <cstdio>
 #include <complex>
 #include <vector>
 
@@ -26,54 +27,50 @@
 
 using std::vector;
 using std::complex;
-
-FFT::FFT(uint16_t n)
-    : n(n),
-      data(new double[n]),
-      spectrum(new complex<double>[n / 2 + 1]),
-      plan(fftw_plan_dft_r2c_1d(n,
-                                reinterpret_cast<double*>(data),
-                                reinterpret_cast<fftw_complex*>(spectrum),
+FFT::FFT(uint16_t bin_size)
+    : bin_size(bin_size),
+      data(vector<double>(bin_size)),
+      spectrum(vector<complex<double> >(bin_size)),
+      magspec(vector<float>(output_bins)),
+      plan(fftw_plan_dft_r2c_1d(bin_size,
+                                reinterpret_cast<double*>(&data[0]),
+                                reinterpret_cast<fftw_complex*>(&spectrum[0]),
                                 FFTW_ESTIMATE))
 {
 }
 
-FFT::~FFT()
+float FFT::window(uint16_t i)
 {
-    delete[] data;
-    delete[] spectrum;
+    return (1./2.) * (1. - std::cos((2. * M_PI * i) / (bin_size - 1.)));
 }
 
-void FFT::window(double &elem, uint16_t i)
+void FFT::fill(const vector<float> &input)
 {
-    elem *= (1./2) * (1. - std::cos((2. * M_PI * i) / (n - 1.)));
-}
-
-void FFT::fill(float *input)
-{
-    for (uint16_t i = 0; i < n; ++i)
+    for (auto i = 0; i < bin_size; ++i)
     {
-        if (i < (n / 2 + 1))
-        {
-            data[i] = input[i];
-            window(data[i], i);
-        }
-        else
-        {
-            data[i] = 0;
-        }
+        data[i] = input[i] * window(i);
     }
 }
 
 void FFT::compute()
 {
     fftw_execute(plan);
+    compute_magspec();
 }
 
-void FFT::magspec(vector<float> &buffer)
+void FFT::get_magspec(vector<float> &output)
 {
-    for (uint16_t i = 0; i < (n / 2 + 1); ++i)
+    for (auto i = 0; i < output_bins; ++i)
     {
-        buffer[i] = std::abs(spectrum[i]);
+        output[i] = magspec[i];
     }
 }
+
+void FFT::compute_magspec()
+{
+    for (auto i = 0; i < output_bins; ++i)
+    {
+        magspec[i] = std::abs(spectrum[i]);
+    }
+}
+

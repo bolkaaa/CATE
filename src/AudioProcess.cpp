@@ -27,14 +27,24 @@
 
 AudioProcess::AudioProcess(uint16_t sample_rate, uint16_t frames_per_buffer,
                            uint16_t fft_bin_size)
-    : AudioEngine(sample_rate, frames_per_buffer)
+    : AudioEngine(sample_rate, frames_per_buffer),
+      input_data(vector<float>(fft_bin_size)),
+      magspec_data(vector<float>(fft_bin_size / 2 + 1))
 {
-    synth = new Synth(fft_bin_size, frames_per_buffer);
+    fft = new FFT(fft_bin_size);
 }
 
 AudioProcess::~AudioProcess()
 {
-    delete synth;
+    delete fft;
+}
+
+void AudioProcess::fill_input_data(float *input)
+{
+    for (auto i = 0; i < input_data.size(); ++i)
+    {
+        input_data[i] = input[i];
+    }
 }
 
 int AudioProcess::processing_callback(const void *input_buffer,
@@ -49,10 +59,17 @@ int AudioProcess::processing_callback(const void *input_buffer,
     float *output = static_cast<float*>(output_buffer);
     unsigned long i = 0;
 
-    /* Basic Input -> Output (watch for feedback) */
+    fill_input_data(input);
+
+    /* FFT operations. */
+    fft->fill(input_data);
+    fft->compute();
+    fft->get_magspec(magspec_data);
+
+    /* Audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
-        output[i] = input[i];
+        output[i] = input_data[i];
     }
 
     return paContinue;

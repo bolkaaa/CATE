@@ -20,10 +20,15 @@
 #ifndef AUDIO_PROCESS_HPP
 #define AUDIO_PROCESS_HPP
 
+#include <vector>
+
 #include <QObject>
 
 #include "AudioEngine.hpp"
+#include "FFT.hpp"
 #include "Synth.hpp"
+
+using std::vector;
 
 /*
 The audio processing occurs in AudioProcess, which inherits from the audio
@@ -42,7 +47,12 @@ public:
 
     ~AudioProcess();
 
-    Synth *synth;
+private:
+    void fill_input_data(float *input);
+
+    FFT *fft;
+    vector<float> input_data;
+    vector<float> magspec_data;
 
 protected:
     virtual int processing_callback(const void *input_buffer,
