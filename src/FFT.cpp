@@ -27,6 +27,7 @@
 
 using std::vector;
 using std::complex;
+
 FFT::FFT(uint16_t bin_size)
     : bin_size(bin_size),
       data(vector<double>(bin_size)),
