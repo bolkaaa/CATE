@@ -28,11 +28,12 @@
 using std::vector;
 using std::complex;
 
-FFT::FFT(uint16_t bin_size)
-    : bin_size(bin_size),
+FFT::FFT(uint16_t bin_size, uint16_t frames_per_buffer)
+    : magspec(vector<float>(bin_size / 2 + 1)),
+      bin_size(bin_size),
+      frames_per_buffer(frames_per_buffer),
       data(vector<double>(bin_size)),
-      spectrum(vector<complex<double> >(bin_size)),
-      magspec(vector<float>(output_bins)),
+      spectrum(vector<complex<double> >(bin_size / 2 + 1)),
       plan(fftw_plan_dft_r2c_1d(bin_size,
                                 reinterpret_cast<double*>(&data[0]),
                                 reinterpret_cast<fftw_complex*>(&spectrum[0]),
@@ -45,11 +46,17 @@ float FFT::window(uint16_t i)
     return (1./2.) * (1. - std::cos((2. * M_PI * i) / (bin_size - 1.)));
 }
 
-void FFT::fill(const vector<float> &input)
+void FFT::fill(float *input)
 {
-    for (auto i = 0; i < bin_size; ++i)
+    for (auto i = 0; i < frames_per_buffer; ++i)
     {
         data[i] = input[i] * window(i);
+    }
+
+    /* Zero padding. */
+    for (auto i = frames_per_buffer; i < bin_size; ++i)
+    {
+        data[i] = 0.0;
     }
 }
 
@@ -61,7 +68,7 @@ void FFT::compute()
 
 void FFT::get_magspec(vector<float> &output)
 {
-    for (auto i = 0; i < output_bins; ++i)
+    for (std::size_t i = 0; i < bin_size / 2 + 1; ++i)
     {
         output[i] = magspec[i];
     }
@@ -69,9 +76,8 @@ void FFT::get_magspec(vector<float> &output)
 
 void FFT::compute_magspec()
 {
-    for (auto i = 0; i < output_bins; ++i)
+    for (std::size_t i = 0; i < bin_size / 2 + 1; ++i)
     {
         magspec[i] = std::abs(spectrum[i]);
     }
 }
-

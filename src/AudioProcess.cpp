@@ -18,8 +18,7 @@
 */
 
 #include "AudioProcess.hpp"
-#include "Synth.hpp"
-#include "FFT.hpp"
+#include "Analysis/FFT.hpp"
 
 #include <cstdlib>
 #include <cmath>
@@ -28,23 +27,17 @@
 AudioProcess::AudioProcess(uint16_t sample_rate, uint16_t frames_per_buffer,
                            uint16_t fft_bin_size)
     : AudioEngine(sample_rate, frames_per_buffer),
-      input_data(vector<float>(fft_bin_size)),
-      magspec_data(vector<float>(fft_bin_size / 2 + 1))
+      magspec(vector<float>(fft_bin_size / 2 + 1)),
+      spectral_feature(sample_rate, fft_bin_size)
 {
-    fft = new FFT(fft_bin_size);
+    fft = new FFT(fft_bin_size, frames_per_buffer);
+    frames_per_plot = 3;
+    frames_per_plot_count = frames_per_plot;
 }
 
 AudioProcess::~AudioProcess()
 {
     delete fft;
-}
-
-void AudioProcess::fill_input_data(float *input)
-{
-    for (auto i = 0; i < input_data.size(); ++i)
-    {
-        input_data[i] = input[i];
-    }
 }
 
 int AudioProcess::processing_callback(const void *input_buffer,
@@ -59,17 +52,28 @@ int AudioProcess::processing_callback(const void *input_buffer,
     float *output = static_cast<float*>(output_buffer);
     unsigned long i = 0;
 
-    fill_input_data(input);
-
     /* FFT operations. */
-    fft->fill(input_data);
+    fft->fill(input);
     fft->compute();
-    fft->get_magspec(magspec_data);
+    fft->get_magspec(magspec);
+    float centroid = spectral_feature.centroid(magspec);
+    float flatness = spectral_feature.flatness(magspec);
+
+    /* Emit signal when FFT frame is processed. */
+    if (frames_per_plot_count == frames_per_plot)
+    {
+        emit frame_processed(fft);
+        frames_per_plot_count = 0;
+    }
+    else
+    {
+        ++frames_per_plot_count;
+    }
 
     /* Audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
-        output[i] = input_data[i];
+        output[i] = input[i];
     }
 
     return paContinue;

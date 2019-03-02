@@ -37,16 +37,18 @@ using std::complex;
 class FFT
 {
 public:
-    FFT(uint16_t bin_size);
+    FFT(uint16_t bin_size, uint16_t frames_per_buffer);
 
-    /* Fill input data from outside source. */
-    void fill(const vector<float> &input);
+    /* Fill input data array. */
+    void fill(float *input);
 
     /* Compute DFT and magnitude spectrum of input data. */
     void compute();
 
     /* Calculate magnitude spectrum and pass to output buffer. */
     void get_magspec(vector<float> &output);
+
+    vector<float> magspec;
 
 private:
     /* Calculate Hanning window function. */
@@ -55,11 +57,12 @@ private:
     /* Compute magnitude spectrum from complex spectrum. */
     void compute_magspec();
 
-    const uint16_t bin_size;
-    const uint16_t output_bins = bin_size / 2 + 1;
+    uint16_t bin_size;
+    uint16_t frames_per_buffer;
+    // double *data;
+    // fftw_complex *spectrum;
     vector<double> data;
     vector<complex<double> > spectrum;
-    vector<float> magspec;
     fftw_plan plan;
 };
 

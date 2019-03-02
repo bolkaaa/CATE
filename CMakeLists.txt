@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.13.3)
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_BUILD_TYPE Debug)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -19,16 +20,20 @@ set(SOURCE_FILES
   src/AudioBuffer.cpp
   src/RingBuffer.hpp
   src/RingBuffer.cpp
-  src/FFT.hpp
-  src/FFT.cpp
-  src/Synth.hpp
-  src/Synth.cpp
   src/FileTree.hpp
   src/FileTree.cpp
   src/Database.hpp
   src/Database.cpp
   src/MainWindow.hpp
   src/MainWindow.cpp
+  src/Plot.hpp
+  src/Plot.cpp
+  src/Analysis/FFT.hpp
+  src/Analysis/FFT.cpp
+  src/Analysis/Feature.hpp
+  src/Analysis/Feature.cpp
+  src/Analysis/SpectralFeature.hpp
+  src/Analysis/SpectralFeature.cpp
 )
 
 # Boost
@@ -40,8 +45,10 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 # Qt
 set(CMAKE_PREFIX_PATH /usr/local/Cellar/qt/5.12.0) # Set to system Qt path
+include_directories(/usr/local/Cellar/qwt/6.1.3_4/lib/qwt.framework/Versions/6/headers) # Set to system Qwt path
 include(QtCommon)
 find_package(Qt5Widgets REQUIRED)
+find_package(Qwt REQUIRED)
 
 add_executable(${PROJECT_NAME}
     ${OS_BUNDLE}
@@ -52,10 +59,10 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     portaudio
-    portaudiocpp
     sndfile
     samplerate
     fftw3
+    ${QWT_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
     ${Boost_FILESYSTEM_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}

@@ -25,17 +25,16 @@
 #include <QObject>
 
 #include "AudioEngine.hpp"
-#include "FFT.hpp"
-#include "Synth.hpp"
+#include "Analysis/FFT.hpp"
+#include "Analysis/SpectralFeature.hpp"
 
 using std::vector;
 
-/*
-The audio processing occurs in AudioProcess, which inherits from the audio
-engine class that wraps the PortAudio functionality. It has a Synth object as a
-member that contains the data used by the callback function
-(processing_callback).
- */
+/* The audio processing occurs in AudioProcess, which inherits from the
+AudioEngine class that wraps the PortAudio functionality. It contains the
+virtual audio callback function where the analysis and synthesis takes place. It
+also emits a signal when an FFT frame is processed, to be used by the Qt GUI.
+*/
 
 class AudioProcess : public QObject, public AudioEngine
 {
@@ -48,11 +47,12 @@ public:
     ~AudioProcess();
 
 private:
-    void fill_input_data(float *input);
-
     FFT *fft;
-    vector<float> input_data;
-    vector<float> magspec_data;
+    SpectralFeature spectral_feature;
+    vector<float> magspec;
+    float centroid;
+    int frames_per_plot;
+    int frames_per_plot_count;
 
 protected:
     virtual int processing_callback(const void *input_buffer,
@@ -60,6 +60,9 @@ protected:
                                     unsigned long frames_per_buffer,
                                     const PaStreamCallbackTimeInfo* time_info,
                                     PaStreamCallbackFlags status_flags);
+
+signals:
+    void frame_processed(FFT *fft);
 };
 
 #endif
