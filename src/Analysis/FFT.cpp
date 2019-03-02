@@ -43,18 +43,19 @@ FFT::FFT(uint16_t bin_size, uint16_t frames_per_buffer)
 
 float FFT::window(uint16_t i)
 {
-    return (1./2.) * (1. - std::cos((2. * M_PI * i) / (bin_size - 1.)));
+    return (1. / 2.) * (1. - std::cos((2. * M_PI * i) / (bin_size - 1.)));
 }
 
 void FFT::fill(float *input)
 {
-    for (auto i = 0; i < frames_per_buffer; ++i)
+    /* Fill data array with input multiplied by windowing function. */
+    for (uint16_t i = 0; i < frames_per_buffer; ++i)
     {
         data[i] = input[i] * window(i);
     }
 
-    /* Zero padding. */
-    for (auto i = frames_per_buffer; i < bin_size; ++i)
+    /* Pad range from <frames_per_buffer> to <bin_size> with zeroes. */
+    for (uint16_t i = frames_per_buffer; i < bin_size; ++i)
     {
         data[i] = 0.0;
     }
@@ -68,7 +69,9 @@ void FFT::compute()
 
 void FFT::get_magspec(vector<float> &output)
 {
-    for (std::size_t i = 0; i < bin_size / 2 + 1; ++i)
+    uint16_t n = bin_size / 2 + 1;
+
+    for (uint16_t i = 0; i < n; ++i)
     {
         output[i] = magspec[i];
     }
@@ -76,7 +79,9 @@ void FFT::get_magspec(vector<float> &output)
 
 void FFT::compute_magspec()
 {
-    for (std::size_t i = 0; i < bin_size / 2 + 1; ++i)
+    uint16_t n = bin_size / 2 + 1;
+
+    for (uint16_t i = 0; i < n; ++i)
     {
         magspec[i] = std::abs(spectrum[i]);
     }

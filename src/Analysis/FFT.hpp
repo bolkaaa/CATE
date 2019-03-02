@@ -29,10 +29,10 @@
 using std::vector;
 using std::complex;
 
-/*
-  The FFT class wraps the fftw library, providing functionality for calculating
-  Discrete Fourier Transforms of input data.
- */
+/* The FFT class wraps the fftw library, providing functionality for calculating
+ * Discrete Fourier Transforms of input data. It uses the C++ complex class to
+ * represent complex numbers rather than fftw_complex, allowing for some
+ * conveniences such as using std::abs to calculate the magnitude spectrum. */
 
 class FFT
 {
@@ -51,7 +51,7 @@ public:
     vector<float> magspec;
 
 private:
-    /* Calculate Hanning window function. */
+    /* Calculate Hanning window function for a given index. */
     float window(uint16_t i);
 
     /* Compute magnitude spectrum from complex spectrum. */
@@ -59,8 +59,6 @@ private:
 
     uint16_t bin_size;
     uint16_t frames_per_buffer;
-    // double *data;
-    // fftw_complex *spectrum;
     vector<double> data;
     vector<complex<double> > spectrum;
     fftw_plan plan;
