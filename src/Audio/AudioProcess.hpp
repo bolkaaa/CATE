@@ -25,8 +25,8 @@
 #include <QObject>
 
 #include "AudioEngine.hpp"
-#include "Analysis/FFT.hpp"
-#include "Analysis/SpectralFeature.hpp"
+#include "../Analysis/FFT.hpp"
+#include "../Analysis/SpectralFeature.hpp"
 
 using std::vector;
 

@@ -12,28 +12,28 @@ set(IDENTIFIER "com.cate.CATE")
 
 set(SOURCE_FILES
   src/CATE.cpp
-  src/AudioEngine.hpp
-  src/AudioEngine.cpp
-  src/AudioProcess.hpp
-  src/AudioProcess.cpp
-  src/AudioBuffer.hpp
-  src/AudioBuffer.cpp
-  src/RingBuffer.hpp
-  src/RingBuffer.cpp
-  src/FileTree.hpp
-  src/FileTree.cpp
-  src/Database.hpp
-  src/Database.cpp
-  src/MainWindow.hpp
-  src/MainWindow.cpp
-  src/Plot.hpp
-  src/Plot.cpp
+  src/Audio/AudioEngine.hpp
+  src/Audio/AudioEngine.cpp
+  src/Audio/AudioProcess.hpp
+  src/Audio/AudioProcess.cpp
+  src/Audio/AudioBuffer.hpp
+  src/Audio/AudioBuffer.cpp
+  src/Audio/RingBuffer.hpp
+  src/Audio/RingBuffer.cpp
   src/Analysis/FFT.hpp
   src/Analysis/FFT.cpp
   src/Analysis/Feature.hpp
   src/Analysis/Feature.cpp
   src/Analysis/SpectralFeature.hpp
   src/Analysis/SpectralFeature.cpp
+  src/Database/FileTree.hpp
+  src/Database/FileTree.cpp
+  src/Database/Database.hpp
+  src/Database/Database.cpp
+  src/GUI/MainWindow.hpp
+  src/GUI/MainWindow.cpp
+  src/GUI/Plot.hpp
+  src/GUI/Plot.cpp
 )
 
 # Boost

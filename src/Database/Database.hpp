@@ -23,8 +23,8 @@
 #include <vector>
 #include <unordered_map>
 
-#include "AudioBuffer.hpp"
 #include "FileTree.hpp"
+#include "../Audio/AudioBuffer.hpp"
 
 using std::vector;
 using std::unordered_map;

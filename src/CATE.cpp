@@ -24,7 +24,7 @@
 #include <QApplication>
 #include <boost/filesystem.hpp>
 
-#include "MainWindow.hpp"
+#include "./GUI/MainWindow.hpp"
 
 int main(int argc, char *argv[])
 {

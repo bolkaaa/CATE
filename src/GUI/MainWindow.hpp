@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QThread>
 
-#include "AudioProcess.hpp"
+#include "../Audio/AudioProcess.hpp"
 #include "Plot.hpp"
 
 /* The main Qt application window class. It contains most of the objects and

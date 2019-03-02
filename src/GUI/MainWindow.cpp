@@ -1,6 +1,6 @@
 #include <QDebug>
 
-#include "AudioProcess.hpp"
+#include "../Audio/AudioProcess.hpp"
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
 

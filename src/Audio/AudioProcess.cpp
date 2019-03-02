@@ -18,7 +18,7 @@
 */
 
 #include "AudioProcess.hpp"
-#include "Analysis/FFT.hpp"
+#include "../Analysis/FFT.hpp"
 
 #include <cstdlib>
 #include <cmath>

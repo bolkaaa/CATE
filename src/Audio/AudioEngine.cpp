@@ -24,7 +24,6 @@
 #include <iostream>
 
 /* TODO: Improve the error handling in these functions. */
-
 AudioEngine::AudioEngine(uint16_t sample_rate, uint16_t frames_per_buffer)
     : sample_rate(sample_rate),
       frames_per_buffer(frames_per_buffer)
