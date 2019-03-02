@@ -33,6 +33,7 @@ using std::string;
  */
 
 vector<string> get_subpaths(const string &root_path);
+
 void get_nested_files(vector<string> &paths, string root_path);
 
 #endif

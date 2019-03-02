@@ -23,6 +23,9 @@
 
 using std::vector;
 
+/* The SpectralFeature class represents audio features that utilise the spectrum
+ * of an audio signal, such as the spectral centroid. */
+
 class SpectralFeature : public Feature
 {
 public:

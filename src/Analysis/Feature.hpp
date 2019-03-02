@@ -14,6 +14,9 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+/* The Feature class is a base class for an object that calculates audio
+ * features, which specific features can inherit from. */
+
 #ifndef FEATURE_HPP
 #define FEATURE_HPP
 
