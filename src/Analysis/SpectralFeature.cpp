@@ -29,11 +29,13 @@ float SpectralFeature::centroid(const vector<float> &magspec)
 {
     auto magnitudes = 0.0;
     auto weighted_magnitudes = 0.0;
+    auto i = 0;
 
-    for (std::size_t i = 1; i <= magspec.size(); ++i)
+    for (auto x : magspec)
     {
-        magnitudes += magspec[i];
-        weighted_magnitudes += magspec[i] * i;
+        magnitudes += x;
+        weighted_magnitudes += (x * i);
+        ++i;
     }
 
     /* Protect against divide-by-zero errors. */
@@ -52,9 +54,9 @@ float SpectralFeature::flatness(const vector<float> &magspec)
     double log_sum = 0.0;
     double n = (double) (magspec.size());
 
-    for (std::size_t i = 0; i < magspec.size(); ++i)
+    for (auto x : magspec)
     {
-        double v = (double) (1 + magspec[i]);
+        double v = static_cast<double>(1 + x);
         sum += v;
         log_sum += std::log(v);
     }
@@ -65,7 +67,7 @@ float SpectralFeature::flatness(const vector<float> &magspec)
     /* Protect against divide-by-zero errors. */
     if (sum > 0)
     {
-        float f = (float) (std::exp(log_sum / sum));
+        float f = static_cast<float>(std::exp(log_sum / sum));
         return f;
     }
 
