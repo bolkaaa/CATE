@@ -27,7 +27,6 @@ using std::vector;
 using std::string;
 
 vector<string> get_subpaths(const string &root_path)
-/* Get vector of filenames containing each subpath within <root_path>. */
 {
     vector<boost::filesystem::directory_entry> entries;
     vector<string> sub_paths;
@@ -44,8 +43,7 @@ vector<string> get_subpaths(const string &root_path)
     return sub_paths;
 }
 
-void get_nested_files(vector<string> &paths, string root_path)
-/* Recursively get all nested files from a root directory. */
+void get_nested_files(vector<string> &paths, const string &root_path)
 {
     vector<string> sub_paths = get_subpaths(root_path);
 

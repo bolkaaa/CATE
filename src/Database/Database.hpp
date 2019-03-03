@@ -34,10 +34,10 @@ using std::unordered_map;
 using std::string;
 using Json = nlohmann::json;
 
-/*
-  The Database class handles functionality for working with a collection for
-  audio buffers. It will form the basis of the corpus used in the program.
- */
+/* The Database class handles functionality for persistently storing a
+ * collection of audio file paths and associated segmentation markers and
+ * analysis data, forming the basis for the corpus of the concatenative
+ * synthesis system. */
 
 class Database
 {

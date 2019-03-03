@@ -31,10 +31,10 @@
 using std::vector;
 
 /* The audio processing occurs in AudioProcess, which inherits from the
-AudioEngine class that wraps the PortAudio functionality. It contains the
-virtual audio callback function where the analysis and synthesis takes place. It
-also emits a signal when an FFT frame is processed, to be used by the Qt GUI.
-*/
+ * AudioEngine class that wraps the PortAudio functionality. It contains the
+ * virtual audio callback function where the analysis and synthesis takes place.
+ * It also emits a signal when an FFT frame is processed, to be used by the Qt
+ * GUI. */
 
 class AudioProcess : public QObject, public AudioEngine
 {
@@ -51,7 +51,7 @@ private:
     SpectralFeature spectral_feature;
     vector<float> magspec;
     float centroid;
-    int frames_per_plot;
+    static const int frames_per_plot = 4;
     int frames_per_plot_count;
 
 protected:

@@ -31,7 +31,6 @@ AudioProcess::AudioProcess(uint16_t sample_rate, uint16_t frames_per_buffer,
       spectral_feature(sample_rate, fft_bin_size)
 {
     fft = new FFT(fft_bin_size, frames_per_buffer);
-    frames_per_plot = 3;
     frames_per_plot_count = frames_per_plot;
 }
 
