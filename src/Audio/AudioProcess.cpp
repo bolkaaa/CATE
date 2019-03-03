@@ -24,8 +24,8 @@
 #include <cmath>
 #include <iostream>
 
-AudioProcess::AudioProcess(uint16_t sample_rate, uint16_t frames_per_buffer,
-                           uint16_t fft_bin_size)
+AudioProcess::AudioProcess(double sample_rate, int frames_per_buffer,
+                           int fft_bin_size)
     : AudioEngine(sample_rate, frames_per_buffer),
       magspec(vector<float>(fft_bin_size / 2 + 1)),
       spectral_feature(sample_rate, fft_bin_size)
@@ -47,8 +47,8 @@ int AudioProcess::processing_callback(const void *input_buffer,
 {
     static_cast<void>(status_flags);
     static_cast<void>(time_info);
-    float *input = const_cast<float*>(static_cast<const float*>(input_buffer));
-    float *output = static_cast<float*>(output_buffer);
+    auto *input = const_cast<float*>(static_cast<const float*>(input_buffer));
+    auto *output = static_cast<float*>(output_buffer);
     unsigned long i = 0;
 
     /* FFT operations. */

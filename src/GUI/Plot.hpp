@@ -32,19 +32,19 @@ using std::string;
 class Plot
 {
 public:
-    Plot(uint16_t data_size);
+    Plot(int data_size);
 
     ~Plot();
 
     /* Set the appearance of the plot. */
     void set_appearance(string x_title, string y_title, int x_min, int x_max,
-                        int y_min, int y_max, string text_font, uint8_t text_size);
+                        int y_min, int y_max, string text_font, int text_size);
 
     /* Set value of specified index of x_data array. */
-    void set_x_data(uint16_t i, double x);
+    void set_x_data(int i, double x);
 
     /* Set value of specified index of y_data array. */
-    void set_y_data(uint16_t i, double y);
+    void set_y_data(int i, double y);
 
     /* Set the scale of plot's x and y axes. */
     void set_axis_scale(int x_min, int x_max, int y_min, int y_max);
@@ -61,7 +61,7 @@ private:
     QwtPlotGrid *grid;
     QwtPlotPanner *panner;
 
-    uint16_t data_size;
+    int data_size;
     double *x_data;
     double *y_data;
 };

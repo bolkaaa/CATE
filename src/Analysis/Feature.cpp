@@ -16,7 +16,7 @@
 
 #include "Feature.hpp"
 
-Feature::Feature(uint16_t sample_rate)
+Feature::Feature(double sample_rate)
     : sample_rate(sample_rate)
 {
 }

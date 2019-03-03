@@ -24,7 +24,7 @@
 #include <iostream>
 
 /* TODO: Improve the error handling in these functions. */
-AudioEngine::AudioEngine(uint16_t sample_rate, uint16_t frames_per_buffer)
+AudioEngine::AudioEngine(double sample_rate, unsigned long frames_per_buffer)
     : sample_rate(sample_rate),
       frames_per_buffer(frames_per_buffer)
 {
@@ -79,13 +79,13 @@ void AudioEngine::init()
     input_params.device = Pa_GetDefaultInputDevice();
     input_params.sampleFormat = paFloat32;
     input_params.suggestedLatency = suggested_latency;
-    input_params.hostApiSpecificStreamInfo = NULL;
+    input_params.hostApiSpecificStreamInfo = nullptr;
 
     output_params.channelCount = 1;
     output_params.device = Pa_GetDefaultOutputDevice();
     output_params.sampleFormat = paFloat32;
     output_params.suggestedLatency = suggested_latency;
-    output_params.hostApiSpecificStreamInfo = NULL;
+    output_params.hostApiSpecificStreamInfo = nullptr;
 
     std::cout << "Default input device: " << Pa_GetDefaultInputDevice() << "\n";
     std::cout << "Default output device: " << Pa_GetDefaultOutputDevice() << "\n";

@@ -12,11 +12,8 @@
 class RingBuffer : public AudioBuffer
 {
 public:
-    /* Allocate memory for buffer (defaults to 1024 samples). */
-    RingBuffer();
-
-    /* Allocate and set parameters. */
-    RingBuffer(uint32_t size);
+    /* Allocate memory for ring buffer. */
+    explicit RingBuffer(int size);
 
     /* Insert element at head. */
     void push(float elem);
@@ -25,16 +22,16 @@ public:
     void pop(float &output);
 
     /* Calculate samples available in buffer. */
-    uint32_t samples_available();
+    int samples_available();
 
     /* Calculate space left in buffer. */
-    uint32_t space_available();
+    int space_available();
 
 private:
     vector<float> data;
-    uint32_t head;
-    uint32_t tail;
-    uint32_t high_water_mark;
+    int head;
+    int tail;
+    int high_water_mark;
 };
 
 #endif

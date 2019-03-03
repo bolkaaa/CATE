@@ -22,15 +22,16 @@
 #include <QApplication>
 
 #include "./Database/Database.hpp"
+#include "./Audio/AudioBuffer.hpp"
 #include "./GUI/MainWindow.hpp"
 
 using std::string;
 
 int main(int argc, char *argv[])
 {
-    bool test = 1;
+    bool test = 0;
 
-    /* Command-line testing. */
+    /* Command-line testing of data functionality. */
     if (test)
     {
         Database db;
@@ -40,6 +41,8 @@ int main(int argc, char *argv[])
 
         db.add_directory(audio_files_path);
         db.to_json_file(json_db_path);
+        db.load_buffers_from_db();
+        vector<AudioBuffer> buffers = db.get_values();
 
         return 0;
     }

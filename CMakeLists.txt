@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13.3)
+cmake_minimum_required(VERSION 3.12.2)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -11,39 +11,39 @@ set(COPYRIGHT "Copyright (c) 2019 Liam Wyllie. All rights reserved.")
 set(IDENTIFIER "com.cate.CATE")
 
 set(SOURCE_FILES
-  src/CATE.cpp
-  src/Audio/AudioEngine.hpp
-  src/Audio/AudioEngine.cpp
-  src/Audio/AudioProcess.hpp
-  src/Audio/AudioProcess.cpp
-  src/Audio/AudioBuffer.hpp
-  src/Audio/AudioBuffer.cpp
-  src/Audio/RingBuffer.hpp
-  src/Audio/RingBuffer.cpp
-  src/Audio/Util.hpp
-  src/Audio/Util.cpp
-  src/Analysis/FFT.hpp
-  src/Analysis/FFT.cpp
-  src/Analysis/Feature.hpp
-  src/Analysis/Feature.cpp
-  src/Analysis/SpectralFeature.hpp
-  src/Analysis/SpectralFeature.cpp
-  src/Database/FileTree.hpp
-  src/Database/FileTree.cpp
-  src/Database/Entry.hpp
-  src/Database/Entry.cpp
-  src/Database/Database.hpp
-  src/Database/Database.cpp
-  src/GUI/MainWindow.hpp
-  src/GUI/MainWindow.cpp
-  src/GUI/Plot.hpp
-  src/GUI/Plot.cpp
-)
+        src/CATE.cpp
+        src/Audio/AudioEngine.hpp
+        src/Audio/AudioEngine.cpp
+        src/Audio/AudioProcess.hpp
+        src/Audio/AudioProcess.cpp
+        src/Audio/AudioBuffer.hpp
+        src/Audio/AudioBuffer.cpp
+        src/Audio/RingBuffer.hpp
+        src/Audio/RingBuffer.cpp
+        src/Audio/Util.hpp
+        src/Audio/Util.cpp
+        src/Analysis/FFT.hpp
+        src/Analysis/FFT.cpp
+        src/Analysis/Feature.hpp
+        src/Analysis/Feature.cpp
+        src/Analysis/SpectralFeature.hpp
+        src/Analysis/SpectralFeature.cpp
+        src/Database/FileTree.hpp
+        src/Database/FileTree.cpp
+        src/Database/Entry.hpp
+        src/Database/Entry.cpp
+        src/Database/Database.hpp
+        src/Database/Database.cpp
+        src/GUI/MainWindow.hpp
+        src/GUI/MainWindow.cpp
+        src/GUI/Plot.hpp
+        src/GUI/Plot.cpp
+        )
 
 # Boost
-set(Boost_USE_STATIC_LIBS OFF) 
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF) 
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.68.0 COMPONENTS filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -55,22 +55,22 @@ find_package(Qt5Widgets REQUIRED)
 find_package(Qwt REQUIRED)
 
 add_executable(${PROJECT_NAME}
-    ${OS_BUNDLE}
-    ${SOURCE_FILES}
-    ${META_FILES_TO_INCLUDE}
-    ${RESOURCE_FILES}
-)
+        ${OS_BUNDLE}
+        ${SOURCE_FILES}
+        ${META_FILES_TO_INCLUDE}
+        ${RESOURCE_FILES}
+        )
 
 target_link_libraries(${PROJECT_NAME}
-    portaudio
-    sndfile
-    samplerate
-    fftw3
-    ${QWT_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
-)
+        portaudio
+        sndfile
+        samplerate
+        fftw3
+        ${QWT_LIBRARY}
+        ${Boost_SYSTEM_LIBRARY}
+        ${Boost_FILESYSTEM_LIBRARY}
+        ${CMAKE_THREAD_LIBS_INIT}
+        )
 
 # Qt Modules
 qt5_use_modules(${PROJECT_NAME} Widgets)

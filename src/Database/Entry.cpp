@@ -33,12 +33,10 @@ Entry::Entry(string path)
 Json to_json_entry(const Entry &entry)
 {
     Json json_entry = {
-        { entry.path, {
-                { "markers", entry.markers },
-                { "centroid", entry.centroid },
-                { "flatness", entry.flatness }
-            }
-        }
+        { "path", entry.path },
+        { "markers", entry.markers },
+        { "centroid", entry.centroid },
+        { "flatness", entry.flatness }
     };
 
     return json_entry;

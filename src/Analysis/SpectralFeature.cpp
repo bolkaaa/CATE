@@ -19,7 +19,7 @@
 #include "Feature.hpp"
 #include "SpectralFeature.hpp"
 
-SpectralFeature::SpectralFeature(uint16_t sample_rate, uint16_t bin_size)
+SpectralFeature::SpectralFeature(double sample_rate, int bin_size)
     : Feature(sample_rate),
       bin_size(bin_size)
 {
@@ -41,7 +41,7 @@ float SpectralFeature::centroid(const vector<float> &magspec)
     /* Protect against divide-by-zero errors. */
     if (magnitudes > 0)
     {
-        float c = weighted_magnitudes / magnitudes;
+        auto c = static_cast<float>(weighted_magnitudes / magnitudes);
         return c;
     }
 
@@ -52,11 +52,11 @@ float SpectralFeature::flatness(const vector<float> &magspec)
 {
     double sum = 0.0;
     double log_sum = 0.0;
-    double n = (double) (magspec.size());
+    auto n = (double) (magspec.size());
 
     for (auto x : magspec)
     {
-        double v = static_cast<double>(1 + x);
+        auto v = static_cast<double>(1 + x);
         sum += v;
         log_sum += std::log(v);
     }
@@ -67,7 +67,7 @@ float SpectralFeature::flatness(const vector<float> &magspec)
     /* Protect against divide-by-zero errors. */
     if (sum > 0)
     {
-        float f = static_cast<float>(std::exp(log_sum / sum));
+        auto f = static_cast<float>(std::exp(log_sum / sum));
         return f;
     }
 

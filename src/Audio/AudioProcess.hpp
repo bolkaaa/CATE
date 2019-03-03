@@ -41,8 +41,8 @@ class AudioProcess : public QObject, public AudioEngine
     Q_OBJECT
 
 public:
-    AudioProcess(uint16_t sample_rate, uint16_t frames_per_buffer,
-                 uint16_t fft_bin_size);
+    AudioProcess(double sample_rate, int frames_per_buffer,
+                 int fft_bin_size);
 
     ~AudioProcess();
 

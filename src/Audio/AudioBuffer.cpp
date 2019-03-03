@@ -31,12 +31,7 @@
 using std::vector;
 using std::string;
 
-AudioBuffer::AudioBuffer()
-    : data(vector<float>(1024))
-{
-}
-
-AudioBuffer::AudioBuffer(uint32_t sz)
+AudioBuffer::AudioBuffer(int sz)
     : data(vector<float>(sz))
 {
 }
@@ -54,7 +49,7 @@ AudioBuffer::AudioBuffer(const vector<float> &data)
 void AudioBuffer::read(const string &path)
 {
     SndfileHandle file(path);
-    uint64_t size = file.frames() * file.channels();
+    auto size = file.frames() * file.channels();
     data = vector<float>(size);
     file.read(&data[0], size);
     boost::filesystem::path p(path);
@@ -64,33 +59,33 @@ void AudioBuffer::read(const string &path)
     chan = file.channels();
 }
 
-void AudioBuffer::write(const string &path, uint32_t sample_rate,
-                        uint8_t channels, uint8_t format)
+void AudioBuffer::write(const string &path, double sample_rate,
+                        int channels, int format)
 {
-    SndfileHandle file(path, SFM_WRITE, format, channels, sample_rate);
-    file.write(&data[0], data.size());
+    SndfileHandle file(path, SFM_WRITE, format, channels, static_cast<int>(sample_rate));
+    file.write(&data[0], static_cast<sf_count_t>(data.size()));
 }
 
-void AudioBuffer::to_file(const std::string &path)
+void AudioBuffer::to_file(const string &path)
 {
     std::ofstream file(path);
 
-    for (uint64_t i = 0; i < data.size(); ++i)
+    for (float i : data)
     {
-        file << data[i] << "\n";
+        file << i << "\n";
     }
 }
 
-void AudioBuffer::convert_sample_rate(uint32_t new_sr)
+void AudioBuffer::convert_sample_rate(double new_sr)
 {
     double sr_ratio = new_sr / sr;
-    vector<float> out(sr_ratio * data.size());
+    vector<float> out(static_cast<unsigned long>(sr_ratio * data.size()));
     SRC_DATA conv;
 
     conv.data_in = &data[0];
     conv.data_out = &out[0];
     conv.input_frames = (data.size() / chan);
-    conv.output_frames = ((sr_ratio * data.size()) / chan);
+    conv.output_frames = static_cast<long>((sr_ratio * data.size()) / chan);
     conv.src_ratio = sr_ratio;
 
     src_simple(&conv, SRC_SINC_BEST_QUALITY, chan);

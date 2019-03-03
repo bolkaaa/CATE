@@ -34,7 +34,7 @@
 class AudioEngine
 {
 public:
-    AudioEngine(uint16_t sample_rate, uint16_t frames_per_buffer);
+    AudioEngine(double sample_rate, unsigned long frames_per_buffer);
 
     ~AudioEngine();
 
@@ -71,11 +71,10 @@ protected:
     PaStream *stream;
     PaError error;
     PaTime suggested_latency;
-    PaHostApiIndex selected_host_api;
     PaStreamParameters input_params;
     PaStreamParameters output_params;
     double sample_rate;
-    int frames_per_buffer;
+    unsigned long frames_per_buffer;
     bool is_running;
 };
 

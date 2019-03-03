@@ -20,7 +20,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
 
     ~MainWindow();
 
@@ -28,9 +28,9 @@ private:
     Ui::MainWindow *ui;
     AudioProcess *audio_process;
     Plot *plot;
-    uint16_t sample_rate;
-    uint16_t frames_per_buffer;
-    uint16_t fft_bin_size;
+    double sample_rate;
+    int frames_per_buffer;
+    int fft_bin_size;
 
 public slots:
     /* When start button in UI is pressed, plot is re-initialised, and audio

@@ -25,10 +25,10 @@
 class Feature
 {
 public:
-    Feature(uint16_t sample_rate);
+    explicit Feature(double sample_rate);
 
 protected:
-    uint16_t sample_rate;
+    double sample_rate;
 };
 
 #endif

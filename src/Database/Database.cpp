@@ -42,15 +42,26 @@ void Database::add_directory(const string &directory_path)
     vector<string> file_paths;
     get_nested_files(file_paths, directory_path);
 
-    for (auto path :file_paths)
+    for (const auto path : file_paths)
     {
         add_file(path);
     }
 }
 
-void Database::load_buffers()
+void Database::add_buffer(const string &path)
 {
-    /* For entry in Json db, buffers.push_back(AudioBuffer(entry)) */
+    std::pair<string, AudioBuffer> pair(path, AudioBuffer(path));
+    buffers.insert(pair);
+}
+
+
+void Database::load_buffers_from_db()
+{
+    for (auto entry : db)
+    {
+        const string path = entry["path"];
+        add_buffer(path);
+    }
 }
 
 vector<string> Database::get_keys() const
@@ -65,6 +76,20 @@ vector<string> Database::get_keys() const
                    key_selector);
 
     return keys;
+}
+
+vector<AudioBuffer> Database::get_values() const
+{
+    vector<AudioBuffer> values(buffers.size());
+
+    auto value_selector = [](auto pair) { return pair.second; };
+
+    std::transform(buffers.begin(),
+                   buffers.end(),
+                   values.begin(),
+                   value_selector);
+
+    return values;
 }
 
 std::ostream& operator<<(std::ostream& os, const Database& database)
@@ -88,21 +113,12 @@ void Database::to_json_file(const string &path)
 bool Database::buffer_exists(const string &key)
 {
     auto it = buffers.find(key);
+    bool exists = it != buffers.end();
 
-    if (it != buffers.end())
-    {
-        return true;
-    }
-
-    return false;
+    return exists;
 }
 
-AudioBuffer Database::get_buffer(const string &file_path)
-{
-    return buffers[file_path];
-}
-
-void Database::convert_sample_rates(uint32_t new_sr)
+void Database::convert_sample_rates(double new_sr)
 {
     for (auto &buffer : buffers) // Must be a reference to work correctly.
     {

@@ -29,7 +29,7 @@ using std::vector;
 class SpectralFeature : public Feature
 {
 public:
-    SpectralFeature(uint16_t sample_rate, uint16_t bin_size);
+    SpectralFeature(double sample_rate, int bin_size);
 
     /* Weighted mean of frequencies, with magnitudes as weights. Perceptually,
      * the "center of mass" of the spectrum. Characterises "brightness" of a

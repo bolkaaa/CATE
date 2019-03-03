@@ -50,25 +50,25 @@ public:
     void add_directory(const string &directory_path);
 
     /* Iterate over JSON database and load audio files into <buffers>. */
-    void load_buffers();
+    void load_buffers_from_db();
 
     /* Clear all buffers in database. */
     void clear_buffers();
 
     /* Convert all buffers in database to new sample rate. */
-    void convert_sample_rates(uint32_t new_sr);
+    void convert_sample_rates(double new_sr);
 
     /* Get the size of the database. */
-    uint16_t size() const { return db.size(); }
+    int size() const { return static_cast<int>(db.size()); }
 
     /* Get keys from buffers map as a vector of strings. */
     vector<string> get_keys() const;
 
+    /* Get values from buffers map as a vector of AudioBuffers. */
+    vector<AudioBuffer> get_values() const;
+
     /* Check if a particular file exists in the database. */
     bool buffer_exists(const string &key);
-
-    /* Return a particular buffer from the database as a single object. */
-    AudioBuffer get_buffer(const string &file_path);
 
     /* Save the JSON database to a JSON file. */
     void to_json_file(const string &path);
@@ -81,6 +81,9 @@ public:
 
 
 private:
+    /* Add file from path to buffers map. */
+    void add_buffer(const string &path);
+
     /* JSON data object, storing file paths, segmentation frame markers and
      * analysis data. */
     Json db;

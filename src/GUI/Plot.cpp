@@ -16,7 +16,7 @@
 
 #include "Plot.hpp"
 
-Plot::Plot(uint16_t data_size)
+Plot::Plot(int data_size)
     : data_size(data_size),
       plotter(new QwtPlot()),
       zoomer(new QwtPlotZoomer(plotter->canvas(), true)),
@@ -44,7 +44,7 @@ Plot::~Plot()
 
 void Plot::set_appearance(string x_title, string y_title, int x_min, int x_max,
                           int y_min, int y_max, string text_font,
-                          uint8_t text_size)
+                          int text_size)
 {
     QwtText x_axis_title = QwtText(x_title.c_str());
     QwtText y_axis_title = QwtText(y_title.c_str());
@@ -76,12 +76,12 @@ void Plot::set_appearance(string x_title, string y_title, int x_min, int x_max,
     panner->setMouseButton(Qt::MidButton);
 }
 
-void Plot::set_x_data(uint16_t i, double x)
+void Plot::set_x_data(int i, double x)
 {
     x_data[i] = x;
 }
 
-void Plot::set_y_data(uint16_t i, double y)
+void Plot::set_y_data(int i, double y)
 {
     y_data[i] = y;
 }

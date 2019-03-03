@@ -43,53 +43,53 @@ using std::string;
 class AudioBuffer
 {
 public:
-    AudioBuffer();
+    explicit AudioBuffer() = default;
 
-    AudioBuffer(uint32_t sz);
+    explicit AudioBuffer(int sz);
 
     /* Instantiate with file read from path. */
-    AudioBuffer(const string &path);
+    explicit AudioBuffer(const string &path);
 
     /* Instantiate with vector of data. */
-    AudioBuffer(const vector<float> &data);
-
-    vector<float> get_data() { return data; }
+    explicit AudioBuffer(const vector<float> &data);
 
     /* Read audio file from path. */
     void read(const string &path);
 
     /* Write buffer object to output file. */
-    void write(const string &path, uint32_t sample_rate, uint8_t channels,
-               uint8_t format);
+    void write(const string &path, double sample_rate, int channels,
+               int format);
 
     /* Write sample data to line-separated text file. */
     void to_file(const string &path);
 
     /* Get sample rate of buffer. */
-    uint32_t sample_rate() { return sr; }
+    double sample_rate() { return sr; }
 
     /* Get number of samples in buffer. */
-    uint64_t size() const { return data.size(); }
+    int size() const { return static_cast<int>(data.size()); }
 
     /* Get number of channels in buffer. */
-    uint8_t channels() { return chan; }
+    int channels() { return chan; }
 
     /* Get filename associated with buffer. */
     string filename() { return fname; }
 
     /* Interpolate sample rate of buffer to new sample rate. */
-    void convert_sample_rate(uint32_t new_sr);
+    void convert_sample_rate(double new_sr);
 
-    float& operator[](const uint32_t i) { return data[i]; }
+    vector<float> get_data() { return data; }
 
-    const float& operator[](const uint32_t i) const { return data[i]; }
+    float& operator[](const int i) { return data[i]; }
+
+    const float& operator[](const int i) const { return data[i]; }
 
     void operator=(const AudioBuffer &b) { data = b.data; }
 
 private:
     string fname;
-    uint32_t sr;
-    uint8_t chan;
+    double sr;
+    int chan;
 
 protected:
     vector<float> data;

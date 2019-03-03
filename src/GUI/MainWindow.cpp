@@ -15,14 +15,14 @@ MainWindow::MainWindow(QWidget *parent)
     audio_process = new AudioProcess(sample_rate, frames_per_buffer,
                                      fft_bin_size);
     plot = new Plot(fft_bin_size / 2);
-    plot->set_appearance("Frequency",     // X Title
-                         "Magnitude",     // Y Title
-                         0,               // X Min
-                         sample_rate / 2, // X Max
-                         -120,            // Y Min
-                         0,               // Y Max
-                         "SansSerif",     // Text Font
-                         12);             // Text Size
+    plot->set_appearance("Frequency",
+                         "Magnitude",
+                         0,
+                         static_cast<int>(sample_rate / 2),
+                         -120,
+                         0,
+                         "SansSerif",
+                         12);
 
     /* Insert plot object into UI window. */
     ui->verticalLayout->insertWidget(0, plot->get_plotter());
@@ -41,13 +41,13 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete plot;
-    delete ui;
     delete audio_process;
+    delete ui;
 }
 
 void MainWindow::on_start_button_pressed()
 {
-    uint16_t n = fft_bin_size / 2 + 1;
+    auto n = fft_bin_size / 2 + 1;
 
     for (std::size_t i = 0; i < n; ++i)
     {
@@ -55,7 +55,7 @@ void MainWindow::on_start_button_pressed()
         plot->set_x_data(i, x);
     }
 
-    plot->set_axis_scale(0, sample_rate / 2, -120, 0);
+    plot->set_axis_scale(0, static_cast<int>(sample_rate / 2), -120, 0);
 
     audio_process->start_stream();
 }
@@ -67,9 +67,9 @@ void MainWindow::on_stop_button_pressed()
 
 void MainWindow::on_frame_processed(FFT *fft)
 {
-    uint16_t n = fft_bin_size / 2 + 1;
+    auto n = fft_bin_size / 2 + 1;
 
-    for (uint16_t i = 0; i < n; ++i)
+    for (auto i = 0; i < n; ++i)
     {
         /* Convert to dB. */
         double y = 20.0 * std::log10((1.0 / n) * fft->magspec[i]);
