@@ -20,6 +20,8 @@ set(SOURCE_FILES
   src/Audio/AudioBuffer.cpp
   src/Audio/RingBuffer.hpp
   src/Audio/RingBuffer.cpp
+  src/Audio/Util.hpp
+  src/Audio/Util.cpp
   src/Analysis/FFT.hpp
   src/Analysis/FFT.cpp
   src/Analysis/Feature.hpp
@@ -28,6 +30,8 @@ set(SOURCE_FILES
   src/Analysis/SpectralFeature.cpp
   src/Database/FileTree.hpp
   src/Database/FileTree.cpp
+  src/Database/Entry.hpp
+  src/Database/Entry.cpp
   src/Database/Database.hpp
   src/Database/Database.cpp
   src/GUI/MainWindow.hpp

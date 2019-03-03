@@ -17,36 +17,21 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#ifndef UTIL_HPP
+#define UTIL_HPP
+
 #include <iostream>
 
-#include <QApplication>
+/* Utility functions for working with audio data. */
 
-#include "./Database/Database.hpp"
-#include "./GUI/MainWindow.hpp"
+namespace Util {
 
-using std::string;
+/* Convert N samples to ms time period. */
+float samps_to_ms(uint32_t num_samples, uint16_t sample_rate);
 
-int main(int argc, char *argv[])
-{
-    bool test = 1;
+/* Convert ms time period to N samples. */
+uint32_t ms_to_samps(float ms, uint16_t sample_rate);
 
-    /* Command-line testing. */
-    if (test)
-    {
-        Database db;
+} // Util
 
-        string audio_files_path = "./audio_files";
-        string json_db_path = "./database.json";
-
-        db.add_directory(audio_files_path);
-        db.to_json_file(json_db_path);
-
-        return 0;
-    }
-
-    /* Main Application / GUI. */
-    QApplication app(argc, argv);
-    MainWindow main_window;
-    main_window.show();
-    return app.exec();
-}
+#endif

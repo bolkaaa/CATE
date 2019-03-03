@@ -19,6 +19,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <iomanip>
 
 #include "Database.hpp"
 #include "FileTree.hpp"
@@ -29,15 +30,11 @@ using std::unordered_map;
 using std::pair;
 using std::string;
 
-Database::Database()
-{
-}
-
 void Database::add_file(const string &path)
 {
-    AudioBuffer buffer(path);
-    pair<string, AudioBuffer> pair(path, buffer);
-    buffers.insert(pair);
+    Entry entry(path);
+    Json json_object = to_json_entry(entry);
+    db.push_back(json_object);
 }
 
 void Database::add_directory(const string &directory_path)
@@ -47,26 +44,48 @@ void Database::add_directory(const string &directory_path)
 
     for (auto path :file_paths)
     {
-        AudioBuffer buffer(path);
-        pair<string, AudioBuffer> pair(path, buffer);
-        buffers.insert(pair);
+        add_file(path);
     }
 }
 
-void Database::clear()
+void Database::load_buffers()
+{
+    /* For entry in Json db, buffers.push_back(AudioBuffer(entry)) */
+}
+
+vector<string> Database::get_keys() const
+{
+    vector<string> keys(buffers.size());
+
+    auto key_selector = [](auto pair) { return pair.first; };
+
+    std::transform(buffers.begin(),
+                   buffers.end(),
+                   keys.begin(),
+                   key_selector);
+
+    return keys;
+}
+
+std::ostream& operator<<(std::ostream& os, const Database& database)
+{
+    os << database.db << "\n";
+
+    return os;
+}
+
+void Database::clear_buffers()
 {
     buffers.clear();
 }
 
-void Database::convert_sample_rates(uint32_t new_sr)
+void Database::to_json_file(const string &path)
 {
-    for (auto &buffer : buffers) // Must be a reference to work correctly.
-    {
-        buffer.second.convert_sample_rate(new_sr);
-    }
+    std::ofstream file(path);
+    file << std::setw(4) << db << std::endl;
 }
 
-bool Database::exists(string key)
+bool Database::buffer_exists(const string &key)
 {
     auto it = buffers.find(key);
 
@@ -78,7 +97,17 @@ bool Database::exists(string key)
     return false;
 }
 
-AudioBuffer Database::get_buffer(string buffer_name)
+AudioBuffer Database::get_buffer(const string &file_path)
 {
-    return buffers[buffer_name];
+    return buffers[file_path];
 }
+
+void Database::convert_sample_rates(uint32_t new_sr)
+{
+    for (auto &buffer : buffers) // Must be a reference to work correctly.
+    {
+        buffer.second.convert_sample_rate(new_sr);
+    }
+}
+
+

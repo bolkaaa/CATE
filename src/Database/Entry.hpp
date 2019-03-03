@@ -17,36 +17,33 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <iostream>
+#ifndef ENTRY_HPP
+#define ENTRY_HPP
 
-#include <QApplication>
+#include <string>
+#include <vector>
 
-#include "./Database/Database.hpp"
-#include "./GUI/MainWindow.hpp"
+#include <nlohmann/json.hpp>
 
 using std::string;
+using std::vector;
+using Json = nlohmann::json;
 
-int main(int argc, char *argv[])
+/* Data representation of a single-entry in the JSON database. Includes file
+ * path and vectors of segmentation markers and audio features. */
+
+class Entry
 {
-    bool test = 1;
+public:
+    Entry(string path);
 
-    /* Command-line testing. */
-    if (test)
-    {
-        Database db;
+    string path;
+    vector<float> markers;
+    vector<float> centroid;
+    vector<float> flatness;
+};
 
-        string audio_files_path = "./audio_files";
-        string json_db_path = "./database.json";
+/* Helper function to convert an Entry object into a Json object. */
+Json to_json_entry(const Entry &entry);
 
-        db.add_directory(audio_files_path);
-        db.to_json_file(json_db_path);
-
-        return 0;
-    }
-
-    /* Main Application / GUI. */
-    QApplication app(argc, argv);
-    MainWindow main_window;
-    main_window.show();
-    return app.exec();
-}
+#endif

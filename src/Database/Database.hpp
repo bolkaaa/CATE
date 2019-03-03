@@ -23,12 +23,16 @@
 #include <vector>
 #include <unordered_map>
 
+#include <nlohmann/json.hpp>
+
 #include "FileTree.hpp"
 #include "../Audio/AudioBuffer.hpp"
+#include "Entry.hpp"
 
 using std::vector;
 using std::unordered_map;
 using std::string;
+using Json = nlohmann::json;
 
 /*
   The Database class handles functionality for working with a collection for
@@ -38,8 +42,6 @@ using std::string;
 class Database
 {
 public:
-    Database();
-
     /* Add a single file to the database. */
     void add_file(const string &path);
 
@@ -47,25 +49,42 @@ public:
        TODO: Add some way of ignoring non-audio files. */
     void add_directory(const string &directory_path);
 
+    /* Iterate over JSON database and load audio files into <buffers>. */
+    void load_buffers();
+
     /* Clear all buffers in database. */
-    void clear();
+    void clear_buffers();
 
     /* Convert all buffers in database to new sample rate. */
     void convert_sample_rates(uint32_t new_sr);
 
-    /* Get a particular buffer from the database, indexed by filename. */
-    AudioBuffer& operator[](string filename) { return buffers[filename]; }
-
     /* Get the size of the database. */
-    uint16_t size() const { return buffers.size(); }
+    uint16_t size() const { return db.size(); }
+
+    /* Get keys from buffers map as a vector of strings. */
+    vector<string> get_keys() const;
 
     /* Check if a particular file exists in the database. */
-    bool exists(string key);
+    bool buffer_exists(const string &key);
 
     /* Return a particular buffer from the database as a single object. */
-    AudioBuffer get_buffer(string buffer_name);
+    AudioBuffer get_buffer(const string &file_path);
+
+    /* Save the JSON database to a JSON file. */
+    void to_json_file(const string &path);
+
+    /* Get a particular buffer from the database, indexed by filename. */
+    AudioBuffer& operator[](const string &file_path) { return buffers[file_path]; }
+
+    /* Output the database as a stream. */
+    friend std::ostream& operator<<(std::ostream& os, const Database& database);
+
 
 private:
+    /* JSON data object, storing file paths, segmentation frame markers and
+     * analysis data. */
+    Json db;
+
     /* Hash map of buffers indexed by buffer/file names. */
     unordered_map<string, AudioBuffer> buffers;
 

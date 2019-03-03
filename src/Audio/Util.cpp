@@ -17,36 +17,22 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <iostream>
+#include "Util.hpp"
 
-#include <QApplication>
+namespace Util {
 
-#include "./Database/Database.hpp"
-#include "./GUI/MainWindow.hpp"
-
-using std::string;
-
-int main(int argc, char *argv[])
+float samps_to_ms(uint32_t num_samples, uint16_t sample_rate)
 {
-    bool test = 1;
-
-    /* Command-line testing. */
-    if (test)
-    {
-        Database db;
-
-        string audio_files_path = "./audio_files";
-        string json_db_path = "./database.json";
-
-        db.add_directory(audio_files_path);
-        db.to_json_file(json_db_path);
-
-        return 0;
-    }
-
-    /* Main Application / GUI. */
-    QApplication app(argc, argv);
-    MainWindow main_window;
-    main_window.show();
-    return app.exec();
+    float s = static_cast<float>(num_samples) / sample_rate;
+    float ms = s * 1000;
+    return ms;
 }
+
+uint32_t ms_to_samps(float ms, uint16_t sample_rate)
+{
+    float s = ms / 1000;
+    uint32_t samps = s * sample_rate;
+    return samps;
+}
+
+} // Util

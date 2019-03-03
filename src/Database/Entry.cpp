@@ -17,36 +17,29 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#include "Entry.hpp"
+
 #include <iostream>
 
-#include <QApplication>
-
-#include "./Database/Database.hpp"
-#include "./GUI/MainWindow.hpp"
-
-using std::string;
-
-int main(int argc, char *argv[])
+Entry::Entry(string path)
+    : path(path)
 {
-    bool test = 1;
+    vector<float> empty;
+    markers = empty;
+    centroid = empty;
+    flatness = empty;
+}
 
-    /* Command-line testing. */
-    if (test)
-    {
-        Database db;
+Json to_json_entry(const Entry &entry)
+{
+    Json json_entry = {
+        { entry.path, {
+                { "markers", entry.markers },
+                { "centroid", entry.centroid },
+                { "flatness", entry.flatness }
+            }
+        }
+    };
 
-        string audio_files_path = "./audio_files";
-        string json_db_path = "./database.json";
-
-        db.add_directory(audio_files_path);
-        db.to_json_file(json_db_path);
-
-        return 0;
-    }
-
-    /* Main Application / GUI. */
-    QApplication app(argc, argv);
-    MainWindow main_window;
-    main_window.show();
-    return app.exec();
+    return json_entry;
 }
