@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 'Analysis Functionality and Data Storage'
-date: '2019-02-24'
+date: '2019-03-03'
 ---
 ### Progress
 I have been implementing functionality for audio analysis and storage for the program. I am on schedule with this and will continue working on it next week as well. 
