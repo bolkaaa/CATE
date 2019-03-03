@@ -27,10 +27,10 @@
 namespace Util {
 
 /* Convert N samples to ms time period. */
-float samps_to_ms(uint32_t num_samples, uint16_t sample_rate);
+float samps_to_ms(int num_samples, double sample_rate);
 
 /* Convert ms time period to N samples. */
-uint32_t ms_to_samps(float ms, uint16_t sample_rate);
+int ms_to_samps(float ms, double sample_rate);
 
 } // Util
 

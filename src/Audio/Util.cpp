@@ -21,17 +21,19 @@
 
 namespace Util {
 
-float samps_to_ms(uint32_t num_samples, uint16_t sample_rate)
+float samps_to_ms(int num_samples, double sample_rate)
 {
     auto s = static_cast<float>(num_samples) / sample_rate;
-    float ms = s * 1000;
+    auto ms = static_cast<float>(s * 1000);
+
     return ms;
 }
 
-uint32_t ms_to_samps(float ms, uint16_t sample_rate)
+int ms_to_samps(float ms, double sample_rate)
 {
     float s = ms / 1000;
-    auto samps = static_cast<uint32_t>(s * sample_rate);
+    auto samps = static_cast<int>(s * sample_rate);
+
     return samps;
 }
 
