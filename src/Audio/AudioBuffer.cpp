@@ -31,8 +31,8 @@
 using std::vector;
 using std::string;
 
-AudioBuffer::AudioBuffer(int sz)
-    : data(vector<float>(sz))
+AudioBuffer::AudioBuffer(int sz, const string &fname, double sr, int chan)
+    : fname(fname), sr(sr), chan(chan)
 {
 }
 
@@ -70,9 +70,9 @@ void AudioBuffer::to_file(const string &path)
 {
     std::ofstream file(path);
 
-    for (float i : data)
+    for (float sample_value : data)
     {
-        file << i << "\n";
+        file << sample_value << "\n";
     }
 }
 
@@ -91,4 +91,20 @@ void AudioBuffer::convert_sample_rate(double new_sr)
     src_simple(&conv, SRC_SINC_BEST_QUALITY, chan);
 
     data = out;
+}
+
+vector<AudioBuffer> AudioBuffer::segment(int frame_size)
+{
+    vector<AudioBuffer> segments;
+    auto n = data.size();
+    auto remaining_space = n % frame_size;
+
+    for (auto it = data.begin(); it != (data.end() - remaining_space); it += frame_size)
+    {
+        vector<float> segment_data(it, it + frame_size);
+        AudioBuffer buffer(segment_data);
+        segments.emplace_back(buffer);
+    }
+
+    return segments;
 }

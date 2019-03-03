@@ -62,10 +62,10 @@ public:
     int size() const { return static_cast<int>(db.size()); }
 
     /* Get keys from buffers map as a vector of strings. */
-    vector<string> get_keys() const;
+    vector<string> get_filepaths() const;
 
     /* Get values from buffers map as a vector of AudioBuffers. */
-    vector<AudioBuffer> get_values() const;
+    vector<AudioBuffer> get_buffers() const;
 
     /* Check if a particular file exists in the database. */
     bool buffer_exists(const string &key);

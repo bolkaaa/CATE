@@ -29,7 +29,7 @@ using std::string;
 
 int main(int argc, char *argv[])
 {
-    bool test = 0;
+    bool test = 1;
 
     /* Command-line testing of data functionality. */
     if (test)
@@ -42,7 +42,9 @@ int main(int argc, char *argv[])
         db.add_directory(audio_files_path);
         db.to_json_file(json_db_path);
         db.load_buffers_from_db();
-        vector<AudioBuffer> buffers = db.get_values();
+        vector<AudioBuffer> buffers = db.get_buffers();
+
+        // vector<AudioBuffer> segments = buffers[0].segment(1024);
 
         return 0;
     }

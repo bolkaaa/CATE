@@ -45,13 +45,18 @@ class AudioBuffer
 public:
     explicit AudioBuffer() = default;
 
-    explicit AudioBuffer(int sz);
+    AudioBuffer(int sz, string fname, double sr, int chan);
 
     /* Instantiate with file read from path. */
     explicit AudioBuffer(const string &path);
 
     /* Instantiate with vector of data. */
     explicit AudioBuffer(const vector<float> &data);
+
+    AudioBuffer(const string &fname, double sr, int chan);
+
+    /* Segment AudioBuffer object into several AudioBuffer objects. */
+    vector<AudioBuffer> segment(int frame_size);
 
     /* Read audio file from path. */
     void read(const string &path);
@@ -72,6 +77,12 @@ public:
     /* Get number of channels in buffer. */
     int channels() { return chan; }
 
+    void set_fname(const string &fname) { AudioBuffer::fname = fname; }
+
+    void set_sr(double sr) {  AudioBuffer::sr = sr;  }
+
+    void set_chan(int chan) {  AudioBuffer::chan = chan; }
+
     /* Get filename associated with buffer. */
     string filename() { return fname; }
 
@@ -83,8 +94,6 @@ public:
     float& operator[](const int i) { return data[i]; }
 
     const float& operator[](const int i) const { return data[i]; }
-
-    void operator=(const AudioBuffer &b) { data = b.data; }
 
 private:
     string fname;

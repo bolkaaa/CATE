@@ -64,7 +64,7 @@ void Database::load_buffers_from_db()
     }
 }
 
-vector<string> Database::get_keys() const
+vector<string> Database::get_filepaths() const
 {
     vector<string> keys(buffers.size());
 
@@ -78,16 +78,18 @@ vector<string> Database::get_keys() const
     return keys;
 }
 
-vector<AudioBuffer> Database::get_values() const
+vector<AudioBuffer> Database::get_buffers() const
 {
     vector<AudioBuffer> values(buffers.size());
 
-    auto value_selector = [](auto pair) { return pair.second; };
-
-    std::transform(buffers.begin(),
-                   buffers.end(),
-                   values.begin(),
-                   value_selector);
+    for (auto v : buffers)
+    {
+        AudioBuffer b = v.second;
+        b.set_chan(v.second.channels());
+        b.set_sr(v.second.sample_rate());
+        b.set_fname(v.second.filename());
+        values.emplace_back(b);
+    }
 
     return values;
 }
