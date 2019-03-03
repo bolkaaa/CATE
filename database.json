@@ -1,0 +1,436 @@
+[
+    {
+        "./audio_files/Narrative/narrative1.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Narrative/narrative3.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Narrative/narrative2.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Narrative/narrative6.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Narrative/narrative5.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Narrative/narrative4.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/sigh.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/shy.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/fie.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/rye.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/die.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/why.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/hang.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/guy.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/thigh.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/you.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/buy.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/thy.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/gin.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/vie.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/my.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/azure.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/tie.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/high.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/pie.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/kite.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/chin.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/lie.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/nigh.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Consonants/zoo.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/seen.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/city.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/merry.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/spy.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/sin.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/two.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/sing.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/marry.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/sane.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/sang.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/length.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/vicinity.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/sty.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/Mary.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/Murray.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/new.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Conventions/sky.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/bird.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/bed.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/bid.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/above.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/bayed.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/good.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/buy.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/bud.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/bead.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/bough.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/bad.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/boy.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/booed.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/bode.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    },
+    {
+        "./audio_files/Vowels/pod.wav": {
+            "centroid": [],
+            "flatness": [],
+            "markers": []
+        }
+    }
+]
