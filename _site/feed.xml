@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-03T15:59:01+00:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Discrete Fourier Transforms and Starting on Qt GUI</title><link href="/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui.html" rel="alternate" type="text/html" title="Discrete Fourier Transforms and Starting on Qt GUI" /><published>2019-02-24T00:00:00+00:00</published><updated>2019-02-24T00:00:00+00:00</updated><id>/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui</id><content type="html" xml:base="/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui.html">&lt;h3 id=&quot;this-week&quot;&gt;This Week&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-03T16:04:13+00:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Discrete Fourier Transforms and Starting on Qt GUI</title><link href="/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui.html" rel="alternate" type="text/html" title="Discrete Fourier Transforms and Starting on Qt GUI" /><published>2019-02-24T00:00:00+00:00</published><updated>2019-02-24T00:00:00+00:00</updated><id>/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui</id><content type="html" xml:base="/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui.html">&lt;h3 id=&quot;this-week&quot;&gt;This Week&lt;/h3&gt;
 &lt;p&gt;This week, I’ve been working on the following parts of my program:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -155,7 +155,96 @@ be necessary so I can perform the comparisons efficiently in the audio loop.&lt;
 &lt;p&gt;Additionally, I want to implement better error handling with my PortAudio code
 and clean it up in general. I will refrain from doing a lot of GUI work right
 now, although I might add some kind of text output in the main window for
-debugging pourposes.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This Week This week, I’ve been working on the following parts of my program:</summary></entry><entry><title type="html">Moving Onwards: Real-time Audio Analysis</title><link href="/2019/02/17/going-forwards-with-real-time-audio-analysis.html" rel="alternate" type="text/html" title="Moving Onwards: Real-time Audio Analysis" /><published>2019-02-17T00:00:00+00:00</published><updated>2019-02-17T00:00:00+00:00</updated><id>/2019/02/17/going-forwards-with-real-time-audio-analysis</id><content type="html" xml:base="/2019/02/17/going-forwards-with-real-time-audio-analysis.html">&lt;h3 id=&quot;thoughts-on-the-programs-direction&quot;&gt;Thoughts on the Program’s Direction&lt;/h3&gt;
+debugging pourposes.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This Week This week, I’ve been working on the following parts of my program:</summary></entry><entry><title type="html">Analysis Functionality and Data Storage</title><link href="/2019/02/24/analysis-functionality-and-data-storage.html" rel="alternate" type="text/html" title="Analysis Functionality and Data Storage" /><published>2019-02-24T00:00:00+00:00</published><updated>2019-02-24T00:00:00+00:00</updated><id>/2019/02/24/analysis-functionality-and-data-storage</id><content type="html" xml:base="/2019/02/24/analysis-functionality-and-data-storage.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+&lt;p&gt;I have been implementing functionality for audio analysis and storage for the program. I am on schedule with this and will continue working on it next week as well.&lt;/p&gt;
+
+&lt;p&gt;This week’s additions are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Visualisation of the magnitude spectrum&lt;/em&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Implementing spectral analysis functions&lt;/em&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Implementing persistent storage of analysis data in JSON format&lt;/em&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;General Changes to Code Design&lt;/em&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;visualisation-of-the-magnitude-spectrum&quot;&gt;Visualisation of the Magnitude Spectrum&lt;/h3&gt;
+&lt;p&gt;I wanted a way of verifying the workings of my magnitude spectrum computation with visual feedback. I used a &lt;a href=&quot;http://www.martin-kumm.de/wiki/doku.php?id=05Misc:A_Template_for_Audio_DSP_Applications&quot;&gt;code example&lt;/a&gt; found online as a guideline when working on this. I will likely have a very different GUI by the completion of my program, but for now it has been helpful for this purpose, as well as teaching me more about Qt and the Qt plotting library. I may also add some extra plotting of my audio features, as a way of verifying their results easily as well.&lt;/p&gt;
+
+&lt;h3 id=&quot;implementing-spectral-analysis-functions&quot;&gt;Implementing Spectral Analysis Functions&lt;/h3&gt;
+&lt;p&gt;This week, I initially spent some time working with the &lt;a href=&quot;https://essentia.upf.edu/&quot;&gt;Essentia&lt;/a&gt; library, discovering if it would be suitable for my needs. In the end, I decided not to use it. All of the provided examples of its usage are non-real time utilisations, where analysis data is written to a file. It is important for my program to have real-time analysis. I found there to be very little guidance on doing this with Essentia, with the one example provided using an out of date version of Essentia, with numerous functions used within it that no longer exist in the library.&lt;/p&gt;
+
+&lt;p&gt;Therefore, I decided to implement my own audio analysis functionality, which was made easier by the fact that I have already worked on the FFT code. Leading on from that, I chose to implement two features in particular: spectral centroid and spectral flatness. Some reasons for this are as follows:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;They are relatively easy to calculate if you already have a magnitude spectrum computed, which I had functionality for with my previous week’s work&lt;/li&gt;
+  &lt;li&gt;Compared to many other features, they are quite perceptually useful for a broad range of sounds that aren’t necessarily tonal or rhythmic, which is ideal for the audio sources my program is intended to be making use of. Centroids are linked to brightness in timbre, and flatness is a noisiness ratio where 1.0 is white noise and 0.0 is sinusoidal.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I am focusing on implementing just two features right now, and then moving on to working on the nearest neighbours search functionality. Once that is functioning correctly, I will look to add more analysis functions.&lt;/p&gt;
+
+&lt;p&gt;Currently, the analysis code is structured in a way that there is a base “Feature” class that contains data like the sample rate of the system, which other feature classes can inherit from. I may simplify this later if the polymorphism-based approach seems unnecessary, but for now it seems like a logical way to do it.&lt;/p&gt;
+
+&lt;h3 id=&quot;implementing-persistent-storage-of-analysis-data-in-json-format&quot;&gt;Implementing Persistent Storage of Analysis Data in JSON Format&lt;/h3&gt;
+&lt;p&gt;It was important to add a way of persistently storing audio file paths and their associated analysis data arrays in some kind of data format.&lt;/p&gt;
+
+&lt;p&gt;My choices were:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;A database system / SQL&lt;/li&gt;
+  &lt;li&gt;Creating and parsing plain text files&lt;/li&gt;
+  &lt;li&gt;Using a data format like XML or JSON&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I went with JSON for a number of reasons:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;It’s very easy to work with&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;It’s a standard, portable format that is widely used and well-understood&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;There is good functionality for working with it in C++ (through a third-party
+library)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;One potential drawback could be that the file size may grow large with a lot of
+audio files and associated analysis data. The program likely won’t be working
+with many audio files at once however, and JSON is designed to store data in
+much larger quantities than my program will be using.&lt;/p&gt;
+
+&lt;p&gt;I used the &lt;a href=&quot;https://github.com/nlohmann/json&quot;&gt;following library&lt;/a&gt; to get the functionality required.&lt;/p&gt;
+
+&lt;h3 id=&quot;changes-to-overall-code-design&quot;&gt;Changes to Overall Code Design&lt;/h3&gt;
+&lt;p&gt;One change was to change my usages of unsigned integer types with the simple “int” signed integer type. &lt;a href=&quot;http://soundsoftware.ac.uk/c-pitfall-unsigned.html&quot;&gt;I learned about some bugs that unsigned integers can result in&lt;/a&gt;. Using ints for all integer types also simplifies the code and makes it more readable.&lt;/p&gt;
+
+&lt;p&gt;I also made some other simple type-related revisions, such as using double for sample rate variables, both for the reason that it is consistent with the libraries I am using, and that it makes the values easier to work with when doing calculations.&lt;/p&gt;
+
+&lt;p&gt;I also made more usage of the “auto” keyword in function bodies, which is considered good practice in modern C++. I plan to aim to write most of my code in this way, with the exception of some of audio code where I may have to focus more on efficiency and a more low-level way of doing things if necessary.&lt;/p&gt;
+
+&lt;h3 id=&quot;moving-onwards&quot;&gt;Moving Onwards&lt;/h3&gt;
+&lt;p&gt;My immediate plans moving forwards are as follows:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Performing a sliding-window analysis of audio files, and storing the resulting data in the JSON data file&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Building Kd-tree from data and using KNN algorithm to find closest audio unit to current analysis frame. I plan to use the &lt;a href=&quot;https://github.com/jlblancoc/nanoflann&quot;&gt;following library&lt;/a&gt; for this&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Adding some more audio features, particularly spectral ones&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress I have been implementing functionality for audio analysis and storage for the program. I am on schedule with this and will continue working on it next week as well.</summary></entry><entry><title type="html">Moving Onwards: Real-time Audio Analysis</title><link href="/2019/02/17/going-forwards-with-real-time-audio-analysis.html" rel="alternate" type="text/html" title="Moving Onwards: Real-time Audio Analysis" /><published>2019-02-17T00:00:00+00:00</published><updated>2019-02-17T00:00:00+00:00</updated><id>/2019/02/17/going-forwards-with-real-time-audio-analysis</id><content type="html" xml:base="/2019/02/17/going-forwards-with-real-time-audio-analysis.html">&lt;h3 id=&quot;thoughts-on-the-programs-direction&quot;&gt;Thoughts on the Program’s Direction&lt;/h3&gt;
 &lt;p&gt;I have been thinking a lot about my aims with the program and my report, and the
 particular niche of musical concatenative synthesis I would like to explore. One
 aspect I would like to focus more strongly on, is the notion of working with
