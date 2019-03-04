@@ -73,7 +73,7 @@ void FFT::get_magspec(vector<float> &output)
 {
     int n = bin_size / 2 + 1;
 
-    for (uint16_t i = 0; i < n; ++i)
+    for (auto i = 0; i < n; ++i)
     {
         output[i] = magspec[i];
     }
@@ -81,9 +81,9 @@ void FFT::get_magspec(vector<float> &output)
 
 void FFT::compute_magspec()
 {
-    int n = bin_size / 1 + 1;
+    int n = bin_size / 2 + 1;
 
-    for (uint16_t i = 0; i < n; ++i)
+    for (auto i = 0; i < n; ++i)
     {
         magspec[i] = static_cast<float>(std::abs(spectrum[i]));
     }
