@@ -66,15 +66,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_start_button_pressed()
 {
-    auto n = fft_bin_size / 2 + 1;
+    int n = fft_bin_size / 2 + 1;
 
-    for (std::size_t i = 0; i < n; ++i)
+    for (auto i = 0; i < n; ++i)
     {
-        double x = (static_cast<double> (i) / n) * (sample_rate / 2.0);
+        auto x = (static_cast<double>(i) / n) * (sample_rate / 2.0);
         plot->set_x_data(i, x);
     }
 
-    plot->set_axis_scale(0, static_cast<int>(sample_rate / 2), -120, 0);
+    plot->set_axis_scale(0, static_cast<int>(sample_rate / 2.0), -120, 0);
 
     audio_process->start_stream();
 }
@@ -86,11 +86,11 @@ void MainWindow::on_stop_button_pressed()
 
 void MainWindow::on_frame_processed(FFT *fft)
 {
-    auto n = fft_bin_size / 2 + 1;
+    int n = fft_bin_size / 2 + 1;
 
     for (auto i = 0; i < n; ++i)
     {
-        /* Convert to dB. */
+        /* dB conversion (TODO: make into reusable function). */
         double y = 20.0 * std::log10((1.0 / n) * fft->magspec[i]);
         plot->set_y_data(i, y);
     }
