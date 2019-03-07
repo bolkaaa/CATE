@@ -101,4 +101,27 @@ void Database::load_buffers_from_db()
     }
 }
 
+void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
+{
+    FFT fft(bin_size, frames_per_buffer);
+    vector<float> magspec(bin_size);
+
+    for (auto b : buffers)
+    {
+        vector<AudioBuffer> segments = segment(b.second.data, frames_per_buffer);
+        SpectralFeature spectral_feature(b.second.sr, bin_size);
+
+        for (auto segment : segments)
+        {
+            float *data = &segment[0];
+            fft.fill(data);
+            fft.compute();
+            fft.get_magspec(magspec);
+            float centroid = spectral_feature.centroid(magspec);
+            float flatness = spectral_feature.flatness(magspec);
+            std::cout << centroid << ", " << flatness << " \n";
+        }
+    }
+}
+
 } // CATE

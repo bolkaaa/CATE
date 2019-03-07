@@ -19,5 +19,21 @@
 
 #include "AudioBuffer.hpp"
 
+namespace CATE {
 
+vector<AudioBuffer> segment(const AudioBuffer &source, int frame_size)
+{
+    vector<AudioBuffer> segments;
+    auto n = source.size();
+    auto remaining_space = n % frame_size;
 
+    for (auto it = source.begin(); it != (source.end() - remaining_space); it += frame_size)
+    {
+        AudioBuffer segment_data(it, it + frame_size);
+        segments.emplace_back(segment_data);
+    }
+
+    return segments;
+}
+
+} // CATE

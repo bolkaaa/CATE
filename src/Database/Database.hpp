@@ -60,48 +60,9 @@ public:
     /* Iterate over JSON database and load audio files into <buffers>. */
     void load_buffers_from_db();
 
-    vector<AudioBuffer> segment(const AudioBuffer &source, int frame_size)
-    {
-        vector<AudioBuffer> segments;
-        auto n = source.size();
-        auto remaining_space = n % frame_size;
-
-        for (auto it = source.begin(); it != (source.end() - remaining_space); it += frame_size)
-        {
-            AudioBuffer segment_data(it, it + frame_size);
-            segments.emplace_back(segment_data);
-        }
-
-        if (!segments.empty())
-        {
-            return segments;
-        }
-
-        return vector<AudioBuffer>(0);
-    }
-
-    void sliding_window_analysis(int bin_size, int frames_per_buffer)
-    {
-        FFT fft(bin_size, frames_per_buffer);
-        vector<float> magspec(bin_size);
-
-        for (auto b : buffers)
-        {
-            vector<AudioBuffer> segments = segment(b.second.data, frames_per_buffer);
-            SpectralFeature spectral_feature(b.second.sr, bin_size);
-
-            for (auto segment : segments)
-            {
-                float *data = &segment[0];
-                fft.fill(data);
-                fft.compute();
-                fft.get_magspec(magspec);
-                float centroid = spectral_feature.centroid(magspec);
-                float flatness = spectral_feature.flatness(magspec);
-                std::cout << centroid << ", " << flatness << " \n";
-            }
-        }
-    }
+    /* For each audio file in database, compute audio features for a sliding
+     * window of <frames_per_buffer> samples,and store in the JSON database. */
+    void sliding_window_analysis(int bin_size, int frames_per_buffer);
 
     /* Clear all buffers in database. */
     void clear_buffers();

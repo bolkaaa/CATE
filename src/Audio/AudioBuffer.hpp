@@ -33,6 +33,10 @@ namespace CATE {
 
 typedef std::vector<float> AudioBuffer;
 
-} // CATe
+/* Given an AudioBuffer, segment into a vector where each subset is of size
+ * <frame_size>. */
+vector<AudioBuffer> segment(const AudioBuffer &source, int frame_size);
+
+} // CATE
 
 #endif
