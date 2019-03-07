@@ -25,10 +25,12 @@
 #include <QObject>
 
 #include "AudioEngine.hpp"
+#include "AudioBuffer.hpp"
 #include "../Analysis/FFT.hpp"
 #include "../Analysis/SpectralFeature.hpp"
 
 using std::vector;
+using CATE::FFT;
 
 /* The audio processing occurs in AudioProcess, which inherits from the
  * AudioEngine class that wraps the PortAudio functionality. It contains the
@@ -36,15 +38,15 @@ using std::vector;
  * It also emits a signal when an FFT frame is processed, to be used by the Qt
  * GUI. */
 
+namespace CATE {
+
 class AudioProcess : public QObject, public AudioEngine
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     AudioProcess(double sample_rate, int frames_per_buffer,
                  int fft_bin_size);
-
-    ~AudioProcess();
 
 private:
     FFT *fft;
@@ -58,11 +60,13 @@ protected:
     virtual int processing_callback(const void *input_buffer,
                                     void *output_buffer,
                                     unsigned long frames_per_buffer,
-                                    const PaStreamCallbackTimeInfo* time_info,
+                                    const PaStreamCallbackTimeInfo *time_info,
                                     PaStreamCallbackFlags status_flags);
 
 signals:
     void frame_processed(FFT *fft);
 };
+
+} // CATE
 
 #endif

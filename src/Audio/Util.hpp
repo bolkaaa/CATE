@@ -24,7 +24,7 @@
 
 /* Utility functions for working with audio data. */
 
-namespace Util {
+namespace CATE {
 
 /* Convert N samples to ms time period. */
 float samps_to_ms(int num_samples, double sample_rate);
@@ -32,6 +32,6 @@ float samps_to_ms(int num_samples, double sample_rate);
 /* Convert ms time period to N samples. */
 int ms_to_samps(float ms, double sample_rate);
 
-} // Util
+} // CATE
 
 #endif

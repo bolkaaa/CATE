@@ -26,6 +26,8 @@
 using std::vector;
 using std::string;
 
+namespace CATE {
+
 vector<string> get_subpaths(const string &root_path)
 {
     vector<boost::filesystem::directory_entry> entries;
@@ -52,10 +54,11 @@ void get_nested_files(vector<string> &paths, const string &root_path)
         if (boost::filesystem::is_directory(path))
         {
             get_nested_files(paths, path);
-        }
-        else
+        } else
         {
             paths.push_back(path);
         }
     }
 }
+
+} // CATE

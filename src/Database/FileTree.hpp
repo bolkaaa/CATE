@@ -30,11 +30,15 @@ using std::string;
  * getting a list of all paths deeper than a specified root path. The filesystem
  * part of the Boost library is used to achieve this. */
 
+namespace CATE {
+
 /* Get vector of filenames containing each subpath within <root_path>. */
 vector<string> get_subpaths(const string &root_path);
 
 /* Recursively get all nested files from a root directory. Uses the
  * <get_subpaths> function to achieve this. */
 void get_nested_files(vector<string> &paths, const string &root_path);
+
+} // CATE
 
 #endif

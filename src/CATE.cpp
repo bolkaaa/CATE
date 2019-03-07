@@ -26,6 +26,8 @@
 #include "./GUI/MainWindow.hpp"
 
 using std::string;
+using CATE::Database;
+using CATE::MainWindow;
 
 int main(int argc, char *argv[])
 {
@@ -36,13 +38,13 @@ int main(int argc, char *argv[])
     {
         Database db;
 
-        string audio_files_path = "./audio_files";
-        string json_db_path = "./database.json";
+        string audio_files_path = "/Users/lrwz/CATE/audio_files";
+        string json_db_path = "Users/lrwz/CATE/database.json";
 
         db.add_directory(audio_files_path);
         db.to_json_file(json_db_path);
         db.load_buffers_from_db();
-        vector<AudioBuffer> buffers = db.get_values();
+        db.sliding_window_analysis(1024, 256);
 
         return 0;
     }

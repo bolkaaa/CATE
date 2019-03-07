@@ -27,17 +27,25 @@
 
 #include "FileTree.hpp"
 #include "../Audio/AudioBuffer.hpp"
+#include "../Audio/AudioFile.hpp"
+#include "../Analysis/FFT.hpp"
+#include "../Analysis/SpectralFeature.hpp"
 #include "Entry.hpp"
 
 using std::vector;
 using std::unordered_map;
 using std::string;
 using Json = nlohmann::json;
+using CATE::AudioBuffer;
+using CATE::FFT;
+using CATE::SpectralFeature;
 
 /* The Database class handles functionality for persistently storing a
  * collection of audio file paths and associated segmentation markers and
  * analysis data, forming the basis for the corpus of the concatenative
  * synthesis system. */
+
+namespace CATE {
 
 class Database
 {
@@ -52,6 +60,49 @@ public:
     /* Iterate over JSON database and load audio files into <buffers>. */
     void load_buffers_from_db();
 
+    vector<AudioBuffer> segment(const AudioBuffer &source, int frame_size)
+    {
+        vector<AudioBuffer> segments;
+        auto n = source.size();
+        auto remaining_space = n % frame_size;
+
+        for (auto it = source.begin(); it != (source.end() - remaining_space); it += frame_size)
+        {
+            AudioBuffer segment_data(it, it + frame_size);
+            segments.emplace_back(segment_data);
+        }
+
+        if (!segments.empty())
+        {
+            return segments;
+        }
+
+        return vector<AudioBuffer>(0);
+    }
+
+    void sliding_window_analysis(int bin_size, int frames_per_buffer)
+    {
+        FFT fft(bin_size, frames_per_buffer);
+        vector<float> magspec(bin_size);
+
+        for (auto b : buffers)
+        {
+            vector<AudioBuffer> segments = segment(b.second.data, frames_per_buffer);
+            SpectralFeature spectral_feature(b.second.sr, bin_size);
+
+            for (auto segment : segments)
+            {
+                float *data = &segment[0];
+                fft.fill(data);
+                fft.compute();
+                fft.get_magspec(magspec);
+                float centroid = spectral_feature.centroid(magspec);
+                float flatness = spectral_feature.flatness(magspec);
+                std::cout << centroid << ", " << flatness << " \n";
+            }
+        }
+    }
+
     /* Clear all buffers in database. */
     void clear_buffers();
 
@@ -59,38 +110,37 @@ public:
     void convert_sample_rates(double new_sr);
 
     /* Get the size of the database. */
-    int size() const { return static_cast<int>(db.size()); }
+    int size() const
+    { return static_cast<int>(db.size()); }
 
     /* Get keys from buffers map as a vector of strings. */
-    vector<string> get_keys() const;
+    vector<string> get_paths() const;
 
     /* Get values from buffers map as a vector of AudioBuffers. */
-    vector<AudioBuffer> get_values() const;
+    vector<AudioFile> get_files() const;
 
     /* Check if a particular file exists in the database. */
     bool buffer_exists(const string &key);
 
-    /* Save the JSON database to a JSON file. */
+    /* Save the JSON database to a JSON file, with pretty printing. */
     void to_json_file(const string &path);
 
-    /* Get a particular buffer from the database, indexed by filename. */
-    AudioBuffer& operator[](const string &file_path) { return buffers[file_path]; }
+    /* Get a particular file from the database, indexed by filename. */
+    AudioFile &operator[](const string &file_path)
+    { return buffers[file_path]; }
 
     /* Output the database as a stream. */
-    friend std::ostream& operator<<(std::ostream& os, const Database& database);
-
+    friend std::ostream &operator<<(std::ostream &os, const Database &database);
 
 private:
-    /* Add file from path to buffers map. */
-    void add_buffer(const string &path);
-
     /* JSON data object, storing file paths, segmentation frame markers and
      * analysis data. */
     Json db;
 
-    /* Hash map of buffers indexed by buffer/file names. */
-    unordered_map<string, AudioBuffer> buffers;
-
+    /* Hash map of audio files indexed by file names. */
+    unordered_map<string, AudioFile> buffers;
 };
+
+} // CATE
 
 #endif

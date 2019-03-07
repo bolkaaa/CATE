@@ -4,8 +4,12 @@
 #include <QMainWindow>
 #include <QThread>
 
+#include "../Audio/AudioBuffer.hpp"
 #include "../Audio/AudioProcess.hpp"
 #include "Plot.hpp"
+
+using CATE::AudioProcess;
+using CATE::Plot;
 
 /* The main Qt application window class. It contains most of the objects and
  * data needed to run the program. */
@@ -15,9 +19,11 @@ namespace Ui
     class MainWindow;
 }
 
+namespace CATE {
+
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -25,14 +31,16 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-    AudioProcess *audio_process;
+    Ui::MainWindow *ui = nullptr;
+    AudioProcess *audio_process = nullptr;
     Plot *plot;
     double sample_rate;
     int frames_per_buffer;
     int fft_bin_size;
+    vector<float> magspec;
 
 public slots:
+
     /* When start button in UI is pressed, plot is re-initialised, and audio
      * stream is started. */
     void on_start_button_pressed();
@@ -44,5 +52,7 @@ public slots:
      * calculated. */
     void on_frame_processed(FFT *fft);
 };
+
+} // CATE
 
 #endif

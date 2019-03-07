@@ -19,7 +19,7 @@
 
 #include "Util.hpp"
 
-namespace Util {
+namespace CATE {
 
 float samps_to_ms(int num_samples, double sample_rate)
 {
@@ -37,4 +37,4 @@ int ms_to_samps(float ms, double sample_rate)
     return samps;
 }
 
-} // Util
+} // CATE

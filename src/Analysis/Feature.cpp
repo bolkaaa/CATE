@@ -16,7 +16,7 @@
 
 #include "Feature.hpp"
 
-Feature::Feature(double sample_rate)
-    : sample_rate(sample_rate)
+CATE::Feature::Feature(double sample_rate)
+        : sample_rate(sample_rate)
 {
 }

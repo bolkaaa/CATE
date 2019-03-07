@@ -19,12 +19,16 @@
 
 #include <vector>
 
+#include "../Audio/AudioBuffer.hpp"
 #include "Feature.hpp"
 
 using std::vector;
+using CATE::AudioBuffer;
 
 /* The SpectralFeature class represents audio features that utilise the spectrum
  * of an audio signal, such as the spectral centroid. */
+
+namespace CATE {
 
 class SpectralFeature : public Feature
 {
@@ -42,7 +46,9 @@ public:
     float flatness(const vector<float> &magspec);
 
 private:
-    uint16_t bin_size;
+    int bin_size;
 };
+
+} // CATE
 
 #endif

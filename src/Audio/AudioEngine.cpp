@@ -23,12 +23,15 @@
 #include <cstdio>
 #include <iostream>
 
+namespace CATE {
+
 /* TODO: Improve the error handling in these functions. */
 AudioEngine::AudioEngine(double sample_rate, unsigned long frames_per_buffer)
-    : sample_rate(sample_rate),
-      frames_per_buffer(frames_per_buffer)
+        : sample_rate(sample_rate),
+          frames_per_buffer(frames_per_buffer)
 {
     is_running = false;
+
     init();
 }
 
@@ -40,7 +43,7 @@ AudioEngine::~AudioEngine()
 int AudioEngine::processing_callback(const void *input_buffer,
                                      void *output_buffer,
                                      unsigned long frames_per_buffer,
-                                     const PaStreamCallbackTimeInfo* time_info,
+                                     const PaStreamCallbackTimeInfo *time_info,
                                      PaStreamCallbackFlags status_flags)
 {
     static_cast<void>(input_buffer);
@@ -57,7 +60,7 @@ void AudioEngine::init()
 {
     int device = Pa_GetDefaultOutputDevice();
     int audio_device_count = Pa_GetDeviceCount();
-    const PaDeviceInfo* device_info;
+    const PaDeviceInfo *device_info;
     error = Pa_Initialize();
 
     if (error != paNoError)
@@ -111,6 +114,7 @@ int AudioEngine::start_stream()
 
     if (error != paNoError)
     {
+        std::cerr << Pa_GetErrorText(error);
         is_running = false;
         return error;
     }
@@ -119,6 +123,7 @@ int AudioEngine::start_stream()
 
     if (error != paNoError)
     {
+        std::cerr << Pa_GetErrorText(error);
         is_running = false;
     }
 
@@ -140,8 +145,10 @@ int AudioEngine::stop_stream()
             return error;
         }
 
-        error = Pa_CloseStream( stream );
+        error = Pa_CloseStream(stream);
     }
 
     return error;
 }
+
+} // CATE

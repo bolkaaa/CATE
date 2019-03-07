@@ -24,31 +24,28 @@
 #include <cmath>
 #include <iostream>
 
+namespace CATE {
+
 AudioProcess::AudioProcess(double sample_rate, int frames_per_buffer,
                            int fft_bin_size)
-    : AudioEngine(sample_rate, frames_per_buffer),
-      magspec(vector<float>(fft_bin_size / 2 + 1)),
-      spectral_feature(sample_rate, fft_bin_size)
+        : AudioEngine(sample_rate, frames_per_buffer),
+          magspec(vector<float>(fft_bin_size / 2 + 1)),
+          spectral_feature(sample_rate, fft_bin_size),
+          fft(new FFT(fft_bin_size, frames_per_buffer))
 {
-    fft = new FFT(fft_bin_size, frames_per_buffer);
     frames_per_plot_count = frames_per_plot;
-}
-
-AudioProcess::~AudioProcess()
-{
-    delete fft;
 }
 
 int AudioProcess::processing_callback(const void *input_buffer,
                                       void *output_buffer,
                                       unsigned long frames_per_buffer,
-                                      const PaStreamCallbackTimeInfo* time_info,
+                                      const PaStreamCallbackTimeInfo *time_info,
                                       PaStreamCallbackFlags status_flags)
 {
     static_cast<void>(status_flags);
     static_cast<void>(time_info);
-    auto *input = const_cast<float*>(static_cast<const float*>(input_buffer));
-    auto *output = static_cast<float*>(output_buffer);
+    auto *input = const_cast<float *>(static_cast<const float *>(input_buffer));
+    auto *output = static_cast<float *>(output_buffer);
     unsigned long i = 0;
 
     /* FFT operations. */
@@ -77,3 +74,5 @@ int AudioProcess::processing_callback(const void *input_buffer,
 
     return paContinue;
 }
+
+} //

@@ -22,6 +22,8 @@
 
 #include <iostream>
 
+namespace CATE {
+
 class Feature
 {
 public:
@@ -30,5 +32,7 @@ public:
 protected:
     double sample_rate;
 };
+
+} // CATE
 
 #endif

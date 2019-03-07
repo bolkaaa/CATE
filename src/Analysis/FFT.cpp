@@ -27,18 +27,29 @@
 
 using std::vector;
 using std::complex;
+using CATE::AudioBuffer;
+
+namespace CATE {
 
 FFT::FFT(int bin_size, int frames_per_buffer)
-    : magspec(vector<float>(bin_size / 2 + 1)),
-      bin_size(bin_size),
-      frames_per_buffer(frames_per_buffer),
-      data(vector<double>(bin_size)),
-      spectrum(vector<complex<double> >(bin_size / 2 + 1)),
-      plan(fftw_plan_dft_r2c_1d(bin_size,
-                                reinterpret_cast<double*>(&data[0]),
-                                reinterpret_cast<fftw_complex*>(&spectrum[0]),
-                                FFTW_ESTIMATE))
+        : bin_size(bin_size),
+          output_size(bin_size / 2 + 1),
+          magspec(vector<float>(output_size)),
+          frames_per_buffer(frames_per_buffer),
+          data(vector<double>(bin_size)),
+          spectrum(vector<complex<double> >(output_size)),
+          plan(fftw_plan_dft_r2c_1d(bin_size,
+                                    reinterpret_cast<double *>(&data[0]),
+                                    reinterpret_cast<fftw_complex *>(&spectrum[0]),
+                                    FFTW_ESTIMATE))
 {
+}
+
+FFT::~FFT()
+{
+    // fftw_free(&data[0]);
+    // fftw_free(&spectrum[0]);
+    // fftw_free(&magspec[0]);
 }
 
 float FFT::window(int i)
@@ -71,9 +82,7 @@ void FFT::compute()
 
 void FFT::get_magspec(vector<float> &output)
 {
-    int n = bin_size / 2 + 1;
-
-    for (uint16_t i = 0; i < n; ++i)
+    for (uint16_t i = 0; i < output_size; ++i)
     {
         output[i] = magspec[i];
     }
@@ -81,10 +90,10 @@ void FFT::get_magspec(vector<float> &output)
 
 void FFT::compute_magspec()
 {
-    int n = bin_size / 1 + 1;
-
-    for (uint16_t i = 0; i < n; ++i)
+    for (uint16_t i = 0; i < output_size; ++i)
     {
-        magspec[i] = static_cast<float>(std::abs(spectrum[i]));
+        magspec[i] = std::abs(spectrum[i]);
     }
 }
+
+} // CATe

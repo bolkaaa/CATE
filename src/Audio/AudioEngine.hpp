@@ -31,6 +31,8 @@
   own versions of when it inherits from the base AudioEngine class.
  */
 
+namespace CATE {
+
 class AudioEngine
 {
 public:
@@ -49,7 +51,7 @@ protected:
     virtual int processing_callback(const void *input_buffer,
                                     void *output_buffer,
                                     unsigned long frames_per_buffer,
-                                    const PaStreamCallbackTimeInfo* time_info,
+                                    const PaStreamCallbackTimeInfo *time_info,
                                     PaStreamCallbackFlags status_flags);
 
     /* With PortAudio, a static callback function must be defined, which
@@ -57,15 +59,15 @@ protected:
     static int static_callback(const void *input_buffer,
                                void *output_buffer,
                                unsigned long frames_per_buffer,
-                               const PaStreamCallbackTimeInfo* time_info,
+                               const PaStreamCallbackTimeInfo *time_info,
                                PaStreamCallbackFlags status_flags,
                                void *user_data)
     {
-        return ((AudioEngine*) user_data)->processing_callback(input_buffer,
-                                                               output_buffer,
-                                                               frames_per_buffer,
-                                                               time_info,
-                                                               status_flags);
+        return ((AudioEngine *) user_data)->processing_callback(input_buffer,
+                                                                output_buffer,
+                                                                frames_per_buffer,
+                                                                time_info,
+                                                                status_flags);
     }
 
     PaStream *stream;
@@ -77,5 +79,7 @@ protected:
     unsigned long frames_per_buffer;
     bool is_running;
 };
+
+} // CATE
 
 #endif

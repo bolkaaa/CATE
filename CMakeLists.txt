@@ -18,6 +18,8 @@ set(SOURCE_FILES
         src/Audio/AudioProcess.cpp
         src/Audio/AudioBuffer.hpp
         src/Audio/AudioBuffer.cpp
+        src/Audio/AudioFile.hpp
+        src/Audio/AudioFile.cpp
         src/Audio/RingBuffer.hpp
         src/Audio/RingBuffer.cpp
         src/Audio/Util.hpp

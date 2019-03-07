@@ -19,9 +19,11 @@
 #include "Feature.hpp"
 #include "SpectralFeature.hpp"
 
+namespace CATE {
+
 SpectralFeature::SpectralFeature(double sample_rate, int bin_size)
-    : Feature(sample_rate),
-      bin_size(bin_size)
+        : Feature(sample_rate),
+          bin_size(bin_size)
 {
 }
 
@@ -73,3 +75,5 @@ float SpectralFeature::flatness(const vector<float> &magspec)
 
     return 0.0;
 }
+
+} // CATE

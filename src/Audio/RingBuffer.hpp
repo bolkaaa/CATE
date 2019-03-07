@@ -5,11 +5,15 @@
 
 #include "AudioBuffer.hpp"
 
+using CATE::AudioBuffer;
+
 /* Based on lock-free ring buffer implementation in "Audio Anecdotes Volume 2
  * (Greenebaum, Barzel)". Will be used if I do some concurrent audio processing
  * later on (not doing so at the moment). */
 
-class RingBuffer : public AudioBuffer
+namespace CATE {
+
+class RingBuffer
 {
 public:
     /* Allocate memory for ring buffer. */
@@ -28,10 +32,12 @@ public:
     int space_available();
 
 private:
-    vector<float> data;
+    AudioBuffer data;
     int head;
     int tail;
     int high_water_mark;
 };
+
+} // CATE
 
 #endif

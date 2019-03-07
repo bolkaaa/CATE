@@ -3,10 +3,12 @@
 #include "AudioBuffer.hpp"
 #include "RingBuffer.hpp"
 
+namespace CATE {
+
 RingBuffer::RingBuffer(int size)
-    : AudioBuffer(size), data(AudioBuffer::data),
-      head(0), tail(0),
-      high_water_mark(static_cast<int>(data.size() / 4))
+        : data(size),
+          head(0), tail(0),
+          high_water_mark(static_cast<int>(data.size() / 4))
 {
     high_water_mark = static_cast<int>((high_water_mark > data.size()) ? data.size() : high_water_mark);
 }
@@ -44,3 +46,5 @@ int RingBuffer::space_available()
 
     return space;
 }
+
+} // CATE

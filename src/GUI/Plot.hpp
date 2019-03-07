@@ -27,6 +27,8 @@
 /* Uses the Qwt library from Qt to handle plotting of data. For now, just does
  * spectrogram plotting. Will implement other visualisation in the future. */
 
+namespace CATE {
+
 using std::string;
 
 class Plot
@@ -52,7 +54,8 @@ public:
     /* Given changes to x_data and y_data, replot the plot. */
     void replot();
 
-    QwtPlot *get_plotter() { return plotter; }
+    QwtPlot *get_plotter()
+    { return plotter; }
 
 private:
     QwtPlot *plotter;
@@ -65,5 +68,7 @@ private:
     double *x_data;
     double *y_data;
 };
+
+} // CATE
 
 #endif

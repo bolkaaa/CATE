@@ -21,14 +21,22 @@
 #include <unordered_map>
 #include <iomanip>
 
+#include "sndfile.hh"
+
 #include "Database.hpp"
+#include "Entry.hpp"
 #include "FileTree.hpp"
 #include "../Audio/AudioBuffer.hpp"
+#include "../Audio/AudioFile.hpp"
 
 using std::vector;
 using std::unordered_map;
 using std::pair;
 using std::string;
+using CATE::Entry;
+using CATE::AudioFile;
+
+namespace CATE {
 
 void Database::add_file(const string &path)
 {
@@ -40,7 +48,7 @@ void Database::add_file(const string &path)
 void Database::add_directory(const string &directory_path)
 {
     vector<string> file_paths;
-    get_nested_files(file_paths, directory_path);
+    CATE::get_nested_files(file_paths, directory_path);
 
     for (const auto path : file_paths)
     {
@@ -48,51 +56,35 @@ void Database::add_directory(const string &directory_path)
     }
 }
 
-void Database::add_buffer(const string &path)
+vector<string> Database::get_paths() const
 {
-    std::pair<string, AudioBuffer> pair(path, AudioBuffer(path));
-    buffers.insert(pair);
-}
+    vector<string> paths(buffers.size());
 
-
-void Database::load_buffers_from_db()
-{
-    for (auto entry : db)
-    {
-        const string path = entry["path"];
-        add_buffer(path);
-    }
-}
-
-vector<string> Database::get_keys() const
-{
-    vector<string> keys(buffers.size());
-
-    auto key_selector = [](auto pair) { return pair.first; };
+    auto selector = [](auto pair) { return pair.first; };
 
     std::transform(buffers.begin(),
                    buffers.end(),
-                   keys.begin(),
-                   key_selector);
+                   paths.begin(),
+                   selector);
 
-    return keys;
+    return paths;
 }
 
-vector<AudioBuffer> Database::get_values() const
+vector<AudioFile> Database::get_files() const
 {
-    vector<AudioBuffer> values(buffers.size());
+    vector<AudioFile> files(buffers.size());
 
-    auto value_selector = [](auto pair) { return pair.second; };
+    auto selector = [](auto pair) { return pair.second; };
 
     std::transform(buffers.begin(),
                    buffers.end(),
-                   values.begin(),
-                   value_selector);
+                   files.begin(),
+                   selector);
 
-    return values;
+    return files;
 }
 
-std::ostream& operator<<(std::ostream& os, const Database& database)
+std::ostream &operator<<(std::ostream &os, const Database &database)
 {
     os << database.db << "\n";
 
@@ -120,10 +112,21 @@ bool Database::buffer_exists(const string &key)
 
 void Database::convert_sample_rates(double new_sr)
 {
-    for (auto &buffer : buffers) // Must be a reference to work correctly.
+    for (auto &buffer : buffers)
     {
         buffer.second.convert_sample_rate(new_sr);
     }
 }
 
+void Database::load_buffers_from_db()
+{
+    for (const auto entry : db)
+    {
+        const string path = entry["path"];
+        AudioFile file(path);
+        std::pair<string, AudioFile> pair(path, file);
+        buffers.insert(pair);
+    }
+}
 
+} // CATE

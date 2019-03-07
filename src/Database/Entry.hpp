@@ -32,10 +32,12 @@ using Json = nlohmann::json;
 /* Data representation of a single-entry in the JSON database. Includes file
  * path and vectors of segmentation markers and audio features. */
 
+namespace CATE {
+
 class Entry
 {
 public:
-    Entry(string path);
+    explicit Entry(string path);
 
     string path;
     vector<float> markers;
@@ -45,5 +47,7 @@ public:
 
 /* Helper function to convert an Entry object into a Json object. */
 Json to_json_entry(const Entry &entry);
+
+} // CATE
 
 #endif

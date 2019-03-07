@@ -1,15 +1,19 @@
 #include <QDebug>
 
+#include "../Audio/AudioBuffer.hpp"
 #include "../Audio/AudioProcess.hpp"
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
 
+namespace CATE {
+
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent),
-      ui(new Ui::MainWindow),
-      sample_rate(48000),
-      frames_per_buffer(256),
-      fft_bin_size(1024)
+        : QMainWindow(parent),
+          ui(new Ui::MainWindow),
+          sample_rate(48000),
+          frames_per_buffer(256),
+          fft_bin_size(1024),
+          magspec(AudioBuffer(fft_bin_size))
 {
     ui->setupUi(this);
     audio_process = new AudioProcess(sample_rate, frames_per_buffer,
@@ -34,13 +38,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->on_stop_button_pressed, SIGNAL(pressed()), this,
             SLOT(on_stop_button_pressed()));
 
-    connect(audio_process, SIGNAL(frame_processed(FFT*)), this,
-            SLOT(on_frame_processed(FFT*)));
+    connect(audio_process, SIGNAL(frame_processed(FFT * )), this,
+            SLOT(on_frame_processed(FFT * )));
 }
 
 MainWindow::~MainWindow()
 {
-    delete plot;
+    // delete plot;
     delete audio_process;
     delete ui;
 }
@@ -69,12 +73,15 @@ void MainWindow::on_frame_processed(FFT *fft)
 {
     auto n = fft_bin_size / 2 + 1;
 
+    fft->get_magspec(magspec);
+
     for (auto i = 0; i < n; ++i)
     {
-        /* Convert to dB. */
-        double y = 20.0 * std::log10((1.0 / n) * fft->magspec[i]);
+        double y = 20.0 * std::log10((1.0 / n) * magspec[i]);
         plot->set_y_data(i, y);
     }
 
     plot->replot();
 }
+
+} // CATE
