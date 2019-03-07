@@ -31,7 +31,7 @@ using CATE::MainWindow;
 
 int main(int argc, char *argv[])
 {
-    bool test = 0;
+    bool test = 1;
 
     /* Command-line testing of data functionality. */
     if (test)

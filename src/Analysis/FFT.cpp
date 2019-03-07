@@ -45,13 +45,6 @@ FFT::FFT(int bin_size, int frames_per_buffer)
 {
 }
 
-FFT::~FFT()
-{
-    // fftw_free(&data[0]);
-    // fftw_free(&spectrum[0]);
-    // fftw_free(&magspec[0]);
-}
-
 float FFT::window(int i)
 {
     auto hanning = static_cast<float>((1. / 2.) * (1. - std::cos((2. * M_PI * i) / (bin_size - 1.))));
@@ -82,7 +75,7 @@ void FFT::compute()
 
 void FFT::get_magspec(vector<float> &output)
 {
-    for (uint16_t i = 0; i < output_size; ++i)
+    for (auto i = 0; i < output_size; ++i)
     {
         output[i] = magspec[i];
     }
@@ -90,10 +83,10 @@ void FFT::get_magspec(vector<float> &output)
 
 void FFT::compute_magspec()
 {
-    for (uint16_t i = 0; i < output_size; ++i)
+    for (auto i = 0; i < output_size; ++i)
     {
         magspec[i] = std::abs(spectrum[i]);
     }
 }
 
-} // CATe
+} // CATE

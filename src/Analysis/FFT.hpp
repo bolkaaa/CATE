@@ -43,8 +43,6 @@ class FFT
 public:
     FFT(int bin_size, int frames_per_buffer);
 
-    ~FFT();
-
     /* Fill input data array. */
     void fill(float *input);
 

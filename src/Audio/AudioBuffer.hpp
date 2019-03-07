@@ -33,7 +33,6 @@ namespace CATE {
 
 typedef std::vector<float> AudioBuffer;
 
-
-} // CATE
+} // CATe
 
 #endif

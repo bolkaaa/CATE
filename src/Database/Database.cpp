@@ -56,34 +56,6 @@ void Database::add_directory(const string &directory_path)
     }
 }
 
-vector<string> Database::get_paths() const
-{
-    vector<string> paths(buffers.size());
-
-    auto selector = [](auto pair) { return pair.first; };
-
-    std::transform(buffers.begin(),
-                   buffers.end(),
-                   paths.begin(),
-                   selector);
-
-    return paths;
-}
-
-vector<AudioFile> Database::get_files() const
-{
-    vector<AudioFile> files(buffers.size());
-
-    auto selector = [](auto pair) { return pair.second; };
-
-    std::transform(buffers.begin(),
-                   buffers.end(),
-                   files.begin(),
-                   selector);
-
-    return files;
-}
-
 std::ostream &operator<<(std::ostream &os, const Database &database)
 {
     os << database.db << "\n";
@@ -120,7 +92,7 @@ void Database::convert_sample_rates(double new_sr)
 
 void Database::load_buffers_from_db()
 {
-    for (const auto entry : db)
+    for (const auto &entry : db)
     {
         const string path = entry["path"];
         AudioFile file(path);
