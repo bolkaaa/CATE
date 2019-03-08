@@ -54,6 +54,8 @@ void Database::add_directory(const string &directory_path)
     {
         add_file(path);
     }
+
+    to_json_file(json_file_path);
 }
 
 std::ostream &operator<<(std::ostream &os, const Database &database)
@@ -105,23 +107,40 @@ void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
 {
     FFT fft(bin_size, frames_per_buffer);
     vector<float> magspec(bin_size);
+    int buffer_count = 0;
 
     for (auto b : buffers)
     {
-        vector<AudioBuffer> segments = segment(b.second.data, frames_per_buffer);
+        string path = b.first;
+        map<int, AudioBuffer> frames = segment_frames(b.second.data, frames_per_buffer);
         SpectralFeature spectral_feature(b.second.sr, bin_size);
 
-        for (auto segment : segments)
+        for (auto it = frames.begin(); it != frames.end(); ++it)
         {
-            float *data = &segment[0];
-            fft.fill(data);
+            int marker = it->first;
+            AudioBuffer b = it->second;
+
+            fft.fill(&b[0]);
             fft.compute();
             fft.get_magspec(magspec);
             float centroid = spectral_feature.centroid(magspec);
             float flatness = spectral_feature.flatness(magspec);
-            std::cout << centroid << ", " << flatness << " \n";
+
+            db[buffer_count]["path"] = path;
+            db[buffer_count]["centroid"].emplace_back(centroid);
+            db[buffer_count]["flatness"].emplace_back(flatness);
+            db[buffer_count]["markers"].emplace_back(marker);
         }
+
+        ++buffer_count;
     }
+
+    to_json_file("/Users/lrwz/CATE/database.json");
+}
+
+Database::Database(string json_file_path)
+    : json_file_path(json_file_path)
+{
 }
 
 } // CATE

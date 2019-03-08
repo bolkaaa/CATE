@@ -21,21 +21,20 @@
 #define AUDIO_BUFFER_HPP
 
 #include <vector>
+#include <map>
 
 using std::vector;
-
-/*
- * AudioBuffer is a typedef that aliases a vector of real values. For simplicity's sake, it just
- * uses floats for now and isn't templated.
- */
+using std::map;
 
 namespace CATE {
 
+/* AudioBuffer is a typedef that aliases a vector of real values. For simplicity's sake and compatibility with C
+ * libraries used in CATE, it just uses floats and isn't templated. */
 typedef std::vector<float> AudioBuffer;
 
-/* Given an AudioBuffer, segment into a vector where each subset is of size
- * <frame_size>. */
-vector<AudioBuffer> segment(const AudioBuffer &source, int frame_size);
+/* Given an AudioBuffer, segment into a std::map where the key of each subset is its frame position in samples, and the
+ * value of each subset is an AudioBuffer of size <frame_size>. */
+map<int, AudioBuffer> segment_frames(const AudioBuffer &source, int frame_size);
 
 } // CATE
 

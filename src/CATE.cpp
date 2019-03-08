@@ -36,13 +36,12 @@ int main(int argc, char *argv[])
     /* Command-line testing of data functionality. */
     if (test)
     {
-        Database db;
+        string audio_files_path = "/Users/lrwz/CATE/audio_files/cello";
+        string json_file_path = "Users/lrwz/CATE/database.json";
 
-        string audio_files_path = "/Users/lrwz/CATE/audio_files";
-        string json_db_path = "Users/lrwz/CATE/database.json";
+        Database db(json_file_path);
 
         db.add_directory(audio_files_path);
-        db.to_json_file(json_db_path);
         db.load_buffers_from_db();
         db.sliding_window_analysis(1024, 256);
 

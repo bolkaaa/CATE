@@ -17,23 +17,27 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#include <iostream>
 #include "AudioBuffer.hpp"
 
 namespace CATE {
 
-vector<AudioBuffer> segment(const AudioBuffer &source, int frame_size)
+map<int, AudioBuffer> segment_frames(const AudioBuffer &source, int frame_size)
 {
-    vector<AudioBuffer> segments;
+    map<int, AudioBuffer> frames;
     auto n = source.size();
     auto remaining_space = n % frame_size;
+    auto frame_counter = 0;
 
     for (auto it = source.begin(); it != (source.end() - remaining_space); it += frame_size)
     {
         AudioBuffer segment_data(it, it + frame_size);
-        segments.emplace_back(segment_data);
+        std::pair<int, AudioBuffer> segment = {frame_counter, segment_data};
+        frames.insert(segment);
+        frame_counter += frame_size;
     }
 
-    return segments;
+    return frames;
 }
 
 } // CATE

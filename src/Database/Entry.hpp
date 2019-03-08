@@ -40,7 +40,7 @@ public:
     explicit Entry(string path);
 
     string path;
-    vector<float> markers;
+    vector<int> markers;
     vector<float> centroid;
     vector<float> flatness;
 };

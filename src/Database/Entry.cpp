@@ -26,10 +26,9 @@ namespace CATE {
 Entry::Entry(string path)
         : path(path)
 {
-    vector<float> empty;
-    markers = empty;
-    centroid = empty;
-    flatness = empty;
+    markers = vector<int>();
+    centroid = vector<float>();
+    flatness = vector<float>();
 }
 
 Json to_json_entry(const Entry &entry)

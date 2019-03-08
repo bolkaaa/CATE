@@ -50,6 +50,8 @@ namespace CATE {
 class Database
 {
 public:
+    Database(string json_file_path);
+
     /* Add a single file to the database. */
     void add_file(const string &path);
 
@@ -100,6 +102,8 @@ private:
 
     /* Hash map of audio files indexed by file names. */
     unordered_map<string, AudioFile> buffers;
+
+    string json_file_path;
 };
 
 } // CATE
