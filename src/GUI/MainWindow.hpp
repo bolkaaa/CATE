@@ -62,8 +62,7 @@ private:
     KdTree &kd_tree;
 
 public slots:
-    /* When start button in UI is pressed, plot is re-initialised, and audio
-     * stream is started. */
+    /* When start button in UI is pressed, audio stream is started. */
     void on_start_button_pressed();
 
     /* When stop button in UI is pressed, audio stream is stopped. */
