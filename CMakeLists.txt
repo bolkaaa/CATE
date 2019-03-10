@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.12.2)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Debug)
-
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -34,9 +33,11 @@ set(SOURCE_FILES
         src/Database/Entry.cpp
         src/Database/Database.hpp
         src/Database/Database.cpp
+        src/Database/PointCloud.hpp 
+        src/Database/KdTree.hpp
         src/GUI/MainWindow.hpp
         src/GUI/MainWindow.cpp
-        src/Database/PointCloud.hpp src/Database/KdTree.hpp)
+        )
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
@@ -47,7 +48,6 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 # Qt
 set(CMAKE_PREFIX_PATH /usr/local/Cellar/qt/5.12.0) # Set to system Qt path
-include_directories(/usr/local/Cellar/qwt/6.1.3_4/lib/qwt.framework/Versions/6/headers) # Set to system Qwt path
 include(QtCommon)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qwt REQUIRED)
@@ -64,7 +64,6 @@ target_link_libraries(${PROJECT_NAME}
         sndfile
         samplerate
         fftw3
-        ${QWT_LIBRARY}
         ${Boost_SYSTEM_LIBRARY}
         ${Boost_FILESYSTEM_LIBRARY}
         ${CMAKE_THREAD_LIBS_INIT}
