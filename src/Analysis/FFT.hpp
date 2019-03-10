@@ -62,6 +62,7 @@ private:
     void compute_magspec();
 
     int bin_size;
+    int output_size;
     int frames_per_buffer;
     vector<double> data;
     vector<complex<double> > spectrum;

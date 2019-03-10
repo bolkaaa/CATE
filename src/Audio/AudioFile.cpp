@@ -40,44 +40,39 @@ AudioFile::AudioFile(const string &path)
     read();
 }
 
-AudioFile::AudioFile()
-        : sr(0), chan(0)
-{
-}
-
 void AudioFile::read()
 {
     SndfileHandle file(path);
     auto size = file.frames() * file.channels();
-    AudioBuffer b(size);
-    file.read(&b[0], size);
+    AudioBuffer buffer(size);
+    file.read(&buffer[0], size);
 
-    data = b;
-    sr = file.samplerate();
-    chan = file.channels();
+    data = buffer;
+    sample_rate = file.samplerate();
+    channels = file.channels();
 }
 
 void AudioFile::write(const AudioBuffer &buffer, const string &path, int format)
 {
-    SndfileHandle file(path, SFM_WRITE, format, chan, static_cast<int>(sr));
+    SndfileHandle file(path, SFM_WRITE, format, channels, static_cast<int>(sample_rate));
     file.write(&data[0], static_cast<sf_count_t>(data.size()));
 }
 
-void AudioFile::convert_sample_rate(double new_sr)
+void AudioFile::convert_sample_rate(double new_sample_rate)
 {
-    double sr_ratio = new_sr / sr;
-    AudioBuffer out(sr_ratio * data.size());
+    double sr_ratio = new_sample_rate / sample_rate;
+    AudioBuffer output(sr_ratio * data.size());
     SRC_DATA conv;
 
     conv.data_in = &data[0];
-    conv.data_out = &out[0];
-    conv.input_frames = (data.size() / chan);
-    conv.output_frames = (sr_ratio * data.size()) / chan;
+    conv.data_out = &output[0];
+    conv.input_frames = (data.size() / channels);
+    conv.output_frames = (sr_ratio * data.size()) / channels;
     conv.src_ratio = sr_ratio;
 
-    src_simple(&conv, SRC_SINC_BEST_QUALITY, chan);
+    src_simple(&conv, SRC_SINC_BEST_QUALITY, channels);
 
-    data = out;
+    data = output;
 }
 
 } // CATE

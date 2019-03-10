@@ -100,7 +100,7 @@ void Database::sliding_window_analysis(int bin_size, int frames_per_buffer, cons
     {
         string path = b.first;
         map<int, AudioBuffer> frames = segment_frames(b.second.data, frames_per_buffer);
-        SpectralFeature spectral_feature(b.second.sr, bin_size);
+        SpectralFeature spectral_feature(b.second.sample_rate, bin_size);
 
         for (auto it = frames.begin(); it != frames.end(); ++it)
         {

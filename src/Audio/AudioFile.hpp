@@ -38,7 +38,7 @@ using CATE::AudioBuffer;
 
 /* The AudioFile class is a simple abstraction  of an audio file, containing the
  * audio data and file information along with member functions for manipulating
- * them, all with public access. */
+ * them. */
 
 namespace CATE {
 
@@ -57,12 +57,12 @@ public:
     void write(const AudioBuffer &buffer, const string &path, int format);
 
     /* Convert audio file data to new sample rate. */
-    void convert_sample_rate(double new_sr);
+    void convert_sample_rate(double new_sample_rate);
 
     AudioBuffer data;
     string path;
-    double sr;
-    int chan;
+    double sample_rate;
+    int channels;
 };
 
 } // CATE

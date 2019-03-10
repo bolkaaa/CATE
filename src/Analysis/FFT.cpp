@@ -33,13 +33,14 @@ namespace CATE {
 
 FFT::FFT(int bin_size, int frames_per_buffer)
         : bin_size(bin_size),
+          output_size(bin_size / 2 + 1),
           frames_per_buffer(frames_per_buffer),
           data(vector<double>(bin_size)),
-          spectrum(vector<complex<double> >(bin_size / 2 + 1)),
-          magspec(vector<float>(bin_size / 2 + 1)),
+          spectrum(vector<complex<double> >(output_size)),
+          magspec(vector<float>(output_size)),
           plan(fftw_plan_dft_r2c_1d(bin_size,
-                                    reinterpret_cast<double *>(&data[0]),
-                                    reinterpret_cast<fftw_complex *>(&spectrum[0]),
+                                    reinterpret_cast<double*>(&data[0]),
+                                    reinterpret_cast<fftw_complex*>(&spectrum[0]),
                                     FFTW_ESTIMATE))
 {
 }
@@ -78,9 +79,7 @@ void FFT::compute()
 
 void FFT::get_magspec(vector<float> &output)
 {
-    int n = bin_size / 2 + 1;
-
-    for (auto i = 0; i < n; ++i)
+    for (auto i = 0; i < output_size; ++i)
     {
         output[i] = magspec[i];
     }
@@ -88,9 +87,7 @@ void FFT::get_magspec(vector<float> &output)
 
 void FFT::compute_magspec()
 {
-    int n = bin_size / 2 + 1;
-
-    for (auto i = 0; i < n; ++i)
+    for (auto i = 0; i < output_size; ++i)
     {
         magspec[i] = std::abs(spectrum[i]);
     }
