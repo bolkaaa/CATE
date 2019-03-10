@@ -20,37 +20,37 @@
 #include <iostream>
 
 #include <QApplication>
+#include "../include/nanoflann.hpp"
 
+#include "./Database/PointCloud.hpp"
 #include "./Database/Database.hpp"
+#include "./Database/KdTree.hpp"
 #include "./Audio/AudioBuffer.hpp"
 #include "./GUI/MainWindow.hpp"
 
 using std::string;
+using CATE::KdTree;
+using CATE::KdTreeParams;
 using CATE::Database;
+using CATE::PointCloud;
 using CATE::MainWindow;
 
 int main(int argc, char *argv[])
 {
-    bool test = 1;
+    /* Audio file database loading and K-d Tree Setup. */
+    const string db_file_path = "/Users/lrwz/CATE/cello.json";
+    Database db;
+    db.read_json_file(db_file_path);
+    db.load_buffers_from_db();
+    PointCloud point_cloud = db.create_point_cloud();
+    KdTree kd_tree(KdTreeParams::num_features,
+                   point_cloud,
+                   KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf));
+    kd_tree.buildIndex();
 
-    /* Command-line testing of data functionality. */
-    if (test)
-    {
-        string audio_files_path = "/Users/lrwz/CATE/audio_files/cello";
-        string json_file_path = "Users/lrwz/CATE/database.json";
-
-        Database db(json_file_path);
-
-        db.add_directory(audio_files_path);
-        db.load_buffers_from_db();
-        db.sliding_window_analysis(1024, 256);
-
-        return 0;
-    }
-
-    /* Main Application / GUI. */
+    /* Main Application. */
     QApplication app(argc, argv);
-    MainWindow main_window;
+    MainWindow main_window(nullptr, db, point_cloud, kd_tree);
     main_window.show();
     return app.exec();
 }

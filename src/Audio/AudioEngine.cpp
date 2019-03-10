@@ -25,10 +25,8 @@
 
 namespace CATE {
 
-/* TODO: Improve the error handling in these functions. */
 AudioEngine::AudioEngine(double sample_rate, unsigned long frames_per_buffer)
-        : sample_rate(sample_rate),
-          frames_per_buffer(frames_per_buffer)
+        : sample_rate(sample_rate), frames_per_buffer(frames_per_buffer)
 {
     is_running = false;
 
@@ -55,46 +53,19 @@ int AudioEngine::processing_callback(const void *input_buffer,
     return paContinue;
 }
 
-/* TODO: Clean up this code and separate into multiple functions. */
 void AudioEngine::init()
 {
-    int device = Pa_GetDefaultOutputDevice();
-    int audio_device_count = Pa_GetDeviceCount();
-    const PaDeviceInfo *device_info;
     error = Pa_Initialize();
 
     if (error != paNoError)
     {
-        std::cerr << "PortAudio error: " << Pa_GetErrorText(error) << "\n";
+        std::cerr << "PortAudio Error: " << Pa_GetErrorText(error) << "\n";
     }
 
-    for (int i = 0; i < audio_device_count; ++i)
-    {
-        device_info = Pa_GetDeviceInfo(i);
-        std::cout << "Device " << i << ": " << device_info->name << "\n";
-        if (i == device)
-        {
-            suggested_latency = device_info->defaultLowInputLatency;
-        }
-    }
-
-    input_params.channelCount = 1;
-    input_params.device = Pa_GetDefaultInputDevice();
-    input_params.sampleFormat = paFloat32;
-    input_params.suggestedLatency = suggested_latency;
-    input_params.hostApiSpecificStreamInfo = nullptr;
-
-    output_params.channelCount = 1;
-    output_params.device = Pa_GetDefaultOutputDevice();
-    output_params.sampleFormat = paFloat32;
-    output_params.suggestedLatency = suggested_latency;
-    output_params.hostApiSpecificStreamInfo = nullptr;
-
-    std::cout << "Default input device: " << Pa_GetDefaultInputDevice() << "\n";
-    std::cout << "Default output device: " << Pa_GetDefaultOutputDevice() << "\n";
+    configure();
 }
 
-int AudioEngine::start_stream()
+PaError AudioEngine::start_stream()
 {
     if (is_running)
     {
@@ -149,6 +120,19 @@ int AudioEngine::stop_stream()
     }
 
     return error;
+}
+
+void AudioEngine::configure()
+{
+    input_params.channelCount = 1;
+    input_params.device = Pa_GetDefaultInputDevice();
+    input_params.sampleFormat = paFloat32;
+    input_params.hostApiSpecificStreamInfo = nullptr;
+
+    output_params.channelCount = 1;
+    output_params.device = Pa_GetDefaultOutputDevice();
+    output_params.sampleFormat = paFloat32;
+    output_params.hostApiSpecificStreamInfo = nullptr;
 }
 
 } // CATE

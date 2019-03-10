@@ -28,9 +28,13 @@
 #include "AudioBuffer.hpp"
 #include "../Analysis/FFT.hpp"
 #include "../Analysis/SpectralFeature.hpp"
+#include "../Database/Database.hpp"
+#include "../Database/KdTree.hpp"
 
 using std::vector;
 using CATE::FFT;
+using CATE::Database;
+using CATE::KdTree;
 
 /* The audio processing occurs in AudioProcess, which inherits from the
  * AudioEngine class that wraps the PortAudio functionality. It contains the
@@ -45,26 +49,28 @@ class AudioProcess : public QObject, public AudioEngine
 Q_OBJECT
 
 public:
-    AudioProcess(double sample_rate, int frames_per_buffer,
-                 int fft_bin_size);
+    AudioProcess(double sample_rate, int frames_per_buffer, int fft_bin_size, Database &db, PointCloud &point_cloud,
+                 KdTree &kd_tree);
 
 private:
-    FFT *fft;
+    FFT fft;
     SpectralFeature spectral_feature;
     vector<float> magspec;
     float centroid;
-    static const int frames_per_plot = 4;
-    int frames_per_plot_count;
+    float flatness;
+    Database &db;
+    PointCloud &point_cloud;
+    KdTree &kd_tree;
+    const size_t num_search_results = 10;
+    vector<size_t> return_indices;
+    vector<float> distances;
 
 protected:
-    virtual int processing_callback(const void *input_buffer,
-                                    void *output_buffer,
-                                    unsigned long frames_per_buffer,
-                                    const PaStreamCallbackTimeInfo *time_info,
-                                    PaStreamCallbackFlags status_flags);
-
-signals:
-    void frame_processed(FFT *fft);
+    int processing_callback(const void *input_buffer,
+                            void *output_buffer,
+                            unsigned long frames_per_buffer,
+                            const PaStreamCallbackTimeInfo *time_info,
+                            PaStreamCallbackFlags status_flags) override;
 };
 
 } // CATE

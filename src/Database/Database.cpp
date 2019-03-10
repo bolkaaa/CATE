@@ -22,6 +22,7 @@
 #include <iomanip>
 
 #include "sndfile.hh"
+#include "../../include/nanoflann.hpp"
 
 #include "Database.hpp"
 #include "Entry.hpp"
@@ -35,6 +36,8 @@ using std::pair;
 using std::string;
 using CATE::Entry;
 using CATE::AudioFile;
+using CATE::Point;
+using CATE::PointCloud;
 
 namespace CATE {
 
@@ -50,38 +53,22 @@ void Database::add_directory(const string &directory_path)
     vector<string> file_paths;
     CATE::get_nested_files(file_paths, directory_path);
 
-    for (const auto path : file_paths)
+    for (const auto &path : file_paths)
     {
         add_file(path);
     }
-
-    to_json_file(json_file_path);
-}
-
-std::ostream &operator<<(std::ostream &os, const Database &database)
-{
-    os << database.db << "\n";
-
-    return os;
-}
-
-void Database::clear_buffers()
-{
-    buffers.clear();
 }
 
 void Database::to_json_file(const string &path)
 {
     std::ofstream file(path);
-    file << std::setw(4) << db << std::endl;
+    file << std::setw(4) << db;
 }
 
-bool Database::buffer_exists(const string &key)
+void Database::read_json_file(const string &path)
 {
-    auto it = buffers.find(key);
-    bool exists = it != buffers.end();
-
-    return exists;
+    std::ifstream ifstream(path);
+    ifstream >> db;
 }
 
 void Database::convert_sample_rates(double new_sr)
@@ -103,7 +90,7 @@ void Database::load_buffers_from_db()
     }
 }
 
-void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
+void Database::sliding_window_analysis(int bin_size, int frames_per_buffer, const string &output_path)
 {
     FFT fft(bin_size, frames_per_buffer);
     vector<float> magspec(bin_size);
@@ -118,11 +105,12 @@ void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
         for (auto it = frames.begin(); it != frames.end(); ++it)
         {
             int marker = it->first;
-            AudioBuffer b = it->second;
+            AudioBuffer buffer = it->second;
 
-            fft.fill(&b[0]);
+            fft.fill(&buffer[0]);
             fft.compute();
             fft.get_magspec(magspec);
+
             float centroid = spectral_feature.centroid(magspec);
             float flatness = spectral_feature.flatness(magspec);
 
@@ -135,12 +123,32 @@ void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
         ++buffer_count;
     }
 
-    to_json_file("/Users/lrwz/CATE/database.json");
+    to_json_file(output_path);
 }
 
-Database::Database(string json_file_path)
-    : json_file_path(json_file_path)
+PointCloud Database::create_point_cloud()
 {
+    PointCloud cloud;
+
+    for (auto entry : db)
+    {
+        int num_segments = entry["markers"].size();
+
+        for (auto i = 0; i < num_segments; ++i)
+        {
+            float centroid = entry["centroid"][i];
+            float flatness = entry["flatness"][i];
+            int marker = entry["markers"][i];
+            string file_path = entry["path"];
+
+            Point point {centroid, flatness, marker, file_path};
+
+            cloud.points.emplace_back(point);
+        }
+    }
+
+    return cloud;
 }
+
 
 } // CATE

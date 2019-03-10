@@ -40,11 +40,18 @@ public:
 
     ~AudioEngine();
 
-    void init();
-
+    /* Start a PortAudio stream. */
     int start_stream();
 
+    /* Stop the PortAudio stream. */
     int stop_stream();
+
+private:
+    /* Run initialisation commands. */
+    void init();
+
+    /* Configure inputs and outputs. */
+    void configure();
 
 protected:
     /* The main processing callback function. */
@@ -63,16 +70,15 @@ protected:
                                PaStreamCallbackFlags status_flags,
                                void *user_data)
     {
-        return ((AudioEngine *) user_data)->processing_callback(input_buffer,
-                                                                output_buffer,
-                                                                frames_per_buffer,
-                                                                time_info,
-                                                                status_flags);
+        return static_cast<AudioEngine *>(user_data)->processing_callback(input_buffer,
+                                                                          output_buffer,
+                                                                          frames_per_buffer,
+                                                                          time_info,
+                                                                          status_flags);
     }
 
     PaStream *stream;
     PaError error;
-    PaTime suggested_latency;
     PaStreamParameters input_params;
     PaStreamParameters output_params;
     double sample_rate;

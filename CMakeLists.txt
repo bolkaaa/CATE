@@ -22,8 +22,6 @@ set(SOURCE_FILES
         src/Audio/AudioFile.cpp
         src/Audio/RingBuffer.hpp
         src/Audio/RingBuffer.cpp
-        src/Audio/Util.hpp
-        src/Audio/Util.cpp
         src/Analysis/FFT.hpp
         src/Analysis/FFT.cpp
         src/Analysis/Feature.hpp
@@ -38,9 +36,7 @@ set(SOURCE_FILES
         src/Database/Database.cpp
         src/GUI/MainWindow.hpp
         src/GUI/MainWindow.cpp
-        src/GUI/Plot.hpp
-        src/GUI/Plot.cpp
-        )
+        src/Database/PointCloud.hpp src/Database/KdTree.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
