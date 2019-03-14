@@ -27,7 +27,7 @@
 
 namespace CATE {
 
-MainWindow::MainWindow(QWidget *parent, Database db, PointCloud &point_cloud, KdTree &kd_tree)
+MainWindow::MainWindow(QWidget *parent, Database &db, PointCloud &point_cloud, KdTree &kd_tree)
         : QMainWindow(parent),
           ui(new Ui::MainWindow),
           db(db),

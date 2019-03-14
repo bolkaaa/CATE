@@ -47,7 +47,7 @@ class MainWindow : public QMainWindow
 Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent, Database db, PointCloud &point_cloud, KdTree &kd_tree);
+    explicit MainWindow(QWidget *parent, Database &db, PointCloud &point_cloud, KdTree &kd_tree);
 
     ~MainWindow();
 
@@ -57,7 +57,7 @@ private:
     double sample_rate;
     int frames_per_buffer;
     int fft_bin_size;
-    Database db;
+    Database &db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
 
