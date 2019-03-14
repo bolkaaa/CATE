@@ -37,7 +37,18 @@ set(SOURCE_FILES
         src/Database/KdTree.hpp
         src/GUI/MainWindow.hpp
         src/GUI/MainWindow.cpp
-        )
+        src/Synthesis/Granulator.cpp
+        src/Synthesis/Granulator.hpp
+        src/Synthesis/Envelope.cpp
+        src/Synthesis/Envelope.hpp
+        src/Synthesis/Source.cpp
+        src/Synthesis/Source.hpp
+        src/Synthesis/Grain.cpp
+        src/Synthesis/Grain.hpp
+        src/Synthesis/Scheduler.cpp
+        src/Synthesis/Scheduler.hpp
+        src/Synthesis/SequenceStrategy.cpp
+        src/Synthesis/SequenceStrategy.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

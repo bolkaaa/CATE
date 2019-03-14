@@ -39,8 +39,8 @@ FFT::FFT(int bin_size, int frames_per_buffer)
           spectrum(vector<complex<double> >(output_size)),
           magspec(vector<float>(output_size)),
           plan(fftw_plan_dft_r2c_1d(bin_size,
-                                    reinterpret_cast<double*>(&data[0]),
-                                    reinterpret_cast<fftw_complex*>(&spectrum[0]),
+                                    reinterpret_cast<double *>(&data[0]),
+                                    reinterpret_cast<fftw_complex *>(&spectrum[0]),
                                     FFTW_ESTIMATE))
 {
 }
@@ -50,9 +50,9 @@ FFT::~FFT()
     fftw_destroy_plan(plan);
 }
 
-float FFT::window(int i)
+float FFT::window(int i, int n)
 {
-    auto hanning = static_cast<float>((1. / 2.) * (1. - std::cos((2. * M_PI * i) / (bin_size - 1.))));
+    auto hanning = static_cast<float>((1. / 2.) * (1. - std::cos((2. * M_PI * i) / (n - 1.))));
     return hanning;
 }
 
@@ -61,7 +61,7 @@ void FFT::fill(float *input)
     /* Fill data array with input multiplied by windowing function. */
     for (auto i = 0; i < frames_per_buffer; ++i)
     {
-        data[i] = input[i] * window(i);
+        data[i] = input[i] * window(i, bin_size);
     }
 
     /* Pad range from <frames_per_buffer> to <bin_size> with zeroes. */
@@ -89,7 +89,7 @@ void FFT::compute_magspec()
 {
     for (auto i = 0; i < output_size; ++i)
     {
-        magspec[i] = std::abs(spectrum[i]);
+        magspec[i] = static_cast<float>(std::abs(spectrum[i]));
     }
 }
 

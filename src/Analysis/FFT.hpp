@@ -54,10 +54,10 @@ public:
     /* Pass magnitude spectrum array to output buffer. */
     void get_magspec(vector<float> &output);
 
-private:
-    /* Calculate Hanning window function for a given index. */
-    float window(int i);
+    /* Calculate Hanning window function for a given index and size n. */
+    float window(int i, int n);
 
+private:
     /* Compute magnitude spectrum from complex spectrum. */
     void compute_magspec();
 

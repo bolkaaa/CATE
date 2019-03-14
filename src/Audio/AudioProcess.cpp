@@ -26,17 +26,18 @@
 
 namespace CATE {
 
-AudioProcess::AudioProcess(double sample_rate, int frames_per_buffer, int fft_bin_size, Database &db,
-        PointCloud &point_cloud, KdTree &kd_tree)
+AudioProcess::AudioProcess(double sample_rate, int frames_per_buffer,
+                           int fft_bin_size, Database &db,
+                           PointCloud &point_cloud, KdTree &kd_tree)
         : AudioEngine(sample_rate, frames_per_buffer),
+          fft(FFT(fft_bin_size, frames_per_buffer)),
+          spectral_feature(sample_rate, fft_bin_size),
           magspec(vector<float>(fft_bin_size / 2 + 1)),
           db(db),
           point_cloud(point_cloud),
           kd_tree(kd_tree),
           return_indices(vector<size_t>(num_search_results)),
-          distances(vector<float>(num_search_results)),
-          spectral_feature(sample_rate, fft_bin_size),
-          fft(FFT(fft_bin_size, frames_per_buffer))
+          distances(vector<float>(num_search_results))
 {
 }
 
@@ -46,29 +47,35 @@ int AudioProcess::processing_callback(const void *input_buffer,
                                       const PaStreamCallbackTimeInfo *time_info,
                                       PaStreamCallbackFlags status_flags)
 {
+    /* Casting callback parameters. */
     static_cast<void>(status_flags);
     static_cast<void>(time_info);
-    auto *input = const_cast<float*>(static_cast<const float *>(input_buffer));
-    auto *output = static_cast<float*>(output_buffer);
-    int i = 0;
+    auto *input = const_cast<float *>(static_cast<const float *>(input_buffer));
+    auto *output = static_cast<float *>(output_buffer);
 
-    /* FFT operations. */
+    /* FFT / spectral operations. */
     fft.fill(input);
     fft.compute();
     fft.get_magspec(magspec);
-
-    /* Audio feature extraction and KNN search. */
     centroid = spectral_feature.centroid(magspec);
     flatness = spectral_feature.flatness(magspec);
-    const float search_points[2] = {centroid, flatness};
-    kd_tree.knnSearch(&search_points[0], num_search_results, &return_indices[0], &distances[0]);
-    size_t ix = return_indices[0];
-    std::cout << point_cloud.points[ix].file_path << "\t->\t[" << point_cloud.points[ix].marker << "]\n";
 
-    /* Audio output block. */
-    for (i = 0; i < frames_per_buffer; ++i)
+    /* Testing KNN search of point cloud. */
+    const float search_points[2] = {centroid, flatness};
+    kd_tree.knnSearch(&search_points[0], num_search_results, &return_indices[0],
+                      &distances[0]);
+    size_t ix = return_indices[0]; // Only using first result for now
+    string file = point_cloud.points[ix].file_path;
+    int marker = point_cloud.points[ix].marker;
+
+    /* Main audio output block. */
+    for (unsigned long i = 0; i < frames_per_buffer; ++i)
     {
-        output[i] = input[i];
+        /* Temporary output logging. */
+        std::printf("File: %s\nMarker: %d\n\n", file.c_str(), marker);
+
+        /* No audio output for now. */
+        *output++ = 0.0;
     }
 
     return paContinue;

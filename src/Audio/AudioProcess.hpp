@@ -23,6 +23,7 @@
 #include <vector>
 
 #include <QObject>
+#include <queue>
 
 #include "AudioEngine.hpp"
 #include "AudioBuffer.hpp"
@@ -32,6 +33,7 @@
 #include "../Database/KdTree.hpp"
 
 using std::vector;
+using std::queue;
 using CATE::FFT;
 using CATE::Database;
 using CATE::KdTree;
@@ -49,19 +51,22 @@ class AudioProcess : public QObject, public AudioEngine
 Q_OBJECT
 
 public:
-    AudioProcess(double sample_rate, int frames_per_buffer, int fft_bin_size, Database &db, PointCloud &point_cloud,
-                 KdTree &kd_tree);
+    AudioProcess(double sample_rate, int frames_per_buffer, int fft_bin_size,
+                 Database &db, PointCloud &point_cloud, KdTree &kd_tree);
 
 private:
+    /* Feature extraction. */
     FFT fft;
     SpectralFeature spectral_feature;
     vector<float> magspec;
     float centroid;
     float flatness;
-    Database &db;
+
+    /* Audio file management / K-d tree. */
+    Database db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
-    const size_t num_search_results = 10;
+    const size_t num_search_results = 32;
     vector<size_t> return_indices;
     vector<float> distances;
 

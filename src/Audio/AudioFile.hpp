@@ -45,7 +45,7 @@ namespace CATE {
 class AudioFile
 {
 public:
-    explicit AudioFile();
+    explicit AudioFile() = default;
 
     /* Instantiate with file read from path. */
     explicit AudioFile(const string &path);
