@@ -12,13 +12,13 @@ My goal for this week and the following week was working on a granular synthesis
 I wanted to find a system for implementing granular synthesis in C++ that would have robust foundations and be 
 modular/expandable. 
 After doing a 
-bit of research, I found the following article written by Ross Bencina, who also designed the PortAudio library I am 
+bit of research, I found the following [article](http://www.rossbencina.com/static/code/granular-synthesis/BencinaAudioAnecdotes310801.pdf) written by Ross Bencina, who also designed the PortAudio library I am 
 using in my program. It seemed to be an ideal starting point, so I set out to understand it and implement the class 
 structure proposed within it. In the article, a model for granular synthesis is broken down into different objects, 
 each of which I will write briefly about: 
 
 #### Source
-The source is where audio used in the granulation comes from, which can be of the following types:
+The audio source used in the granulation, which can be of the following types:
 ##### Tapped Delay Line
 Sample data is stored from a real-time stream as a delay line. This is
 particularly useful for granulators that operate as an audio effect. It can be
