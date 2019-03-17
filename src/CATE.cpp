@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     const string db_file_path = "/Users/lrwz/CATE/cello.json";
     Database db;
     db.read_json_file(db_file_path);
-    db.load_buffers_from_db();
+    db.load_files();
     PointCloud point_cloud = db.create_point_cloud();
     KdTree kd_tree(KdTreeParams::num_features,
                    point_cloud,

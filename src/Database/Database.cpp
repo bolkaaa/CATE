@@ -73,20 +73,18 @@ void Database::read_json_file(const string &path)
 
 void Database::convert_sample_rates(double new_sr)
 {
-    for (auto &buffer : buffers)
+    for (auto &buffer : files)
     {
-        buffer.second.convert_sample_rate(new_sr);
+        buffer.convert_sample_rate(new_sr);
     }
 }
 
-void Database::load_buffers_from_db()
+void Database::load_files()
 {
     for (const auto &entry : db)
     {
         const string path = entry["path"];
-        AudioFile file(path);
-        std::pair<string, AudioFile> pair(path, file);
-        buffers.insert(pair);
+        files.emplace_back(AudioFile(path));
     }
 }
 
@@ -96,11 +94,10 @@ void Database::sliding_window_analysis(int bin_size, int frames_per_buffer, cons
     vector<float> magspec(bin_size);
     int buffer_count = 0;
 
-    for (auto b : buffers)
+    for (auto b : files)
     {
-        string path = b.first;
-        map<int, AudioBuffer> frames = segment_frames(b.second.data, frames_per_buffer);
-        SpectralFeature spectral_feature(b.second.sample_rate, bin_size);
+        map<int, AudioBuffer> frames = segment_frames(b.data, frames_per_buffer);
+        SpectralFeature spectral_feature(b.sample_rate, bin_size);
 
         for (auto it = frames.begin(); it != frames.end(); ++it)
         {
@@ -114,7 +111,7 @@ void Database::sliding_window_analysis(int bin_size, int frames_per_buffer, cons
             float centroid = spectral_feature.centroid(magspec);
             float flatness = spectral_feature.flatness(magspec);
 
-            db[buffer_count]["path"] = path;
+            db[buffer_count]["path"] = b.path;
             db[buffer_count]["centroid"].emplace_back(centroid);
             db[buffer_count]["flatness"].emplace_back(flatness);
             db[buffer_count]["markers"].emplace_back(marker);
@@ -149,6 +146,5 @@ PointCloud Database::create_point_cloud()
 
     return cloud;
 }
-
 
 } // CATE

@@ -17,32 +17,22 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef GRANULATOR_HPP
-#define GRANULATOR_HPP
-
-#include <vector>
-#include <src/Audio/AudioFile.hpp>
-
-#include "./Scheduler.hpp"
+#include "Util.hpp"
 
 namespace CATE {
 
-/* Granulator is the high-level interface that contains all the functionality
- * for the granular synthesis process.  */
-class Granulator
+float samp_to_ms(int samp, float sr)
 {
-public:
-    Granulator(vector<AudioFile> files, float sample_rate);
+    auto ms = (samp / sr) * 1000.0f;
 
-    /* Get the next sample value from the granulator. */
-    float synthesize();
+    return ms;
+}
 
-private:
-    vector<AudioFile> files;
-    Scheduler scheduler;
-    float sample_rate;
-};
+int ms_to_samp(float ms, float sr)
+{
+    auto samp = static_cast<int>((ms / 1000) * sr);
+
+    return samp;
+}
 
 } // CATE
-
-#endif

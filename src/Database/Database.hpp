@@ -21,33 +21,32 @@
 #define DATABASE_HPP
 
 #include <vector>
-#include <unordered_map>
 
 #include <nlohmann/json.hpp>
 #include "../../include/nanoflann.hpp"
 
 #include "FileTree.hpp"
-#include "../Audio/AudioBuffer.hpp"
-#include "../Audio/AudioFile.hpp"
-#include "../Analysis/FFT.hpp"
-#include "../Analysis/SpectralFeature.hpp"
 #include "Entry.hpp"
 #include "PointCloud.hpp"
+#include "src/Audio/AudioBuffer.hpp"
+#include "src/Audio/AudioFile.hpp"
+#include "src/Analysis/FFT.hpp"
+#include "src/Analysis/SpectralFeature.hpp"
+#include "src/Synthesis/Util.hpp"
 
 using std::vector;
-using std::unordered_map;
 using std::string;
+using Json = nlohmann::json;
 using CATE::AudioBuffer;
 using CATE::FFT;
 using CATE::SpectralFeature;
-using Json = nlohmann::json;
+
+namespace CATE {
 
 /* The Database class handles functionality for persistently storing a
  * collection of audio file paths and associated segmentation markers and
  * analysis data, forming the basis for the corpus of the concatenative
  * synthesis system. */
-
-namespace CATE {
 
 class Database
 {
@@ -58,14 +57,14 @@ public:
     /* Add all files deeper than specified directory to the database. */
     void add_directory(const string &directory_path);
 
-    /* Iterate over JSON database and load audio files into <buffers>. */
-    void load_buffers_from_db();
+    /* Iterate over JSON database and load audio files into <files>. */
+    void load_files();
 
     /* For each audio file in database, compute audio features for a sliding
      * window of <frames_per_buffer> samples,and store in a JSON file. */
     void sliding_window_analysis(int bin_size, int frames_per_buffer, const string &output_path);
 
-    /* Convert all buffers in database to a new sample rate. */
+    /* Convert all files in database to a new sample rate. */
     void convert_sample_rates(double new_sr);
 
     /* Save the JSON database to a JSON file, with pretty printing. */
@@ -77,16 +76,21 @@ public:
     /* From features in database, create point cloud to be used by KNN search. */
     PointCloud create_point_cloud();
 
+    /* Get access to vector of audio files. */
+    vector<AudioFile> get_files() { return files; };
+
+    void segment_files(float grain_size);
+
     /* Get a particular file from the database, indexed by filename. */
-    AudioFile &operator[](const string &file_path) { return buffers[file_path]; }
+    AudioFile &operator[](const int i) { return files[i]; }
 
 private:
     /* JSON data object, storing file paths, segmentation frame markers and
      * analysis data. */
     Json db;
 
-    /* Hash map of audio files indexed by file names. */
-    unordered_map<string, AudioFile> buffers;
+    /* The audio files stored in the database. */
+    vector<AudioFile> files;
 };
 
 } // CATE

@@ -20,17 +20,42 @@
 #ifndef GRAIN_HPP
 #define GRAIN_HPP
 
+#include "src/Audio/AudioFile.hpp"
+#include "Source.hpp"
+#include "Envelope.hpp"
+
+namespace CATE {
+
+/* Grain combines an Envelope and Source to represent a single grain in the
+ * granulation system. */
 class Grain
 {
 public:
-    /* Activate grain. */
+    Grain();
+
+    Grain(float dur, float sustain, float sample_rate, const AudioFile &segment);
+
+    /* Synthesize sample from audio source and envelope. */
+    float synthesize();
+
+    /* Set active state to true. */
     void activate();
 
-    /* Synthesize grain from audio source and envelope. */
-    void synthesize();
+    /* Set active state to false. */
+    void deactivate();
+
+    /* Return active status. */
+    bool is_active() const;
 
 private:
-
+    float dur;
+    float sustain;
+    float sample_rate;
+    bool active;
+    Source src;
+    Envelope env;
 };
+
+} // CATE
 
 #endif

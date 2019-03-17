@@ -19,6 +19,7 @@
 
 #include "AudioProcess.hpp"
 #include "../Analysis/FFT.hpp"
+#include "../Synthesis/Scheduler.hpp"
 
 #include <cstdlib>
 #include <cmath>
@@ -26,10 +27,10 @@
 
 namespace CATE {
 
-AudioProcess::AudioProcess(double sample_rate, int frames_per_buffer,
+AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_channels, int output_channels,
                            int fft_bin_size, Database &db,
                            PointCloud &point_cloud, KdTree &kd_tree)
-        : AudioEngine(sample_rate, frames_per_buffer),
+        : AudioEngine(sample_rate, frames_per_buffer, input_channels, output_channels),
           fft(FFT(fft_bin_size, frames_per_buffer)),
           spectral_feature(sample_rate, fft_bin_size),
           magspec(vector<float>(fft_bin_size / 2 + 1)),
@@ -37,7 +38,8 @@ AudioProcess::AudioProcess(double sample_rate, int frames_per_buffer,
           point_cloud(point_cloud),
           kd_tree(kd_tree),
           return_indices(vector<size_t>(num_search_results)),
-          distances(vector<float>(num_search_results))
+          distances(vector<float>(num_search_results)),
+          granulator(db.get_files(), sample_rate)
 {
 }
 
@@ -72,10 +74,10 @@ int AudioProcess::processing_callback(const void *input_buffer,
     for (unsigned long i = 0; i < frames_per_buffer; ++i)
     {
         /* Temporary output logging. */
-        std::printf("File: %s\nMarker: %d\n\n", file.c_str(), marker);
-
-        /* No audio output for now. */
-        *output++ = 0.0;
+        // std::printf("File: %s\nMarker: %d\n\n", file.c_str(), marker);
+        /* Input -> Output. */
+        // *output++ = *input++;
+        *output++ = granulator.synthesize();
     }
 
     return paContinue;

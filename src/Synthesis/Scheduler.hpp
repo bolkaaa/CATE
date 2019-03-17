@@ -17,22 +17,54 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-/* Maintains for activating each grain, based upon onset times and durations
- * supplied by a SequenceStrategy object. It handles grain allocation and
- * mixing of grains to form a single output. */
 
 #ifndef SCHEDULER_HPP
 #define SCHEDULER_HPP
 
-#include "SequenceStrategy.hpp"
+#include <vector>
+#include <random>
 
+#include "src/Audio/AudioFile.hpp"
+#include "Grain.hpp"
+
+using std::vector;
+using std::random_device;
+using std::mt19937;
+using std::uniform_real_distribution;
+
+namespace CATE {
+
+/* Handles activation of grains, based upon onset times. It handles grain allocation and mixing of grains to form a
+ * single output. */
 class Scheduler
 {
 public:
-    void synthesize();
+    /* Calculate grain activations. */
+    float schedule();
+
+    Scheduler(vector<AudioFile> &files, float sample_rate);
+
+    /* Mix all currently active grains to a single output. */
+    float synthesize_grains();
 
 private:
-    SequenceStrategy sequence_strategy;
+    /* Stochastically generate next inter-onset value, based on a density parameter. */
+    int get_next_inter_onset();
+
+    vector<AudioFile> files;
+    vector<Grain> grains;
+    random_device seed;
+    mt19937 gen;
+    uniform_real_distribution<float> dist;
+    float grain_density;
+    int max_grains;
+    int max_onset;
+    int next_onset;
+    int grain_index;
+    int sample_count;
+    float sample_rate;
 };
+
+} // CATE
 
 #endif

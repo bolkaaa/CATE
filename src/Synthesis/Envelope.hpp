@@ -20,13 +20,34 @@
 #ifndef ENVELOPE_HPP
 #define ENVELOPE_HPP
 
+namespace CATE {
+
+/* Envelope contains functionality for the creation of a parabolic envelope,
+ * maintaining a state over its parameters for its lifespan. */
 class Envelope
 {
 public:
-    /* Synthesize the envelope. */
-    void synthesize();
+    Envelope(float dur, float sustain, float sample_rate);
+
+    /* Initialise parabolic envelope parameters. */
+    void reset();
+
+    /* Synthesize the next sample value and return it. */
+    float synthesize();
 
 private:
+    float dur;
+    float sustain;
+    float amp;
+    float curve;
+    float slope;
+    float sample_rate;
+    float rdur;
+    float rdur2;
+    int sample_index;
+    int sample_size;
 };
+
+} // CATE
 
 #endif

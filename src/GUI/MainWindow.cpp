@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent, Database &db, PointCloud &point_cloud, K
 {
     ui->setupUi(this);
 
-    audio_process = new AudioProcess(sample_rate, frames_per_buffer, fft_bin_size, db, point_cloud, kd_tree);
+    audio_process = new AudioProcess(sample_rate, frames_per_buffer, 1, 1, fft_bin_size, db, point_cloud, kd_tree);
 
     /* Connect Signals. */
     connect(ui->on_start_button_pressed, SIGNAL(pressed()), this, SLOT(on_start_button_pressed()));

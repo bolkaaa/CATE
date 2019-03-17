@@ -47,8 +47,7 @@ set(SOURCE_FILES
         src/Synthesis/Grain.hpp
         src/Synthesis/Scheduler.cpp
         src/Synthesis/Scheduler.hpp
-        src/Synthesis/SequenceStrategy.cpp
-        src/Synthesis/SequenceStrategy.hpp)
+        src/Synthesis/Util.cpp src/Synthesis/Util.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

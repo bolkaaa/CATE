@@ -75,4 +75,14 @@ void AudioFile::convert_sample_rate(double new_sample_rate)
     data = output;
 }
 
+void AudioFile::split(int begin, int end)
+{
+    AudioBuffer new_data;
+
+    for (int i = begin; i < end; ++i)
+    {
+        new_data.emplace_back(data[i]);
+    }
+}
+
 } // CATE

@@ -25,11 +25,14 @@
 
 namespace CATE {
 
-AudioEngine::AudioEngine(double sample_rate, unsigned long frames_per_buffer)
-        : sample_rate(sample_rate), frames_per_buffer(frames_per_buffer)
+AudioEngine::AudioEngine(float sample_rate, unsigned long frames_per_buffer, int input_channels,
+                         int output_channels)
+        : sample_rate(sample_rate),
+          frames_per_buffer(frames_per_buffer),
+          input_channels(input_channels),
+          output_channels(output_channels)
 {
     is_running = false;
-
     init();
 }
 
@@ -124,12 +127,12 @@ int AudioEngine::stop_stream()
 
 void AudioEngine::configure()
 {
-    input_params.channelCount = 1;
+    input_params.channelCount = input_channels;
     input_params.device = Pa_GetDefaultInputDevice();
     input_params.sampleFormat = paFloat32;
     input_params.hostApiSpecificStreamInfo = nullptr;
 
-    output_params.channelCount = 1;
+    output_params.channelCount = output_channels;
     output_params.device = Pa_GetDefaultOutputDevice();
     output_params.sampleFormat = paFloat32;
     output_params.hostApiSpecificStreamInfo = nullptr;

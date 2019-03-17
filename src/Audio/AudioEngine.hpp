@@ -36,7 +36,8 @@ namespace CATE {
 class AudioEngine
 {
 public:
-    AudioEngine(double sample_rate, unsigned long frames_per_buffer);
+    AudioEngine(float sample_rate, unsigned long frames_per_buffer, int input_channels,
+                int output_channels);
 
     ~AudioEngine();
 
@@ -81,9 +82,11 @@ protected:
     PaError error;
     PaStreamParameters input_params;
     PaStreamParameters output_params;
-    double sample_rate;
+    float sample_rate;
     unsigned long frames_per_buffer;
     bool is_running;
+    int input_channels;
+    int output_channels;
 };
 
 } // CATE

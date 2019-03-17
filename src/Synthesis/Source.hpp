@@ -20,13 +20,34 @@
 #ifndef SOURCE_HPP
 #define SOURCE_HPP
 
+#include "src/Audio/AudioFile.hpp"
+
+using CATE::AudioBuffer;
+
+namespace CATE {
+
+/* Source represents the extraction of sample data from a source (in this case, an AudioFile object which contains a
+ * buffer of sample data), to be passed to the Grain object along with an Envelope object. */
 class Source
 {
 public:
-    /* Synthesize from audio source. */
-    void synthesize();
+    Source(const AudioFile &segment, float dur, float sample_rate);
+
+    /* Get next sample value from source. */
+    float synthesize();
+
+    /* Reset sample index. */
+    void reset();
 
 private:
+    AudioFile segment;
+    float dur;
+    float sample_rate;
+    int sample_size;
+    int sample_index;
+    bool active;
 };
+
+} // CATE
 
 #endif

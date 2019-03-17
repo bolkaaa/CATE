@@ -59,6 +59,9 @@ public:
     /* Convert audio file data to new sample rate. */
     void convert_sample_rate(double new_sample_rate);
 
+    /* Split data at specified begin and end positions. */
+    void split(int begin, int end);
+
     AudioBuffer data;
     string path;
     double sample_rate;

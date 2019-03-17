@@ -31,12 +31,14 @@
 #include "../Analysis/SpectralFeature.hpp"
 #include "../Database/Database.hpp"
 #include "../Database/KdTree.hpp"
+#include "../Synthesis/Granulator.hpp"
 
 using std::vector;
 using std::queue;
 using CATE::FFT;
 using CATE::Database;
 using CATE::KdTree;
+using CATE::Granulator;
 
 /* The audio processing occurs in AudioProcess, which inherits from the
  * AudioEngine class that wraps the PortAudio functionality. It contains the
@@ -51,7 +53,7 @@ class AudioProcess : public QObject, public AudioEngine
 Q_OBJECT
 
 public:
-    AudioProcess(double sample_rate, int frames_per_buffer, int fft_bin_size,
+    AudioProcess(float sample_rate, int frames_per_buffer, int input_channels, int output_channels, int fft_bin_size,
                  Database &db, PointCloud &point_cloud, KdTree &kd_tree);
 
 private:
@@ -69,6 +71,10 @@ private:
     const size_t num_search_results = 32;
     vector<size_t> return_indices;
     vector<float> distances;
+
+    /* Synthesis. */
+    vector<AudioBuffer> segments;
+    Granulator granulator;
 
 protected:
     int processing_callback(const void *input_buffer,

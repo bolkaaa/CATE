@@ -17,20 +17,17 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-/* SequenceStrategy is the interface that dictates to the scheduler when the
- * next grain should occur and what its duration should be. */
+#ifndef UTIL_HPP
+#define UTIL_HPP
 
-#ifndef SEQUENCESTRATEGY_HPP
-#define SEQUENCESTRATEGY_HPP
+namespace CATE {
 
-class SequenceStrategy
-{
-public:
-    float get_next_duration();
+/* Convert integer N samples to time in ms. */
+float samp_to_ms(int samp, float sr);
 
-    float get_next_inter_onset();
+/* Convert real T ms to integer N samples. */
+int ms_to_samp(float ms, float sr);
 
-private:
-};
+} // CATE
 
 #endif
