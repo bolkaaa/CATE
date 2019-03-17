@@ -1,4 +1,100 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-10T21:09:24+00:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Sliding Window Analysis and K-d Tree</title><link href="/2019/03/10/sliding-window-analysis-and-kd-tree.html" rel="alternate" type="text/html" title="Sliding Window Analysis and K-d Tree" /><published>2019-03-10T00:00:00+00:00</published><updated>2019-03-10T00:00:00+00:00</updated><id>/2019/03/10/sliding-window-analysis-and-kd-tree</id><content type="html" xml:base="/2019/03/10/sliding-window-analysis-and-kd-tree.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-17T09:20:55+00:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Implementing Simple Granular Synthesis</title><link href="/2019/03/17/implementing-simple-granular-synthesis.html" rel="alternate" type="text/html" title="Implementing Simple Granular Synthesis" /><published>2019-03-17T00:00:00+00:00</published><updated>2019-03-17T00:00:00+00:00</updated><id>/2019/03/17/implementing-simple-granular-synthesis</id><content type="html" xml:base="/2019/03/17/implementing-simple-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+&lt;p&gt;My goal for this week and the following week was working on a granular synthesis implementation. For the first week, I
+ have aimed to just get a simple system working that has the core functionality needed going forwards. Then I plan to
+  integrate it with my audio analysis code, so that the grains are derived from the matches found by the KNN search.&lt;/p&gt;
+
+&lt;h3 id=&quot;establishing-the-granular-synthesis-model&quot;&gt;Establishing the Granular Synthesis Model&lt;/h3&gt;
+&lt;p&gt;I wanted to find a system for implementing granular synthesis in C++ that would have robust foundations and be 
+modular/expandable. 
+After doing a 
+bit of research, I found the following article written by Ross Bencina, who also designed the PortAudio library I am 
+using in my program. It seemed to be an ideal starting point, so I set out to understand it and implement the class 
+structure proposed within it. In the article, a model for granular synthesis is broken down into different objects, 
+each of which I will write briefly about:&lt;/p&gt;
+
+&lt;h4 id=&quot;source&quot;&gt;Source&lt;/h4&gt;
+&lt;p&gt;The source is where audio used in the granulation comes from, which can be of the following types:&lt;/p&gt;
+&lt;h5 id=&quot;tapped-delay-line&quot;&gt;Tapped Delay Line&lt;/h5&gt;
+&lt;p&gt;Sample data is stored from a real-time stream as a delay line. This is
+particularly useful for granulators that operate as an audio effect. It can be
+seen as the most complicated type of granular synthesis to implement, because
+the delay line must be maintained and variable rate delay taps have to be
+implemented for each grain.&lt;/p&gt;
+
+&lt;h5 id=&quot;synthetic-grains&quot;&gt;Synthetic Grains&lt;/h5&gt;
+&lt;p&gt;Each grain is synthesized through synthesis techniques such
+as FM synthesis. Potentially simple to implement, because state doesn’t need to
+be shared between grains.&lt;/p&gt;
+
+&lt;h5 id=&quot;stored-samples&quot;&gt;Stored Samples&lt;/h5&gt;
+&lt;p&gt;Sample values for grains are stored in wavetables, which can be used to process
+pre-generated waveforms or sample data from audio files.&lt;/p&gt;
+
+&lt;p&gt;As the goal of CATE is to resynthesize the audio from audio files, stored
+samples will be the type of source.&lt;/p&gt;
+
+&lt;h4 id=&quot;envelope&quot;&gt;Envelope&lt;/h4&gt;
+&lt;p&gt;Generates sample values for an amplitude envelope. Types of envelope include simple parabolic envelopes, 
+trapezoidal envelopes, or raised cosine bell envelopes. Grain envelopes can introduce spectral artifacts.
+ Trapezoidal envelopes introduce the most spectral distortion due to discontinuities at the edges. An 
+ alternative is raised cosine bell envelopes which are better in this regard, at the expense of greater processing 
+ time.&lt;/p&gt;
+
+&lt;p&gt;There is a general time/space tradeoff with implementing amplitude envelopes, where you
+ may choose to either compute the coefficients on demand or use a pre-computed
+ wavetable. Bencina states that modern processors allow for a more efficient
+ implementation when not using stored tables, due to the memory access overhead
+ of accessing stored tables.&lt;/p&gt;
+
+&lt;p&gt;I chose to implement a Parabolic envelope for now due to its relative
+ simplicity, which I can always swap out later for a raised cosine bell envelope,
+ which allows for more control over the envelope parameters.&lt;/p&gt;
+
+&lt;h4 id=&quot;grain&quot;&gt;Grain&lt;/h4&gt;
+&lt;p&gt;Combines an Envelope and Source object to form an overall model of a grain in granular synthesis. The
+ source sample is multiplied by the envelope sample when synthesized.&lt;/p&gt;
+
+&lt;h4 id=&quot;scheduler&quot;&gt;Scheduler&lt;/h4&gt;
+&lt;p&gt;Generates time periods between grains and handles activating them. It also manages mixing and outputting active 
+grains. A simple counting system generates a new &lt;a href=&quot;https://en.wikipedia.org/wiki/Time_point#Interonset_interval&quot;&gt;interonset&lt;/a&gt; 
+time whenever the sample counter is equal to 0, and activates the 
+next grain. Then, that sample counter is decremented. When it hits 0 again, the cycle continues and the next grain is
+ activated. The interonset time can be generated with a simple function that uses a random number generator. I used 
+functionality from the random header in C++ to get uniform distribution random numbers.&lt;/p&gt;
+
+&lt;h4 id=&quot;granulator&quot;&gt;Granulator&lt;/h4&gt;
+&lt;p&gt;The top-level class that contains the scheduler and any other necessary high-level functionality for 
+using the synth. This is the class that will have a spawned object in the AudioProcess class of CATE, while the 
+previous classes will all be hidden.&lt;/p&gt;
+
+&lt;h3 id=&quot;challenges-to-overcome-going-forwards&quot;&gt;Challenges to Overcome Going Forwards&lt;/h3&gt;
+&lt;p&gt;After having implemented some basic granular synthesis, I feel that I have now
+come to one of the more challenging aspects of implementing a granular system
+that works with a large set of audio files, where the sliced segments within the files to be used as grains is 
+constantly changing. Currently, I know that I have the following functionality to work with:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;A granular synthesis system that requires each grain to be provided with a source wavetable array.&lt;/li&gt;
+  &lt;li&gt;An audio analysis pipeline that relates lists of analysis features and segmentation positions with audio files&lt;/li&gt;
+  &lt;li&gt;A real-time analysis system that outputs the same features that are used in the stored analysis data&lt;/li&gt;
+  &lt;li&gt;A k-nearest neighbours function that returns the N nearest indices from the list of segmentation markers that 
+correspond to the 
+current block of input from the microphone&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;My task now is to tie these systems together, so that the segments extracted
+from the audio files are granulated according to their features that are matched
+with the microphone input.&lt;/p&gt;
+
+&lt;h3 id=&quot;current-progress-check-and-future-plans&quot;&gt;Current Progress Check and Future Plans&lt;/h3&gt;
+&lt;p&gt;I am generally satisfied with my progress this week, as the most difficult aspect was approaching a topic like 
+granular synthesis and understanding how to implement it in C++, while I am still new to low-level audio programming.
+ I’m happy with the article written by Bencina that I found, as it improved my understanding of granular synthesis 
+ and helped me get started on implementing it. I plan to spend the next week improving upon what I have, and properly
+  combining it with the analysis aspects of the program. I may look into the concept of &lt;a href=&quot;https://en.wikipedia.org/wiki/Object_pool_pattern&quot;&gt;object pooling&lt;/a&gt;, which is a 
+  design pattern that specifies a set of pre-initialised objects that can reused, rather than destroying objects and 
+  allocating new ones. Pooled objects can be recalled in a determinant amount of time as opposed to allocated 
+  objects, which may take an indeterminant amount of time (an undesirable property in audio programming).&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress My goal for this week and the following week was working on a granular synthesis implementation. For the first week, I have aimed to just get a simple system working that has the core functionality needed going forwards. Then I plan to integrate it with my audio analysis code, so that the grains are derived from the matches found by the KNN search.</summary></entry><entry><title type="html">Sliding Window Analysis and K-d Tree</title><link href="/2019/03/10/sliding-window-analysis-and-kd-tree.html" rel="alternate" type="text/html" title="Sliding Window Analysis and K-d Tree" /><published>2019-03-10T00:00:00+00:00</published><updated>2019-03-10T00:00:00+00:00</updated><id>/2019/03/10/sliding-window-analysis-and-kd-tree</id><content type="html" xml:base="/2019/03/10/sliding-window-analysis-and-kd-tree.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;This week I have been building upon the audio analysis code implemented
 previously. I have added functionality to perform that analysis on fixed audio
 files as well as on the live input that was already present. I also added the
