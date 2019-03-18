@@ -51,6 +51,8 @@ namespace CATE {
 class Database
 {
 public:
+    Database(const string &db_file_path);
+
     /* Add a single file to the database. */
     void add_file(const string &path);
 
@@ -62,16 +64,16 @@ public:
 
     /* For each audio file in database, compute audio features for a sliding
      * window of <frames_per_buffer> samples,and store in a JSON file. */
-    void sliding_window_analysis(int bin_size, int frames_per_buffer, const string &output_path);
+    void sliding_window_analysis(int bin_size, int frames_per_buffer);
 
     /* Convert all files in database to a new sample rate. */
     void convert_sample_rates(double new_sr);
 
-    /* Save the JSON database to a JSON file, with pretty printing. */
-    void to_json_file(const string &path);
-
     /* Read JSON file into memory. */
-    void read_json_file(const string &path);
+    void read_json_file();
+
+    /* Save the JSON database to JSON file, with pretty printing. */
+    void write_json_file();
 
     /* From features in database, create point cloud to be used by KNN search. */
     PointCloud create_point_cloud();
@@ -88,6 +90,7 @@ private:
     /* JSON data object, storing file paths, segmentation frame markers and
      * analysis data. */
     Json db;
+    string db_file_path;
 
     /* The audio files stored in the database. */
     vector<AudioFile> files;

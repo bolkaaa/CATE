@@ -20,15 +20,18 @@
 #include <iostream>
 
 #include <QApplication>
-#include "../include/nanoflann.hpp"
+#include "include/nanoflann.hpp"
+#include "include/args.hxx"
 
-#include "./Database/PointCloud.hpp"
-#include "./Database/Database.hpp"
-#include "./Database/KdTree.hpp"
-#include "./Audio/AudioBuffer.hpp"
-#include "./GUI/MainWindow.hpp"
+#include "src/Database/PointCloud.hpp"
+#include "src/Database/Database.hpp"
+#include "src/Database/KdTree.hpp"
+#include "src/Audio/AudioBuffer.hpp"
+#include "src/GUI/MainWindow.hpp"
 
 using std::string;
+using std::cout;
+using std::cerr;
 using CATE::KdTree;
 using CATE::KdTreeParams;
 using CATE::Database;
@@ -37,20 +40,82 @@ using CATE::MainWindow;
 
 int main(int argc, char *argv[])
 {
-    /* Audio file database loading and K-d Tree Setup. */
-    const string db_file_path = "/Users/lrwz/CATE/cello.json";
-    Database db;
-    db.read_json_file(db_file_path);
+#ifdef CLI
+    const std::string program_info = "CATE is an audio processing application that performs content-based "
+                                     "granular synthesis / concatenative synthesis.";
+    args::ArgumentParser parser(program_info);
+    args::Group arguments("arguments");
+    args::HelpFlag help_flag(arguments, "help", "help", {'h', "help"});
+    args::PositionalList<string> paths(arguments, "paths", "directories to analyse");
+    args::Group commands(parser, "commands");
+    args::GlobalOptions globals(parser, arguments);
+
+    /* Flags */
+    const string bin_size_flag_info = "Specify FFT bin size for analysis process.";
+    args::ValueFlag<int> bin_size_flag(parser, "bin size", bin_size_flag_info, {'b'});
+
+    const string frames_per_buffer_flag_info = "Specify frames per buffer for analysis process.";
+    args::ValueFlag<int> frames_per_buffer_flag(parser, "frames per buffer", frames_per_buffer_flag_info, {'f'});
+
+    const string db_file_path_flag_info = "Specify JSON output file path for analysis process";
+    args::ValueFlag<string> db_file_path_flag(parser, "db file path", db_file_path_flag_info, {'d'});
+
+
+    /* Commands */
+    const string analyse_info = "Analyse specified directories and create JSON file from data.";
+    args::Command analyse(commands, "analyse", analyse_info, [&](args::Subparser &parser)
+    {
+        auto bin_size = bin_size_flag ? args::get(bin_size_flag) : 1024;
+        auto frames_per_buffer = frames_per_buffer_flag ? args::get(frames_per_buffer_flag) : 256;
+        auto db_file_path = db_file_path_flag ? args::get(db_file_path_flag) : "db.json";
+        Database db(db_file_path);
+
+        parser.Parse();
+
+        for (auto &&p : paths)
+        {
+            db.add_directory(p);
+        }
+
+        db.load_files();
+        db.sliding_window_analysis(bin_size, frames_per_buffer);
+        db.write_json_file();
+    });
+
+    /* Parse CLI */
+    try
+    {
+        parser.ParseCLI(argc, argv);
+    }
+
+    catch (args::Help &)
+    {
+        cout << parser;
+    }
+
+    catch (args::Error &e)
+    {
+        cerr << e.what() << "\n" << parser;
+        return 1;
+    }
+
+    return 0;
+#endif // CLI
+
+#ifdef GUI
+    Database db("db.json");
     db.load_files();
     PointCloud point_cloud = db.create_point_cloud();
     KdTree kd_tree(KdTreeParams::num_features,
                    point_cloud,
                    KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf));
     kd_tree.buildIndex();
-
-    /* Main Application. */
     QApplication app(argc, argv);
     MainWindow main_window(nullptr, db, point_cloud, kd_tree);
     main_window.show();
+
     return app.exec();
+#endif // GUI
+
+
 }

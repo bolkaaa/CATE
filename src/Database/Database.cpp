@@ -38,8 +38,14 @@ using CATE::Entry;
 using CATE::AudioFile;
 using CATE::Point;
 using CATE::PointCloud;
+using CATE::get_nested_files;
 
 namespace CATE {
+
+Database::Database(const string &db_file_path)
+        : db_file_path(db_file_path)
+{
+}
 
 void Database::add_file(const string &path)
 {
@@ -51,23 +57,24 @@ void Database::add_file(const string &path)
 void Database::add_directory(const string &directory_path)
 {
     vector<string> file_paths;
-    CATE::get_nested_files(file_paths, directory_path);
+    get_nested_files(file_paths, directory_path);
 
     for (const auto &path : file_paths)
     {
         add_file(path);
+        std::cout << "Added: " << path << "\n";
     }
 }
 
-void Database::to_json_file(const string &path)
+void Database::write_json_file()
 {
-    std::ofstream file(path);
+    std::ofstream file(db_file_path);
     file << std::setw(4) << db;
 }
 
-void Database::read_json_file(const string &path)
+void Database::read_json_file()
 {
-    std::ifstream ifstream(path);
+    std::ifstream ifstream(db_file_path);
     ifstream >> db;
 }
 
@@ -88,7 +95,7 @@ void Database::load_files()
     }
 }
 
-void Database::sliding_window_analysis(int bin_size, int frames_per_buffer, const string &output_path)
+void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
 {
     FFT fft(bin_size, frames_per_buffer);
     vector<float> magspec(bin_size);
@@ -117,10 +124,9 @@ void Database::sliding_window_analysis(int bin_size, int frames_per_buffer, cons
             db[buffer_count]["markers"].emplace_back(marker);
         }
 
+        std::cout << "Analysed: " << b.path << "\n";
         ++buffer_count;
     }
-
-    to_json_file(output_path);
 }
 
 PointCloud Database::create_point_cloud()
@@ -138,7 +144,7 @@ PointCloud Database::create_point_cloud()
             int marker = entry["markers"][i];
             string file_path = entry["path"];
 
-            Point point {centroid, flatness, marker, file_path};
+            Point point{centroid, flatness, marker, file_path};
 
             cloud.points.emplace_back(point);
         }
@@ -146,5 +152,6 @@ PointCloud Database::create_point_cloud()
 
     return cloud;
 }
+
 
 } // CATE

@@ -47,7 +47,8 @@ set(SOURCE_FILES
         src/Synthesis/Grain.hpp
         src/Synthesis/Scheduler.cpp
         src/Synthesis/Scheduler.hpp
-        src/Synthesis/Util.cpp src/Synthesis/Util.hpp)
+        src/Synthesis/Util.cpp
+        src/Synthesis/Util.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
@@ -62,12 +63,18 @@ include(QtCommon)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qwt REQUIRED)
 
+# GUI executable
 add_executable(${PROJECT_NAME}
         ${OS_BUNDLE}
         ${SOURCE_FILES}
         ${META_FILES_TO_INCLUDE}
         ${RESOURCE_FILES}
         )
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -DGUI)
+
+# CLI executable
+add_executable(CATE_CLI ${SOURCE_FILES})
+set_target_properties(CATE_CLI PROPERTIES COMPILE_FLAGS -DCLI)
 
 target_link_libraries(${PROJECT_NAME}
         portaudio
@@ -79,5 +86,16 @@ target_link_libraries(${PROJECT_NAME}
         ${CMAKE_THREAD_LIBS_INIT}
         )
 
+target_link_libraries(CATE_CLI
+        portaudio
+        sndfile
+        samplerate
+        fftw3
+        ${Boost_SYSTEM_LIBRARY}
+        ${Boost_FILESYSTEM_LIBRARY}
+        ${CMAKE_THREAD_LIBS_INIT}
+        )
+
 # Qt Modules
 qt5_use_modules(${PROJECT_NAME} Widgets)
+qt5_use_modules(CATE_CLI Widgets)
