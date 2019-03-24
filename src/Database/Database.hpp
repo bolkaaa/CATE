@@ -78,13 +78,8 @@ public:
     /* From features in database, create point cloud to be used by KNN search. */
     PointCloud create_point_cloud();
 
-    /* Get access to vector of audio files. */
-    vector<AudioFile> get_files() { return files; };
-
-    void segment_files(float grain_size);
-
-    /* Get a particular file from the database, indexed by filename. */
-    AudioFile &operator[](const int i) { return files[i]; }
+    /* Get access to audio files. */
+    map<string, AudioFile> get_files() { return files; };
 
 private:
     /* JSON data object, storing file paths, segmentation frame markers and
@@ -93,7 +88,7 @@ private:
     string db_file_path;
 
     /* The audio files stored in the database. */
-    vector<AudioFile> files;
+    map<string, AudioFile> files;
 };
 
 } // CATE

@@ -37,8 +37,8 @@ AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_c
           db(db),
           point_cloud(point_cloud),
           kd_tree(kd_tree),
-          return_indices(vector<size_t>(num_search_results)),
-          distances(vector<float>(num_search_results)),
+          return_indices(vector<size_t>(search_results)),
+          distances(vector<float>(search_results)),
           granulator(db.get_files(), sample_rate)
 {
 }
@@ -49,11 +49,11 @@ int AudioProcess::processing_callback(const void *input_buffer,
                                       const PaStreamCallbackTimeInfo *time_info,
                                       PaStreamCallbackFlags status_flags)
 {
-    /* Casting callback parameters. */
     static_cast<void>(status_flags);
     static_cast<void>(time_info);
     auto *input = const_cast<float *>(static_cast<const float *>(input_buffer));
     auto *output = static_cast<float *>(output_buffer);
+    auto i = 0;
 
     /* FFT / spectral operations. */
     fft.fill(input);
@@ -61,23 +61,15 @@ int AudioProcess::processing_callback(const void *input_buffer,
     fft.get_magspec(magspec);
     centroid = spectral_feature.centroid(magspec);
     flatness = spectral_feature.flatness(magspec);
-
-    /* Testing KNN search of point cloud. */
     const float search_points[2] = {centroid, flatness};
-    kd_tree.knnSearch(&search_points[0], num_search_results, &return_indices[0],
-                      &distances[0]);
-    size_t ix = return_indices[0]; // Only using first result for now
-    string file = point_cloud.points[ix].file_path;
-    int marker = point_cloud.points[ix].marker;
 
     /* Main audio output block. */
-    for (unsigned long i = 0; i < frames_per_buffer; ++i)
+    for (i = 0; i < frames_per_buffer; ++i)
     {
-        /* Temporary output logging. */
-        // std::printf("File: %s\nMarker: %d\n\n", file.c_str(), marker);
-        /* Input -> Output. */
-        // *output++ = *input++;
-        *output++ = granulator.synthesize();
+        kd_tree.knnSearch(&search_points[0], search_results, &return_indices[0], &distances[0]);
+        int marker = point_cloud.points[return_indices[0]].marker;
+        string file_path = point_cloud.points[return_indices[0]].file_path;
+        *output++ = 0.5 * granulator.synthesize(marker, file_path);
     }
 
     return paContinue;

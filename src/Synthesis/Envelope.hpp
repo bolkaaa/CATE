@@ -27,25 +27,29 @@ namespace CATE {
 class Envelope
 {
 public:
-    Envelope(float dur, float sustain, float sample_rate);
-
-    /* Initialise parabolic envelope parameters. */
-    void reset();
+    Envelope(float dur, float attack, float sustain, float release, float sample_rate);
 
     /* Synthesize the next sample value and return it. */
     float synthesize();
 
 private:
-    float dur;
-    float sustain;
-    float amp;
-    float curve;
-    float slope;
-    float sample_rate;
-    float rdur;
-    float rdur2;
-    int sample_index;
+    float cos();
+
+    int index;
     int sample_size;
+    float amp;
+    float slope;
+    float curve;
+    float dur;
+    float attack;
+    int attack_samples;
+    float sustain;
+    float release;
+    int release_samples;
+    float sample_rate;
+    double b1;
+    double y1;
+    double y2;
 };
 
 } // CATE

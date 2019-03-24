@@ -33,16 +33,10 @@ class Grain
 public:
     Grain();
 
-    Grain(float dur, float sustain, float sample_rate, const AudioFile &segment);
+    Grain(float dur, float sustain, float sample_rate, AudioBuffer buffer);
 
     /* Synthesize sample from audio source and envelope. */
     float synthesize();
-
-    /* Set active state to true. */
-    void activate();
-
-    /* Set active state to false. */
-    void deactivate();
 
     /* Return active status. */
     bool is_active() const;
@@ -51,6 +45,8 @@ private:
     float dur;
     float sustain;
     float sample_rate;
+    int sample_size;
+    int remaining_samples;
     bool active;
     Source src;
     Envelope env;

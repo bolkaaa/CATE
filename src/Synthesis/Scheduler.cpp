@@ -6,36 +6,43 @@
 
 namespace CATE {
 
-Scheduler::Scheduler(vector<AudioFile> &files, float sample_rate)
+Scheduler::Scheduler(map<string, AudioFile> &files, float sample_rate)
         : files(files),
-          max_onset(files[0].data.size()),
-          grain_density(1.0f),
+          grain_density(2.0f),
           sample_rate(sample_rate),
+          buffer(AudioBuffer(buffer_size)),
           next_onset(0),
           grain_index(0),
-          max_grains(16),
+          grain_size(samp_to_ms(buffer_size, sample_rate)),
           gen(seed()),
           dist(uniform_real_distribution<float>(0.0f, 1.0f))
 {
-    int start = 0;
+}
 
-    for (int i = start; i < start + max_grains; ++i)
+void Scheduler::create_grain(int marker, string filename)
+{
+    for (int i = 0; i < buffer_size; ++i)
     {
-        files[i].split(0, 1024);
-        float dur = samp_to_ms(1024, sample_rate);
-        float sustain = 1.0f / max_grains;
-        grains.emplace_back(Grain(dur, sustain, sample_rate, files[i]));
+        int buffer_index = (i + marker) % files[filename].data.size();
+        buffer[i] = files[filename].data[buffer_index];
+    }
 
+    for (auto &grain : grains)
+    {
+        if (!grain.is_active())
+        {
+            grain = Grain(grain_size, 1.0f / max_grains, sample_rate, buffer);
+            return;
+        }
     }
 }
 
-float Scheduler::schedule()
+float Scheduler::schedule(int marker, string filename)
 {
-    if (next_onset == 0)
+    if (next_onset == -1)
     {
+        create_grain(marker, filename);
         next_onset += get_next_inter_onset();
-        grain_index = (grain_index + 1) % max_grains;
-        grains[grain_index].activate();
     }
 
     --next_onset;
@@ -61,11 +68,10 @@ float Scheduler::synthesize_grains()
 int Scheduler::get_next_inter_onset()
 {
     float r = dist(gen);
-    int min_onset = 1;
-    int max_onset = static_cast<int>(50 + (r * 500));
-    auto inter_onset = static_cast<int>(min_onset + (r * (max_onset - min_onset)));
+    float min = 128;
+    float max = 1024;
+    auto inter_onset = static_cast<int>(min + (r * (max - min)));
     return inter_onset;
 }
-
 
 } // CATE

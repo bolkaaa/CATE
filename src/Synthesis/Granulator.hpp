@@ -20,25 +20,29 @@
 #ifndef GRANULATOR_HPP
 #define GRANULATOR_HPP
 
-#include <vector>
+#include <map>
 #include <src/Audio/AudioFile.hpp>
 
 #include "./Scheduler.hpp"
 
+using std::map;
+
 namespace CATE {
 
 /* Granulator is the high-level interface that contains all the functionality
- * for the granular synthesis process.  */
+ * for the granular synthesis process. The audio files within the set of audio files are stored in memory as a
+ * std::map, so the audio data can be retrieved through providing the filename.
+ * */
 class Granulator
 {
 public:
-    Granulator(vector<AudioFile> files, float sample_rate);
+    Granulator(map<string, AudioFile> files, float sample_rate);
 
     /* Get the next sample value from the granulator. */
-    float synthesize();
+    float synthesize(int marker, string filename);
 
 private:
-    vector<AudioFile> files;
+    map<string, AudioFile> files;
     Scheduler scheduler;
     float sample_rate;
 };

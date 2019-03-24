@@ -31,7 +31,7 @@ namespace CATE {
 class Source
 {
 public:
-    Source(const AudioFile &segment, float dur, float sample_rate);
+    Source(AudioBuffer buffer, float dur, float sample_rate);
 
     /* Get next sample value from source. */
     float synthesize();
@@ -40,7 +40,7 @@ public:
     void reset();
 
 private:
-    AudioFile segment;
+    AudioBuffer buffer;
     float dur;
     float sample_rate;
     int sample_size;

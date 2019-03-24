@@ -40,28 +40,32 @@ class Scheduler
 {
 public:
     /* Calculate grain activations. */
-    float schedule();
+    float schedule(int marker, string filename);
 
-    Scheduler(vector<AudioFile> &files, float sample_rate);
+    Scheduler(map<string, AudioFile> &files, float sample_rate);
 
     /* Mix all currently active grains to a single output. */
     float synthesize_grains();
 
+    /* Create a new grain object at next index of grain pool. */
+    void create_grain(int marker, string file_name);
+
 private:
-    /* Stochastically generate next inter-onset value, based on a density parameter. */
+    /* Stochastically generate next inter-onset value. */
     int get_next_inter_onset();
 
-    vector<AudioFile> files;
-    vector<Grain> grains;
+    map<string, AudioFile> files;
+    static const int max_grains = 32;
+    static const int buffer_size = 1024;
+    AudioBuffer buffer;
+    Grain grains[max_grains];
     random_device seed;
     mt19937 gen;
     uniform_real_distribution<float> dist;
     float grain_density;
-    int max_grains;
-    int max_onset;
+    float grain_size;
     int next_onset;
     int grain_index;
-    int sample_count;
     float sample_rate;
 };
 

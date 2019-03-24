@@ -82,7 +82,6 @@ int main(int argc, char *argv[])
         db.write_json_file();
     });
 
-    /* Parse CLI */
     try
     {
         parser.ParseCLI(argc, argv);
@@ -102,20 +101,18 @@ int main(int argc, char *argv[])
     return 0;
 #endif // CLI
 
-#ifdef GUI
-    Database db("db.json");
+    Database db("/Users/lrwz/CATE/speech.json");
     db.load_files();
+    db.convert_sample_rates(48000);
     PointCloud point_cloud = db.create_point_cloud();
     KdTree kd_tree(KdTreeParams::num_features,
                    point_cloud,
                    KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf));
     kd_tree.buildIndex();
+
     QApplication app(argc, argv);
     MainWindow main_window(nullptr, db, point_cloud, kd_tree);
     main_window.show();
 
     return app.exec();
-#endif // GUI
-
-
 }

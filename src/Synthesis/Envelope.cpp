@@ -1,33 +1,26 @@
+#include <iostream>
+#include <cmath>
+
 #include "Envelope.hpp"
 #include "Util.hpp"
 
 namespace CATE {
 
-Envelope::Envelope(float dur, float sustain, float sample_rate)
+Envelope::Envelope(float dur, float attack, float sustain, float release, float sample_rate)
         : dur(dur),
+          attack(attack),
           sustain(sustain),
+          release(release),
           sample_rate(sample_rate),
-          sample_index(0),
-          sample_size(ms_to_samp(dur, sample_rate))
+          sample_size(ms_to_samp(dur, sample_rate)),
+          index(0)
 {
-    rdur = 1.0f / sample_size;
-    rdur2 = rdur * rdur;
-    curve = -8.0f * sustain * (rdur2);
-    reset();
-}
-
-void Envelope::reset()
-{
-    amp = 0.0f;
-    slope = 4.0f * sustain * (rdur - (rdur2));
 }
 
 float Envelope::synthesize()
 {
-    amp += slope;
-    slope += curve;
+    auto amp = static_cast<float>(0.5 * (1 - std::cos((2 * M_PI * index) / (sample_size - 1))));
     return amp;
 }
-
 
 } // CATE

@@ -63,17 +63,14 @@ private:
     vector<float> magspec;
     float centroid;
     float flatness;
-
     /* Audio file management / K-d tree. */
     Database db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
-    const size_t num_search_results = 32;
+    const size_t search_results = 1;
     vector<size_t> return_indices;
     vector<float> distances;
-
     /* Synthesis. */
-    vector<AudioBuffer> segments;
     Granulator granulator;
 
 protected:
