@@ -1,4 +1,68 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-24T23:40:24+00:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Implementing Simple Granular Synthesis</title><link href="/2019/03/17/implementing-simple-granular-synthesis.html" rel="alternate" type="text/html" title="Implementing Simple Granular Synthesis" /><published>2019-03-17T00:00:00+00:00</published><updated>2019-03-17T00:00:00+00:00</updated><id>/2019/03/17/implementing-simple-granular-synthesis</id><content type="html" xml:base="/2019/03/17/implementing-simple-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-24T23:42:44+00:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Expanding Upon Granular Synthesis</title><link href="/2019/03/24/expanding-upon-granular-synthesis.html" rel="alternate" type="text/html" title="Expanding Upon Granular Synthesis" /><published>2019-03-24T00:00:00+00:00</published><updated>2019-03-24T00:00:00+00:00</updated><id>/2019/03/24/expanding-upon-granular-synthesis</id><content type="html" xml:base="/2019/03/24/expanding-upon-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+&lt;p&gt;This week I expanded upon the granular synthesis code I had created in the
+previous week. The grains are now properly derived from the audio files matched
+from the analysis process. The synthesis process is also more efficient and
+correctly implemented, using object pooling techniques. I also started working
+on a command line interface for managing the analysis process.&lt;/p&gt;
+
+&lt;h3 id=&quot;command-line-utility&quot;&gt;Command Line Utility&lt;/h3&gt;
+&lt;p&gt;One aspect of the program I wanted to develop was a basic command line utility
+to generate new analysis data from specified directories of audio files. I used
+a C++ library called “args” to handle the implementation details, allowing my
+program to have a sophisticated CLI tool with argument flags. So far, it can be
+used in the following way:&lt;/p&gt;
+
+&lt;p&gt;CATE_CLI -f 1024 -b 1024 analyse /directory/&lt;/p&gt;
+
+&lt;p&gt;where -f and -b specify the frames per buffer and FFT bin size parameters of the
+analysis system respectively. I included pre-processor directives in my C++ code
+and tweaked my build system so that multiple binaries are built from the source
+code, the CLI tool and the GUI application. I will probably also have a separate
+application that just executes the audio callback without a GUI.&lt;/p&gt;
+
+&lt;h3 id=&quot;granular-synthesis-improvements&quot;&gt;Granular Synthesis Improvements&lt;/h3&gt;
+&lt;p&gt;I fixed some issues I had with my granular synthesis model, relating to grain
+activation/deactivation. I achieved this by incorporating a sample counter
+within the synthesis function of the Grain class, so that the objects are able
+to keep track of when they should be inactive. Essentially, the synthesize
+function within the Grain class first checks if there are any more samples to
+generate, and returns a zero-amplitude sample if the resultant boolean value is
+false. Otherwise, it synthesizes a new sample and decrements the sample counter.&lt;/p&gt;
+
+&lt;p&gt;The grain creation function within the scheduler now iterates over the array of
+grain objects until it finds an inactive grains, using that same is_active()
+function. It then creates a new Grain object and immediately returns from the
+function. This function is called on every interonset trigger.&lt;/p&gt;
+
+&lt;p&gt;The program now sounds reminiscent of classic granular synthesis. One issue is
+there is a lack of control over grain duration, which limits the possibilities
+in the sound. This is due to the fact that the grain duration is implemented as
+a constant, tied to the segmentation sizes of the audio analysis system. I have
+decided to just have a max duration that’s tied to the maximum buffer size, and
+then have the envelope duration be controllable.&lt;/p&gt;
+
+&lt;h3 id=&quot;relating-the-synthesis-and-analysis-processes&quot;&gt;Relating the Synthesis and Analysis Processes&lt;/h3&gt;
+&lt;p&gt;At the moment, the KNN function is called on each frame within the “frames per
+buffer” loop in the audio callback function. It finds just one nearest neighbour
+which is immediately used by the granular synthesis code. One approach may have
+been to run this code on a separate thread, and have a queue of neighbours that
+is consumed by the audio process. In the next week I will finalise this part of
+the program, which will explore these options.&lt;/p&gt;
+
+&lt;p&gt;The audio files in the database are provided to the Scheduler in a C++ std::map
+structure, which is keyed by a string filename. The filename is obtained from
+the KNN function along with a segmentation marker position, which allows
+creating a new audio buffer at the given position in the respective audio file.
+The duration of the buffer must be fixed, however control over duration could be
+allowed through manipulating the amplitude envelope of grains.&lt;/p&gt;
+
+&lt;h3 id=&quot;next-steps&quot;&gt;Next Steps&lt;/h3&gt;
+&lt;p&gt;For the next week, I aim to improve the analysis and synthesis process in
+general, adding more audio features and making the synthesis process more
+aesthetically pleasing, such as envelope following of the microphone input’s
+amplitude to control the audio output’s amplitude. I am hoping to finish most of
+the functionality of the program in the next week or two so that I can focus on
+the interface, error handling and unit tests.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress This week I expanded upon the granular synthesis code I had created in the previous week. The grains are now properly derived from the audio files matched from the analysis process. The synthesis process is also more efficient and correctly implemented, using object pooling techniques. I also started working on a command line interface for managing the analysis process.</summary></entry><entry><title type="html">Implementing Simple Granular Synthesis</title><link href="/2019/03/17/implementing-simple-granular-synthesis.html" rel="alternate" type="text/html" title="Implementing Simple Granular Synthesis" /><published>2019-03-17T00:00:00+00:00</published><updated>2019-03-17T00:00:00+00:00</updated><id>/2019/03/17/implementing-simple-granular-synthesis</id><content type="html" xml:base="/2019/03/17/implementing-simple-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;My goal for this week and the following week was working on a granular synthesis implementation. For the first week, I
  have aimed to just get a simple system working that has the core functionality needed going forwards. Then I plan to
   integrate it with my audio analysis code, so that the grains are derived from the matches found by the KNN search.&lt;/p&gt;
@@ -94,71 +158,7 @@ granular synthesis and understanding how to implement it in C++, while I am stil
   combining it with the analysis aspects of the program. I may look into the concept of &lt;a href=&quot;https://en.wikipedia.org/wiki/Object_pool_pattern&quot;&gt;object pooling&lt;/a&gt;, which is a 
   design pattern that specifies a set of pre-initialised objects that can reused, rather than destroying objects and 
   allocating new ones. Pooled objects can be recalled in a determinant amount of time as opposed to allocated 
-  objects, which may take an indeterminant amount of time (an undesirable property in audio programming).&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress My goal for this week and the following week was working on a granular synthesis implementation. For the first week, I have aimed to just get a simple system working that has the core functionality needed going forwards. Then I plan to integrate it with my audio analysis code, so that the grains are derived from the matches found by the KNN search.</summary></entry><entry><title type="html">Expanding Upon Granular Synthesis</title><link href="/2019/03/17/expanding-upon-granular-synthesis.html" rel="alternate" type="text/html" title="Expanding Upon Granular Synthesis" /><published>2019-03-17T00:00:00+00:00</published><updated>2019-03-17T00:00:00+00:00</updated><id>/2019/03/17/expanding-upon-granular-synthesis</id><content type="html" xml:base="/2019/03/17/expanding-upon-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
-&lt;p&gt;This week I expanded upon the granular synthesis code I had created in the
-previous week. The grains are now properly derived from the audio files matched
-from the analysis process. The synthesis process is also more efficient and
-correctly implemented, using object pooling techniques. I also started working
-on a command line interface for managing the analysis process.&lt;/p&gt;
-
-&lt;h3 id=&quot;command-line-utility&quot;&gt;Command Line Utility&lt;/h3&gt;
-&lt;p&gt;One aspect of the program I wanted to develop was a basic command line utility
-to generate new analysis data from specified directories of audio files. I used
-a C++ library called “args” to handle the implementation details, allowing my
-program to have a sophisticated CLI tool with argument flags. So far, it can be
-used in the following way:&lt;/p&gt;
-
-&lt;p&gt;CATE_CLI -f 1024 -b 1024 analyse /directory/&lt;/p&gt;
-
-&lt;p&gt;where -f and -b specify the frames per buffer and FFT bin size parameters of the
-analysis system respectively. I included pre-processor directives in my C++ code
-and tweaked my build system so that multiple binaries are built from the source
-code, the CLI tool and the GUI application. I will probably also have a separate
-application that just executes the audio callback without a GUI.&lt;/p&gt;
-
-&lt;h3 id=&quot;granular-synthesis-improvements&quot;&gt;Granular Synthesis Improvements&lt;/h3&gt;
-&lt;p&gt;I fixed some issues I had with my granular synthesis model, relating to grain
-activation/deactivation. I achieved this by incorporating a sample counter
-within the synthesis function of the Grain class, so that the objects are able
-to keep track of when they should be inactive. Essentially, the synthesize
-function within the Grain class first checks if there are any more samples to
-generate, and returns a zero-amplitude sample if the resultant boolean value is
-false. Otherwise, it synthesizes a new sample and decrements the sample counter.&lt;/p&gt;
-
-&lt;p&gt;The grain creation function within the scheduler now iterates over the array of
-grain objects until it finds an inactive grains, using that same is_active()
-function. It then creates a new Grain object and immediately returns from the
-function. This function is called on every interonset trigger.&lt;/p&gt;
-
-&lt;p&gt;The program now sounds reminiscent of classic granular synthesis. One issue is
-there is a lack of control over grain duration, which limits the possibilities
-in the sound. This is due to the fact that the grain duration is implemented as
-a constant, tied to the segmentation sizes of the audio analysis system. I have
-decided to just have a max duration that’s tied to the maximum buffer size, and
-then have the envelope duration be controllable.&lt;/p&gt;
-
-&lt;h3 id=&quot;relating-the-synthesis-and-analysis-processes&quot;&gt;Relating the Synthesis and Analysis Processes&lt;/h3&gt;
-&lt;p&gt;At the moment, the KNN function is called on each frame within the “frames per
-buffer” loop in the audio callback function. It finds just one nearest neighbour
-which is immediately used by the granular synthesis code. One approach may have
-been to run this code on a separate thread, and have a queue of neighbours that
-is consumed by the audio process. In the next week I will finalise this part of
-the program, which will explore these options.&lt;/p&gt;
-
-&lt;p&gt;The audio files in the database are provided to the Scheduler in a C++ std::map
-structure, which is keyed by a string filename. The filename is obtained from
-the KNN function along with a segmentation marker position, which allows
-creating a new audio buffer at the given position in the respective audio file.
-The duration of the buffer must be fixed, however control over duration could be
-allowed through manipulating the amplitude envelope of grains.&lt;/p&gt;
-
-&lt;h3 id=&quot;next-steps&quot;&gt;Next Steps&lt;/h3&gt;
-&lt;p&gt;For the next week, I aim to improve the analysis and synthesis process in
-general, adding more audio features and making the synthesis process more
-aesthetically pleasing, such as envelope following of the microphone input’s
-amplitude to control the audio output’s amplitude. I am hoping to finish most of
-the functionality of the program in the next week or two so that I can focus on
-the interface, error handling and unit tests.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress This week I expanded upon the granular synthesis code I had created in the previous week. The grains are now properly derived from the audio files matched from the analysis process. The synthesis process is also more efficient and correctly implemented, using object pooling techniques. I also started working on a command line interface for managing the analysis process.</summary></entry><entry><title type="html">Sliding Window Analysis and K-d Tree</title><link href="/2019/03/10/sliding-window-analysis-and-kd-tree.html" rel="alternate" type="text/html" title="Sliding Window Analysis and K-d Tree" /><published>2019-03-10T00:00:00+00:00</published><updated>2019-03-10T00:00:00+00:00</updated><id>/2019/03/10/sliding-window-analysis-and-kd-tree</id><content type="html" xml:base="/2019/03/10/sliding-window-analysis-and-kd-tree.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+  objects, which may take an indeterminant amount of time (an undesirable property in audio programming).&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress My goal for this week and the following week was working on a granular synthesis implementation. For the first week, I have aimed to just get a simple system working that has the core functionality needed going forwards. Then I plan to integrate it with my audio analysis code, so that the grains are derived from the matches found by the KNN search.</summary></entry><entry><title type="html">Sliding Window Analysis and K-d Tree</title><link href="/2019/03/10/sliding-window-analysis-and-kd-tree.html" rel="alternate" type="text/html" title="Sliding Window Analysis and K-d Tree" /><published>2019-03-10T00:00:00+00:00</published><updated>2019-03-10T00:00:00+00:00</updated><id>/2019/03/10/sliding-window-analysis-and-kd-tree</id><content type="html" xml:base="/2019/03/10/sliding-window-analysis-and-kd-tree.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;This week I have been building upon the audio analysis code implemented
 previously. I have added functionality to perform that analysis on fixed audio
 files as well as on the live input that was already present. I also added the

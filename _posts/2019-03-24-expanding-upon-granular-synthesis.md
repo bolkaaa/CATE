@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 'Expanding Upon Granular Synthesis'
-date: '2019-03-17'
+date: '2019-03-24'
 ---
 ### Progress
 This week I expanded upon the granular synthesis code I had created in the
