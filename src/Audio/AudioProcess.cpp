@@ -69,7 +69,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
         kd_tree.knnSearch(&search_points[0], search_results, &return_indices[0], &distances[0]);
         int marker = point_cloud.points[return_indices[0]].marker;
         string file_path = point_cloud.points[return_indices[0]].file_path;
-        *output++ = 0.5 * granulator.synthesize(marker, file_path);
+        *output++ = granulator.synthesize(marker, file_path);
     }
 
     return paContinue;

@@ -24,7 +24,7 @@ Grain::Grain(float dur, float sustain, float sample_rate, AudioBuffer buffer)
           active(true),
           sample_size(ms_to_samp(dur, sample_rate)),
           remaining_samples(sample_size),
-          env(dur, 10.0f, sustain, 10.0f, sample_rate),
+          env(dur, 1.0f, sustain, 1.0f, sample_rate),
           src(buffer, dur, sample_rate)
 {
 }

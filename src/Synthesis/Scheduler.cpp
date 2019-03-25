@@ -13,7 +13,6 @@ Scheduler::Scheduler(map<string, AudioFile> &files, float sample_rate)
           buffer(AudioBuffer(buffer_size)),
           next_onset(0),
           grain_index(0),
-          grain_size(samp_to_ms(buffer_size, sample_rate)),
           gen(seed()),
           dist(uniform_real_distribution<float>(0.0f, 1.0f))
 {
@@ -21,6 +20,8 @@ Scheduler::Scheduler(map<string, AudioFile> &files, float sample_rate)
 
 void Scheduler::create_grain(int marker, string filename)
 {
+    grain_size = samp_to_ms(buffer_size, sample_rate);
+
     for (int i = 0; i < buffer_size; ++i)
     {
         int buffer_index = (i + marker) % files[filename].data.size();
@@ -39,7 +40,7 @@ void Scheduler::create_grain(int marker, string filename)
 
 float Scheduler::schedule(int marker, string filename)
 {
-    if (next_onset == -1)
+    if (next_onset == 0)
     {
         create_grain(marker, filename);
         next_onset += get_next_inter_onset();
@@ -69,7 +70,7 @@ int Scheduler::get_next_inter_onset()
 {
     float r = dist(gen);
     float min = 128;
-    float max = 1024;
+    float max = 128;
     auto inter_onset = static_cast<int>(min + (r * (max - min)));
     return inter_onset;
 }

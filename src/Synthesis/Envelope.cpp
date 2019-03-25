@@ -19,7 +19,7 @@ Envelope::Envelope(float dur, float attack, float sustain, float release, float 
 
 float Envelope::synthesize()
 {
-    auto amp = static_cast<float>(0.5 * (1 - std::cos((2 * M_PI * index) / (sample_size - 1))));
+    float amp = 0.5 * (1 - std::cos((2 * M_PI * index) / (sample_size - 1)));
     return amp;
 }
 

@@ -103,7 +103,6 @@ int main(int argc, char *argv[])
 
     Database db("/Users/lrwz/CATE/speech.json");
     db.load_files();
-    db.convert_sample_rates(48000);
     PointCloud point_cloud = db.create_point_cloud();
     KdTree kd_tree(KdTreeParams::num_features,
                    point_cloud,
