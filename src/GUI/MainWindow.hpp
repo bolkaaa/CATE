@@ -54,7 +54,7 @@ public:
 private:
     Ui::MainWindow *ui;
     AudioProcess *audio_process;
-    double sample_rate;
+    float sample_rate;
     int frames_per_buffer;
     int fft_bin_size;
     Database &db;
@@ -62,11 +62,17 @@ private:
     KdTree &kd_tree;
 
 public slots:
-    /* When start button in UI is pressed, audio stream is started. */
-    void on_start_button_pressed();
+    /* When playback start button in UI is pressed, audio stream is started. */
+    void start_playback_button_pressed();
 
-    /* When stop button in UI is pressed, audio stream is stopped. */
-    void on_stop_button_pressed();
+    /* When playback stop button in UI is pressed, audio stream is stopped. */
+    void stop_playback_button_pressed();
+
+    /* When recording start button in UI is pressed, current audio output begins recording. */
+    void start_recording_button_pressed();
+
+    /* When recording stop button in UI is pressed, current audio output stops recording. */
+    void stop_recording_button_pressed();
 };
 
 } // CATE

@@ -36,8 +36,7 @@ namespace CATE {
 class AudioEngine
 {
 public:
-    AudioEngine(float sample_rate, unsigned long frames_per_buffer, int input_channels,
-                int output_channels);
+    AudioEngine(float sample_rate, unsigned long frames_per_buffer, int input_channels, int output_channels);
 
     ~AudioEngine();
 
@@ -62,8 +61,7 @@ protected:
                                     const PaStreamCallbackTimeInfo *time_info,
                                     PaStreamCallbackFlags status_flags);
 
-    /* With PortAudio, a static callback function must be defined, which
-       returns the custom callback function. */
+    /* With PortAudio, a static callback function must be defined, which returns the custom callback function. */
     static int static_callback(const void *input_buffer,
                                void *output_buffer,
                                unsigned long frames_per_buffer,

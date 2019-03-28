@@ -28,8 +28,7 @@
 namespace CATE {
 
 AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_channels, int output_channels,
-                           int fft_bin_size, Database &db,
-                           PointCloud &point_cloud, KdTree &kd_tree)
+                           int fft_bin_size, Database &db, PointCloud &point_cloud, KdTree &kd_tree)
         : AudioEngine(sample_rate, frames_per_buffer, input_channels, output_channels),
           fft(FFT(fft_bin_size, frames_per_buffer)),
           spectral_feature(sample_rate, fft_bin_size),
@@ -39,7 +38,10 @@ AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_c
           kd_tree(kd_tree),
           return_indices(vector<size_t>(search_results)),
           distances(vector<float>(search_results)),
-          granulator(db.get_files(), sample_rate)
+          granulator(db.get_files(), sample_rate),
+          max_recording_length(30),
+          recording_data(AudioBuffer(max_recording_length * sample_rate)),
+          recording(false)
 {
 }
 
@@ -55,25 +57,46 @@ int AudioProcess::processing_callback(const void *input_buffer,
     auto *output = static_cast<float *>(output_buffer);
     auto i = 0;
 
-    /* FFT / spectral operations. */
+    /* FFT operations. */
     fft.fill(input);
     fft.compute();
     fft.get_magspec(magspec);
     centroid = spectral_feature.centroid(magspec);
     flatness = spectral_feature.flatness(magspec);
+
+    /* KNN search. */
     const float search_points[2] = {centroid, flatness};
     kd_tree.knnSearch(&search_points[0], search_results, &return_indices[0], &distances[0]);
     int marker = point_cloud.points[return_indices[0]].marker;
     string file_path = point_cloud.points[return_indices[0]].file_path;
 
-
     /* Main audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
-        output[i] = granulator.synthesize(marker, file_path);
+        *output++ = granulator.synthesize(marker, file_path);
+        *output++ = granulator.synthesize(marker, file_path);
+
+        if (recording)
+        {
+            recording_data[i] = output[i];
+        }
     }
 
     return paContinue;
+}
+
+void AudioProcess::start_recording()
+{
+    std::cout << "Starting recording. (test)\n";
+
+    recording = true;
+}
+
+void AudioProcess::stop_recording()
+{
+    std::cout << "Stopping recording. (test)\n";
+
+    recording = false;
 }
 
 } // CATE

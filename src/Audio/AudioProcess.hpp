@@ -56,6 +56,12 @@ public:
     AudioProcess(float sample_rate, int frames_per_buffer, int input_channels, int output_channels, int fft_bin_size,
                  Database &db, PointCloud &point_cloud, KdTree &kd_tree);
 
+    /* Start recording audio output. */
+    void start_recording();
+
+    /* Stop recording audio output. */
+    void stop_recording();
+
 private:
     /* Feature extraction. */
     FFT fft;
@@ -72,6 +78,9 @@ private:
     vector<float> distances;
     /* Synthesis. */
     Granulator granulator;
+    float max_recording_length;
+    AudioBuffer recording_data;
+    bool recording;
 
 protected:
     int processing_callback(const void *input_buffer,

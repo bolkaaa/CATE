@@ -39,27 +39,47 @@ MainWindow::MainWindow(QWidget *parent, Database &db, PointCloud &point_cloud, K
 {
     ui->setupUi(this);
 
-    audio_process = new AudioProcess(sample_rate, frames_per_buffer, 1, 1, fft_bin_size, db, point_cloud, kd_tree);
+    audio_process = new AudioProcess(sample_rate,
+                                     frames_per_buffer,
+                                     1,
+                                     2,
+                                     fft_bin_size,
+                                     db,
+                                     point_cloud,
+                                     kd_tree);
 
     /* Connect Signals. */
-    connect(ui->on_start_button_pressed, SIGNAL(pressed()), this, SLOT(on_start_button_pressed()));
-    connect(ui->on_stop_button_pressed, SIGNAL(pressed()), this, SLOT(on_stop_button_pressed()));
+    connect(ui->start_playback_button_pressed, SIGNAL(pressed()), this, SLOT(start_playback_button_pressed()));
+    connect(ui->stop_playback_button_pressed, SIGNAL(pressed()), this, SLOT(stop_playback_button_pressed()));
+    connect(ui->start_recording_button_pressed, SIGNAL(pressed()), this, SLOT(start_recording_button_pressed()));
+    connect(ui->stop_recording_button_pressed, SIGNAL(pressed()), this, SLOT(stop_recording_button_pressed()));
 }
 
 MainWindow::~MainWindow()
 {
-     delete audio_process;
-     delete ui;
+    delete audio_process;
+    delete ui;
 }
 
-void MainWindow::on_start_button_pressed()
+void MainWindow::start_playback_button_pressed()
 {
     audio_process->start_stream();
 }
 
-void MainWindow::on_stop_button_pressed()
+void MainWindow::stop_playback_button_pressed()
 {
     audio_process->stop_stream();
 }
+
+void MainWindow::start_recording_button_pressed()
+{
+    audio_process->start_recording();
+}
+
+void MainWindow::stop_recording_button_pressed()
+{
+    audio_process->stop_recording();
+}
+
 
 } // CATE

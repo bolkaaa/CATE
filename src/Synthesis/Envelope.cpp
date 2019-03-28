@@ -19,15 +19,15 @@ float Envelope::synthesize()
     auto attack_samples = static_cast<int>(params.sample_size * params.attack);
     auto release_samples = static_cast<int>(params.sample_size * params.release);
 
-    if (index < attack_samples)
+    if (index < attack_samples) // attack
     {
         amp_incr = params.sustain / attack_samples;
     }
-    else if (attack_samples < index && index < release_samples)
+    else if (attack_samples < index && index < release_samples) // sustain
     {
         amp_incr = 0.0f;
     }
-    else
+    else // release
     {
         amp_incr = -(params.sustain / release_samples);
     }

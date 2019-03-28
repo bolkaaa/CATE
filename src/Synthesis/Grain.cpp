@@ -13,7 +13,7 @@ Grain::Grain()
 {
 }
 
-Grain::Grain(int frames, AudioBuffer buffer, EnvelopeParams env_params)
+Grain::Grain(int frames, const AudioBuffer &buffer, EnvelopeParams env_params)
         : frames(frames),
           remaining_frames(frames),
           src(buffer, frames),
