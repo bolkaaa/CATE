@@ -17,39 +17,18 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef GRAIN_HPP
-#define GRAIN_HPP
-
-#include "src/Audio/AudioFile.hpp"
-#include "Source.hpp"
-#include "Envelope.hpp"
-#include "EnvelopeParams.hpp"
-
-using CATE::EnvelopeParams;
+#ifndef ENVELOPEPARAMS_HPP
+#define ENVELOPEPARAMS_HPP
 
 namespace CATE {
 
-/* Grain combines an Envelope and Source to represent a single grain in the
- * granulation system. */
-class Grain
+class EnvelopeParams
 {
 public:
-    Grain();
-
-    Grain(int frames, AudioBuffer buffer, EnvelopeParams env_params);
-
-    /* Synthesize sample from audio source and envelope. */
-    float synthesize();
-
-    /* Return active status. */
-    bool is_active() const;
-
-private:
-    int frames;
-    int remaining_frames;
-    Source src;
-    EnvelopeParams env_params;
-    Envelope env;
+    float attack = 0.5f;
+    float sustain = 0.5f;
+    float release = 0.5f;
+    int sample_size = 0;
 };
 
 } // CATE

@@ -22,15 +22,19 @@
 #define SCHEDULER_HPP
 
 #include <vector>
+#include <array>
 #include <random>
 
 #include "src/Audio/AudioFile.hpp"
 #include "Grain.hpp"
+#include "EnvelopeParams.hpp"
 
 using std::vector;
+using std::array;
 using std::random_device;
 using std::mt19937;
 using std::uniform_real_distribution;
+using CATE::EnvelopeParams;
 
 namespace CATE {
 
@@ -39,30 +43,35 @@ namespace CATE {
 class Scheduler
 {
 public:
-    /* Calculate grain activations. */
-    float schedule(int marker, string filename);
-
     Scheduler(map<string, AudioFile> &files, float sample_rate);
 
+    /* Calculate grain activations. */
+    float schedule(int marker, const string &filename);
+
+private:
     /* Mix all currently active grains to a single output. */
     float synthesize_grains();
 
     /* Create a new grain object at next index of grain pool. */
-    void create_grain(int marker, string file_name);
+    void create_grain(int marker, const string &file_name);
 
-private:
     /* Stochastically generate next inter-onset value. */
     int get_next_inter_onset();
 
-    map<string, AudioFile> files;
+    /* Fill buffer from filename and file position. */
+    void fill_buffer(int marker, const string &file_name);
+
     static const int max_grains = 32;
     static const int buffer_size = 4096;
-    Grain grains[max_grains];
+    vector<Grain> grains;
+    map<string, AudioFile> files;
     AudioBuffer buffer;
     random_device seed;
     mt19937 gen;
     uniform_real_distribution<float> dist;
-    int grain_size;
+    EnvelopeParams env_params;
+    int grain_density;
+    float grain_width;
     int next_onset;
     int grain_index;
     float sample_rate;

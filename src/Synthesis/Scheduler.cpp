@@ -10,42 +10,52 @@ Scheduler::Scheduler(map<string, AudioFile> &files, float sample_rate)
         : files(files),
           sample_rate(sample_rate),
           buffer(AudioBuffer(buffer_size)),
-          grain_size(buffer_size),
+          grains(vector<Grain>(max_grains)),
+          env_params(EnvelopeParams{0.5f, 0.5f, 0.5f, buffer_size}),
           next_onset(0),
           grain_index(0),
           gen(seed()),
+          grain_density(32),
+          grain_width(0.5),
           dist(uniform_real_distribution<float>(0.0f, 1.0f))
 {
 }
 
-void Scheduler::create_grain(int marker, string filename)
+
+void Scheduler::fill_buffer(int marker, const string &file_name)
 {
+    auto file_size = files[file_name].data.size();
+
     for (int i = 0; i < buffer_size; ++i)
     {
         int file_pos = (i + marker);
 
-        if (file_pos < files[filename].data.size())
+        if (file_pos < file_size)
         {
-            buffer[i] = files[filename].data[file_pos];
+            buffer[i] = files[file_name].data[file_pos];
         }
         else
         {
             buffer[i] = 0.0f;
         }
     }
+}
+
+void Scheduler::create_grain(int marker, const string &file_name)
+{
+    fill_buffer(marker, file_name);
 
     for (auto &grain : grains)
     {
         if (!grain.is_active())
         {
-            float amp = dist(gen);
-            grain = Grain(grain_size, amp, buffer);
+            grain = Grain(buffer_size, buffer, env_params);
             return;
         }
     }
 }
 
-float Scheduler::schedule(int marker, string filename)
+float Scheduler::schedule(int marker, const string &filename)
 {
     if (next_onset == 0)
     {
@@ -75,14 +85,15 @@ float Scheduler::synthesize_grains()
 
 int Scheduler::get_next_inter_onset()
 {
-    float r = dist(gen);
-    float density = 16;
-    int avg_onset = sample_rate / density;
-    float spacing = 0.25;
-    int min_onset = avg_onset - (avg_onset * spacing);
-    int max_onset = avg_onset + (avg_onset * spacing);
-    auto inter_onset = min_onset + (r * (max_onset - min_onset));
+    float random_value = dist(gen);
+
+    auto avg_onset = static_cast<int>(sample_rate / grain_density);
+    auto min_onset = static_cast<int>(avg_onset - (avg_onset * grain_width));
+    auto max_onset = static_cast<int>(avg_onset + (avg_onset * grain_width));
+    auto inter_onset = static_cast<int>(min_onset + (random_value * (max_onset - min_onset)));
+
     return inter_onset;
 }
+
 
 } // CATE

@@ -71,7 +71,7 @@ add_executable(${PROJECT_NAME}
         )
 
 # CLI executable
-add_executable(CATE_CLI ${SOURCE_FILES})
+add_executable(CATE_CLI ${SOURCE_FILES} src/Synthesis/EnvelopeParams.cpp src/Synthesis/EnvelopeParams.hpp)
 set_target_properties(CATE_CLI PROPERTIES COMPILE_FLAGS -DCLI)
 
 target_link_libraries(${PROJECT_NAME}

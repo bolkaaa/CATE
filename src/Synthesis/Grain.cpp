@@ -8,28 +8,24 @@ namespace CATE {
 Grain::Grain()
         : frames(0),
           remaining_frames(frames),
-          active(false),
-          env(frames, 0.0f),
-          src(AudioBuffer(), frames)
+          src(AudioBuffer(), frames),
+          env(env_params)
 {
 }
 
-Grain::Grain(int frames, float sustain, AudioBuffer buffer)
+Grain::Grain(int frames, AudioBuffer buffer, EnvelopeParams env_params)
         : frames(frames),
           remaining_frames(frames),
-          active(true),
-          env(frames, sustain),
-          src(buffer, frames)
+          src(buffer, frames),
+          env_params(env_params),
+          env(env_params)
 {
 }
 
 float Grain::synthesize()
 {
     --remaining_frames;
-    float attack = 0.75;
-    float release = 0.75;
-    float sustain = 0.5;
-    float amp = env.synthesize(attack, sustain, release);
+    float amp = env.synthesize();
     float sample = src.synthesize();
     return amp * sample;
 }
