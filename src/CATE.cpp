@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
     args::Command analyse(commands, "analyse", analyse_info, [&](args::Subparser &parser)
     {
         auto bin_size = bin_size_flag ? args::get(bin_size_flag) : 1024;
-        auto frames_per_buffer = frames_per_buffer_flag ? args::get(frames_per_buffer_flag) : 256;
+        auto frames_per_buffer = frames_per_buffer_flag ? args::get(frames_per_buffer_flag) : 4096;
         auto db_file_path = db_file_path_flag ? args::get(db_file_path_flag) : "db.json";
         Database db(db_file_path);
 
@@ -103,6 +103,7 @@ int main(int argc, char *argv[])
 
     Database db("/Users/lrwz/CATE/speech.json");
     db.load_files();
+    db.convert_sample_rates(48000);
     PointCloud point_cloud = db.create_point_cloud();
     KdTree kd_tree(KdTreeParams::num_features,
                    point_cloud,

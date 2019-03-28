@@ -61,7 +61,6 @@ include_directories(${Boost_INCLUDE_DIRS})
 set(CMAKE_PREFIX_PATH /usr/local/Cellar/qt/5.12.0) # Set to system Qt path
 include(QtCommon)
 find_package(Qt5Widgets REQUIRED)
-find_package(Qwt REQUIRED)
 
 # GUI executable
 add_executable(${PROJECT_NAME}
@@ -70,11 +69,10 @@ add_executable(${PROJECT_NAME}
         ${META_FILES_TO_INCLUDE}
         ${RESOURCE_FILES}
         )
-# set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -DGUI)
 
 # CLI executable
-# add_executable(CATE_CLI ${SOURCE_FILES})
-# set_target_properties(CATE_CLI PROPERTIES COMPILE_FLAGS -DCLI)
+add_executable(CATE_CLI ${SOURCE_FILES})
+set_target_properties(CATE_CLI PROPERTIES COMPILE_FLAGS -DCLI)
 
 target_link_libraries(${PROJECT_NAME}
         portaudio
@@ -86,5 +84,16 @@ target_link_libraries(${PROJECT_NAME}
         ${CMAKE_THREAD_LIBS_INIT}
         )
 
+target_link_libraries(CATE_CLI
+        portaudio
+        sndfile
+        samplerate
+        fftw3
+        ${Boost_SYSTEM_LIBRARY}
+        ${Boost_FILESYSTEM_LIBRARY}
+        ${CMAKE_THREAD_LIBS_INIT}
+        )
+
 # Qt Modules
 qt5_use_modules(${PROJECT_NAME} Widgets)
+qt5_use_modules(CATE_CLI Widgets)

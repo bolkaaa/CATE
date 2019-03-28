@@ -6,20 +6,36 @@
 
 namespace CATE {
 
-Envelope::Envelope(float dur, float attack, float sustain, float release, float sample_rate)
-        : dur(dur),
-          attack(attack),
+Envelope::Envelope(int samples, float sustain)
+        : samples(samples),
           sustain(sustain),
-          release(release),
-          sample_rate(sample_rate),
-          sample_size(ms_to_samp(dur, sample_rate)),
+          amp(0),
+          amp_incr(0),
           index(0)
 {
 }
 
-float Envelope::synthesize()
+float Envelope::synthesize(float attack, float sustain, float release)
 {
-    float amp = 0.5 * (1 - std::cos((2 * M_PI * index) / (sample_size - 1)));
+    int attack_samples = samples * attack;
+    int release_samples = samples * release;
+
+    if (index < attack_samples)
+    {
+        amp_incr = sustain / attack_samples;
+    }
+    else if (attack_samples < index && index < release_samples)
+    {
+        amp_incr = 0.0f;
+    }
+    else
+    {
+        amp_incr = -(sustain / release_samples);
+    }
+
+    ++index;
+    amp += amp_incr;
+
     return amp;
 }
 

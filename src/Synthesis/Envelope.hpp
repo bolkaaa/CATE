@@ -27,29 +27,17 @@ namespace CATE {
 class Envelope
 {
 public:
-    Envelope(float dur, float attack, float sustain, float release, float sample_rate);
+    Envelope(int samples, float sustain);
 
     /* Synthesize the next sample value and return it. */
-    float synthesize();
+    float synthesize(float attack, float sustain, float release);
 
 private:
-    float cos();
-
+    int samples;
     int index;
-    int sample_size;
-    float amp;
-    float slope;
-    float curve;
-    float dur;
-    float attack;
-    int attack_samples;
     float sustain;
-    float release;
-    int release_samples;
-    float sample_rate;
-    double b1;
-    double y1;
-    double y2;
+    float amp;
+    float amp_incr;
 };
 
 } // CATE

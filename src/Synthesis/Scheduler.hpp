@@ -56,14 +56,13 @@ private:
 
     map<string, AudioFile> files;
     static const int max_grains = 32;
-    static const int buffer_size = 1024;
-    AudioBuffer buffer;
+    static const int buffer_size = 4096;
     Grain grains[max_grains];
+    AudioBuffer buffer;
     random_device seed;
     mt19937 gen;
     uniform_real_distribution<float> dist;
-    float grain_density;
-    float grain_size;
+    int grain_size;
     int next_onset;
     int grain_index;
     float sample_rate;

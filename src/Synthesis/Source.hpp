@@ -31,21 +31,15 @@ namespace CATE {
 class Source
 {
 public:
-    Source(AudioBuffer buffer, float dur, float sample_rate);
+    Source(AudioBuffer buffer, int frames);
 
     /* Get next sample value from source. */
     float synthesize();
 
-    /* Reset sample index. */
-    void reset();
-
 private:
     AudioBuffer buffer;
-    float dur;
-    float sample_rate;
-    int sample_size;
-    int sample_index;
-    bool active;
+    int frames;
+    int index;
 };
 
 } // CATE
