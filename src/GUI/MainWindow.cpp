@@ -27,26 +27,12 @@
 
 namespace CATE {
 
-MainWindow::MainWindow(QWidget *parent, Database &db, PointCloud &point_cloud, KdTree &kd_tree)
+MainWindow::MainWindow(QWidget *parent, AudioProcess &audio_process)
         : QMainWindow(parent),
           ui(new Ui::MainWindow),
-          db(db),
-          point_cloud(point_cloud),
-          kd_tree(kd_tree),
-          sample_rate(48000),
-          frames_per_buffer(256),
-          fft_bin_size(1024)
+          audio_process(audio_process)
 {
     ui->setupUi(this);
-
-    audio_process = new AudioProcess(sample_rate,
-                                     frames_per_buffer,
-                                     1,
-                                     2,
-                                     fft_bin_size,
-                                     db,
-                                     point_cloud,
-                                     kd_tree);
 
     /* Connect Signals. */
     connect(ui->start_playback_button_pressed, SIGNAL(pressed()), this, SLOT(start_playback_button_pressed()));
@@ -57,28 +43,27 @@ MainWindow::MainWindow(QWidget *parent, Database &db, PointCloud &point_cloud, K
 
 MainWindow::~MainWindow()
 {
-    delete audio_process;
     delete ui;
 }
 
 void MainWindow::start_playback_button_pressed()
 {
-    audio_process->start_stream();
+    audio_process.start_stream();
 }
 
 void MainWindow::stop_playback_button_pressed()
 {
-    audio_process->stop_stream();
+    audio_process.stop_stream();
 }
 
 void MainWindow::start_recording_button_pressed()
 {
-    audio_process->start_recording();
+    audio_process.start_recording();
 }
 
 void MainWindow::stop_recording_button_pressed()
 {
-    audio_process->stop_recording();
+    audio_process.stop_recording();
 }
 
 

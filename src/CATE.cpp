@@ -102,16 +102,30 @@ int main(int argc, char *argv[])
 #endif // CLI
 
     Database db("/Users/lrwz/CATE/speech.json");
+    float sample_rate = 48000.0f;
+    int frames_per_buffer = 256;
+    int fft_bin_size = 1024;
+    int input_channels = 2;
+    int output_channels = 2;
     db.load_files();
-    db.convert_sample_rates(96000);
+    db.convert_sample_rates(sample_rate * 2);
     PointCloud point_cloud = db.create_point_cloud();
     KdTree kd_tree(KdTreeParams::num_features,
                    point_cloud,
                    KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf));
     kd_tree.buildIndex();
 
+    AudioProcess audio_process(sample_rate,
+                               frames_per_buffer,
+                               input_channels,
+                               output_channels,
+                               fft_bin_size,
+                               db,
+                               point_cloud,
+                               kd_tree);
+
     QApplication app(argc, argv);
-    MainWindow main_window(nullptr, db, point_cloud, kd_tree);
+    MainWindow main_window(nullptr, audio_process);
     main_window.show();
 
     return app.exec();

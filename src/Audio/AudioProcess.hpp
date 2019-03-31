@@ -73,7 +73,7 @@ private:
     Database db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
-    const size_t search_results = 1;
+    const size_t search_results = 32;
     vector<size_t> return_indices;
     vector<float> distances;
     /* Synthesis. */
