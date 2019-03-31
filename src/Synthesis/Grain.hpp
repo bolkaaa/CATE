@@ -25,8 +25,6 @@
 #include "Envelope.hpp"
 #include "EnvelopeParams.hpp"
 
-using CATE::EnvelopeParams;
-
 namespace CATE {
 
 /* Grain combines an Envelope and Source to represent a single grain in the

@@ -28,10 +28,6 @@
 #include "../Audio/AudioBuffer.hpp"
 #include "../Audio/AudioProcess.hpp"
 
-using CATE::AudioProcess;
-using CATE::Database;
-using CATE::KdTree;
-
 /* The main Qt application window class. It contains most of the objects and
  * data needed to run the program. */
 

@@ -23,7 +23,6 @@
 #include "Feature.hpp"
 
 using std::vector;
-using CATE::AudioBuffer;
 
 /* The SpectralFeature class represents audio features that utilise the spectrum
  * of an audio signal, such as the spectral centroid. */

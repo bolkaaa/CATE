@@ -34,7 +34,6 @@
 
 using std::vector;
 using std::string;
-using CATE::AudioBuffer;
 
 /* The AudioFile class is a simple abstraction  of an audio file, containing the
  * audio data and file information along with member functions for manipulating

@@ -33,13 +33,6 @@
 #include "../Database/KdTree.hpp"
 #include "../Synthesis/Granulator.hpp"
 
-using std::vector;
-using std::queue;
-using CATE::FFT;
-using CATE::Database;
-using CATE::KdTree;
-using CATE::Granulator;
-
 /* The audio processing occurs in AudioProcess, which inherits from the
  * AudioEngine class that wraps the PortAudio functionality. It contains the
  * virtual audio callback function where the analysis and synthesis takes place.

@@ -37,6 +37,7 @@ using CATE::KdTreeParams;
 using CATE::Database;
 using CATE::PointCloud;
 using CATE::MainWindow;
+using CATE::AudioProcess;
 
 int main(int argc, char *argv[])
 {

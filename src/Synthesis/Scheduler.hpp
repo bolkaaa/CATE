@@ -34,7 +34,6 @@ using std::array;
 using std::random_device;
 using std::mt19937;
 using std::uniform_real_distribution;
-using CATE::EnvelopeParams;
 
 namespace CATE {
 

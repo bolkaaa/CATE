@@ -22,8 +22,6 @@
 
 #include "EnvelopeParams.hpp"
 
-using CATE::EnvelopeParams;
-
 namespace CATE {
 
 /* Envelope contains functionality for the creation of a parabolic envelope,

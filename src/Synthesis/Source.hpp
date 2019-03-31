@@ -22,8 +22,6 @@
 
 #include "src/Audio/AudioFile.hpp"
 
-using CATE::AudioBuffer;
-
 namespace CATE {
 
 /* Source represents the extraction of sample data from a source (in this case, an AudioFile object which contains a

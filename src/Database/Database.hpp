@@ -37,9 +37,6 @@
 using std::vector;
 using std::string;
 using Json = nlohmann::json;
-using CATE::AudioBuffer;
-using CATE::FFT;
-using CATE::SpectralFeature;
 
 namespace CATE {
 
