@@ -21,7 +21,7 @@
 #define MAIN_WINDOW_HPP
 
 #include <QMainWindow>
-#include <QThread>
+#include <QSlider>
 
 #include "../Database/Database.hpp"
 #include "../Database/KdTree.hpp"
@@ -63,6 +63,18 @@ public slots:
 
     /* When recording stop button in UI is pressed, current audio output stops recording. */
     void stop_recording_button_pressed();
+
+    /* Set grain attack time through slider. */
+    void set_grain_attack(int new_value);
+
+    /* Set grain release time through slider. */
+    void set_grain_release(int new_value);
+
+    /* Set grain density through slider. */
+    void set_grain_density(int new_value);
+
+    /* Set overall output amplitude value through slider. */
+    void set_amplitude(int new_value);
 };
 
 } // CATE

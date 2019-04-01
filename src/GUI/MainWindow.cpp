@@ -34,11 +34,17 @@ MainWindow::MainWindow(QWidget *parent, AudioProcess &audio_process)
 {
     ui->setupUi(this);
 
-    /* Connect Signals. */
-    connect(ui->start_playback_button_pressed, SIGNAL(pressed()), this, SLOT(start_playback_button_pressed()));
-    connect(ui->stop_playback_button_pressed, SIGNAL(pressed()), this, SLOT(stop_playback_button_pressed()));
-    connect(ui->start_recording_button_pressed, SIGNAL(pressed()), this, SLOT(start_recording_button_pressed()));
-    connect(ui->stop_recording_button_pressed, SIGNAL(pressed()), this, SLOT(stop_recording_button_pressed()));
+    /* Buttons */
+    connect(ui->start_playback, SIGNAL(pressed()), this, SLOT(start_playback_button_pressed()));
+    connect(ui->stop_playback, SIGNAL(pressed()), this, SLOT(stop_playback_button_pressed()));
+    connect(ui->start_recording, SIGNAL(pressed()), this, SLOT(start_recording_button_pressed()));
+    connect(ui->stop_recording, SIGNAL(pressed()), this, SLOT(stop_recording_button_pressed()));
+
+    /* Sliders */
+    connect(ui->amplitude_slider, SIGNAL(valueChanged(int)), this, SLOT(set_amplitude(int)));
+    connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
+    connect(ui->grain_release_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
+    connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
 }
 
 MainWindow::~MainWindow()
@@ -66,5 +72,28 @@ void MainWindow::stop_recording_button_pressed()
     audio_process.stop_recording();
 }
 
+void MainWindow::set_amplitude(int new_value)
+{
+    float amplitude = new_value / 127.0f;
+    audio_process.set_amplitude(amplitude);
+}
+
+void MainWindow::set_grain_attack(int new_value)
+{
+    float attack = new_value / 127.0f;
+    audio_process.set_grain_attack(attack);
+}
+
+void MainWindow::set_grain_release(int new_value)
+{
+    float decay = new_value / 127.0f;
+    audio_process.set_grain_release(decay);
+}
+
+
+void MainWindow::set_grain_density(int new_value)
+{
+    audio_process.set_grain_density(new_value);
+}
 
 } // CATE

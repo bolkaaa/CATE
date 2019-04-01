@@ -95,5 +95,19 @@ int Scheduler::get_next_inter_onset()
     return inter_onset;
 }
 
+void Scheduler::set_grain_attack(float new_grain_attack)
+{
+    env_params.attack = new_grain_attack;
+}
+
+void Scheduler::set_grain_release(float new_grain_release)
+{
+    env_params.release = new_grain_release;
+}
+
+void Scheduler::set_grain_density(int new_grain_density)
+{
+    grain_density = new_grain_density;
+}
 
 } // CATE

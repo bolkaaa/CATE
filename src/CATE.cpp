@@ -102,14 +102,14 @@ int main(int argc, char *argv[])
     return 0;
 #endif // CLI
 
-    Database db("/Users/lrwz/CATE/speech.json");
+    Database db("/Users/lrwz/CATE/cello.json");
     float sample_rate = 48000.0f;
     int frames_per_buffer = 256;
     int fft_bin_size = 1024;
     int input_channels = 2;
     int output_channels = 2;
     db.load_files();
-    db.convert_sample_rates(sample_rate * 2);
+    // db.convert_sample_rates(sample_rate);
     PointCloud point_cloud = db.create_point_cloud();
     KdTree kd_tree(KdTreeParams::num_features,
                    point_cloud,

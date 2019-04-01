@@ -39,6 +39,7 @@ AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_c
           return_indices(vector<size_t>(search_results)),
           distances(vector<float>(search_results)),
           granulator(db.get_files(), sample_rate),
+          amplitude(0.5),
           max_recording_length(30),
           recording_data(AudioBuffer(max_recording_length * sample_rate)),
           recording(false)
@@ -73,8 +74,10 @@ int AudioProcess::processing_callback(const void *input_buffer,
     /* Main audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
-        *output++ = granulator.synthesize(marker, file_path);
-        *output++ = granulator.synthesize(marker, file_path);
+        float out = amplitude * granulator.synthesize(marker, file_path);
+
+        *output++ = out; // Left Channel
+        *output++ = out; // Right Channel
 
         if (recording)
         {
@@ -98,5 +101,26 @@ void AudioProcess::stop_recording()
 
     recording = false;
 }
+
+void AudioProcess::set_amplitude(float new_amplitude)
+{
+    amplitude = new_amplitude;
+}
+
+void AudioProcess::set_grain_attack(float new_grain_attack)
+{
+    granulator.set_grain_attack(new_grain_attack);
+}
+
+void AudioProcess::set_grain_release(float new_grain_release)
+{
+    granulator.set_grain_release(new_grain_release);
+}
+
+void AudioProcess::set_grain_density(int new_grain_density)
+{
+    granulator.set_grain_density(new_grain_density);
+}
+
 
 } // CATE

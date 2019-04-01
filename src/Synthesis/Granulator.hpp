@@ -21,9 +21,10 @@
 #define GRANULATOR_HPP
 
 #include <map>
-#include <src/Audio/AudioFile.hpp>
 
-#include "./Scheduler.hpp"
+#include "src/Audio/AudioFile.hpp"
+#include "EnvelopeParams.hpp"
+#include "Scheduler.hpp"
 
 using std::map;
 
@@ -41,9 +42,20 @@ public:
     /* Get the next sample value from the granulator. */
     float synthesize(int marker, string filename);
 
+    /* Set new grain attack value (0 - 1.0). */
+    void set_grain_attack(float new_grain_attack);
+
+    /* Set new grain decay value (0 - 1.0). */
+    void set_grain_release(float nre_grain_release);
+
+    /* Set new grain attack value (0 - 127). */
+    void set_grain_density(int new_grain_density);
+
 private:
     map<string, AudioFile> files;
     Scheduler scheduler;
+    const int max_grains = 32;
+    const int buffer_size = 4096;
     float sample_rate;
 };
 

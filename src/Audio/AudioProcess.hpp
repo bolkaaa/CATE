@@ -55,6 +55,18 @@ public:
     /* Stop recording audio output. */
     void stop_recording();
 
+    /* Set attack value of synthesis grains (0 - 1.0). */
+    void set_grain_attack(float new_grain_attack);
+
+    /* Set decay value of synthesis grains (0 - 1.0). */
+    void set_grain_release(float new_grain_release);
+
+    /* Set decay value of synthesis grains (0 - 127). */
+    void set_grain_density(int new_grain_density);
+
+    /* Set amplitude of synthesis output (0 - 1.0). */
+    void set_amplitude(float new_amplitude);
+
 private:
     /* Feature extraction. */
     FFT fft;
@@ -71,6 +83,7 @@ private:
     vector<float> distances;
     /* Synthesis. */
     Granulator granulator;
+    float amplitude;
     float max_recording_length;
     AudioBuffer recording_data;
     bool recording;

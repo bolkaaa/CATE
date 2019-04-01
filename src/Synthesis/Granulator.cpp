@@ -17,4 +17,19 @@ float Granulator::synthesize(int marker, string filename)
     return output;
 }
 
+void Granulator::set_grain_attack(float new_grain_attack)
+{
+    scheduler.set_grain_attack(new_grain_attack);
+}
+
+void Granulator::set_grain_release(float new_grain_release)
+{
+    scheduler.set_grain_release(new_grain_release);
+}
+
+void Granulator::set_grain_density(int new_grain_density)
+{
+    scheduler.set_grain_density(new_grain_density);
+}
+
 } // CATE

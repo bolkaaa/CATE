@@ -47,6 +47,15 @@ public:
     /* Calculate grain activations. */
     float schedule(int marker, const string &filename);
 
+    /* Set new grain attack value (0 - 1.0). */
+    void set_grain_attack(float new_grain_attack);
+
+    /* Set new grain decay value (0 - 1.0). */
+    void set_grain_release(float new_grain_release);
+
+    /* Set new grain attack value (0 - 127). */
+    void set_grain_density(int new_grain_density);
+
 private:
     /* Mix all currently active grains to a single output. */
     float synthesize_grains();
