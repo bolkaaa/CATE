@@ -1,4 +1,64 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-24T23:42:44+00:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Expanding Upon Granular Synthesis</title><link href="/2019/03/24/expanding-upon-granular-synthesis.html" rel="alternate" type="text/html" title="Expanding Upon Granular Synthesis" /><published>2019-03-24T00:00:00+00:00</published><updated>2019-03-24T00:00:00+00:00</updated><id>/2019/03/24/expanding-upon-granular-synthesis</id><content type="html" xml:base="/2019/03/24/expanding-upon-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-04-01T12:22:53+01:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Structural Changes and Working on GUI</title><link href="/2019/03/31/structural-changes-and-working-on-GUI.html" rel="alternate" type="text/html" title="Structural Changes and Working on GUI" /><published>2019-03-31T00:00:00+00:00</published><updated>2019-03-31T00:00:00+00:00</updated><id>/2019/03/31/structural-changes-and-working-on-GUI</id><content type="html" xml:base="/2019/03/31/structural-changes-and-working-on-GUI.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+&lt;p&gt;I have focused on writing my report this week, but have also made some
+improvements and additions to the program, which I will discuss in the following sections.&lt;/p&gt;
+
+&lt;h3 id=&quot;structural-changes&quot;&gt;Structural Changes&lt;/h3&gt;
+&lt;p&gt;Previously, my program was designed such that the AudioProcess object that
+contains most of the audio functionality of the program was a member of the
+MainWindow class. This caused a coupling of backend and frontend logic that I
+wanted to move away from. Therefore I am now instantiating the AudioProcess
+object earlier in the main function and passing it by reference to MainWindow,
+which is a more flexible way of working.&lt;/p&gt;
+
+&lt;h3 id=&quot;more-granular-synthesis-improvements&quot;&gt;More Granular Synthesis Improvements&lt;/h3&gt;
+&lt;p&gt;The grain envelope implementation now functions much more smoothly, with control
+over attack and release of each grain, using an ASR envelope shape. I first
+prototyped this in Python which was very helpful due to being able to plot the
+tests with Matplotlib. I also implementing functionality for modifying the
+envelope parameters, which I will come back to in a later section of this post.
+Another improvement was in the grain inter-onset generator. An average onset
+time in samples is calculated by dividing the audio system’s sample rate by a
+&lt;em&gt;grain density&lt;/em&gt; parameter, which is effectively the average number of grains per
+second. A &lt;em&gt;grain width&lt;/em&gt; parameter determines how far apart a minimum and maximum
+onset are from the average onset. Then, the random inter-onset time is
+calculated based upon these values.&lt;/p&gt;
+
+&lt;p&gt;The overall sound is still not perfect, but has improved a lot in the past few
+weeks. I will now be aiming to focus on improving other parts of the program
+rather than the sound of the granulation in particular.&lt;/p&gt;
+
+&lt;h3 id=&quot;starting-to-work-more-on-the-qt-gui&quot;&gt;Starting To Work More On The Qt GUI&lt;/h3&gt;
+&lt;p&gt;This week I also started doing more work on the Qt GUI of the program. I am
+using &lt;em&gt;Qt Designer&lt;/em&gt; for a WYSIWYG (What You See Is What You Get) approach to GUI
+design. At the moment, the interface has buttons for starting and stopping audio
+playback, along with sliders for controlling certain synthesis parameters. As
+mentioned earlier, I had to create a new class for storing parameters for the
+grain envelopes, which is passed around in the granular synthesis object system.
+This allows for control of the grain attack and release from the top-level
+object in the hierarchy. The list of controllable parameters so far is as
+follows:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Overall Amplitude&lt;/li&gt;
+  &lt;li&gt;Grain Attack&lt;/li&gt;
+  &lt;li&gt;Grain Release&lt;/li&gt;
+  &lt;li&gt;Grain Density&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I will likely add more parameters later, along with other potential additions
+such as analysis visualisations.&lt;/p&gt;
+
+&lt;h3 id=&quot;next-goals&quot;&gt;Next Goals&lt;/h3&gt;
+&lt;p&gt;I had meant to include functionality for recording audio output in one of my
+earlier weekly schedule targets, but I never got around to doing so. One
+disadvantage of creating a standalone audio processing application as opposed to
+a VST/AU plugin, is that this kind of functionality must be implemented, which
+can be difficult. For the program to be truly &lt;em&gt;useful&lt;/em&gt;, it should have this kind
+of functionality. Otherwise, it is more of a program solely for experimentation
+rather than musical usefulness. Therefore I will try to get this functionality
+working as soon as possible. Besides that, I will be doing more work on the GUI
+as well as thinking about including unit tests to systematically test the
+correctness of certain aspects of the program.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress I have focused on writing my report this week, but have also made some improvements and additions to the program, which I will discuss in the following sections.</summary></entry><entry><title type="html">Expanding Upon Granular Synthesis</title><link href="/2019/03/24/expanding-upon-granular-synthesis.html" rel="alternate" type="text/html" title="Expanding Upon Granular Synthesis" /><published>2019-03-24T00:00:00+00:00</published><updated>2019-03-24T00:00:00+00:00</updated><id>/2019/03/24/expanding-upon-granular-synthesis</id><content type="html" xml:base="/2019/03/24/expanding-upon-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;This week I expanded upon the granular synthesis code I had created in the
 previous week. The grains are now properly derived from the audio files matched
 from the analysis process. The synthesis process is also more efficient and
