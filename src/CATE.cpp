@@ -102,19 +102,18 @@ int main(int argc, char *argv[])
     return 0;
 #endif // CLI
 
-    Database db("/Users/lrwz/CATE/cello.json");
+    QApplication app(argc, argv);
+    Database db;
     float sample_rate = 48000.0f;
     int frames_per_buffer = 256;
     int fft_bin_size = 1024;
     int input_channels = 2;
     int output_channels = 2;
-    db.load_files();
-    // db.convert_sample_rates(sample_rate);
-    PointCloud point_cloud = db.create_point_cloud();
+
+    PointCloud point_cloud;
     KdTree kd_tree(KdTreeParams::num_features,
                    point_cloud,
                    KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf));
-    kd_tree.buildIndex();
 
     AudioProcess audio_process(sample_rate,
                                frames_per_buffer,
@@ -125,8 +124,7 @@ int main(int argc, char *argv[])
                                point_cloud,
                                kd_tree);
 
-    QApplication app(argc, argv);
-    MainWindow main_window(nullptr, audio_process);
+    MainWindow main_window(audio_process, db, point_cloud, kd_tree);
     main_window.show();
 
     return app.exec();

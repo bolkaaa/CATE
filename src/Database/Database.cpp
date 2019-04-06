@@ -34,18 +34,9 @@ using std::vector;
 using std::unordered_map;
 using std::pair;
 using std::string;
-using CATE::Entry;
-using CATE::AudioFile;
-using CATE::Point;
-using CATE::PointCloud;
-using CATE::get_nested_files;
 
 namespace CATE {
 
-Database::Database(const string &db_file_path)
-        : db_file_path(db_file_path)
-{
-}
 
 void Database::add_file(const string &path)
 {
@@ -66,13 +57,18 @@ void Database::add_directory(const string &directory_path)
     }
 }
 
+void Database::load_json_file(const string &new_file_path)
+{
+    db_file_path = new_file_path;
+}
+
 void Database::write_json_file()
 {
     std::ofstream file(db_file_path);
     file << std::setw(4) << db;
 }
 
-void Database::read_json_file()
+void Database::read_json_data()
 {
     std::ifstream ifstream(db_file_path);
     ifstream >> db;
@@ -88,7 +84,7 @@ void Database::convert_sample_rates(double new_sr)
 
 void Database::load_files()
 {
-    read_json_file();
+    read_json_data();
 
     for (const auto &entry : db)
     {
@@ -155,6 +151,7 @@ PointCloud Database::create_point_cloud()
 
     return cloud;
 }
+
 
 
 } // CATE

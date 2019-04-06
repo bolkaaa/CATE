@@ -48,7 +48,14 @@ namespace CATE {
 class Database
 {
 public:
-    Database(const string &db_file_path);
+    /* Load database from another file. */
+    void load_json_file(const string &new_file_path);
+
+    /* Read JSON file into memory. */
+    void read_json_data();
+
+    /* Save the JSON database to JSON file, with pretty printing. */
+    void write_json_file();
 
     /* Add a single file to the database. */
     void add_file(const string &path);
@@ -66,17 +73,11 @@ public:
     /* Convert all files in database to a new sample rate. */
     void convert_sample_rates(double new_sr);
 
-    /* Read JSON file into memory. */
-    void read_json_file();
-
-    /* Save the JSON database to JSON file, with pretty printing. */
-    void write_json_file();
-
     /* From features in database, create point cloud to be used by KNN search. */
     PointCloud create_point_cloud();
 
     /* Get access to audio files. */
-    map<string, AudioFile> get_files() { return files; };
+    map<string, AudioFile> get_files() const { return files; };
 
 private:
     /* JSON data object, storing file paths, segmentation frame markers and

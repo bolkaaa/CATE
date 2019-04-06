@@ -28,12 +28,15 @@
 #include "../Audio/AudioBuffer.hpp"
 #include "../Audio/AudioProcess.hpp"
 
+using std::string;
+
 /* The main Qt application window class. It contains most of the objects and
  * data needed to run the program. */
 
-namespace Ui
-{
-    class MainWindow;
+namespace Ui {
+
+class MainWindow;
+
 }
 
 namespace CATE {
@@ -43,13 +46,31 @@ class MainWindow : public QMainWindow
 Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent, AudioProcess &audio_process);
+    MainWindow(AudioProcess &audio_process, Database &db, PointCloud &point_cloud, KdTree &kd_tree);
 
     ~MainWindow();
 
 private:
+    /* Prompt user to select a directory. */
+    string directory_dialog();
+
+    /* Prompt user to select a file to open, getting its path. */
+    string open_file_dialog(string file_types);
+
+    /* Prompt user to select a file path to save to, getting its path. */
+    string save_file_dialog(string file_types);
+
+    /* Prompt user to input an integer value. */
+    int int_dialog_box(string message, int default_value, int min_value, int max_value, int step_size);
+
+    /* When database files have changed, recreate data points and reload the granulator. */
+    void rebuild_audio_process();
+
     Ui::MainWindow *ui;
+    Database &db;
     AudioProcess &audio_process;
+    PointCloud &point_cloud;
+    KdTree &kd_tree;
 
 public slots:
     /* When playback start button in UI is pressed, audio stream is started. */
@@ -63,6 +84,12 @@ public slots:
 
     /* When recording stop button in UI is pressed, current audio output stops recording. */
     void stop_recording_button_pressed();
+
+    /* When analyse directory button in UI is pressed, user selects directory of audio files to analyse. */
+    void analyse_directory_button_pressed();
+
+    /* When load database button in UI is pressed, user selects existing database to analysis data to use. */
+    void load_database_button_pressed();
 
     /* Set grain attack time through slider. */
     void set_grain_attack(int new_value);

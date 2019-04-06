@@ -42,7 +42,9 @@ namespace CATE {
 class Scheduler
 {
 public:
-    Scheduler(map<string, AudioFile> &files, float sample_rate);
+    Scheduler(const map<string, AudioFile> &files, float sample_rate);
+
+    void load_files(const map<string, AudioFile> &new_files);
 
     /* Calculate grain activations. */
     float schedule(int marker, const string &filename);

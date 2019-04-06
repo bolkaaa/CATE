@@ -32,4 +32,10 @@ void Granulator::set_grain_density(int new_grain_density)
     scheduler.set_grain_density(new_grain_density);
 }
 
+void Granulator::load_files(const Database &db)
+{
+    files = db.get_files();
+    scheduler.load_files(files);
+}
+
 } // CATE

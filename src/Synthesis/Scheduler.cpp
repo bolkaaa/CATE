@@ -6,7 +6,7 @@
 
 namespace CATE {
 
-Scheduler::Scheduler(map<string, AudioFile> &files, float sample_rate)
+Scheduler::Scheduler(const map<string, AudioFile> &files, float sample_rate)
         : files(files),
           sample_rate(sample_rate),
           buffer(AudioBuffer(buffer_size)),
@@ -108,6 +108,11 @@ void Scheduler::set_grain_release(float new_grain_release)
 void Scheduler::set_grain_density(int new_grain_density)
 {
     grain_density = new_grain_density;
+}
+
+void Scheduler::load_files(const map<string, AudioFile> &new_files)
+{
+    files = new_files;
 }
 
 } // CATE

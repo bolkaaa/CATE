@@ -49,6 +49,9 @@ public:
     AudioProcess(float sample_rate, int frames_per_buffer, int input_channels, int output_channels, int fft_bin_size,
                  Database &db, PointCloud &point_cloud, KdTree &kd_tree);
 
+    /* Reload granulator when database has changed. */
+    void reload_granulator();
+
     /* Start recording audio output. */
     void start_recording();
 
@@ -67,26 +70,33 @@ public:
     /* Set amplitude of synthesis output (0 - 1.0). */
     void set_amplitude(float new_amplitude);
 
+    /* Boolean flag for whether audio process is ready to be used. */
+    bool is_ready() { return ready; }
+
+    /* Enable ready flag. */
+    void enable() { ready = true; }
+
 private:
-    /* Feature extraction. */
+    /* Feature extraction */
     FFT fft;
     SpectralFeature spectral_feature;
     vector<float> magspec;
     float centroid;
     float flatness;
-    /* Audio file management / K-d tree. */
-    Database db;
+    /* Audio file management / K-d tree */
+    Database &db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
     const size_t search_results = 32;
     vector<size_t> return_indices;
     vector<float> distances;
-    /* Synthesis. */
+    /* Synthesis / Recording */
     Granulator granulator;
     float amplitude;
     float max_recording_length;
     AudioBuffer recording_data;
     bool recording;
+    bool ready;
 
 protected:
     int processing_callback(const void *input_buffer,

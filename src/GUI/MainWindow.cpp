@@ -18,6 +18,8 @@
 */
 
 #include <QDebug>
+#include <QFileDialog>
+#include <QInputDialog>
 #include <portaudio.h>
 
 #include "../Audio/AudioBuffer.hpp"
@@ -27,20 +29,22 @@
 
 namespace CATE {
 
-MainWindow::MainWindow(QWidget *parent, AudioProcess &audio_process)
-        : QMainWindow(parent),
-          ui(new Ui::MainWindow),
-          audio_process(audio_process)
+MainWindow::MainWindow(AudioProcess &audio_process, Database &db, PointCloud &point_cloud, KdTree &kd_tree)
+        : ui(new Ui::MainWindow),
+          audio_process(audio_process),
+          db(db),
+          point_cloud(point_cloud),
+          kd_tree(kd_tree)
 {
     ui->setupUi(this);
 
-    /* Buttons */
     connect(ui->start_playback, SIGNAL(pressed()), this, SLOT(start_playback_button_pressed()));
     connect(ui->stop_playback, SIGNAL(pressed()), this, SLOT(stop_playback_button_pressed()));
     connect(ui->start_recording, SIGNAL(pressed()), this, SLOT(start_recording_button_pressed()));
     connect(ui->stop_recording, SIGNAL(pressed()), this, SLOT(stop_recording_button_pressed()));
+    connect(ui->analyse_directory, SIGNAL(pressed()), this, SLOT(analyse_directory_button_pressed()));
+    connect(ui->load_database, SIGNAL(pressed()), this, SLOT(load_database_button_pressed()));
 
-    /* Sliders */
     connect(ui->amplitude_slider, SIGNAL(valueChanged(int)), this, SLOT(set_amplitude(int)));
     connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
     connect(ui->grain_release_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
@@ -54,7 +58,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::start_playback_button_pressed()
 {
-    audio_process.start_stream();
+    if (audio_process.is_ready())
+    {
+        audio_process.start_stream();
+    }
 }
 
 void MainWindow::stop_playback_button_pressed()
@@ -70,6 +77,24 @@ void MainWindow::start_recording_button_pressed()
 void MainWindow::stop_recording_button_pressed()
 {
     audio_process.stop_recording();
+}
+
+void MainWindow::analyse_directory_button_pressed()
+{
+    audio_process.stop_stream();
+
+    string dir_path = directory_dialog();
+    string db_path = save_file_dialog("*.json");
+    int bin_size = int_dialog_box("Bin Size", 1024, 256, 4096, 2);
+    int frames_per_buffer = int_dialog_box("Frames Per Buffer", 256, 128, 4096, 2);
+
+    db.load_json_file(db_path);
+    db.add_directory(dir_path);
+    db.load_files();
+    db.sliding_window_analysis(bin_size, frames_per_buffer);
+    db.write_json_file();
+
+    rebuild_audio_process();
 }
 
 void MainWindow::set_amplitude(int new_value)
@@ -90,10 +115,74 @@ void MainWindow::set_grain_release(int new_value)
     audio_process.set_grain_release(decay);
 }
 
-
 void MainWindow::set_grain_density(int new_value)
 {
     audio_process.set_grain_density(new_value);
 }
+
+string MainWindow::directory_dialog()
+{
+    string directory_path = QFileDialog::getExistingDirectory(this,
+                                                              tr("Select Directory"),
+                                                              "./",
+                                                              QFileDialog::ShowDirsOnly |
+                                                              QFileDialog::DontResolveSymlinks).toUtf8().constData();
+
+
+    return directory_path;
+}
+
+string MainWindow::save_file_dialog(string file_types)
+{
+    string file_path = QFileDialog::getSaveFileName(this,
+                                                    tr("File Destination"),
+                                                    "./",
+                                                    tr(file_types.c_str())).toUtf8().constData();
+
+    return file_path;
+}
+
+int MainWindow::int_dialog_box(string message, int default_value, int min_value, int max_value, int step_size)
+{
+    bool ok = true;
+
+    int value = QInputDialog::getInt(this,
+                                     tr("Integer"),
+                                     tr(message.c_str()),
+                                     default_value,
+                                     min_value,
+                                     max_value,
+                                     step_size,
+                                     &ok);
+
+    return value;
+}
+
+void MainWindow::load_database_button_pressed()
+{
+    string db_path = open_file_dialog("*.json");
+    db.load_json_file(db_path);
+    db.load_files();
+    rebuild_audio_process();
+}
+
+string MainWindow::open_file_dialog(string file_types)
+{
+    string file_path = QFileDialog::getOpenFileName(this,
+                                                    tr("Select File"),
+                                                    "./",
+                                                    tr(file_types.c_str())).toUtf8().constData();
+
+    return file_path;
+}
+
+void MainWindow::rebuild_audio_process()
+{
+    point_cloud = db.create_point_cloud();
+    kd_tree.buildIndex();
+    audio_process.reload_granulator();
+    audio_process.enable();
+}
+
 
 } // CATE

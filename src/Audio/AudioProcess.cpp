@@ -42,6 +42,7 @@ AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_c
           amplitude(0.5),
           max_recording_length(30),
           recording_data(AudioBuffer(max_recording_length * sample_rate)),
+          ready(false),
           recording(false)
 {
 }
@@ -122,5 +123,9 @@ void AudioProcess::set_grain_density(int new_grain_density)
     granulator.set_grain_density(new_grain_density);
 }
 
+void AudioProcess::reload_granulator()
+{
+    granulator.load_files(db);
+}
 
 } // CATE

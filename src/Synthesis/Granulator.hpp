@@ -23,6 +23,7 @@
 #include <map>
 
 #include "src/Audio/AudioFile.hpp"
+#include "src/Database/Database.hpp"
 #include "EnvelopeParams.hpp"
 #include "Scheduler.hpp"
 
@@ -39,6 +40,9 @@ class Granulator
 public:
     Granulator(map<string, AudioFile> files, float sample_rate);
 
+    /* Load files from database into files variable. */
+    void load_files(const Database &db);
+
     /* Get the next sample value from the granulator. */
     float synthesize(int marker, string filename);
 
@@ -54,8 +58,6 @@ public:
 private:
     map<string, AudioFile> files;
     Scheduler scheduler;
-    const int max_grains = 32;
-    const int buffer_size = 4096;
     float sample_rate;
 };
 
