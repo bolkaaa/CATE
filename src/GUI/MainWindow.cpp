@@ -84,16 +84,39 @@ void MainWindow::analyse_directory_button_pressed()
     audio_process.stop_stream();
 
     string dir_path = directory_dialog();
+    if (dir_path.empty())
+    {
+        return;
+    }
+
     string db_path = save_file_dialog("*.json");
+    if (db_path.empty())
+    {
+        return;
+    }
+
     int bin_size = int_dialog_box("Bin Size", 1024, 256, 4096, 2);
     int frames_per_buffer = int_dialog_box("Frames Per Buffer", 256, 128, 4096, 2);
 
     db.load_json_file(db_path);
     db.add_directory(dir_path);
+    db.write_json_file();
     db.load_files();
     db.sliding_window_analysis(bin_size, frames_per_buffer);
-    db.write_json_file();
 
+    rebuild_audio_process();
+}
+
+void MainWindow::load_database_button_pressed()
+{
+    string db_path = open_file_dialog("*.json");
+    if (db_path.empty())
+    {
+        return;
+    }
+
+    db.load_json_file(db_path);
+    db.load_files();
     rebuild_audio_process();
 }
 
@@ -158,13 +181,6 @@ int MainWindow::int_dialog_box(string message, int default_value, int min_value,
     return value;
 }
 
-void MainWindow::load_database_button_pressed()
-{
-    string db_path = open_file_dialog("*.json");
-    db.load_json_file(db_path);
-    db.load_files();
-    rebuild_audio_process();
-}
 
 string MainWindow::open_file_dialog(string file_types)
 {
