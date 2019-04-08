@@ -98,11 +98,12 @@ void MainWindow::analyse_directory_button_pressed()
     int bin_size = int_dialog_box("Bin Size", 1024, 256, 4096, 2);
     int frames_per_buffer = int_dialog_box("Frames Per Buffer", 256, 128, 4096, 2);
 
-    db.load_json_file(db_path);
+    db.set_json_file(db_path);
     db.add_directory(dir_path);
-    db.write_json_file();
     db.load_files();
+    db.convert_sample_rates(audio_process.get_sample_rate());
     db.sliding_window_analysis(bin_size, frames_per_buffer);
+    db.write_json_file();
 
     rebuild_audio_process();
 }
@@ -115,7 +116,8 @@ void MainWindow::load_database_button_pressed()
         return;
     }
 
-    db.load_json_file(db_path);
+    db.set_json_file(db_path);
+    db.read_json_data();
     db.load_files();
     rebuild_audio_process();
 }
@@ -197,7 +199,11 @@ void MainWindow::rebuild_audio_process()
     point_cloud = db.create_point_cloud();
     kd_tree.buildIndex();
     audio_process.reload_granulator();
-    audio_process.enable();
+
+    if (db.has_data())
+    {
+        audio_process.enable();
+    }
 }
 
 

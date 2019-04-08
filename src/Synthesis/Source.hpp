@@ -35,10 +35,7 @@ public:
     float synthesize();
 
 private:
-    float cubic_interpolation();
-
     AudioBuffer buffer;
-    float pitch;
     int frames;
     int index;
 };

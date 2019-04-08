@@ -49,7 +49,7 @@ class Database
 {
 public:
     /* Load database from another file. */
-    void load_json_file(const string &new_file_path);
+    void set_json_file(const string &new_file_path);
 
     /* Read JSON file into memory. */
     void read_json_data();
@@ -78,6 +78,9 @@ public:
 
     /* Get access to audio files. */
     map<string, AudioFile> get_files() const { return files; };
+
+    /* Returns true if data within db object is not null. */
+    bool has_data();
 
 private:
     /* JSON data object, storing file paths, segmentation frame markers and

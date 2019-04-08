@@ -29,6 +29,7 @@ using std::string;
 
 namespace CATE {
 
+/* Data structure of points used in analysis process. */
 struct Point
 {
 	float centroid;
@@ -37,6 +38,7 @@ struct Point
 	string file_path;
 };
 
+/* Stores a container of data points and functions used by K-d tree system. */
 class PointCloud
 {
 public:

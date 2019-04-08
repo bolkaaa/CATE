@@ -57,7 +57,7 @@ void Database::add_directory(const string &directory_path)
     }
 }
 
-void Database::load_json_file(const string &new_file_path)
+void Database::set_json_file(const string &new_file_path)
 {
     db_file_path = new_file_path;
 }
@@ -84,8 +84,6 @@ void Database::convert_sample_rates(double new_sr)
 
 void Database::load_files()
 {
-    read_json_data();
-
     for (const auto &entry : db)
     {
         const string path = entry["path"];
@@ -152,6 +150,10 @@ PointCloud Database::create_point_cloud()
     return cloud;
 }
 
+bool Database::has_data()
+{
+    return !db.empty();
+}
 
 
 } // CATE

@@ -76,6 +76,9 @@ public:
     /* Enable ready flag. */
     void enable() { ready = true; }
 
+    /* Return the sample rate of the audio system. */
+    float get_sample_rate() { return sample_rate; }
+
 private:
     /* Feature extraction */
     FFT fft;
