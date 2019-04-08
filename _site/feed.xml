@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-04-01T12:22:53+01:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Structural Changes and Working on GUI</title><link href="/2019/03/31/structural-changes-and-working-on-GUI.html" rel="alternate" type="text/html" title="Structural Changes and Working on GUI" /><published>2019-03-31T00:00:00+00:00</published><updated>2019-03-31T00:00:00+00:00</updated><id>/2019/03/31/structural-changes-and-working-on-GUI</id><content type="html" xml:base="/2019/03/31/structural-changes-and-working-on-GUI.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-04-08T06:11:17+01:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Structural Changes and Working on GUI</title><link href="/2019/03/31/structural-changes-and-working-on-GUI.html" rel="alternate" type="text/html" title="Structural Changes and Working on GUI" /><published>2019-03-31T00:00:00+00:00</published><updated>2019-03-31T00:00:00+00:00</updated><id>/2019/03/31/structural-changes-and-working-on-GUI</id><content type="html" xml:base="/2019/03/31/structural-changes-and-working-on-GUI.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;I have focused on writing my report this week, but have also made some
 improvements and additions to the program, which I will discuss in the following sections.&lt;/p&gt;
 
@@ -58,7 +58,60 @@ of functionality. Otherwise, it is more of a program solely for experimentation
 rather than musical usefulness. Therefore I will try to get this functionality
 working as soon as possible. Besides that, I will be doing more work on the GUI
 as well as thinking about including unit tests to systematically test the
-correctness of certain aspects of the program.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress I have focused on writing my report this week, but have also made some improvements and additions to the program, which I will discuss in the following sections.</summary></entry><entry><title type="html">Expanding Upon Granular Synthesis</title><link href="/2019/03/24/expanding-upon-granular-synthesis.html" rel="alternate" type="text/html" title="Expanding Upon Granular Synthesis" /><published>2019-03-24T00:00:00+00:00</published><updated>2019-03-24T00:00:00+00:00</updated><id>/2019/03/24/expanding-upon-granular-synthesis</id><content type="html" xml:base="/2019/03/24/expanding-upon-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+correctness of certain aspects of the program.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress I have focused on writing my report this week, but have also made some improvements and additions to the program, which I will discuss in the following sections.</summary></entry><entry><title type="html">More GUI Work</title><link href="/2019/03/31/more-GUI-work.html" rel="alternate" type="text/html" title="More GUI Work" /><published>2019-03-31T00:00:00+00:00</published><updated>2019-03-31T00:00:00+00:00</updated><id>/2019/03/31/more-GUI-work</id><content type="html" xml:base="/2019/03/31/more-GUI-work.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+&lt;p&gt;There has been less progress with the software this week as I have been trying to do more writing. One significant 
+change I have added is that the user may now select a directory of audio files to use when running the program. They 
+may also choose a JSON file of analysis data that they have already saved in an previous session.&lt;/p&gt;
+
+&lt;h3 id=&quot;gui-improvements&quot;&gt;GUI Improvements&lt;/h3&gt;
+&lt;p&gt;To elaborate upon this, the program now has buttons that open dialog prompts for selecting directories of audio 
+files and analysing them, creating a more user-friendly experience than the command line system I had previously 
+implemented. This required learning more about Qt and its QFileDialog class.&lt;/p&gt;
+
+&lt;h3 id=&quot;testing&quot;&gt;Testing&lt;/h3&gt;
+&lt;p&gt;I plan to start implementing unit tests soon. After doing some research, I found that 
+&lt;a href=&quot;https://github.com/catchorg/Catch2&quot;&gt;Catch2&lt;/a&gt; seems to be a good option. It can be included in a C++ project as a 
+single header file, and œmakes use of modern, idiomatic C++. Along with unit tests, I also plan to start testing the 
+audio functionality of my program with manual tests of different types of audio. A significant section of my report 
+will be a study of how the program responds to different types of audio, whether the effects are desirable or less so.&lt;/p&gt;
+
+&lt;h3 id=&quot;finalising-features&quot;&gt;Finalising Features&lt;/h3&gt;
+&lt;p&gt;It will be helpful to finish adding features to the program in the next week, so that I can focus on testing and 
+writing my report. Fortunately, I have kept to my schedule well, and I have around a month to not only work on the 
+report, but tie up loose ends with the program as well as do unit testing. The features I would like to finish with are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;More feature extraction functions&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I will likely just add more spectral functions, since I already have the FFT code in place to easily implement them. 
+So far, I am quite happy with how the current features relate the audio input to the synthesis output, but having 
+more features would give more control over this process.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Synthesis improvements&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Implementing interpolation of sample values to have control over grain pitch would be a useful feature, but I have had 
+trouble implementing this in the past.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Amplitude following of microphone input to control the output&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Currently, the amplitude of the output is static regardless of the current microphone input. I intend to have them be
+ correlated, so that quiet input sounds result in a quieter output and vice versa.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;More controls in the GUI
+The main controls I plan to add are for configuring the user’s inputs and outputs. Right now, it just uses the system
+ defaults. For specific audio setups such as those that make use of external audio interfaces, this may not be 
+ desirable.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Once I’ve finished with adding features to the program, I can focus on improving error handling and testing. I can 
+also do some refactoring to improve the code and make it more readable and efficient while keeping the functionality 
+the same.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress There has been less progress with the software this week as I have been trying to do more writing. One significant change I have added is that the user may now select a directory of audio files to use when running the program. They may also choose a JSON file of analysis data that they have already saved in an previous session.</summary></entry><entry><title type="html">Expanding Upon Granular Synthesis</title><link href="/2019/03/24/expanding-upon-granular-synthesis.html" rel="alternate" type="text/html" title="Expanding Upon Granular Synthesis" /><published>2019-03-24T00:00:00+00:00</published><updated>2019-03-24T00:00:00+00:00</updated><id>/2019/03/24/expanding-upon-granular-synthesis</id><content type="html" xml:base="/2019/03/24/expanding-upon-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;This week I expanded upon the granular synthesis code I had created in the
 previous week. The grains are now properly derived from the audio files matched
 from the analysis process. The synthesis process is also more efficient and
