@@ -6,17 +6,17 @@
 namespace CATE {
 
 Grain::Grain()
-        : frames(0),
-          remaining_frames(frames),
-          src(AudioBuffer(), frames),
+        : samples(0),
+          remaining_samples(samples),
+          src(AudioBuffer(), samples),
           env(env_params)
 {
 }
 
-Grain::Grain(int frames, const AudioBuffer &buffer, EnvelopeParams env_params)
-        : frames(frames),
-          remaining_frames(frames),
-          src(buffer, frames),
+Grain::Grain(int samples, const AudioBuffer &buffer, EnvelopeParams env_params)
+        : samples(samples),
+          remaining_samples(samples),
+          src(buffer, samples),
           env_params(env_params),
           env(env_params)
 {
@@ -24,7 +24,7 @@ Grain::Grain(int frames, const AudioBuffer &buffer, EnvelopeParams env_params)
 
 float Grain::synthesize()
 {
-    --remaining_frames;
+    --remaining_samples;
     float amp = env.synthesize();
     float sample = src.synthesize();
     return amp * sample;
@@ -32,7 +32,7 @@ float Grain::synthesize()
 
 bool Grain::is_active() const
 {
-    return (remaining_frames > 0);
+    return (remaining_samples > 0);
 }
 
 } // CATE

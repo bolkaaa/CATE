@@ -71,7 +71,7 @@ private:
     /* Fill buffer from filename and file position. */
     void fill_buffer(int marker, const string &file_name);
 
-    static const int max_grains = 32;
+    static const int max_grains = 16;
     static const int buffer_size = 4096;
     vector<Grain> grains;
     map<string, AudioFile> files;
