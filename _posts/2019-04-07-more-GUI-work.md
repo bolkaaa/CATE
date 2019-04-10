@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 'More GUI Work'
-date: '2019-03-31'
+date: '2019-04-07'
 ---
 ### Progress
 There has been less progress with the software this week as I have been trying to do more writing. One significant 
