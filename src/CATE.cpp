@@ -27,6 +27,7 @@
 #include "src/Database/KdTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/GUI/MainWindow.hpp"
+#include "src/Analysis/FeatureSet.hpp"
 
 using std::string;
 using std::cout;
@@ -47,6 +48,7 @@ int main(int argc, char *argv[])
     int fft_bin_size = 1024;
     int input_channels = 2;
     int output_channels = 2;
+
 
     PointCloud point_cloud;
     KdTree kd_tree(KdTreeParams::num_features,

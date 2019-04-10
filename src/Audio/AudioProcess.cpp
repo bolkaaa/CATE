@@ -31,7 +31,7 @@ AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_c
                            int fft_bin_size, Database &db, PointCloud &point_cloud, KdTree &kd_tree)
         : AudioEngine(sample_rate, frames_per_buffer, input_channels, output_channels),
           fft(FFT(fft_bin_size, frames_per_buffer)),
-          spectral_feature(sample_rate, fft_bin_size),
+          feature(fft_bin_size),
           magspec(vector<float>(fft_bin_size / 2 + 1)),
           db(db),
           point_cloud(point_cloud),
@@ -39,8 +39,9 @@ AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_c
           return_indices(vector<size_t>(search_results)),
           distances(vector<float>(search_results)),
           granulator(db.get_files(), sample_rate),
-          amplitude(0.5),
+          gain_control(0.5),
           max_recording_length(30),
+          input_buffer(vector<float>(frames_per_buffer)),
           recording_data(AudioBuffer(max_recording_length * sample_rate)),
           ready(false),
           recording(false)
@@ -63,8 +64,9 @@ int AudioProcess::processing_callback(const void *input_buffer,
     fft.fill(input);
     fft.compute();
     fft.get_magspec(magspec);
-    centroid = spectral_feature.centroid(magspec);
-    flatness = spectral_feature.flatness(magspec);
+    centroid = feature.centroid(magspec);
+    flatness = feature.flatness(magspec);
+    kurtosis = feature.kurtosis(magspec);
 
     /* KNN search. */
     const float search_points[2] = {centroid, flatness};
@@ -72,10 +74,14 @@ int AudioProcess::processing_callback(const void *input_buffer,
     int marker = point_cloud.points[return_indices[0]].marker;
     string file_path = point_cloud.points[return_indices[0]].file_path;
 
+    float squared_input_sum = 0.0f;
+
     /* Main audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
-        float out = amplitude * granulator.synthesize(marker, file_path);
+        squared_input_sum += std::pow(input[i], 2);
+
+        float out = (gain_control * input_rms) * granulator.synthesize(marker, file_path);
 
         *output++ = out; // Left Channel
         *output++ = out; // Right Channel
@@ -85,6 +91,8 @@ int AudioProcess::processing_callback(const void *input_buffer,
             recording_data[i] = output[i];
         }
     }
+
+    input_rms = std::sqrt(squared_input_sum / frames_per_buffer);
 
     return paContinue;
 }
@@ -105,7 +113,7 @@ void AudioProcess::stop_recording()
 
 void AudioProcess::set_amplitude(float new_amplitude)
 {
-    amplitude = new_amplitude;
+    gain_control = new_amplitude;
 }
 
 void AudioProcess::set_grain_attack(float new_grain_attack)

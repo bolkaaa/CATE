@@ -14,9 +14,91 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#include <cmath>
+#include <numeric>
+
 #include "Feature.hpp"
 
-CATE::Feature::Feature(double sample_rate)
-        : sample_rate(sample_rate)
+namespace CATE {
+
+Feature::Feature(int bin_size)
+        : bin_size(bin_size)
 {
 }
+
+float Feature::centroid(const vector<float> &magspec)
+{
+    auto magnitudes = 0.0;
+    auto weighted_magnitudes = 0.0;
+    auto i = 0;
+
+    for (auto x : magspec)
+    {
+        magnitudes += x;
+        weighted_magnitudes += (x * i);
+        ++i;
+    }
+
+    /* Protect against divide-by-zero errors. */
+    if (magnitudes > 0)
+    {
+        auto c = static_cast<float>(weighted_magnitudes / magnitudes);
+        return c;
+    }
+
+    return 0.0;
+}
+
+float Feature::flatness(const vector<float> &magspec)
+{
+    auto sum = 0.0;
+    auto log_sum = 0.0;
+    auto n = (double) (magspec.size());
+
+    for (auto x : magspec)
+    {
+        auto v = static_cast<double>(1 + x);
+        sum += v;
+        log_sum += std::log(v);
+    }
+
+    sum /= n;
+    log_sum /= n;
+
+    /* Protect against divide-by-zero errors. */
+    if (sum > 0)
+    {
+        auto f = static_cast<float>(std::exp(log_sum / sum));
+        return f;
+    }
+
+    return 0.0;
+}
+
+float Feature::magspec_mean(const vector<float> &magspec)
+{
+    auto sum = std::accumulate(magspec.begin(), magspec.end(), 0);
+    auto mean = sum / static_cast<float>(magspec.size());
+    return mean;
+}
+
+float Feature::kurtosis(const vector<float> &magspec)
+{
+    float m2 = 0.0f;
+    float m4 = 0.0f;
+    float mean = magspec_mean(magspec);
+
+    for (auto x : magspec)
+    {
+        float diff = x - mean;
+        m2 += (diff * diff);
+        m4 += (diff * diff * diff);
+    }
+
+    m2 /= magspec.size();
+    m4 /= magspec.size();
+
+    return (m2 == 0) ? -3.0f : (m4 / (m2 * m2)) - 3.0f;
+}
+
+} // CATE

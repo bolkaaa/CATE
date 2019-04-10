@@ -24,44 +24,49 @@
 #include <cstdlib>
 #include <iostream>
 
+#include "src/Analysis/FeatureSet.hpp"
+
 using std::vector;
 using std::string;
 
 namespace CATE {
 
 /* Data structure of points used in analysis process. */
-struct Point
+class Point
 {
-	float centroid;
-	float flatness;
-	int marker;
-	string file_path;
+public:
+    int marker;
+    string file_path;
+    float centroid;
+    float flatness;
+    float kurtosis;
 };
 
 /* Stores a container of data points and functions used by K-d tree system. */
 class PointCloud
 {
 public:
-	vector<Point> points;
+    vector<Point> points;
 
-	/* Return number of data points. */
-	inline int kdtree_get_point_count() const { return points.size(); }
+    /* Return number of data points. */
+    inline int kdtree_get_point_count() const
+    { return points.size(); }
 
-	/* Get element at dimension dim of point i in class. */
-	inline float kdtree_get_pt(const int i, const int dim) const
-	{
-		if (dim == 0)
-		{
-			return points[i].centroid;
-		}
-		else
-		{
-			return points[i].flatness;
-		}
-	}
+    /* Get element at dimension dim of point i in class. */
+    inline float kdtree_get_pt(const int i, const int dim) const
+    {
+        if (dim == 0)
+        {
+            return points[i].centroid;
+        } else
+        {
+            return points[i].flatness;
+        }
+    }
 
-	template <class BBOX>
-	bool kdtree_get_bbox(BBOX&) const { return false; }
+    template<class BBOX>
+    bool kdtree_get_bbox(BBOX &) const
+    { return false; }
 };
 
 } // CATE

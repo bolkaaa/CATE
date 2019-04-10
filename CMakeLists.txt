@@ -23,10 +23,10 @@ set(SOURCE_FILES
         src/Audio/RingBuffer.cpp
         src/Analysis/FFT.hpp
         src/Analysis/FFT.cpp
-        src/Analysis/Feature.hpp
         src/Analysis/Feature.cpp
-        src/Analysis/SpectralFeature.hpp
-        src/Analysis/SpectralFeature.cpp
+        src/Analysis/Feature.hpp
+        src/Analysis/FeatureSet.cpp
+        src/Analysis/FeatureSet.hpp
         src/Database/FileTree.hpp
         src/Database/FileTree.cpp
         src/Database/Entry.hpp
@@ -71,7 +71,7 @@ add_executable(${PROJECT_NAME}
         )
 
 # CLI executable
-add_executable(CATE_CLI ${SOURCE_FILES} src/Synthesis/EnvelopeParams.cpp src/Synthesis/EnvelopeParams.hpp)
+add_executable(CATE_CLI ${SOURCE_FILES} src/Synthesis/EnvelopeParams.cpp src/Synthesis/EnvelopeParams.hpp src/Analysis/FeatureSet.cpp src/Analysis/FeatureSet.hpp)
 set_target_properties(CATE_CLI PROPERTIES COMPILE_FLAGS -DCLI)
 
 target_link_libraries(${PROJECT_NAME}

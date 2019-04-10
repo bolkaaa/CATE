@@ -30,7 +30,7 @@
 #include "samplerate.h"
 
 #include "AudioBuffer.hpp"
-#include "../Analysis/SpectralFeature.hpp"
+#include "src/Analysis/Feature.hpp"
 
 using std::vector;
 using std::string;

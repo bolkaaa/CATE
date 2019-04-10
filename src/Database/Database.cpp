@@ -27,8 +27,9 @@
 #include "Database.hpp"
 #include "Entry.hpp"
 #include "FileTree.hpp"
-#include "../Audio/AudioBuffer.hpp"
-#include "../Audio/AudioFile.hpp"
+#include "src/Audio/AudioBuffer.hpp"
+#include "src/Audio/AudioFile.hpp"
+#include "src/Analysis/FeatureSet.hpp"
 
 using std::vector;
 using std::unordered_map;
@@ -94,31 +95,24 @@ void Database::load_files()
 
 void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
 {
-    FFT fft(bin_size, frames_per_buffer);
-    vector<float> magspec(bin_size);
     int buffer_count = 0;
 
     for (auto b : files)
     {
         map<int, AudioBuffer> frames = segment_frames(b.second.data, frames_per_buffer);
-        SpectralFeature spectral_feature(b.second.sample_rate, bin_size);
 
         for (auto it = frames.begin(); it != frames.end(); ++it)
         {
             int marker = it->first;
-            AudioBuffer buffer = it->second;
-
-            fft.fill(&buffer[0]);
-            fft.compute();
-            fft.get_magspec(magspec);
-
-            float centroid = spectral_feature.centroid(magspec);
-            float flatness = spectral_feature.flatness(magspec);
-
+            AudioBuffer segment = it->second;
+            FeatureSet feature_set = compute_features(segment, bin_size, frames_per_buffer);
             db[buffer_count]["path"] = b.first;
-            db[buffer_count]["centroid"].emplace_back(centroid);
-            db[buffer_count]["flatness"].emplace_back(flatness);
             db[buffer_count]["markers"].emplace_back(marker);
+
+            for (auto feature : feature_set.get_map())
+            {
+                db[buffer_count][feature.first].emplace_back(feature.second);
+            }
         }
 
         std::cout << "Analysed: " << b.first << "\n";
@@ -136,12 +130,13 @@ PointCloud Database::create_point_cloud()
 
         for (auto i = 0; i < num_segments; ++i)
         {
-            float centroid = entry["centroid"][i];
-            float flatness = entry["flatness"][i];
             int marker = entry["markers"][i];
             string file_path = entry["path"];
+            float centroid = entry["centroid"][i];
+            float flatness = entry["flatness"][i];
+            float kurtosis = entry["kurtosis"][i];
 
-            Point point{centroid, flatness, marker, file_path};
+            Point point {marker, file_path, centroid, flatness, kurtosis};
 
             cloud.points.emplace_back(point);
         }
@@ -155,5 +150,17 @@ bool Database::has_data()
     return !db.empty();
 }
 
+FeatureSet Database::compute_features(AudioBuffer segment, int bin_size, int frames_per_buffer)
+{
+    FFT fft(bin_size, frames_per_buffer);
+    vector<float> magspec(bin_size);
+
+    fft.fill(&segment[0]);
+    fft.compute();
+    fft.get_magspec(magspec);
+    FeatureSet feature_set(bin_size, magspec);
+
+    return feature_set;
+}
 
 } // CATE

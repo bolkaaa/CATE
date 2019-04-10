@@ -27,11 +27,12 @@
 
 #include "AudioEngine.hpp"
 #include "AudioBuffer.hpp"
-#include "../Analysis/FFT.hpp"
-#include "../Analysis/SpectralFeature.hpp"
-#include "../Database/Database.hpp"
-#include "../Database/KdTree.hpp"
-#include "../Synthesis/Granulator.hpp"
+#include "src/Analysis/FFT.hpp"
+#include "src/Analysis/Feature.hpp"
+#include "src/Analysis/FeatureSet.hpp"
+#include "src/Database/Database.hpp"
+#include "src/Database/KdTree.hpp"
+#include "src/Synthesis/Granulator.hpp"
 
 /* The audio processing occurs in AudioProcess, which inherits from the
  * AudioEngine class that wraps the PortAudio functionality. It contains the
@@ -82,10 +83,11 @@ public:
 private:
     /* Feature extraction */
     FFT fft;
-    SpectralFeature spectral_feature;
+    Feature feature;
     vector<float> magspec;
     float centroid;
     float flatness;
+    float kurtosis;
     /* Audio file management / K-d tree */
     Database &db;
     PointCloud &point_cloud;
@@ -93,10 +95,12 @@ private:
     const size_t search_results = 32;
     vector<size_t> return_indices;
     vector<float> distances;
-    /* Synthesis / Recording */
+    /* Synthesis */
     Granulator granulator;
-    float amplitude;
+    float gain_control;
     float max_recording_length;
+    vector<float> input_buffer;
+    float input_rms = 0.0f;
     AudioBuffer recording_data;
     bool recording;
     bool ready;

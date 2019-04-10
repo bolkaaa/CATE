@@ -14,23 +14,43 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-/* The Feature class is a base class for an object that calculates audio
- * features, which specific features can inherit from. */
-
 #ifndef FEATURE_HPP
 #define FEATURE_HPP
 
-#include <iostream>
+#include <vector>
+
+#include "../Audio/AudioBuffer.hpp"
+#include "Feature.hpp"
+
+using std::vector;
+
 
 namespace CATE {
+
+/* The Feature class represents the audio features used in the analysis processes in CATE. */
 
 class Feature
 {
 public:
-    explicit Feature(double sample_rate);
+    Feature(int bin_size);
 
-protected:
-    double sample_rate;
+    /* Weighted mean of frequencies, with magnitudes as weights. Perceptually,
+     * the "center of mass" of the spectrum. Characterises "brightness" of a
+     * sound. */
+    float centroid(const vector<float> &magspec);
+
+    /* Ratio of geometric mean of magnitude spectrum to its arithmetic mean.
+     * Characteristic of "noisiness" of a signal. */
+    float flatness(const vector<float> &magspec);
+
+    /* Measure of flatness of signal around its mean. */
+    float kurtosis(const vector<float> &magspec);
+
+private:
+    /* Calculate mean of given magnitude spectrum. */
+    float magspec_mean(const vector<float> &magspec);
+
+    int bin_size;
 };
 
 } // CATE
