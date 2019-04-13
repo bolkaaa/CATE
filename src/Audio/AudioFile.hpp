@@ -53,17 +53,14 @@ public:
     void read();
 
     /* Write buffer object to output file. */
-    void write(const AudioBuffer &buffer, const string &path, int format);
+    void write(const AudioBuffer &buffer, int channels, float sample_rate, const string &path);
 
     /* Convert audio file data to new sample rate. */
-    void convert_sample_rate(double new_sample_rate);
-
-    /* Split data at specified begin and end positions. */
-    void split(int begin, int end);
+    void convert_sample_rate(float new_sample_rate);
 
     AudioBuffer data;
     string path;
-    double sample_rate;
+    float sample_rate;
     int channels;
 };
 

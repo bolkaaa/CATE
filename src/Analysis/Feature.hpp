@@ -48,7 +48,7 @@ public:
 
 private:
     /* Calculate mean of given magnitude spectrum. */
-    float magspec_mean(const vector<float> &magspec);
+    float calculate_magspec_mean(const vector<float> &magspec);
 
     int bin_size;
 };

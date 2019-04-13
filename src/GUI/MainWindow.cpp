@@ -77,6 +77,20 @@ void MainWindow::start_recording_button_pressed()
 void MainWindow::stop_recording_button_pressed()
 {
     audio_process.stop_recording();
+    audio_process.stop_stream();
+
+    int recording_size = audio_process.get_recording_size();
+    AudioBuffer record_data = audio_process.get_record_data();
+    record_data.resize(recording_size);
+    string output_path = "/Users/lrwz/test.wav";
+    AudioFile file_buffer;
+
+    file_buffer.write(record_data,
+                      audio_process.get_output_channels(),
+                      audio_process.get_sample_rate() / audio_process.get_output_channels(),
+                      output_path);
+
+    audio_process.start_stream();
 }
 
 void MainWindow::analyse_directory_button_pressed()
@@ -119,6 +133,7 @@ void MainWindow::load_database_button_pressed()
     db.set_json_file(db_path);
     db.read_json_data();
     db.load_files();
+
     rebuild_audio_process();
 }
 

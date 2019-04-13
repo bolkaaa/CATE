@@ -30,8 +30,8 @@ namespace CATE {
 AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_channels, int output_channels,
                            int fft_bin_size, Database &db, PointCloud &point_cloud, KdTree &kd_tree)
         : AudioEngine(sample_rate, frames_per_buffer, input_channels, output_channels),
+          fft_bin_size(fft_bin_size),
           fft(FFT(fft_bin_size, frames_per_buffer)),
-          feature(fft_bin_size),
           magspec(vector<float>(fft_bin_size / 2 + 1)),
           db(db),
           point_cloud(point_cloud),
@@ -40,9 +40,9 @@ AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_c
           distances(vector<float>(search_results)),
           granulator(db.get_files(), sample_rate),
           gain_control(0.5),
-          max_recording_length(30),
-          input_buffer(vector<float>(frames_per_buffer)),
-          recording_data(AudioBuffer(max_recording_length * sample_rate)),
+          record_buffer(AudioBuffer(max_recording_size)),
+          record_pos(0),
+          input_buffer(AudioBuffer(frames_per_buffer)),
           ready(false),
           recording(false)
 {
@@ -59,36 +59,38 @@ int AudioProcess::processing_callback(const void *input_buffer,
     auto *input = const_cast<float *>(static_cast<const float *>(input_buffer));
     auto *output = static_cast<float *>(output_buffer);
     auto i = 0;
+    float squared_input_sum = 0.0f;
+    FeatureSet feature_set(fft_bin_size);
 
-    /* FFT operations. */
     fft.fill(input);
     fft.compute();
     fft.get_magspec(magspec);
-    centroid = feature.centroid(magspec);
-    flatness = feature.flatness(magspec);
-    kurtosis = feature.kurtosis(magspec);
+    feature_set.calculate(magspec);
 
     /* KNN search. */
-    const float search_points[2] = {centroid, flatness};
+    const float search_points[3] = {
+            feature_set.centroid,
+            feature_set.flatness,
+    };
+
     kd_tree.knnSearch(&search_points[0], search_results, &return_indices[0], &distances[0]);
     int marker = point_cloud.points[return_indices[0]].marker;
     string file_path = point_cloud.points[return_indices[0]].file_path;
-
-    float squared_input_sum = 0.0f;
 
     /* Main audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
         squared_input_sum += std::pow(input[i], 2);
 
-        float out = (gain_control * input_rms) * granulator.synthesize(marker, file_path);
+        float out = (input_rms * gain_control) * granulator.synthesize(marker, file_path);
 
         *output++ = out; // Left Channel
         *output++ = out; // Right Channel
 
         if (recording)
         {
-            recording_data[i] = output[i];
+            record_buffer[record_pos] = out;
+            record_pos = (record_pos + 1) % max_recording_size;
         }
     }
 
@@ -99,15 +101,11 @@ int AudioProcess::processing_callback(const void *input_buffer,
 
 void AudioProcess::start_recording()
 {
-    std::cout << "Starting recording. (test)\n";
-
     recording = true;
 }
 
 void AudioProcess::stop_recording()
 {
-    std::cout << "Stopping recording. (test)\n";
-
     recording = false;
 }
 
@@ -135,5 +133,6 @@ void AudioProcess::reload_granulator()
 {
     granulator.load_files(db);
 }
+
 
 } // CATE

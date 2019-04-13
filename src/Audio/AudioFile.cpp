@@ -52,15 +52,16 @@ void AudioFile::read()
     channels = file.channels();
 }
 
-void AudioFile::write(const AudioBuffer &buffer, const string &path, int format)
+void AudioFile::write(const AudioBuffer &buffer, int channels, float sample_rate, const string &path)
 {
+    int format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
     SndfileHandle file(path, SFM_WRITE, format, channels, static_cast<int>(sample_rate));
-    file.write(&data[0], static_cast<sf_count_t>(data.size()));
+    file.write(&buffer[0], buffer.size());
 }
 
-void AudioFile::convert_sample_rate(double new_sample_rate)
+void AudioFile::convert_sample_rate(float new_sample_rate)
 {
-    double sr_ratio = new_sample_rate / sample_rate;
+    float sr_ratio = new_sample_rate / sample_rate;
     AudioBuffer output(sr_ratio * data.size());
     SRC_DATA conv;
 
@@ -73,16 +74,6 @@ void AudioFile::convert_sample_rate(double new_sample_rate)
     src_simple(&conv, SRC_SINC_BEST_QUALITY, channels);
 
     data = output;
-}
-
-void AudioFile::split(int begin, int end)
-{
-    AudioBuffer new_data;
-
-    for (int i = begin; i < end; ++i)
-    {
-        new_data.emplace_back(data[i]);
-    }
 }
 
 } // CATE

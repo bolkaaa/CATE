@@ -2,12 +2,16 @@
 
 namespace CATE {
 
-FeatureSet::FeatureSet(int bin_size, const vector<float> &magspec)
+FeatureSet::FeatureSet(int bin_size)
         : feature(bin_size)
 {
-    feature_map["centroid"] = feature.centroid(magspec);
-    feature_map["flatness"] = feature.flatness(magspec);
-    feature_map["kurtosis"] = feature.kurtosis(magspec);
+}
+
+void FeatureSet::calculate(const vector<float> &magspec)
+{
+    centroid = feature.centroid(magspec);
+    flatness = feature.flatness(magspec);
+    kurtosis = feature.kurtosis(magspec);
 }
 
 } // CATE

@@ -95,7 +95,10 @@ void Database::load_files()
 
 void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
 {
-    int buffer_count = 0;
+    int segment_index = 0;
+    FFT fft(bin_size, frames_per_buffer);
+    vector<float> magspec(bin_size);
+
 
     for (auto b : files)
     {
@@ -105,18 +108,21 @@ void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
         {
             int marker = it->first;
             AudioBuffer segment = it->second;
-            FeatureSet feature_set = compute_features(segment, bin_size, frames_per_buffer);
-            db[buffer_count]["path"] = b.first;
-            db[buffer_count]["markers"].emplace_back(marker);
+            fft.fill(&segment[0]);
+            fft.compute();
+            fft.get_magspec(magspec);
+            FeatureSet feature_set(bin_size);
+            feature_set.calculate(magspec);
 
-            for (auto feature : feature_set.get_map())
-            {
-                db[buffer_count][feature.first].emplace_back(feature.second);
-            }
+            db[segment_index]["path"] = b.first;
+            db[segment_index]["markers"].emplace_back(marker);
+            db[segment_index]["centroid"].emplace_back(feature_set.centroid);
+            db[segment_index]["flatness"].emplace_back(feature_set.flatness);
+            db[segment_index]["kurtosis"].emplace_back(feature_set.kurtosis);
         }
 
         std::cout << "Analysed: " << b.first << "\n";
-        ++buffer_count;
+        ++segment_index;
     }
 }
 
@@ -148,19 +154,6 @@ PointCloud Database::create_point_cloud()
 bool Database::has_data()
 {
     return !db.empty();
-}
-
-FeatureSet Database::compute_features(AudioBuffer segment, int bin_size, int frames_per_buffer)
-{
-    FFT fft(bin_size, frames_per_buffer);
-    vector<float> magspec(bin_size);
-
-    fft.fill(&segment[0]);
-    fft.compute();
-    fft.get_magspec(magspec);
-    FeatureSet feature_set(bin_size, magspec);
-
-    return feature_set;
 }
 
 } // CATE

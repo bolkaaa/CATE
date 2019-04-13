@@ -35,15 +35,16 @@ namespace CATE {
 class FeatureSet
 {
 public:
-    FeatureSet(int bin_size, const vector<float> &magspec);
+    FeatureSet(int bin_size);
 
-    map<string, float> get_map() const { return feature_map; }
+    void calculate(const vector<float> &magspec);
 
-    float get_feature(const string &feature_name) { return feature_map["feature_name"]; }
+    float centroid;
+    float flatness;
+    float kurtosis;
 
 private:
     Feature feature;
-    map<string, float> feature_map;
 };
 
 } // CATE

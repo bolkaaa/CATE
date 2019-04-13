@@ -55,7 +55,7 @@ public:
     /* Set new grain decay value (0 - 1.0). */
     void set_grain_release(float new_grain_release);
 
-    /* Set new grain attack value (0 - 127). */
+    /* Set new grain density value (0 - 127). */
     void set_grain_density(int new_grain_density);
 
 private:
@@ -71,8 +71,8 @@ private:
     /* Fill buffer from filename and file position. */
     void fill_buffer(int marker, const string &file_name);
 
-    static const int max_grains = 16;
-    static const int buffer_size = 4096;
+    const int max_grains = 32;
+    const int buffer_size = 8192;
     vector<Grain> grains;
     map<string, AudioFile> files;
     AudioBuffer buffer;

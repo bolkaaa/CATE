@@ -80,14 +80,21 @@ public:
     /* Return the sample rate of the audio system. */
     float get_sample_rate() { return sample_rate; }
 
+    /* Return the number of output channels of the audio system. */
+    int get_output_channels() { return output_channels; }
+
+    /* Return the value of the sample record counter. */
+    int get_recording_size() { return record_pos; }
+
+    /* Return the recorded sample data. */
+    AudioBuffer get_record_data() { return record_buffer; }
+
 private:
     /* Feature extraction */
+    int fft_bin_size;
     FFT fft;
-    Feature feature;
     vector<float> magspec;
-    float centroid;
-    float flatness;
-    float kurtosis;
+
     /* Audio file management / K-d tree */
     Database &db;
     PointCloud &point_cloud;
@@ -95,13 +102,15 @@ private:
     const size_t search_results = 32;
     vector<size_t> return_indices;
     vector<float> distances;
-    /* Synthesis */
+
+    /* Synthesis / Recording */
     Granulator granulator;
     float gain_control;
-    float max_recording_length;
+    AudioBuffer record_buffer;
+    static const int max_recording_size = 158760000;
+    int record_pos;
     vector<float> input_buffer;
     float input_rms = 0.0f;
-    AudioBuffer recording_data;
     bool recording;
     bool ready;
 

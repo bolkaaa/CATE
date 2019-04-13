@@ -83,9 +83,6 @@ public:
     bool has_data();
 
 private:
-    /* For given segment of audio, compute set of audio features. */
-    FeatureSet compute_features(AudioBuffer segment, int bin_size, int frames_per_buffer);
-
     /* JSON data object, storing file paths, segmentation frame markers and
      * analysis data. */
     Json db;
