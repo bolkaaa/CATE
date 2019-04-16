@@ -1,4 +1,128 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-04-08T06:11:17+01:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Structural Changes and Working on GUI</title><link href="/2019/03/31/structural-changes-and-working-on-GUI.html" rel="alternate" type="text/html" title="Structural Changes and Working on GUI" /><published>2019-03-31T00:00:00+00:00</published><updated>2019-03-31T00:00:00+00:00</updated><id>/2019/03/31/structural-changes-and-working-on-GUI</id><content type="html" xml:base="/2019/03/31/structural-changes-and-working-on-GUI.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-04-16T16:51:00+01:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Finalising Some Features and Starting Unit Testing</title><link href="/2019/04/14/finalising-some-features-and-starting-unit-testing.html" rel="alternate" type="text/html" title="Finalising Some Features and Starting Unit Testing" /><published>2019-04-14T00:00:00+01:00</published><updated>2019-04-14T00:00:00+01:00</updated><id>/2019/04/14/finalising-some-features-and-starting-unit-testing</id><content type="html" xml:base="/2019/04/14/finalising-some-features-and-starting-unit-testing.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+&lt;p&gt;While continuing to work on the report, I have also added some final features in
+the software. These included adding amplitude following of the microphone input
+for the synthesis output, and adding the functionality for recording output to a
+file.&lt;/p&gt;
+
+&lt;h3 id=&quot;amplitude-following&quot;&gt;Amplitude Following&lt;/h3&gt;
+&lt;p&gt;One feature that I have intended to be in the program for a while but only
+recently implemented was a relationship between the audio input and output.
+Essentially, I wanted the amplitude of the synthesised output to be the same as
+the amplitude of the microphone input. Without such a feature, the resulting
+effect is that quiet and intense input gestures would result in the same level
+of output, which I wanted to avoid. To achieve this, I implemented a calculation
+of the &lt;em&gt;root mean square&lt;/em&gt; (RMS) value of the input samples:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\sqrt{\frac{1}{n}\sum_{i=0}^{n}x_i^{2}}&lt;/script&gt;
+
+&lt;p&gt;This value is multiplied with the output sample for each sample in the callback
+function, which has the effect of the output amplitude closely following the
+input amplitude.&lt;/p&gt;
+
+&lt;h3 id=&quot;recording-to-file&quot;&gt;Recording to File&lt;/h3&gt;
+&lt;p&gt;One drawback of creating a standalone audio synthesis/processing application as
+opposed to a DAW/host-compatible plugin is that there is no immediate way of
+having an output for the audio that can be used elsewhere. With a plugin, the
+audio can go directly to the DAW and be used there. With my program, I had to
+implement a way of having the audio output from the program be usable in other
+contexts. My way of achieving this was to implement audio recording, so that the
+user can experiment however they like, and save the resulting output to an audio
+file. This approach is similar to how applications such as IRCAM’s AudioSculpt
+are designed to be used.&lt;/p&gt;
+
+&lt;p&gt;I delayed implementing this feature for some time as I was unsure of how to
+achieve it in an efficient manner. Eventually, I realised it was more important
+to have it working, even if the implementation was not ideal. The basic
+algorithm I designed was as follows:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;A high capacity, fixed-size array is instantiated along with the other objects in the AudioProcess class.&lt;/li&gt;
+  &lt;li&gt;A boolean parameter determines whether the program is in “record mode” or not.&lt;/li&gt;
+  &lt;li&gt;In the GUI, a button is provided that sets the parameter to &lt;em&gt;true&lt;/em&gt;.&lt;/li&gt;
+  &lt;li&gt;In the main audio loop, the output samples are written to the array according to the condition of the recording parameter being equal to &lt;em&gt;true&lt;/em&gt;.&lt;/li&gt;
+  &lt;li&gt;This simply uses a counter that increments on each successive sample to index
+into the array, rather than some kind of “push back” container function,
+which would be too inefficient in an audio context.&lt;/li&gt;
+  &lt;li&gt;When the user is done and has pressed the “Stop Recording” button, the size
+of the resultant file in samples is determined by the value of the counter
+after recording has stopped. A WAV/AIFF file is written to disk using the
+sample data from the array.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The main drawback I found with this approach is that it’s quite
+memory-inefficient, since a large array needs to be preallocated. I couldn’t
+find a better way of doing it however, as I figured that any approaches that
+would be both space-efficient and time-efficient would likely require some kind
+of buffering system with multiple threads, which I did not want to implement
+with the constraints of how I had previously written the program.&lt;/p&gt;
+
+&lt;h3 id=&quot;unit-testing&quot;&gt;Unit Testing&lt;/h3&gt;
+&lt;p&gt;While I have been busy adding the previously mentioned features and writing my
+dissertation, I have also been spending more time reading documentation for the
+Catch2 framework. In the next week I aim to get the functionality for creating
+tests working with my build system. The first tests I will write will likely be
+for testing the FFT and feature extraction code.&lt;/p&gt;
+
+&lt;h3 id=&quot;future-plans&quot;&gt;Future Plans&lt;/h3&gt;
+&lt;p&gt;Currently, there is approximately one month left to finish working on the
+program and writing the dissertation. Ideally, as discussed with my supervisor,
+I should try to have a feature freeze and stop working on new features, and
+focus on bug fixing, error handling and unit testing. Currently, the only
+features I really intend to work on are improving the analysis code and the GUI.
+In the next week, I hope to have these finished while starting on unit tests.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress While continuing to work on the report, I have also added some final features in the software. These included adding amplitude following of the microphone input for the synthesis output, and adding the functionality for recording output to a file.</summary></entry><entry><title type="html">More GUI Work</title><link href="/2019/04/07/more-GUI-work.html" rel="alternate" type="text/html" title="More GUI Work" /><published>2019-04-07T00:00:00+01:00</published><updated>2019-04-07T00:00:00+01:00</updated><id>/2019/04/07/more-GUI-work</id><content type="html" xml:base="/2019/04/07/more-GUI-work.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+&lt;p&gt;There has been less progress with the software this week as I have been trying to do more writing. One significant 
+change I have added is that the user may now select a directory of audio files to use when running the program. They 
+may also choose a JSON file of analysis data that they have already saved in an previous session.&lt;/p&gt;
+
+&lt;h3 id=&quot;gui-improvements&quot;&gt;GUI Improvements&lt;/h3&gt;
+&lt;p&gt;To elaborate upon this, the program now has buttons that open dialog prompts for selecting directories of audio 
+files and analysing them, creating a more user-friendly experience than the command line system I had previously 
+implemented. This required learning more about Qt and its QFileDialog class.&lt;/p&gt;
+
+&lt;h3 id=&quot;testing&quot;&gt;Testing&lt;/h3&gt;
+&lt;p&gt;I plan to start implementing unit tests soon. After doing some research, I found that 
+&lt;a href=&quot;https://github.com/catchorg/Catch2&quot;&gt;Catch2&lt;/a&gt; seems to be a good option. It can be included in a C++ project as a 
+single header file, and œmakes use of modern, idiomatic C++. Along with unit tests, I also plan to start testing the 
+audio functionality of my program with manual tests of different types of audio. A significant section of my report 
+will be a study of how the program responds to different types of audio, whether the effects are desirable or less so.&lt;/p&gt;
+
+&lt;h3 id=&quot;finalising-features&quot;&gt;Finalising Features&lt;/h3&gt;
+&lt;p&gt;It will be helpful to finish adding features to the program in the next week, so that I can focus on testing and 
+writing my report. Fortunately, I have kept to my schedule well, and I have around a month to not only work on the 
+report, but tie up loose ends with the program as well as do unit testing. The features I would like to finish with are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;More feature extraction functions&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I will likely just add more spectral functions, since I already have the FFT code in place to easily implement them. 
+So far, I am quite happy with how the current features relate the audio input to the synthesis output, but having 
+more features would give more control over this process.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Synthesis improvements&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Implementing interpolation of sample values to have control over grain pitch would be a useful feature, but I have had 
+trouble implementing this in the past.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Amplitude following of microphone input to control the output&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Currently, the amplitude of the output is static regardless of the current microphone input. I intend to have them be
+ correlated, so that quiet input sounds result in a quieter output and vice versa.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;More controls in the GUI
+The main controls I plan to add are for configuring the user’s inputs and outputs. Right now, it just uses the system
+ defaults. For specific audio setups such as those that make use of external audio interfaces, this may not be 
+ desirable.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Once I’ve finished with adding features to the program, I can focus on improving error handling and testing. I can 
+also do some refactoring to improve the code and make it more readable and efficient while keeping the functionality 
+the same.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress There has been less progress with the software this week as I have been trying to do more writing. One significant change I have added is that the user may now select a directory of audio files to use when running the program. They may also choose a JSON file of analysis data that they have already saved in an previous session.</summary></entry><entry><title type="html">Structural Changes and Working on GUI</title><link href="/2019/03/31/structural-changes-and-working-on-GUI.html" rel="alternate" type="text/html" title="Structural Changes and Working on GUI" /><published>2019-03-31T00:00:00+00:00</published><updated>2019-03-31T00:00:00+00:00</updated><id>/2019/03/31/structural-changes-and-working-on-GUI</id><content type="html" xml:base="/2019/03/31/structural-changes-and-working-on-GUI.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;I have focused on writing my report this week, but have also made some
 improvements and additions to the program, which I will discuss in the following sections.&lt;/p&gt;
 
@@ -58,60 +182,7 @@ of functionality. Otherwise, it is more of a program solely for experimentation
 rather than musical usefulness. Therefore I will try to get this functionality
 working as soon as possible. Besides that, I will be doing more work on the GUI
 as well as thinking about including unit tests to systematically test the
-correctness of certain aspects of the program.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress I have focused on writing my report this week, but have also made some improvements and additions to the program, which I will discuss in the following sections.</summary></entry><entry><title type="html">More GUI Work</title><link href="/2019/03/31/more-GUI-work.html" rel="alternate" type="text/html" title="More GUI Work" /><published>2019-03-31T00:00:00+00:00</published><updated>2019-03-31T00:00:00+00:00</updated><id>/2019/03/31/more-GUI-work</id><content type="html" xml:base="/2019/03/31/more-GUI-work.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
-&lt;p&gt;There has been less progress with the software this week as I have been trying to do more writing. One significant 
-change I have added is that the user may now select a directory of audio files to use when running the program. They 
-may also choose a JSON file of analysis data that they have already saved in an previous session.&lt;/p&gt;
-
-&lt;h3 id=&quot;gui-improvements&quot;&gt;GUI Improvements&lt;/h3&gt;
-&lt;p&gt;To elaborate upon this, the program now has buttons that open dialog prompts for selecting directories of audio 
-files and analysing them, creating a more user-friendly experience than the command line system I had previously 
-implemented. This required learning more about Qt and its QFileDialog class.&lt;/p&gt;
-
-&lt;h3 id=&quot;testing&quot;&gt;Testing&lt;/h3&gt;
-&lt;p&gt;I plan to start implementing unit tests soon. After doing some research, I found that 
-&lt;a href=&quot;https://github.com/catchorg/Catch2&quot;&gt;Catch2&lt;/a&gt; seems to be a good option. It can be included in a C++ project as a 
-single header file, and œmakes use of modern, idiomatic C++. Along with unit tests, I also plan to start testing the 
-audio functionality of my program with manual tests of different types of audio. A significant section of my report 
-will be a study of how the program responds to different types of audio, whether the effects are desirable or less so.&lt;/p&gt;
-
-&lt;h3 id=&quot;finalising-features&quot;&gt;Finalising Features&lt;/h3&gt;
-&lt;p&gt;It will be helpful to finish adding features to the program in the next week, so that I can focus on testing and 
-writing my report. Fortunately, I have kept to my schedule well, and I have around a month to not only work on the 
-report, but tie up loose ends with the program as well as do unit testing. The features I would like to finish with are:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;More feature extraction functions&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I will likely just add more spectral functions, since I already have the FFT code in place to easily implement them. 
-So far, I am quite happy with how the current features relate the audio input to the synthesis output, but having 
-more features would give more control over this process.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Synthesis improvements&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Implementing interpolation of sample values to have control over grain pitch would be a useful feature, but I have had 
-trouble implementing this in the past.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Amplitude following of microphone input to control the output&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Currently, the amplitude of the output is static regardless of the current microphone input. I intend to have them be
- correlated, so that quiet input sounds result in a quieter output and vice versa.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;More controls in the GUI
-The main controls I plan to add are for configuring the user’s inputs and outputs. Right now, it just uses the system
- defaults. For specific audio setups such as those that make use of external audio interfaces, this may not be 
- desirable.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Once I’ve finished with adding features to the program, I can focus on improving error handling and testing. I can 
-also do some refactoring to improve the code and make it more readable and efficient while keeping the functionality 
-the same.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress There has been less progress with the software this week as I have been trying to do more writing. One significant change I have added is that the user may now select a directory of audio files to use when running the program. They may also choose a JSON file of analysis data that they have already saved in an previous session.</summary></entry><entry><title type="html">Expanding Upon Granular Synthesis</title><link href="/2019/03/24/expanding-upon-granular-synthesis.html" rel="alternate" type="text/html" title="Expanding Upon Granular Synthesis" /><published>2019-03-24T00:00:00+00:00</published><updated>2019-03-24T00:00:00+00:00</updated><id>/2019/03/24/expanding-upon-granular-synthesis</id><content type="html" xml:base="/2019/03/24/expanding-upon-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+correctness of certain aspects of the program.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress I have focused on writing my report this week, but have also made some improvements and additions to the program, which I will discuss in the following sections.</summary></entry><entry><title type="html">Expanding Upon Granular Synthesis</title><link href="/2019/03/24/expanding-upon-granular-synthesis.html" rel="alternate" type="text/html" title="Expanding Upon Granular Synthesis" /><published>2019-03-24T00:00:00+00:00</published><updated>2019-03-24T00:00:00+00:00</updated><id>/2019/03/24/expanding-upon-granular-synthesis</id><content type="html" xml:base="/2019/03/24/expanding-upon-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;This week I expanded upon the granular synthesis code I had created in the
 previous week. The grains are now properly derived from the audio files matched
 from the analysis process. The synthesis process is also more efficient and
@@ -815,79 +886,4 @@ planning of the analysis and synthesis stage.&lt;/p&gt;
 definitely aim to achieve in the next two weeks. I also want to
 implement a better command line interface with best practises for C++
 CLI programs, expanding upon the simple interface I currently have,
-which directly uses the argc and argv parameters inherited from C.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Loading a Directory of Audio Files My first objective was to find a way of automatically loading every audio file from a directory into memory in the program.</summary></entry><entry><title type="html">Audio Programming in C++</title><link href="/2019/02/03/audio-programming-in-c++.html" rel="alternate" type="text/html" title="Audio Programming in C++" /><published>2019-02-03T00:00:00+00:00</published><updated>2019-02-03T00:00:00+00:00</updated><id>/2019/02/03/audio-programming-in-c++</id><content type="html" xml:base="/2019/02/03/audio-programming-in-c++.html">&lt;h3 id=&quot;starting-out&quot;&gt;Starting Out&lt;/h3&gt;
-
-&lt;p&gt;My main goal when starting the project was to first establish which
-libraries for working with audio in C++ would form the basis of the
-program, and how I would design and structure the audio backend of the
-program. I have found that when creating audio applications in C++,
-choosing between C and C++ libraries is an important choice. Usually,
-the option is to either use established, widely-used C libraries like
-portaudio and libsndfile, and hide their C functions behind a C++
-interface, or use native C++ libraries. I have noticed that certain
-applications like SuperCollider opt for the former, however wrapping C
-code in C++ can be time consuming and error-prone and should generally
-be avoided when possible, as I have discussed with my supervisor. In
-general, I think that it’s better to use the STL and modern C++
-features, rather than using the backward-compatible C parts of
-C++. This post recaps my experiences with exploring both options,
-comparing them and expanding upon my motivations for ultimately
-deciding upon using the native C++ bindings for the portaudio and
-libsndfile libraries.&lt;/p&gt;
-
-&lt;h3 id=&quot;reading-audio-file-data&quot;&gt;Reading Audio File Data&lt;/h3&gt;
-&lt;p&gt;My first objective was dealing with uncompressed audio file formats
-like WAV and AIFF; Implementing functionality for reading existing
-files and storing their sample values in data structures, as well as
-creating output files from sequences of samples.&lt;/p&gt;
-
-&lt;p&gt;I initially used the C library libsndfile, which provides an easy way
-of dealing with audio files without having to worry about issues like
-file headers and endianness. This involved creating a wrapper class
-that hid the C functions behind a C++ interface.&lt;/p&gt;
-
-&lt;p&gt;One immediate issue I found was that due to C’s lack of templates and
-function overloading, each return type for the sf_read functions has a
-separate function. Working around this to create generic functions
-would add unnecessary complexity, if I wanted my functions to work
-with both floats and doubles for instance.&lt;/p&gt;
-
-&lt;p&gt;Therefore, I eventually decided to use the C++ API instead, which
-provides a SndfileHandle class with overloaded member functions,
-fitting better into a C++ program.&lt;/p&gt;
-
-&lt;h3 id=&quot;audio-io-api&quot;&gt;Audio I/O API&lt;/h3&gt;
-
-&lt;p&gt;Prior to starting the project, I decided upon using the C PortAudio
-library as I had experience using it in the past. I achieved good
-results initially, using it in a procedural manner to play back audio
-file data. When I wanted to adapt the code to a more templated
-object-oriented C++ style that I intended the rest of my program to be
-written in, I encountered some challenges that made me reassess my
-options going forwards. Wrapping the functionality in C++ classes was
-proving to be time consuming and requiring a lot of workarounds, so I
-decided to use the C++ bindings for the library rather than create my
-own wrappers. As well as being less time-consuming and allowing me to
-focus more on writing the application itself, this has the advantage
-of being better tested and more reliable due to being created by the
-developers of the library.&lt;/p&gt;
-
-&lt;h3 id=&quot;progress-summary&quot;&gt;Progress Summary&lt;/h3&gt;
-
-&lt;p&gt;So far, the program is able to load audio file data into an
-AudioBuffer class, and output them through the Synth::process member
-function of the Synth class. Later, these components will be expanded
-upon, so that the AudioBuffers can be split into smaller segmented
-buffers that can be played back simultaneously.&lt;/p&gt;
-
-&lt;p&gt;The program also has some basic multithreading capabilities so far
-using the std::thread class from C++11, with the audio stream starting
-on a separate thread while the main thread continues (as a while
-(true) loop for now as user input isn’t needed yet).&lt;/p&gt;
-
-&lt;p&gt;My plans moving forward are to add functionality for storing multiple
-AudioBuffers in memory from a directory of audio files, in preparation
-for the audio analysis part of my program. I may use the Boost library
-for a portable way of interacting with the filesystem to achieve
-this. I will also look ahead to how I can store the analysis data in
-some kind of lightweight database, which may involve utilising the SDIF file format.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Starting Out</summary></entry></feed>
+which directly uses the argc and argv parameters inherited from C.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Loading a Directory of Audio Files My first objective was to find a way of automatically loading every audio file from a directory into memory in the program.</summary></entry></feed>
