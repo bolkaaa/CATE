@@ -51,15 +51,15 @@ float Feature::centroid(const vector<float> &magspec)
 
 float Feature::flatness(const vector<float> &magspec)
 {
-    auto sum = 0.0;
-    auto log_sum = 0.0;
-    auto n = (double) (magspec.size());
+    auto sum = 0.0f;
+    auto log_sum = 0.0f;
+    auto n = static_cast<float>(magspec.size());
+    auto flatness = 0.0f;
 
-    for (auto x : magspec)
+    for (auto &x : magspec)
     {
-        auto v = static_cast<double>(1 + x);
-        sum += v;
-        log_sum += std::log(v);
+        sum += (1 + x);
+        log_sum += std::log(1 + x);
     }
 
     sum /= n;
@@ -68,11 +68,11 @@ float Feature::flatness(const vector<float> &magspec)
     /* Protect against divide-by-zero errors. */
     if (sum > 0)
     {
-        auto f = static_cast<float>(std::exp(log_sum / sum));
-        return f;
+        flatness = std::exp(log_sum / sum);
+        return flatness;
     }
 
-    return 0.0;
+    return flatness;
 }
 
 float Feature::calculate_magspec_mean(const vector<float> &magspec)

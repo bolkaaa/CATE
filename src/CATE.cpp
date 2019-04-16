@@ -49,7 +49,6 @@ int main(int argc, char *argv[])
     int input_channels = 2;
     int output_channels = 2;
 
-
     PointCloud point_cloud;
     KdTree kd_tree(KdTreeParams::num_features,
                    point_cloud,

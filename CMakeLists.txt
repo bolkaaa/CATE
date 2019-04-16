@@ -62,17 +62,16 @@ set(CMAKE_PREFIX_PATH /usr/local/Cellar/qt/5.12.0) # Set to system Qt path
 include(QtCommon)
 find_package(Qt5Widgets REQUIRED)
 
-# GUI executable
+# Main Executable
 add_executable(${PROJECT_NAME}
         ${OS_BUNDLE}
         ${SOURCE_FILES}
         ${META_FILES_TO_INCLUDE}
-        ${RESOURCE_FILES}
-        )
+        ${RESOURCE_FILES})
 
-# CLI executable
-add_executable(CATE_CLI ${SOURCE_FILES} src/Synthesis/EnvelopeParams.cpp src/Synthesis/EnvelopeParams.hpp src/Analysis/FeatureSet.cpp src/Analysis/FeatureSet.hpp)
-set_target_properties(CATE_CLI PROPERTIES COMPILE_FLAGS -DCLI)
+# Tests
+add_executable(tests)
+
 
 target_link_libraries(${PROJECT_NAME}
         portaudio
@@ -84,16 +83,5 @@ target_link_libraries(${PROJECT_NAME}
         ${CMAKE_THREAD_LIBS_INIT}
         )
 
-target_link_libraries(CATE_CLI
-        portaudio
-        sndfile
-        samplerate
-        fftw3
-        ${Boost_SYSTEM_LIBRARY}
-        ${Boost_FILESYSTEM_LIBRARY}
-        ${CMAKE_THREAD_LIBS_INIT}
-        )
-
 # Qt Modules
 qt5_use_modules(${PROJECT_NAME} Widgets)
-qt5_use_modules(CATE_CLI Widgets)

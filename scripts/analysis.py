@@ -29,13 +29,19 @@ class Analysis:
         values = librosa.feature.spectral_flatness(y=y)
         return values
 
+    def spectral_rolloff(file_path: str) -> np.ndarray:
+        y, sr = librosa.load(librosa.util.example_audio_file())
+        values = librosa.feature.spectral_rolloff(y=y)
+        return values
+
 
 if __name__ == '__main__':
     mode = None
     file_path = None
     analysis_modes = {
         'centroid': Analysis.spectral_centroid,
-        'flatness': Analysis.spectral_flatness
+        'flatness': Analysis.spectral_flatness,
+        'rolloff': Analysis.spectral_rolloff
     }
 
     try:
