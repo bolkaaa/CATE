@@ -24,7 +24,6 @@
 
 using std::vector;
 
-
 namespace CATE {
 
 /* The Feature class represents the audio features used in the analysis processes in CATE. */

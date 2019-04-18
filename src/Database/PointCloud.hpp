@@ -24,8 +24,6 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "src/Analysis/FeatureSet.hpp"
-
 using std::vector;
 using std::string;
 

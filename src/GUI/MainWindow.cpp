@@ -78,18 +78,8 @@ void MainWindow::stop_recording_button_pressed()
 {
     audio_process.stop_recording();
     audio_process.stop_stream();
-
-    int recording_size = audio_process.get_recording_size();
-    AudioBuffer record_data = audio_process.get_record_data();
-    record_data.resize(recording_size);
-    string output_path = "/Users/lrwz/test.wav";
-    AudioFile file_buffer;
-
-    file_buffer.write(record_data,
-                      audio_process.get_output_channels(),
-                      audio_process.get_sample_rate() / audio_process.get_output_channels(),
-                      output_path);
-
+    string output_path = save_file_dialog("*.wav");
+    audio_process.save_recording(output_path);
     audio_process.start_stream();
 }
 
@@ -137,28 +127,6 @@ void MainWindow::load_database_button_pressed()
     rebuild_audio_process();
 }
 
-void MainWindow::set_amplitude(int new_value)
-{
-    float amplitude = new_value / 127.0f;
-    audio_process.set_amplitude(amplitude);
-}
-
-void MainWindow::set_grain_attack(int new_value)
-{
-    float attack = new_value / 127.0f;
-    audio_process.set_grain_attack(attack);
-}
-
-void MainWindow::set_grain_release(int new_value)
-{
-    float decay = new_value / 127.0f;
-    audio_process.set_grain_release(decay);
-}
-
-void MainWindow::set_grain_density(int new_value)
-{
-    audio_process.set_grain_density(new_value);
-}
 
 string MainWindow::directory_dialog()
 {
@@ -198,7 +166,6 @@ int MainWindow::int_dialog_box(string message, int default_value, int min_value,
     return value;
 }
 
-
 string MainWindow::open_file_dialog(string file_types)
 {
     string file_path = QFileDialog::getOpenFileName(this,
@@ -219,6 +186,29 @@ void MainWindow::rebuild_audio_process()
     {
         audio_process.enable();
     }
+}
+
+void MainWindow::set_amplitude(int new_value)
+{
+    float amplitude = new_value / 127.0f;
+    audio_process.set_amplitude(amplitude);
+}
+
+void MainWindow::set_grain_attack(int new_value)
+{
+    float attack = new_value / 127.0f;
+    audio_process.set_grain_attack(attack);
+}
+
+void MainWindow::set_grain_release(int new_value)
+{
+    float decay = new_value / 127.0f;
+    audio_process.set_grain_release(decay);
+}
+
+void MainWindow::set_grain_density(int new_value)
+{
+    audio_process.set_grain_density(new_value);
 }
 
 

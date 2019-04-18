@@ -25,8 +25,6 @@ set(SOURCE_FILES
         src/Analysis/FFT.cpp
         src/Analysis/Feature.cpp
         src/Analysis/Feature.hpp
-        src/Analysis/FeatureSet.cpp
-        src/Analysis/FeatureSet.hpp
         src/Database/FileTree.hpp
         src/Database/FileTree.cpp
         src/Database/Entry.hpp
@@ -48,7 +46,7 @@ set(SOURCE_FILES
         src/Synthesis/Scheduler.cpp
         src/Synthesis/Scheduler.hpp
         src/Synthesis/Util.cpp
-        src/Synthesis/Util.hpp)
+        src/Synthesis/Util.hpp src/Audio/AudioRecorder.cpp src/Audio/AudioRecorder.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

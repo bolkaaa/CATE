@@ -75,13 +75,6 @@ float Feature::flatness(const vector<float> &magspec)
     return flatness;
 }
 
-float Feature::calculate_magspec_mean(const vector<float> &magspec)
-{
-    auto sum = std::accumulate(magspec.begin(), magspec.end(), 0);
-    auto mean = sum / static_cast<float>(magspec.size());
-    return mean;
-}
-
 float Feature::kurtosis(const vector<float> &magspec)
 {
     float m2 = 0.0f;
@@ -99,6 +92,13 @@ float Feature::kurtosis(const vector<float> &magspec)
     m4 /= magspec.size();
 
     return (m2 == 0) ? -3.0f : ((m4 / (m2 * m2)) - 3.0f);
+}
+
+float Feature::calculate_magspec_mean(const vector<float> &magspec)
+{
+    auto sum = std::accumulate(magspec.begin(), magspec.end(), 0);
+    auto mean = sum / static_cast<float>(magspec.size());
+    return mean;
 }
 
 } // CATE

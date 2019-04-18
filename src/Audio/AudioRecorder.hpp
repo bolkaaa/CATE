@@ -17,34 +17,33 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef FEATURESET_HPP
-#define FEATURESET_HPP
+#ifndef AUDIORECORD_HPP
+#define AUDIORECORD_HPP
 
-#include <map>
-#include <string>
+#include <limits>
 
-#include "Feature.hpp"
-
-using std::map;
-using std::string;
+#include "AudioBuffer.hpp"
 
 namespace CATE {
 
-/* Contains functionality for storing a number of individual features together. */
-
-class FeatureSet
+class AudioRecorder
 {
 public:
-    FeatureSet(int bin_size);
+    AudioRecorder();
 
-    void calculate(const vector<float> &magspec);
+    /* Write audio sample to audio buffer. */
+    void write(float sample);
 
-    float centroid;
-    float flatness;
-    float kurtosis;
+    void save(std::string output_path, int num_channels, float sample_rate);
+
+    /* Get current record position to determine size of recording. */
+    int get_size() const { return record_pos; }
 
 private:
-    Feature feature;
+    const int max_recording_size = std::numeric_limits<int>::max();
+    int record_pos;
+    AudioBuffer buffer;
+
 };
 
 } // CATE

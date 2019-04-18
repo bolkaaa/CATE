@@ -29,7 +29,6 @@
 #include "FileTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioFile.hpp"
-#include "src/Analysis/FeatureSet.hpp"
 
 using std::vector;
 using std::unordered_map;
@@ -111,14 +110,17 @@ void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
             fft.fill(&segment[0]);
             fft.compute();
             fft.get_magspec(magspec);
-            FeatureSet feature_set(bin_size);
-            feature_set.calculate(magspec);
+            Feature feature(bin_size);
+
+            float centroid = feature.centroid(magspec);
+            float flatness = feature.flatness(magspec);
+            float kurtosis = feature.kurtosis(magspec);
 
             db[segment_index]["path"] = b.first;
             db[segment_index]["markers"].emplace_back(marker);
-            db[segment_index]["centroid"].emplace_back(feature_set.centroid);
-            db[segment_index]["flatness"].emplace_back(feature_set.flatness);
-            db[segment_index]["kurtosis"].emplace_back(feature_set.kurtosis);
+            db[segment_index]["centroid"].emplace_back(centroid);
+            db[segment_index]["flatness"].emplace_back(flatness);
+            db[segment_index]["kurtosis"].emplace_back(kurtosis);
         }
 
         std::cout << "Analysed: " << b.first << "\n";

@@ -21,15 +21,15 @@
 #define AUDIO_PROCESS_HPP
 
 #include <vector>
+#include <limits>
 
 #include <QObject>
-#include <queue>
 
 #include "AudioEngine.hpp"
 #include "AudioBuffer.hpp"
+#include "AudioRecorder.hpp"
 #include "src/Analysis/FFT.hpp"
 #include "src/Analysis/Feature.hpp"
-#include "src/Analysis/FeatureSet.hpp"
 #include "src/Database/Database.hpp"
 #include "src/Database/KdTree.hpp"
 #include "src/Synthesis/Granulator.hpp"
@@ -83,11 +83,8 @@ public:
     /* Return the number of output channels of the audio system. */
     int get_output_channels() { return output_channels; }
 
-    /* Return the value of the sample record counter. */
-    int get_recording_size() { return record_pos; }
-
-    /* Return the recorded sample data. */
-    AudioBuffer get_record_data() { return record_buffer; }
+    /* Save current audio recording to disk. */
+    void save_recording(string output_path);
 
 private:
     /* Feature extraction */
@@ -106,9 +103,8 @@ private:
     /* Synthesis / Recording */
     Granulator granulator;
     float gain_control;
-    AudioBuffer record_buffer;
-    static const int max_recording_size = 158760000;
-    int record_pos;
+    Feature feature;
+    AudioRecorder audio_recorder;
     vector<float> input_buffer;
     float input_rms = 0.0f;
     bool recording;

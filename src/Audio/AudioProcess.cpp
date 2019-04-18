@@ -35,13 +35,12 @@ AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_c
           magspec(vector<float>(fft_bin_size / 2 + 1)),
           db(db),
           point_cloud(point_cloud),
+          feature(fft_bin_size),
           kd_tree(kd_tree),
           return_indices(vector<size_t>(search_results)),
           distances(vector<float>(search_results)),
           granulator(db.get_files(), sample_rate),
           gain_control(0.5),
-          record_buffer(AudioBuffer(max_recording_size)),
-          record_pos(0),
           input_buffer(AudioBuffer(frames_per_buffer)),
           ready(false),
           recording(false)
@@ -60,17 +59,17 @@ int AudioProcess::processing_callback(const void *input_buffer,
     auto *output = static_cast<float *>(output_buffer);
     auto i = 0;
     float squared_input_sum = 0.0f;
-    FeatureSet feature_set(fft_bin_size);
 
     fft.fill(input);
     fft.compute();
     fft.get_magspec(magspec);
-    feature_set.calculate(magspec);
+    float centroid = feature.centroid(magspec);
+    float flatness = feature.flatness(magspec);
 
     /* KNN search. */
     const float search_points[3] = {
-            feature_set.centroid,
-            feature_set.flatness,
+            centroid,
+            flatness
     };
 
     kd_tree.knnSearch(&search_points[0], search_results, &return_indices[0], &distances[0]);
@@ -89,8 +88,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
 
         if (recording)
         {
-            record_buffer[record_pos] = out;
-            record_pos = (record_pos + 1) % max_recording_size;
+            audio_recorder.write(out);
         }
     }
 
@@ -132,6 +130,11 @@ void AudioProcess::set_grain_density(int new_grain_density)
 void AudioProcess::reload_granulator()
 {
     granulator.load_files(db);
+}
+
+void AudioProcess::save_recording(string output_path)
+{
+    audio_recorder.save(output_path, output_channels, sample_rate);
 }
 
 
