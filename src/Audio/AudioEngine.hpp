@@ -24,15 +24,14 @@
 
 #include <portaudio.h>
 
+namespace CATE {
+
 /*
   The AudioEngine class wraps the PortAudio C library, providing the
   functionality for initialising PortAudio, and starting and stopping streams.
   It defines the callback functions, which the AudioProcess class creates its
   own versions of when it inherits from the base AudioEngine class.
  */
-
-namespace CATE {
-
 class AudioEngine
 {
 public:

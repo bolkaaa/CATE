@@ -33,21 +33,17 @@
 #include "src/Database/KdTree.hpp"
 #include "src/Synthesis/Granulator.hpp"
 
-/* The audio processing occurs in AudioProcess, which inherits from the
- * AudioEngine class that wraps the PortAudio functionality. It contains the
- * virtual audio callback function where the analysis and synthesis takes place.
- * It also emits a signal when an FFT frame is processed, to be used by the Qt
- * GUI. */
-
 namespace CATE {
 
+/* The audio processing occurs in AudioProcess, which inherits from the
+ * AudioEngine class that wraps the PortAudio functionality. It contains the
+ * virtual audio callback function where the analysis and synthesis takes place. */
 class AudioProcess : public QObject, public AudioEngine
 {
 Q_OBJECT
 
 public:
-    AudioProcess(float sample_rate, int frames_per_buffer, int input_channels, int output_channels, int fft_bin_size,
-                 Database &db, PointCloud &point_cloud, KdTree &kd_tree);
+    AudioProcess(Database &db, PointCloud &point_cloud, KdTree &kd_tree);
 
     /* Reload granulator when database has changed. */
     void reload_granulator();
@@ -79,19 +75,13 @@ public:
     /* Return the sample rate of the audio system. */
     float get_sample_rate() { return sample_rate; }
 
-    /* Return the number of output channels of the audio system. */
-    int get_output_channels() { return output_channels; }
-
     /* Save current audio recording to disk. */
     void save_recording(const string &output_path);
 
 private:
-    /* Feature extraction */
-    int fft_bin_size;
+    int bin_size;
     FFT fft;
     vector<float> magspec;
-
-    /* Audio file management / K-d tree */
     Database &db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
@@ -100,14 +90,11 @@ private:
     vector<float> distances;
     vector<int> markers;
     vector<string> filenames;
-
-    /* Synthesis / Recording */
     Granulator granulator;
     float gain_control;
     Feature feature;
     AudioRecorder audio_recorder;
-    vector<float> input_buffer;
-    float input_rms = 0.0f;
+    float input_rms;
     bool recording;
     bool ready;
 

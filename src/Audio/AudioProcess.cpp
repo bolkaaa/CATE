@@ -27,23 +27,21 @@
 
 namespace CATE {
 
-AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_channels, int output_channels,
-                           int fft_bin_size, Database &db, PointCloud &point_cloud, KdTree &kd_tree)
-        : AudioEngine(sample_rate, frames_per_buffer, input_channels, output_channels),
-          fft_bin_size(fft_bin_size),
-          fft(FFT(fft_bin_size, frames_per_buffer)),
-          magspec(vector<float>(fft_bin_size / 2 + 1)),
+AudioProcess::AudioProcess(Database &db, PointCloud &point_cloud, KdTree &kd_tree)
+        : AudioEngine(48000.0f, 256, 2, 2),
           db(db),
           point_cloud(point_cloud),
-          feature(fft_bin_size),
           kd_tree(kd_tree),
+          bin_size(1024),
+          fft(FFT(bin_size, frames_per_buffer)),
+          magspec(vector<float>(bin_size / 2 + 1)),
+          feature(bin_size),
           return_indices(vector<size_t>(num_search_results)),
           distances(vector<float>(num_search_results)),
           markers(vector<int>(num_search_results)),
           filenames(vector<string>(num_search_results)),
           granulator(db.get_files(), sample_rate),
           gain_control(0.5),
-          input_buffer(AudioBuffer(frames_per_buffer)),
           ready(false),
           recording(false)
 {

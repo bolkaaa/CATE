@@ -37,28 +37,10 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     Database db;
-    float sample_rate = 48000.0f;
-    int frames_per_buffer = 256;
-    int fft_bin_size = 1024;
-    int input_channels = 2;
-    int output_channels = 2;
-
     PointCloud point_cloud;
-    KdTree kd_tree(KdTreeParams::num_features,
-                   point_cloud,
-                   KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf));
-
-    AudioProcess audio_process(sample_rate,
-                               frames_per_buffer,
-                               input_channels,
-                               output_channels,
-                               fft_bin_size,
-                               db,
-                               point_cloud,
-                               kd_tree);
-
+    KdTree kd_tree(KdTreeParams::num_features, point_cloud, KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf));
+    AudioProcess audio_process(db, point_cloud, kd_tree);
     MainWindow main_window(audio_process, db, point_cloud, kd_tree);
     main_window.show();
-
     return app.exec();
 }
