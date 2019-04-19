@@ -29,7 +29,7 @@ using std::map;
 namespace CATE {
 
 /* AudioBuffer is a typedef that aliases a vector of real values. For simplicity's sake and compatibility with C
- * libraries used in CATE, it just uses floats and isn't templated. */
+ * libraries used in CATE, it uses floats and isn't templated. */
 typedef std::vector<float> AudioBuffer;
 
 /* Given an AudioBuffer, segment into a std::map where the key of each subset is its frame position in samples, and the

@@ -37,8 +37,8 @@ namespace CATE {
 class KdTreeParams
 {
 public:
-    static const int num_features = 2;
-    static const int max_leaf = 10;
+    static const int num_features = 3;
+    static const int max_leaf = 8;
 };
 
 typedef KDTreeSingleIndexAdaptor<L2_Simple_Adaptor<float, PointCloud>,

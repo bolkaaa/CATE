@@ -17,8 +17,6 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <iostream>
-
 #include <QApplication>
 #include "include/nanoflann.hpp"
 
@@ -28,9 +26,6 @@
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/GUI/MainWindow.hpp"
 
-using std::string;
-using std::cout;
-using std::cerr;
 using CATE::KdTree;
 using CATE::KdTreeParams;
 using CATE::Database;

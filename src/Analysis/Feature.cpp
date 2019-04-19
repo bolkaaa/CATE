@@ -96,7 +96,7 @@ float Feature::kurtosis(const vector<float> &magspec)
 
 float Feature::calculate_magspec_mean(const vector<float> &magspec)
 {
-    auto sum = std::accumulate(magspec.begin(), magspec.end(), 0);
+    auto sum = std::accumulate(magspec.begin(), magspec.end(), 0.0f);
     auto mean = sum / static_cast<float>(magspec.size());
     return mean;
 }

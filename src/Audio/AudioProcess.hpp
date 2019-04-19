@@ -21,7 +21,6 @@
 #define AUDIO_PROCESS_HPP
 
 #include <vector>
-#include <limits>
 
 #include <QObject>
 
@@ -65,11 +64,11 @@ public:
     /* Set decay value of synthesis grains (0 - 1.0). */
     void set_grain_release(float new_grain_release);
 
-    /* Set decay value of synthesis grains (0 - 127). */
-    void set_grain_density(int new_grain_density);
-
     /* Set amplitude of synthesis output (0 - 1.0). */
     void set_amplitude(float new_amplitude);
+
+    /* Set decay value of synthesis grains (0 - 127). */
+    void set_grain_density(int new_grain_density);
 
     /* Boolean flag for whether audio process is ready to be used. */
     bool is_ready() { return ready; }

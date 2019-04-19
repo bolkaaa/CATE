@@ -3,15 +3,20 @@
 
 namespace CATE {
 
-Source::Source(AudioBuffer buffer, int frames)
+Source::Source(const AudioBuffer &buffer, int num_samples)
         : buffer(buffer),
-          frames(frames),
+          num_samples(num_samples),
           index(0)
 {
 }
 
 float Source::synthesize()
 {
+    if (index > num_samples)
+    {
+        return 0.0f;
+    }
+
     float sample = buffer[index];
     ++index;
     return sample;
