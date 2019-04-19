@@ -37,8 +37,10 @@ AudioProcess::AudioProcess(float sample_rate, int frames_per_buffer, int input_c
           point_cloud(point_cloud),
           feature(fft_bin_size),
           kd_tree(kd_tree),
-          return_indices(vector<size_t>(search_results)),
-          distances(vector<float>(search_results)),
+          return_indices(vector<size_t>(num_search_results)),
+          distances(vector<float>(num_search_results)),
+          markers(vector<int>(num_search_results)),
+          filenames(vector<string>(num_search_results)),
           granulator(db.get_files(), sample_rate),
           gain_control(0.5),
           input_buffer(AudioBuffer(frames_per_buffer)),
@@ -65,23 +67,29 @@ int AudioProcess::processing_callback(const void *input_buffer,
     fft.get_magspec(magspec);
     float centroid = feature.centroid(magspec);
     float flatness = feature.flatness(magspec);
+    float kurtosis = feature.kurtosis(magspec);
 
     /* KNN search. */
     const float search_points[3] = {
             centroid,
-            flatness
+            flatness,
+            kurtosis
     };
 
-    kd_tree.knnSearch(&search_points[0], search_results, &return_indices[0], &distances[0]);
-    int marker = point_cloud.points[return_indices[0]].marker;
-    string file_path = point_cloud.points[return_indices[0]].file_path;
+    kd_tree.knnSearch(&search_points[0], num_search_results, &return_indices[0], &distances[0]);
+
+    for (i = 0; i < num_search_results; ++i)
+    {
+        markers[i] = point_cloud.points[return_indices[i]].marker;
+        filenames[i] = point_cloud.points[return_indices[i]].file_path;
+    }
 
     /* Main audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
         squared_input_sum += std::pow(input[i], 2);
 
-        float out = (input_rms * gain_control) * granulator.synthesize(marker, file_path);
+        float out = (gain_control) * granulator.synthesize(markers[0], filenames[0]);
 
         *output++ = out; // Left Channel
         *output++ = out; // Right Channel
@@ -132,7 +140,7 @@ void AudioProcess::reload_granulator()
     granulator.load_files(db);
 }
 
-void AudioProcess::save_recording(string output_path)
+void AudioProcess::save_recording(const string &output_path)
 {
     audio_recorder.save(output_path, output_channels, sample_rate);
 }

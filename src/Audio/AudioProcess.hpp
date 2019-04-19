@@ -83,7 +83,7 @@ public:
     int get_output_channels() { return output_channels; }
 
     /* Save current audio recording to disk. */
-    void save_recording(string output_path);
+    void save_recording(const string &output_path);
 
 private:
     /* Feature extraction */
@@ -95,9 +95,11 @@ private:
     Database &db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
-    const size_t search_results = 32;
+    const size_t num_search_results = 32;
     vector<size_t> return_indices;
     vector<float> distances;
+    vector<int> markers;
+    vector<string> filenames;
 
     /* Synthesis / Recording */
     Granulator granulator;

@@ -24,20 +24,10 @@ Scheduler::Scheduler(const map<string, AudioFile> &files, float sample_rate)
 
 void Scheduler::fill_buffer(int marker, const string &file_name)
 {
-    auto file_size = files[file_name].data.size();
-
     for (int i = 0; i < buffer_size; ++i)
     {
-        int file_pos = (i + marker);
-
-        if (file_pos < file_size)
-        {
-            buffer[i] = files[file_name].data[file_pos];
-        }
-        else
-        {
-            buffer[i] = 0.0f;
-        }
+        int file_pos = i + marker;
+        buffer[i] = files[file_name].data[file_pos];
     }
 }
 

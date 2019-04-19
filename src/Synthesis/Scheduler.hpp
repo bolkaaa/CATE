@@ -72,7 +72,7 @@ private:
     void fill_buffer(int marker, const string &file_name);
 
     const int max_grains = 32;
-    const int buffer_size = 8192;
+    const int buffer_size = 256;
     vector<Grain> grains;
     map<string, AudioFile> files;
     AudioBuffer buffer;
