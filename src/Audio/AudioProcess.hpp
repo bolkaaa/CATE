@@ -29,8 +29,8 @@
 #include "AudioRecorder.hpp"
 #include "src/Analysis/FFT.hpp"
 #include "src/Analysis/Feature.hpp"
-#include "src/Database/Database.hpp"
-#include "src/Database/KdTree.hpp"
+#include "src/Corpus/Corpus.hpp"
+#include "src/Corpus/KdTree.hpp"
 #include "src/Synthesis/Granulator.hpp"
 
 namespace CATE {
@@ -43,7 +43,7 @@ class AudioProcess : public QObject, public AudioEngine
 Q_OBJECT
 
 public:
-    AudioProcess(Database &db, PointCloud &point_cloud, KdTree &kd_tree);
+    AudioProcess(Corpus &db, PointCloud &point_cloud, KdTree &kd_tree);
 
     /* Reload granulator when database has changed. */
     void reload_granulator();
@@ -82,7 +82,7 @@ private:
     int bin_size;
     FFT fft;
     vector<float> magspec;
-    Database &db;
+    Corpus &db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
     const size_t num_search_results = 32;

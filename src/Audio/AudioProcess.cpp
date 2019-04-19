@@ -27,7 +27,7 @@
 
 namespace CATE {
 
-AudioProcess::AudioProcess(Database &db, PointCloud &point_cloud, KdTree &kd_tree)
+AudioProcess::AudioProcess(Corpus &db, PointCloud &point_cloud, KdTree &kd_tree)
         : AudioEngine(48000.0f, 256, 2, 2),
           db(db),
           point_cloud(point_cloud),

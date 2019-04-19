@@ -17,7 +17,7 @@ float Granulator::synthesize(int marker, string filename)
     return output;
 }
 
-void Granulator::load_files(const Database &db)
+void Granulator::load_files(const Corpus &db)
 {
     files = db.get_files();
     scheduler.load_files(files);

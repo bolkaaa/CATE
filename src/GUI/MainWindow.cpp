@@ -29,7 +29,7 @@
 
 namespace CATE {
 
-MainWindow::MainWindow(AudioProcess &audio_process, Database &db, PointCloud &point_cloud, KdTree &kd_tree)
+MainWindow::MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &point_cloud, KdTree &kd_tree)
         : ui(new Ui::MainWindow),
           audio_process(audio_process),
           db(db),

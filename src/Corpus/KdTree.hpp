@@ -20,9 +20,9 @@
 #ifndef KDTREE_HPP
 #define KDTREE_HPP
 
-#include "../../include/nanoflann.hpp"
+#include "include/nanoflann.hpp"
 
-#include "../Database/PointCloud.hpp"
+#include "src/Corpus/PointCloud.hpp"
 
 using CATE::PointCloud;
 using nanoflann::KDTreeSingleIndexAdaptor;

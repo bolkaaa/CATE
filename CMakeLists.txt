@@ -25,14 +25,14 @@ set(SOURCE_FILES
         src/Analysis/FFT.cpp
         src/Analysis/Feature.cpp
         src/Analysis/Feature.hpp
-        src/Database/FileTree.hpp
-        src/Database/FileTree.cpp
-        src/Database/Entry.hpp
-        src/Database/Entry.cpp
-        src/Database/Database.hpp
-        src/Database/Database.cpp
-        src/Database/PointCloud.hpp 
-        src/Database/KdTree.hpp
+        src/Corpus/FileTree.hpp
+        src/Corpus/FileTree.cpp
+        src/Corpus/Entry.hpp
+        src/Corpus/Entry.cpp
+        src/Corpus/Corpus.hpp
+        src/Corpus/Corpus.cpp
+        src/Corpus/PointCloud.hpp
+        src/Corpus/KdTree.hpp
         src/GUI/MainWindow.hpp
         src/GUI/MainWindow.cpp
         src/Synthesis/Granulator.cpp

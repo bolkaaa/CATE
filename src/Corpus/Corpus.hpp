@@ -40,12 +40,12 @@ using Json = nlohmann::json;
 
 namespace CATE {
 
-/* The Database class handles functionality for persistently storing a
+/* The Corpus class handles functionality for persistently storing a
  * collection of audio file paths and associated segmentation markers and
  * analysis data, forming the basis for the corpus of the concatenative
  * synthesis system. */
 
-class Database
+class Corpus
 {
 public:
     /* Load database from another file. */

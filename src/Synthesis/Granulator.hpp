@@ -23,7 +23,7 @@
 #include <map>
 
 #include "src/Audio/AudioFile.hpp"
-#include "src/Database/Database.hpp"
+#include "src/Corpus/Corpus.hpp"
 #include "EnvelopeParams.hpp"
 #include "Scheduler.hpp"
 
@@ -41,7 +41,7 @@ public:
     Granulator(map<string, AudioFile> files, float sample_rate);
 
     /* Load files from database into files variable. */
-    void load_files(const Database &db);
+    void load_files(const Corpus &db);
 
     /* Get the next sample value from the granulator. */
     float synthesize(int marker, string filename);

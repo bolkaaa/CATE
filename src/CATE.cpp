@@ -20,15 +20,15 @@
 #include <QApplication>
 #include "include/nanoflann.hpp"
 
-#include "src/Database/PointCloud.hpp"
-#include "src/Database/Database.hpp"
-#include "src/Database/KdTree.hpp"
+#include "src/Corpus/PointCloud.hpp"
+#include "src/Corpus/Corpus.hpp"
+#include "src/Corpus/KdTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/GUI/MainWindow.hpp"
 
 using CATE::KdTree;
 using CATE::KdTreeParams;
-using CATE::Database;
+using CATE::Corpus;
 using CATE::PointCloud;
 using CATE::MainWindow;
 using CATE::AudioProcess;
@@ -36,11 +36,11 @@ using CATE::AudioProcess;
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    Database db;
+    Corpus corpus;
     PointCloud point_cloud;
     KdTree kd_tree(KdTreeParams::num_features, point_cloud, KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf));
-    AudioProcess audio_process(db, point_cloud, kd_tree);
-    MainWindow main_window(audio_process, db, point_cloud, kd_tree);
+    AudioProcess audio_process(corpus, point_cloud, kd_tree);
+    MainWindow main_window(audio_process, corpus, point_cloud, kd_tree);
     main_window.show();
     return app.exec();
 }

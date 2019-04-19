@@ -24,7 +24,7 @@
 #include "sndfile.hh"
 #include "../../include/nanoflann.hpp"
 
-#include "Database.hpp"
+#include "Corpus.hpp"
 #include "Entry.hpp"
 #include "FileTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
@@ -38,14 +38,14 @@ using std::string;
 namespace CATE {
 
 
-void Database::add_file(const string &path)
+void Corpus::add_file(const string &path)
 {
     Entry entry(path);
     Json json_object = to_json_entry(entry);
     db.push_back(json_object);
 }
 
-void Database::add_directory(const string &directory_path)
+void Corpus::add_directory(const string &directory_path)
 {
     vector<string> file_paths;
     get_nested_files(file_paths, directory_path);
@@ -57,24 +57,24 @@ void Database::add_directory(const string &directory_path)
     }
 }
 
-void Database::set_json_file(const string &new_file_path)
+void Corpus::set_json_file(const string &new_file_path)
 {
     db_file_path = new_file_path;
 }
 
-void Database::write_json_file()
+void Corpus::write_json_file()
 {
     std::ofstream file(db_file_path);
     file << std::setw(4) << db;
 }
 
-void Database::read_json_data()
+void Corpus::read_json_data()
 {
     std::ifstream ifstream(db_file_path);
     ifstream >> db;
 }
 
-void Database::convert_sample_rates(double new_sr)
+void Corpus::convert_sample_rates(double new_sr)
 {
     for (auto &file : files)
     {
@@ -82,7 +82,7 @@ void Database::convert_sample_rates(double new_sr)
     }
 }
 
-void Database::load_files()
+void Corpus::load_files()
 {
     for (const auto &entry : db)
     {
@@ -92,7 +92,7 @@ void Database::load_files()
     }
 }
 
-void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
+void Corpus::sliding_window_analysis(int bin_size, int frames_per_buffer)
 {
     int segment_index = 0;
     FFT fft(bin_size, frames_per_buffer);
@@ -128,7 +128,7 @@ void Database::sliding_window_analysis(int bin_size, int frames_per_buffer)
     }
 }
 
-PointCloud Database::create_point_cloud()
+PointCloud Corpus::create_point_cloud()
 {
     PointCloud cloud;
 
@@ -153,7 +153,7 @@ PointCloud Database::create_point_cloud()
     return cloud;
 }
 
-bool Database::has_data()
+bool Corpus::has_data()
 {
     return !db.empty();
 }

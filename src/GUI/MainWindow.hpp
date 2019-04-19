@@ -23,10 +23,10 @@
 #include <QMainWindow>
 #include <QSlider>
 
-#include "../Database/Database.hpp"
-#include "../Database/KdTree.hpp"
-#include "../Audio/AudioBuffer.hpp"
-#include "../Audio/AudioProcess.hpp"
+#include "src/Corpus/Corpus.hpp"
+#include "src/Corpus/KdTree.hpp"
+#include "src/Audio/AudioBuffer.hpp"
+#include "src/Audio/AudioProcess.hpp"
 
 using std::string;
 
@@ -46,7 +46,7 @@ class MainWindow : public QMainWindow
 Q_OBJECT
 
 public:
-    MainWindow(AudioProcess &audio_process, Database &db, PointCloud &point_cloud, KdTree &kd_tree);
+    MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &point_cloud, KdTree &kd_tree);
 
     ~MainWindow();
 
@@ -67,7 +67,7 @@ private:
     void rebuild_audio_process();
 
     Ui::MainWindow *ui;
-    Database &db;
+    Corpus &db;
     AudioProcess &audio_process;
     PointCloud &point_cloud;
     KdTree &kd_tree;
