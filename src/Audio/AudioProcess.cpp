@@ -87,7 +87,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
     {
         squared_input_sum += std::pow(input[i], 2);
 
-        float out = (gain_control) * granulator.synthesize(markers[0], filenames[0]);
+        float out = (gain_control) * granulator.synthesize(markers[127], filenames[127]);
 
         *output++ = out; // Left Channel
         *output++ = out; // Right Channel

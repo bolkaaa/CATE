@@ -190,25 +190,40 @@ void MainWindow::rebuild_audio_process()
 
 void MainWindow::set_amplitude(int new_value)
 {
-    float amplitude = new_value / 127.0f;
+    const float min = 0.0f;
+    const float max = 1.0f;
+    float amplitude = scale_slider(new_value, min, max);
     audio_process.set_amplitude(amplitude);
 }
 
 void MainWindow::set_grain_attack(int new_value)
 {
-    float attack = new_value / 127.0f;
+    const float min = 0.1f;
+    const float max = 1.0f;
+    float attack = scale_slider(new_value, min, max);
     audio_process.set_grain_attack(attack);
 }
 
 void MainWindow::set_grain_release(int new_value)
 {
-    float decay = new_value / 127.0f;
-    audio_process.set_grain_release(decay);
+    const float min = 0.1f;
+    const float max = 1.0f;
+    float release = scale_slider(new_value, min, max);
+    audio_process.set_grain_release(release);
 }
 
 void MainWindow::set_grain_density(int new_value)
 {
-    audio_process.set_grain_density(new_value);
+    const float min = 1.0f;
+    const float max = 100.0f;
+    float release = scale_slider(new_value, min, max);
+    audio_process.set_grain_release(release);
+}
+
+float MainWindow::scale_slider(int val, float min, float max)
+{
+    float scaled_val = (max - min) * (static_cast<float>(val) / slider_max) + min;
+    return scaled_val;
 }
 
 

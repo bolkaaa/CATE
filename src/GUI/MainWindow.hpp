@@ -63,6 +63,9 @@ private:
     /* Prompt user to input an integer value. */
     int int_dialog_box(string message, int default_value, int min_value, int max_value, int step_size);
 
+    /* Convert slider value to a value within a range. */
+    float scale_slider(int val, float min, float max);
+
     /* When database files have changed, recreate data points and reload the granulator. */
     void rebuild_audio_process();
 
@@ -71,6 +74,7 @@ private:
     AudioProcess &audio_process;
     PointCloud &point_cloud;
     KdTree &kd_tree;
+    const int slider_max = 127;
 
 public slots:
     /* When playback start button in UI is pressed, audio stream is started. */

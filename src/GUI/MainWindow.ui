@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>145</width>
+      <width>150</width>
       <height>121</height>
      </rect>
     </property>
@@ -52,7 +52,7 @@
      <rect>
       <x>150</x>
       <y>10</y>
-      <width>134</width>
+      <width>137</width>
       <height>121</height>
      </rect>
     </property>
@@ -74,7 +74,7 @@
      <item>
       <widget class="QPushButton" name="load_database">
        <property name="text">
-        <string>Load Database</string>
+        <string>Load Corpus</string>
        </property>
       </widget>
      </item>
@@ -96,6 +96,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="QSlider" name="amplitude_slider">
+           <property name="maximum">
+            <number>127</number>
+           </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -130,6 +133,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_8">
          <item>
           <widget class="QSlider" name="grain_attack_slider">
+           <property name="maximum">
+            <number>127</number>
+           </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -164,6 +170,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_11">
          <item>
           <widget class="QSlider" name="grain_release_slider">
+           <property name="maximum">
+            <number>127</number>
+           </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -199,10 +208,10 @@
          <item>
           <widget class="QSlider" name="grain_density_slider">
            <property name="minimum">
-            <number>1</number>
+            <number>0</number>
            </property>
            <property name="maximum">
-            <number>100</number>
+            <number>127</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>

@@ -50,7 +50,7 @@ public:
     void set_grain_attack(float new_grain_attack);
 
     /* Set new grain decay value (0 - 1.0). */
-    void set_grain_release(float nre_grain_release);
+    void set_grain_release(float new_grain_release);
 
     /* Set new grain attack value (0 - 127). */
     void set_grain_density(int new_grain_density);
