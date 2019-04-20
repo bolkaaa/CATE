@@ -43,6 +43,7 @@ AudioProcess::AudioProcess(Corpus &db, PointCloud &point_cloud, KdTree &kd_tree)
           granulator(db.get_files(), sample_rate),
           gain_control(0.5),
           ready(false),
+          audio_recorder(sample_rate),
           recording(false)
 {
 }
@@ -87,7 +88,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
     {
         squared_input_sum += std::pow(input[i], 2);
 
-        float out = (gain_control) * granulator.synthesize(markers[127], filenames[127]);
+        float out = (gain_control) * granulator.synthesize(markers[0], filenames[0]);
 
         *output++ = out; // Left Channel
         *output++ = out; // Right Channel
@@ -133,6 +134,10 @@ void AudioProcess::set_grain_density(int new_grain_density)
     granulator.set_grain_density(new_grain_density);
 }
 
+void AudioProcess::set_grain_width(int new_grain_width)
+{
+}
+
 void AudioProcess::reload_granulator()
 {
     granulator.load_files(db);
@@ -142,6 +147,7 @@ void AudioProcess::save_recording(const string &output_path)
 {
     audio_recorder.save(output_path, output_channels, sample_rate);
 }
+
 
 
 } // CATE

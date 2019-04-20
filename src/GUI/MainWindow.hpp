@@ -92,8 +92,8 @@ public slots:
     /* When analyse directory button in UI is pressed, user selects directory of audio files to analyse. */
     void analyse_directory_button_pressed();
 
-    /* When load database button in UI is pressed, user selects existing database to analysis data to use. */
-    void load_database_button_pressed();
+    /* When load corpus button in UI is pressed, user selects existing corpus data to use. */
+    void load_corpus_button_pressed();
 
     /* Set grain attack time through slider. */
     void set_grain_attack(int new_value);
@@ -104,8 +104,11 @@ public slots:
     /* Set grain density through slider. */
     void set_grain_density(int new_value);
 
-    /* Set overall output amplitude value through slider. */
-    void set_amplitude(int new_value);
+    /* Set grain width through slider. */
+    void set_grain_width(int new_value);
+
+    /* Set grain amplitude value through slider. */
+    void set_grain_amplitude(int new_value);
 };
 
 } // CATE

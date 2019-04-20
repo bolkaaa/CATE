@@ -46,14 +46,17 @@ public:
     /* Get the next sample value from the granulator. */
     float synthesize(int marker, string filename);
 
-    /* Set new grain attack value (0 - 1.0). */
+    /* Set new grain attack value. */
     void set_grain_attack(float new_grain_attack);
 
-    /* Set new grain decay value (0 - 1.0). */
+    /* Set new grain decay value. */
     void set_grain_release(float new_grain_release);
 
-    /* Set new grain attack value (0 - 127). */
+    /* Set new grain density value. */
     void set_grain_density(int new_grain_density);
+
+    /* Set new grain width value. */
+    void set_grain_width(int new_grain_width);
 
 private:
     map<string, AudioFile> files;

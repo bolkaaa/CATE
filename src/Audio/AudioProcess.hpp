@@ -54,17 +54,20 @@ public:
     /* Stop recording audio output. */
     void stop_recording();
 
-    /* Set attack value of synthesis grains (0 - 1.0). */
+    /* Set attack value of synthesis grains. */
     void set_grain_attack(float new_grain_attack);
 
-    /* Set decay value of synthesis grains (0 - 1.0). */
+    /* Set decay value of synthesis grains. */
     void set_grain_release(float new_grain_release);
 
-    /* Set amplitude of synthesis output (0 - 1.0). */
+    /* Set amplitude of synthesis output. */
     void set_amplitude(float new_amplitude);
 
-    /* Set decay value of synthesis grains (0 - 127). */
+    /* Set decay value of synthesis grains. */
     void set_grain_density(int new_grain_density);
+
+    /* Set decay value of synthesis grains. */
+    void set_grain_width(int new_grain_width);
 
     /* Boolean flag for whether audio process is ready to be used. */
     bool is_ready() { return ready; }

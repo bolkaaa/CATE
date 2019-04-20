@@ -49,14 +49,17 @@ public:
     /* Calculate grain activations. */
     float schedule(int marker, const string &filename);
 
-    /* Set new grain attack value (0 - 1.0). */
+    /* Set new grain attack value. */
     void set_grain_attack(float new_grain_attack);
 
-    /* Set new grain decay value (0 - 1.0). */
+    /* Set new grain decay value. */
     void set_grain_release(float new_grain_release);
 
-    /* Set new grain density value (0 - 127). */
+    /* Set new grain density value. */
     void set_grain_density(int new_grain_density);
+
+    /* Set new grain width value. */
+    void set_grain_width(int new_grain_width);
 
 private:
     /* Mix all currently active grains to a single output. */
@@ -71,8 +74,8 @@ private:
     /* Fill buffer from filename and file position. */
     void fill_buffer(int marker, const string &file_name);
 
-    const int max_grains = 32;
-    const int buffer_size = 256;
+    int max_grains = 32;
+    int buffer_size = 256;
     vector<Grain> grains;
     map<string, AudioFile> files;
     AudioBuffer buffer;

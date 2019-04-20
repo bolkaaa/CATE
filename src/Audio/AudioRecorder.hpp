@@ -20,8 +20,6 @@
 #ifndef AUDIORECORD_HPP
 #define AUDIORECORD_HPP
 
-#include <limits>
-
 #include "AudioBuffer.hpp"
 
 namespace CATE {
@@ -29,18 +27,18 @@ namespace CATE {
 class AudioRecorder
 {
 public:
-    AudioRecorder();
+    AudioRecorder(float sample_rate);
 
     /* Write audio sample to audio buffer. */
     void write(float sample);
 
-    void save(std::string output_path, int num_channels, float sample_rate);
-
-    /* Get current record position to determine size of recording. */
-    int get_size() const { return record_pos; }
+    /* Save recording data to output file. */
+    void save(const std::string &output_path, int num_channels, float sample_rate);
 
 private:
-    const int max_recording_size = std::numeric_limits<int>::max();
+    float sample_rate;
+    const float max_recording_minutes = 60.0f;
+    int max_recording_size;
     int record_pos;
     AudioBuffer buffer;
 

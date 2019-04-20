@@ -38,4 +38,8 @@ void Granulator::set_grain_density(int new_grain_density)
     scheduler.set_grain_density(new_grain_density);
 }
 
+void Granulator::set_grain_width(int new_grain_width)
+{
+}
+
 } // CATE

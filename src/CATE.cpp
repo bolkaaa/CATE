@@ -42,5 +42,6 @@ int main(int argc, char *argv[])
     AudioProcess audio_process(corpus, point_cloud, kd_tree);
     MainWindow main_window(audio_process, corpus, point_cloud, kd_tree);
     main_window.show();
+
     return app.exec();
 }

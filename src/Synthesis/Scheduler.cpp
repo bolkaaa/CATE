@@ -100,6 +100,11 @@ void Scheduler::set_grain_density(int new_grain_density)
     grain_density = new_grain_density;
 }
 
+void Scheduler::set_grain_width(int new_grain_width)
+{
+    grain_width = new_grain_width;
+}
+
 void Scheduler::load_files(const map<string, AudioFile> &new_files)
 {
     files = new_files;

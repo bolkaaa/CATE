@@ -43,12 +43,14 @@ MainWindow::MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &poin
     connect(ui->start_recording, SIGNAL(pressed()), this, SLOT(start_recording_button_pressed()));
     connect(ui->stop_recording, SIGNAL(pressed()), this, SLOT(stop_recording_button_pressed()));
     connect(ui->analyse_directory, SIGNAL(pressed()), this, SLOT(analyse_directory_button_pressed()));
-    connect(ui->load_database, SIGNAL(pressed()), this, SLOT(load_database_button_pressed()));
+    connect(ui->load_corpus, SIGNAL(pressed()), this, SLOT(load_corpus_button_pressed()));
 
-    connect(ui->amplitude_slider, SIGNAL(valueChanged(int)), this, SLOT(set_amplitude(int)));
+    connect(ui->grain_amplitude_slider, SIGNAL(valueChanged(int)), this, SLOT(set_amplitude(int)));
     connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
     connect(ui->grain_release_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
     connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
+    connect(ui->grain_width_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
+    connect(ui->grain_size_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
 }
 
 MainWindow::~MainWindow()
@@ -112,7 +114,7 @@ void MainWindow::analyse_directory_button_pressed()
     rebuild_audio_process();
 }
 
-void MainWindow::load_database_button_pressed()
+void MainWindow::load_corpus_button_pressed()
 {
     string db_path = open_file_dialog("*.json");
     if (db_path.empty())
@@ -188,7 +190,7 @@ void MainWindow::rebuild_audio_process()
     }
 }
 
-void MainWindow::set_amplitude(int new_value)
+void MainWindow::set_grain_amplitude(int new_value)
 {
     const float min = 0.0f;
     const float max = 1.0f;
@@ -224,6 +226,14 @@ float MainWindow::scale_slider(int val, float min, float max)
 {
     float scaled_val = (max - min) * (static_cast<float>(val) / slider_max) + min;
     return scaled_val;
+}
+
+void MainWindow::set_grain_width(int new_value)
+{
+    const float min = 0.05f;
+    const float max = 0.95f;
+    float release = scale_slider(new_value, min, max);
+    audio_process.set_grain_release(release);
 }
 
 

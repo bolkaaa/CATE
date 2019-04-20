@@ -3,8 +3,10 @@
 
 namespace CATE {
 
-AudioRecorder::AudioRecorder()
-    : buffer(AudioBuffer(max_recording_size))
+AudioRecorder::AudioRecorder(float sample_rate)
+        : sample_rate(sample_rate),
+          max_recording_size(sample_rate * 60.0f * max_recording_minutes),
+          buffer(AudioBuffer(max_recording_size))
 {
 }
 
@@ -17,7 +19,7 @@ void AudioRecorder::write(float sample)
     }
 }
 
-void AudioRecorder::save(std::string output_path, int num_channels, float sample_rate)
+void AudioRecorder::save(const std::string &output_path, int num_channels, float sample_rate)
 {
     buffer.resize(record_pos);
     AudioFile file_buffer;
