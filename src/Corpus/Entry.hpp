@@ -43,6 +43,7 @@ public:
     vector<int> markers;
     vector<float> centroid;
     vector<float> flatness;
+    vector<float> kurtosis;
 };
 
 /* Helper function to convert an Entry object into a Json object. */

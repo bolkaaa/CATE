@@ -29,6 +29,7 @@ Entry::Entry(string path)
     markers = vector<int>();
     centroid = vector<float>();
     flatness = vector<float>();
+    kurtosis = vector<float>();
 }
 
 Json to_json_entry(const Entry &entry)
@@ -37,7 +38,8 @@ Json to_json_entry(const Entry &entry)
             {"path",     entry.path},
             {"markers",  entry.markers},
             {"centroid", entry.centroid},
-            {"flatness", entry.flatness}
+            {"flatness", entry.flatness},
+            {"kurtosis", entry.kurtosis}
     };
 
     return json_entry;
