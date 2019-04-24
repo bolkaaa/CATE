@@ -45,7 +45,7 @@ MainWindow::MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &poin
     connect(ui->analyse_directory, SIGNAL(pressed()), this, SLOT(analyse_directory_button_pressed()));
     connect(ui->load_corpus, SIGNAL(pressed()), this, SLOT(load_corpus_button_pressed()));
 
-    connect(ui->grain_amplitude_slider, SIGNAL(valueChanged(int)), this, SLOT(set_amplitude(int)));
+    connect(ui->grain_amplitude_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_amplitude(int)));
     connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
     connect(ui->grain_release_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
     connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));

@@ -1,22 +1,19 @@
 #include <cstdio>
 
 #include "Grain.hpp"
-#include "Util.hpp"
 
 namespace CATE {
 
 Grain::Grain()
-        : samples(0),
-          remaining_samples(samples),
-          src(AudioBuffer(), samples),
+        : remaining_samples(0),
+          src(AudioBuffer()),
           env(env_params)
 {
 }
 
-Grain::Grain(int samples, const AudioBuffer &buffer, EnvelopeParams env_params)
-        : samples(samples),
-          remaining_samples(samples),
-          src(buffer, samples),
+Grain::Grain(const AudioBuffer &buffer, EnvelopeParams env_params)
+        : remaining_samples(buffer.size()),
+          src(buffer),
           env_params(env_params),
           env(env_params)
 {

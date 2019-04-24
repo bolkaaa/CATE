@@ -52,7 +52,7 @@ public:
     /* Set new grain attack value. */
     void set_grain_attack(float new_grain_attack);
 
-    /* Set new grain decay value. */
+    /* Set new grain release value. */
     void set_grain_release(float new_grain_release);
 
     /* Set new grain density value. */

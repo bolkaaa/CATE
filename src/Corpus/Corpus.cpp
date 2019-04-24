@@ -98,7 +98,6 @@ void Corpus::sliding_window_analysis(int bin_size, int frames_per_buffer)
     FFT fft(bin_size, frames_per_buffer);
     vector<float> magspec(bin_size);
 
-
     for (auto b : files)
     {
         map<int, AudioBuffer> frames = segment_frames(b.second.data, frames_per_buffer);

@@ -45,8 +45,7 @@ set(SOURCE_FILES
         src/Synthesis/Grain.hpp
         src/Synthesis/Scheduler.cpp
         src/Synthesis/Scheduler.hpp
-        src/Synthesis/Util.cpp
-        src/Synthesis/Util.hpp src/Audio/AudioRecorder.cpp src/Audio/AudioRecorder.hpp)
+        src/Audio/AudioRecorder.cpp src/Audio/AudioRecorder.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

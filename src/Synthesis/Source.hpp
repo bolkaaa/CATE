@@ -29,14 +29,13 @@ namespace CATE {
 class Source
 {
 public:
-    Source(const AudioBuffer &buffer, int num_samples);
+    Source(const AudioBuffer &buffer);
 
     /* Get next sample value from source. */
     float synthesize();
 
 private:
     AudioBuffer buffer;
-    int num_samples;
     int index;
 };
 

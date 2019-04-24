@@ -2,7 +2,6 @@
 #include <cmath>
 
 #include "Envelope.hpp"
-#include "Util.hpp"
 
 namespace CATE {
 

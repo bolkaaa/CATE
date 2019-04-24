@@ -34,7 +34,7 @@ class Grain
 public:
     Grain();
 
-    Grain(int samples, const AudioBuffer &buffer, EnvelopeParams env_params);
+    Grain(const AudioBuffer &buffer, EnvelopeParams env_params);
 
     /* Synthesize sample from audio source and envelope. */
     float synthesize();
@@ -43,7 +43,6 @@ public:
     bool is_active() const;
 
 private:
-    int samples;
     int remaining_samples;
     Source src;
     EnvelopeParams env_params;

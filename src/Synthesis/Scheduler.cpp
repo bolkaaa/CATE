@@ -2,7 +2,6 @@
 #include <cmath>
 
 #include "Scheduler.hpp"
-#include "Util.hpp"
 
 namespace CATE {
 
@@ -39,7 +38,7 @@ void Scheduler::create_grain(int marker, const string &file_name)
     {
         if (!grain.is_active())
         {
-            grain = Grain(buffer_size, buffer, env_params);
+            grain = Grain(buffer, env_params);
             return;
         }
     }

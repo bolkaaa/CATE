@@ -32,7 +32,6 @@
 #include "src/Audio/AudioFile.hpp"
 #include "src/Analysis/FFT.hpp"
 #include "src/Analysis/Feature.hpp"
-#include "src/Synthesis/Util.hpp"
 
 using std::vector;
 using std::string;
