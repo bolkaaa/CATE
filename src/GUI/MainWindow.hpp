@@ -22,6 +22,7 @@
 
 #include <QMainWindow>
 #include <QSlider>
+#include <QString>
 
 #include "src/Corpus/Corpus.hpp"
 #include "src/Corpus/KdTree.hpp"
@@ -65,6 +66,12 @@ private:
 
     /* Convert slider value to a value within a range. */
     float scale_slider(int val, float min, float max);
+
+    /* Return a Qstring from a std::string input. */
+    QString convert_string(const std::string &str);
+
+    /* Populate the input and output dropdown boxes with audio devices from the audio system. */
+    void populate_devices_boxes();
 
     /* When database files have changed, recreate data points and reload the granulator. */
     void rebuild_audio_process();

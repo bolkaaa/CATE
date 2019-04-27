@@ -38,6 +38,8 @@ MainWindow::MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &poin
 {
     ui->setupUi(this);
 
+    populate_devices_boxes();
+
     connect(ui->start_playback, SIGNAL(pressed()), this, SLOT(start_playback_button_pressed()));
     connect(ui->stop_playback, SIGNAL(pressed()), this, SLOT(stop_playback_button_pressed()));
     connect(ui->start_recording, SIGNAL(pressed()), this, SLOT(start_recording_button_pressed()));
@@ -51,7 +53,6 @@ MainWindow::MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &poin
     connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
     connect(ui->grain_width_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_width(int)));
     connect(ui->grain_size_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_size(int)));
-
 }
 
 MainWindow::~MainWindow()
@@ -235,9 +236,9 @@ void MainWindow::set_grain_width(int new_value)
 
 void MainWindow::set_grain_size(int new_value)
 {
-    const float min = 128;
-    const float max = 4096;
-    float size = scale_slider(new_value, min, max);
+    const int min = 128;
+    const int max = 4096;
+    int size = static_cast<int>(scale_slider(new_value, min, max));
     audio_process.set_grain_size(size);
     ui->grain_size_value->setText(QString::number(size));
 }
@@ -248,6 +249,21 @@ float MainWindow::scale_slider(int val, float min, float max)
     return scaled_val;
 }
 
+void MainWindow::populate_devices_boxes()
+{
+    vector<string> device_list = audio_process.get_device_list();
 
+    for (auto &device : device_list)
+    {
+        ui->input_devices_box->addItem(convert_string(device));
+        ui->output_devices_box->addItem(convert_string(device));
+    }
+}
+
+QString MainWindow::convert_string(const std::string &str)
+{
+    QString qstr = QString::fromUtf8(str.c_str());
+    return qstr;
+}
 
 } // CATE

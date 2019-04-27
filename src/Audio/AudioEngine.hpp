@@ -21,8 +21,12 @@
 #define AUDIO_ENGINE_HPP
 
 #include <cstdlib>
+#include <vector>
 
 #include <portaudio.h>
+
+using std::vector;
+using std::string;
 
 namespace CATE {
 
@@ -50,6 +54,9 @@ public:
 
     /* Set new PortAudio output device. */
     void set_output_device(int new_output_device) { output_device = new_output_device; };
+
+    /* Get list of names of audio devices. */
+    vector<string> get_device_list();
 
 private:
     /* Run initialisation commands. */
