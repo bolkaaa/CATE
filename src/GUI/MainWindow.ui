@@ -149,11 +149,22 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Grain Attack</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="grain_attack_name">
+         <property name="text">
+          <string>Grain Attack</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="grain_attack_value">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -163,7 +174,7 @@
       <x>10</x>
       <y>210</y>
       <width>291</width>
-      <height>81</height>
+      <height>90</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -178,11 +189,22 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Grain Release</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="grain_release_name">
+         <property name="text">
+          <string>Grain Release</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="grain_release_value">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -192,7 +214,7 @@
       <x>300</x>
       <y>210</y>
       <width>291</width>
-      <height>81</height>
+      <height>86</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -204,11 +226,22 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string>Grain Width</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QLabel" name="grain_width_name">
+         <property name="text">
+          <string>Grain Width</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="grain_width_value">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -236,11 +269,22 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_10">
-       <property name="text">
-        <string>Grain Density</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLabel" name="grain_density_name">
+         <property name="text">
+          <string>Grain Density</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="grain_density_value">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -262,11 +306,22 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_11">
-       <property name="text">
-        <string>Grain Size</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QLabel" name="grain_size_name">
+         <property name="text">
+          <string>Grain Size</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="grain_size_value">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -291,11 +346,22 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Grain Amplitude</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="grain_amplitude_name">
+         <property name="text">
+          <string>Grain Amplitude</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="grain_amplitude_value">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>

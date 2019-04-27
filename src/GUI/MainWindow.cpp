@@ -49,8 +49,9 @@ MainWindow::MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &poin
     connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
     connect(ui->grain_release_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
     connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
-    connect(ui->grain_width_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
-    connect(ui->grain_size_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
+    connect(ui->grain_width_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_width(int)));
+    connect(ui->grain_size_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_size(int)));
+
 }
 
 MainWindow::~MainWindow()
@@ -101,14 +102,11 @@ void MainWindow::analyse_directory_button_pressed()
         return;
     }
 
-    int bin_size = int_dialog_box("Bin Size", 1024, 256, 4096, 2);
-    int frames_per_buffer = int_dialog_box("Frames Per Buffer", 256, 128, 4096, 2);
-
     db.set_json_file(db_path);
     db.add_directory(dir_path);
     db.load_files();
     db.convert_sample_rates(audio_process.get_sample_rate());
-    db.sliding_window_analysis(bin_size, frames_per_buffer);
+    db.sliding_window_analysis(audio_process.get_bin_size(), audio_process.get_frames_per_buffer());
     db.write_json_file();
 
     rebuild_audio_process();
@@ -196,6 +194,7 @@ void MainWindow::set_grain_amplitude(int new_value)
     const float max = 1.0f;
     float amplitude = scale_slider(new_value, min, max);
     audio_process.set_amplitude(amplitude);
+    ui->grain_amplitude_value->setText(QString::number(amplitude));
 }
 
 void MainWindow::set_grain_attack(int new_value)
@@ -204,6 +203,7 @@ void MainWindow::set_grain_attack(int new_value)
     const float max = 1.0f;
     float attack = scale_slider(new_value, min, max);
     audio_process.set_grain_attack(attack);
+    ui->grain_attack_value->setText(QString::number(attack));
 }
 
 void MainWindow::set_grain_release(int new_value)
@@ -212,14 +212,25 @@ void MainWindow::set_grain_release(int new_value)
     const float max = 1.0f;
     float release = scale_slider(new_value, min, max);
     audio_process.set_grain_release(release);
+    ui->grain_release_value->setText(QString::number(release));
 }
 
 void MainWindow::set_grain_density(int new_value)
 {
     const float min = 1.0f;
     const float max = 100.0f;
-    float release = scale_slider(new_value, min, max);
-    audio_process.set_grain_release(release);
+    float density = scale_slider(new_value, min, max);
+    audio_process.set_grain_density(density);
+    ui->grain_density_value->setText(QString::number(density));
+}
+
+void MainWindow::set_grain_width(int new_value)
+{
+    const float min = 0.05f;
+    const float max = 0.95f;
+    float width = scale_slider(new_value, min, max);
+    audio_process.set_grain_width(width);
+    ui->grain_width_value->setText(QString::number(width));
 }
 
 float MainWindow::scale_slider(int val, float min, float max)
@@ -228,13 +239,6 @@ float MainWindow::scale_slider(int val, float min, float max)
     return scaled_val;
 }
 
-void MainWindow::set_grain_width(int new_value)
-{
-    const float min = 0.05f;
-    const float max = 0.95f;
-    float release = scale_slider(new_value, min, max);
-    audio_process.set_grain_release(release);
-}
 
 
 } // CATE

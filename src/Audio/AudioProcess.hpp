@@ -75,8 +75,14 @@ public:
     /* Enable ready flag. */
     void enable() { ready = true; }
 
-    /* Return the sample rate of the audio system. */
+    /* Get the sample rate of the audio system. */
     float get_sample_rate() { return sample_rate; }
+
+    /* Get the bin size of the audio system. */
+    int get_bin_size() { return bin_size; }
+
+    /* Get the frames per buffer of the audio system. */
+    int get_frames_per_buffer() { return frames_per_buffer; }
 
     /* Save current audio recording to disk. */
     void save_recording(const string &output_path);

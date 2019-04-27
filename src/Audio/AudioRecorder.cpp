@@ -21,9 +21,9 @@ void AudioRecorder::write(float sample)
 
 void AudioRecorder::save(const std::string &output_path, int num_channels, float sample_rate)
 {
-    buffer.resize(record_pos);
+    AudioBuffer output_buffer(buffer.begin(), buffer.begin() + record_pos);
     AudioFile file_buffer;
-    file_buffer.write(buffer,
+    file_buffer.write(output_buffer,
                       num_channels,
                       sample_rate / num_channels,
                       output_path);
