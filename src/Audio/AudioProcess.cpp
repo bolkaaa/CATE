@@ -83,12 +83,14 @@ int AudioProcess::processing_callback(const void *input_buffer,
         filenames[i] = point_cloud.points[return_indices[i]].file_path;
     }
 
+    int selection = 0;
+
     /* Main audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
         squared_input_sum += std::pow(input[i], 2);
 
-        float out = (gain_control) * granulator.synthesize(markers[0], filenames[0]);
+        float out = (gain_control) * granulator.synthesize(markers[selection], filenames[selection]);
 
         *output++ = out; // Left Channel
         *output++ = out; // Right Channel

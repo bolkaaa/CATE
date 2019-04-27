@@ -82,7 +82,14 @@ void MainWindow::stop_recording_button_pressed()
 {
     audio_process.stop_recording();
     audio_process.stop_stream();
+
     string output_path = save_file_dialog("*.wav");
+    if (output_path.empty())
+    {
+        audio_process.start_stream();
+        return;
+    }
+
     audio_process.save_recording(output_path);
     audio_process.start_stream();
 }

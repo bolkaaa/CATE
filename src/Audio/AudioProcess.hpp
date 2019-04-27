@@ -97,7 +97,7 @@ private:
     Corpus &db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
-    const size_t num_search_results = 128;
+    const size_t num_search_results = 32;
     vector<size_t> return_indices;
     vector<float> distances;
     vector<int> markers;
