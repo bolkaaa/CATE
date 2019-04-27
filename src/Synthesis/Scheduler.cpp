@@ -26,7 +26,15 @@ void Scheduler::fill_buffer(int marker, const string &file_name)
     for (int i = 0; i < grain_size; ++i)
     {
         int file_pos = i + marker;
-        buffer[i] = files[file_name].data[file_pos];
+
+        if (file_pos < files[file_name].data.size())
+        {
+            buffer[i] = files[file_name].data[file_pos];
+        }
+        else
+        {
+            buffer[i] = 0.0f;
+        }
     }
 }
 
