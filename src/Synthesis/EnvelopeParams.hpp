@@ -22,6 +22,7 @@
 
 namespace CATE {
 
+/* "Essence" for Envelope class to store parameters. */
 class EnvelopeParams
 {
 public:

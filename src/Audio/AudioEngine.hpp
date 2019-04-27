@@ -45,12 +45,21 @@ public:
     /* Stop the PortAudio stream. */
     int stop_stream();
 
+    /* Set new PortAudio input device. */
+    void set_input_device(int new_input_device) { input_device = new_input_device; }
+
+    /* Set new PortAudio output device. */
+    void set_output_device(int new_output_device) { output_device = new_output_device; };
+
 private:
     /* Run initialisation commands. */
     void init();
 
+    /* Set input and output devices to system defaults. */
+    void use_default_devices();
+
     /* Configure inputs and outputs. */
-    void configure();
+    void configure_inputs_outputs();
 
 protected:
     /* The main processing callback function. */
@@ -77,6 +86,8 @@ protected:
 
     PaStream *stream;
     PaError error;
+    PaDeviceIndex input_device;
+    PaDeviceIndex output_device;
     PaStreamParameters input_params;
     PaStreamParameters output_params;
     float sample_rate;

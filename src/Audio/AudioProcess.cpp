@@ -136,6 +136,12 @@ void AudioProcess::set_grain_density(int new_grain_density)
 
 void AudioProcess::set_grain_width(int new_grain_width)
 {
+    granulator.set_grain_width(new_grain_width);
+}
+
+void AudioProcess::set_grain_size(int new_grain_size)
+{
+    granulator.set_grain_size(new_grain_size);
 }
 
 void AudioProcess::reload_granulator()

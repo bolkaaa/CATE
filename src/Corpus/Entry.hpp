@@ -29,11 +29,11 @@ using std::string;
 using std::vector;
 using Json = nlohmann::json;
 
-/* Data representation of a single-entry in the JSON database. Includes file
- * path and vectors of segmentation markers and audio features. */
 
 namespace CATE {
 
+/* Data representation of a single-entry in the JSON database. Includes file
+ * path and vectors of segmentation markers and audio features. */
 class Entry
 {
 public:

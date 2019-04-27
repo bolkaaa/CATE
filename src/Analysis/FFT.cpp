@@ -39,8 +39,8 @@ FFT::FFT(int bin_size, int frames_per_buffer)
           spectrum(vector<complex<double> >(output_size)),
           magspec(vector<float>(output_size)),
           plan(fftw_plan_dft_r2c_1d(bin_size,
-                                    reinterpret_cast<double *>(&data[0]),
-                                    reinterpret_cast<fftw_complex *>(&spectrum[0]),
+                                    reinterpret_cast<double*>(&data[0]),
+                                    reinterpret_cast<fftw_complex*>(&spectrum[0]),
                                     FFTW_ESTIMATE))
 {
 }

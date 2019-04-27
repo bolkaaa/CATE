@@ -63,11 +63,14 @@ public:
     /* Set amplitude of synthesis output. */
     void set_amplitude(float new_amplitude);
 
-    /* Set decay value of synthesis grains. */
+    /* Set density value of synthesis grains. */
     void set_grain_density(int new_grain_density);
 
     /* Set decay value of synthesis grains. */
     void set_grain_width(int new_grain_width);
+
+    /* Set grain size of synthesis grains. */
+    void set_grain_size(int new_grain_size);
 
     /* Boolean flag for whether audio process is ready to be used. */
     bool is_ready() { return ready; }

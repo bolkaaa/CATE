@@ -61,6 +61,9 @@ public:
     /* Set new grain width value. */
     void set_grain_width(int new_grain_width);
 
+    /* Set new grain size. */
+    void set_grain_size(int new_grain_size);
+
 private:
     /* Mix all currently active grains to a single output. */
     float synthesize_grains();
@@ -75,7 +78,7 @@ private:
     void fill_buffer(int marker, const string &file_name);
 
     int max_grains = 32;
-    int buffer_size = 256;
+    int grain_size = 1024;
     vector<Grain> grains;
     map<string, AudioFile> files;
     AudioBuffer buffer;

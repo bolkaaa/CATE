@@ -28,8 +28,8 @@ Feature::Feature(int bin_size)
 
 float Feature::centroid(const vector<float> &magspec)
 {
-    auto magnitudes = 0.0;
-    auto weighted_magnitudes = 0.0;
+    auto magnitudes = 0.0f;
+    auto weighted_magnitudes = 0.0f;
     auto i = 0;
 
     for (auto x : magspec)
@@ -46,7 +46,7 @@ float Feature::centroid(const vector<float> &magspec)
         return c;
     }
 
-    return 0.0;
+    return 0.0f;
 }
 
 float Feature::flatness(const vector<float> &magspec)

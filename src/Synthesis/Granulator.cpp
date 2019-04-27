@@ -40,6 +40,12 @@ void Granulator::set_grain_density(int new_grain_density)
 
 void Granulator::set_grain_width(int new_grain_width)
 {
+    scheduler.set_grain_width(new_grain_width);
+}
+
+void Granulator::set_grain_size(int new_grain_size)
+{
+    scheduler.set_grain_size(new_grain_size);
 }
 
 } // CATE

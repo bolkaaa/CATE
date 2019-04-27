@@ -109,6 +109,9 @@ public slots:
 
     /* Set grain amplitude value through slider. */
     void set_grain_amplitude(int new_value);
+
+    /* Set grain size value through slider. */
+    void set_grain_size(int new_value);
 };
 
 } // CATE

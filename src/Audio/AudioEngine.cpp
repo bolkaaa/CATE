@@ -30,7 +30,9 @@ AudioEngine::AudioEngine(float sample_rate, unsigned long frames_per_buffer, int
         : sample_rate(sample_rate),
           frames_per_buffer(frames_per_buffer),
           input_channels(input_channels),
-          output_channels(output_channels)
+          output_channels(output_channels),
+          input_device(Pa_GetDefaultInputDevice()),
+          output_device(Pa_GetDefaultOutputDevice())
 {
     is_running = false;
     init();
@@ -65,7 +67,8 @@ void AudioEngine::init()
         std::cerr << "PortAudio Error: " << Pa_GetErrorText(error) << "\n";
     }
 
-    configure();
+    use_default_devices();
+    configure_inputs_outputs();
 }
 
 PaError AudioEngine::start_stream()
@@ -125,17 +128,24 @@ int AudioEngine::stop_stream()
     return error;
 }
 
-void AudioEngine::configure()
+void AudioEngine::use_default_devices()
 {
+    input_device = Pa_GetDefaultInputDevice();
+    output_device = Pa_GetDefaultOutputDevice();
+}
+
+void AudioEngine::configure_inputs_outputs()
+{
+    input_params.device = input_device;
     input_params.channelCount = input_channels;
-    input_params.device = Pa_GetDefaultInputDevice();
     input_params.sampleFormat = paFloat32;
     input_params.hostApiSpecificStreamInfo = nullptr;
 
     output_params.channelCount = output_channels;
-    output_params.device = Pa_GetDefaultOutputDevice();
+    output_params.device = output_device;
     output_params.sampleFormat = paFloat32;
     output_params.hostApiSpecificStreamInfo = nullptr;
 }
+
 
 } // CATE

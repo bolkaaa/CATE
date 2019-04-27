@@ -8,9 +8,9 @@ namespace CATE {
 Scheduler::Scheduler(const map<string, AudioFile> &files, float sample_rate)
         : files(files),
           sample_rate(sample_rate),
-          buffer(AudioBuffer(buffer_size)),
+          buffer(AudioBuffer(grain_size)),
           grains(vector<Grain>(max_grains)),
-          env_params(EnvelopeParams{0.5f, 0.5f, 0.5f, buffer_size}),
+          env_params(EnvelopeParams{0.5f, 0.5f, 0.5f, grain_size}),
           next_onset(0),
           grain_index(0),
           gen(seed()),
@@ -23,7 +23,7 @@ Scheduler::Scheduler(const map<string, AudioFile> &files, float sample_rate)
 
 void Scheduler::fill_buffer(int marker, const string &file_name)
 {
-    for (int i = 0; i < buffer_size; ++i)
+    for (int i = 0; i < grain_size; ++i)
     {
         int file_pos = i + marker;
         buffer[i] = files[file_name].data[file_pos];
@@ -102,6 +102,11 @@ void Scheduler::set_grain_density(int new_grain_density)
 void Scheduler::set_grain_width(int new_grain_width)
 {
     grain_width = new_grain_width;
+}
+
+void Scheduler::set_grain_size(int new_grain_size)
+{
+    grain_size = new_grain_size;
 }
 
 void Scheduler::load_files(const map<string, AudioFile> &new_files)
