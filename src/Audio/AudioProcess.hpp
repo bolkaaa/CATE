@@ -88,6 +88,9 @@ public:
     int get_frames_per_buffer() { return frames_per_buffer; }
 
 private:
+    /* Determine the next segment from the corpus to access via KNN search. */
+    void select_unit(float *input);
+
     int bin_size;
     FFT fft;
     vector<float> magspec;
@@ -95,12 +98,11 @@ private:
     Corpus &db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
-    const size_t num_search_results = 32;
+    const size_t num_search_results = 1;
     vector<size_t> return_indices;
-    int selected_unit;
     vector<float> distances;
-    vector<int> markers;
-    vector<string> filenames;
+    int current_marker = 0;
+    string current_file_path;
     Granulator granulator;
     float amplitude;
     float input_rms;

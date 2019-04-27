@@ -21,9 +21,11 @@ Grain::Grain(const AudioBuffer &buffer, EnvelopeParams env_params)
 
 float Grain::synthesize()
 {
-    --remaining_samples;
-    float amp = env.synthesize();
     float sample = src.synthesize();
+    float amp = env.synthesize();
+
+    --remaining_samples;
+
     return amp * sample;
 }
 

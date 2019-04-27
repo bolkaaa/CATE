@@ -88,8 +88,6 @@ int Scheduler::get_next_inter_onset()
     auto max_onset = static_cast<int>(avg_onset + (avg_onset * grain_width));
     auto inter_onset = static_cast<int>(1 + (min_onset + (random_value * (max_onset - min_onset))));
 
-    std::cout << inter_onset << "\n";
-
     return inter_onset;
 }
 

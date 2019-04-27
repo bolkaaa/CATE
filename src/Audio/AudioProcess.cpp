@@ -38,10 +38,7 @@ AudioProcess::AudioProcess(Corpus &db, PointCloud &point_cloud, KdTree &kd_tree)
           feature(bin_size),
           return_indices(vector<size_t>(num_search_results)),
           distances(vector<float>(num_search_results)),
-          markers(vector<int>(num_search_results)),
-          filenames(vector<string>(num_search_results)),
           granulator(db.get_files(), sample_rate),
-          selected_unit(0),
           amplitude(0.5),
           ready(false),
           audio_recorder(sample_rate),
@@ -60,36 +57,13 @@ int AudioProcess::processing_callback(const void *input_buffer,
     auto *input = const_cast<float *>(static_cast<const float *>(input_buffer));
     auto *output = static_cast<float *>(output_buffer);
     auto i = 0;
-    float squared_input_sum = 0.0f;
 
-    fft.fill(input);
-    fft.compute();
-    fft.get_magspec(magspec);
-    float centroid = feature.centroid(magspec);
-    float flatness = feature.flatness(magspec);
-    float kurtosis = feature.kurtosis(magspec);
-
-    /* KNN search. */
-    const float search_points[3] = {
-            centroid,
-            flatness,
-            kurtosis
-    };
-
-    kd_tree.knnSearch(&search_points[0], num_search_results, &return_indices[0], &distances[0]);
-
-    for (i = 0; i < num_search_results; ++i)
-    {
-        markers[i] = point_cloud.points[return_indices[i]].marker;
-        filenames[i] = point_cloud.points[return_indices[i]].file_path;
-    }
+    select_unit(input);
 
     /* Main audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
-        squared_input_sum += std::pow(input[i], 2);
-
-        float out = (amplitude) * granulator.synthesize(markers[selected_unit], filenames[selected_unit]);
+        float out = amplitude * granulator.synthesize(current_marker, current_file_path);
 
         *output++ = out; // L
         *output++ = out; // R
@@ -99,8 +73,6 @@ int AudioProcess::processing_callback(const void *input_buffer,
             audio_recorder.write(out);
         }
     }
-
-    input_rms = std::sqrt(squared_input_sum / frames_per_buffer);
 
     return paContinue;
 }
@@ -148,6 +120,27 @@ void AudioProcess::reload_granulator()
 void AudioProcess::save_recording(const string &output_path)
 {
     audio_recorder.save(output_path, output_channels, sample_rate);
+}
+
+void AudioProcess::select_unit(float *input)
+{
+    fft.fill(input);
+    fft.compute();
+    fft.get_magspec(magspec);
+
+    const float search_points[3] = {
+            feature.centroid(magspec),
+            feature.flatness(magspec),
+            feature.kurtosis(magspec)
+    };
+
+    kd_tree.knnSearch(&search_points[0],
+            num_search_results,
+            &return_indices[0],
+            &distances[0]);
+
+    current_marker = point_cloud.points[return_indices[0]].marker;
+    current_file_path = point_cloud.points[return_indices[0]].file_path;
 }
 
 } // CATE

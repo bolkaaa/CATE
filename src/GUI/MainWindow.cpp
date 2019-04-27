@@ -225,16 +225,16 @@ void MainWindow::set_grain_release(int new_value)
 
 void MainWindow::set_grain_density(int new_value)
 {
-    const float min = 1.0f;
-    const float max = 1000.0f;
-    float density = scale_slider(new_value, min, max);
+    const int min = 1;
+    const int max = 512;
+    int density = static_cast<int>(scale_slider(new_value, min, max));
     audio_process.set_grain_density(density);
     ui->grain_density_value->setText(QString::number(density));
 }
 
 void MainWindow::set_grain_size(int new_value)
 {
-    const int min = 64;
+    const int min = 32;
     const int max = 1024;
     int size = static_cast<int>(scale_slider(new_value, min, max));
     audio_process.set_grain_size(size);
