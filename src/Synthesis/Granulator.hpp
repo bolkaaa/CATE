@@ -38,10 +38,10 @@ namespace CATE {
 class Granulator
 {
 public:
-    Granulator(map<string, AudioFile> files, float sample_rate);
+    Granulator(const map<string, AudioFile> &files, float sample_rate);
 
-    /* Load files from database into files variable. */
-    void load_files(const Corpus &db);
+    /* Load files from corpus into files variable. */
+    void load_files(const Corpus &corpus);
 
     /* Get the next sample value from the granulator. */
     float synthesize(int marker, string filename);
@@ -55,14 +55,10 @@ public:
     /* Set new grain density value. */
     void set_grain_density(int new_grain_density);
 
-    /* Set new grain width value. */
-    void set_grain_width(int new_grain_width);
-
     /* Set new grain size value. */
     void set_grain_size(int new_grain_size);
 
 private:
-    map<string, AudioFile> files;
     Scheduler scheduler;
     float sample_rate;
 };

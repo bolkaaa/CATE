@@ -58,9 +58,6 @@ public:
     /* Set new grain density value. */
     void set_grain_density(int new_grain_density);
 
-    /* Set new grain width value. */
-    void set_grain_width(int new_grain_width);
-
     /* Set new grain size. */
     void set_grain_size(int new_grain_size);
 

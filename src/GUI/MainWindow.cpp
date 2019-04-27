@@ -38,8 +38,6 @@ MainWindow::MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &poin
 {
     ui->setupUi(this);
 
-    populate_devices_boxes();
-
     connect(ui->start_playback, SIGNAL(pressed()), this, SLOT(start_playback_button_pressed()));
     connect(ui->stop_playback, SIGNAL(pressed()), this, SLOT(stop_playback_button_pressed()));
     connect(ui->start_recording, SIGNAL(pressed()), this, SLOT(start_recording_button_pressed()));
@@ -51,7 +49,6 @@ MainWindow::MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &poin
     connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
     connect(ui->grain_release_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
     connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
-    connect(ui->grain_width_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_width(int)));
     connect(ui->grain_size_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_size(int)));
 }
 
@@ -86,7 +83,10 @@ void MainWindow::stop_recording_button_pressed()
     string output_path = save_file_dialog("*.wav");
     if (output_path.empty())
     {
-        audio_process.start_stream();
+        if (audio_process.is_ready())
+        {
+            audio_process.start_stream();
+        }
         return;
     }
 
@@ -232,39 +232,20 @@ void MainWindow::set_grain_density(int new_value)
     ui->grain_density_value->setText(QString::number(density));
 }
 
-void MainWindow::set_grain_width(int new_value)
-{
-    const float min = 0.05f;
-    const float max = 0.95f;
-    float width = scale_slider(new_value, min, max);
-    audio_process.set_grain_width(width);
-    ui->grain_width_value->setText(QString::number(width));
-}
-
 void MainWindow::set_grain_size(int new_value)
 {
-    const int min = 128;
-    const int max = 4096;
+    const int min = 64;
+    const int max = 1024;
     int size = static_cast<int>(scale_slider(new_value, min, max));
     audio_process.set_grain_size(size);
     ui->grain_size_value->setText(QString::number(size));
 }
 
+
 float MainWindow::scale_slider(int val, float min, float max)
 {
     float scaled_val = (max - min) * (static_cast<float>(val) / slider_max) + min;
     return scaled_val;
-}
-
-void MainWindow::populate_devices_boxes()
-{
-    vector<string> device_list = audio_process.get_device_list();
-
-    for (auto &device : device_list)
-    {
-        ui->input_devices_box->addItem(convert_string(device));
-        ui->output_devices_box->addItem(convert_string(device));
-    }
 }
 
 QString MainWindow::convert_string(const std::string &str)

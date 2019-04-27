@@ -15,7 +15,7 @@ Scheduler::Scheduler(const map<string, AudioFile> &files, float sample_rate)
           grain_index(0),
           gen(seed()),
           grain_density(32),
-          grain_width(0.1),
+          grain_width(0.5),
           dist(uniform_real_distribution<float>(0.0f, 1.0f))
 {
 }
@@ -40,12 +40,11 @@ void Scheduler::fill_buffer(int marker, const string &file_name)
 
 void Scheduler::create_grain(int marker, const string &file_name)
 {
-    fill_buffer(marker, file_name);
-
     for (auto &grain : grains)
     {
         if (!grain.is_active())
         {
+            fill_buffer(marker, file_name);
             grain = Grain(buffer, env_params);
             return;
         }
@@ -89,6 +88,8 @@ int Scheduler::get_next_inter_onset()
     auto max_onset = static_cast<int>(avg_onset + (avg_onset * grain_width));
     auto inter_onset = static_cast<int>(1 + (min_onset + (random_value * (max_onset - min_onset))));
 
+    std::cout << inter_onset << "\n";
+
     return inter_onset;
 }
 
@@ -107,11 +108,6 @@ void Scheduler::set_grain_density(int new_grain_density)
     grain_density = new_grain_density;
 }
 
-void Scheduler::set_grain_width(int new_grain_width)
-{
-    grain_width = new_grain_width;
-}
-
 void Scheduler::set_grain_size(int new_grain_size)
 {
     grain_size = new_grain_size;
@@ -121,5 +117,6 @@ void Scheduler::load_files(const map<string, AudioFile> &new_files)
 {
     files = new_files;
 }
+
 
 } // CATE

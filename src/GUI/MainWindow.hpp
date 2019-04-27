@@ -70,9 +70,6 @@ private:
     /* Return a Qstring from a std::string input. */
     QString convert_string(const std::string &str);
 
-    /* Populate the input and output dropdown boxes with audio devices from the audio system. */
-    void populate_devices_boxes();
-
     /* When database files have changed, recreate data points and reload the granulator. */
     void rebuild_audio_process();
 
@@ -110,9 +107,6 @@ public slots:
 
     /* Set grain density through slider. */
     void set_grain_density(int new_value);
-
-    /* Set grain width through slider. */
-    void set_grain_width(int new_value);
 
     /* Set grain amplitude value through slider. */
     void set_grain_amplitude(int new_value);

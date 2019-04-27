@@ -41,7 +41,8 @@ AudioProcess::AudioProcess(Corpus &db, PointCloud &point_cloud, KdTree &kd_tree)
           markers(vector<int>(num_search_results)),
           filenames(vector<string>(num_search_results)),
           granulator(db.get_files(), sample_rate),
-          gain_control(0.5),
+          selected_unit(0),
+          amplitude(0.5),
           ready(false),
           audio_recorder(sample_rate),
           recording(false)
@@ -83,17 +84,15 @@ int AudioProcess::processing_callback(const void *input_buffer,
         filenames[i] = point_cloud.points[return_indices[i]].file_path;
     }
 
-    int selection = 0;
-
     /* Main audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
         squared_input_sum += std::pow(input[i], 2);
 
-        float out = (gain_control) * granulator.synthesize(markers[selection], filenames[selection]);
+        float out = (amplitude) * granulator.synthesize(markers[selected_unit], filenames[selected_unit]);
 
-        *output++ = out; // Left Channel
-        *output++ = out; // Right Channel
+        *output++ = out; // L
+        *output++ = out; // R
 
         if (recording)
         {
@@ -118,7 +117,7 @@ void AudioProcess::stop_recording()
 
 void AudioProcess::set_amplitude(float new_amplitude)
 {
-    gain_control = new_amplitude;
+    amplitude = new_amplitude;
 }
 
 void AudioProcess::set_grain_attack(float new_grain_attack)
@@ -136,11 +135,6 @@ void AudioProcess::set_grain_density(int new_grain_density)
     granulator.set_grain_density(new_grain_density);
 }
 
-void AudioProcess::set_grain_width(int new_grain_width)
-{
-    granulator.set_grain_width(new_grain_width);
-}
-
 void AudioProcess::set_grain_size(int new_grain_size)
 {
     granulator.set_grain_size(new_grain_size);
@@ -155,7 +149,5 @@ void AudioProcess::save_recording(const string &output_path)
 {
     audio_recorder.save(output_path, output_channels, sample_rate);
 }
-
-
 
 } // CATE

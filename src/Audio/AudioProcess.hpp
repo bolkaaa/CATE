@@ -66,9 +66,6 @@ public:
     /* Set density value of synthesis grains. */
     void set_grain_density(int new_grain_density);
 
-    /* Set decay value of synthesis grains. */
-    void set_grain_width(int new_grain_width);
-
     /* Set grain size of synthesis grains. */
     void set_grain_size(int new_grain_size);
 
@@ -77,6 +74,9 @@ public:
 
     /* Enable ready flag. */
     void enable() { ready = true; }
+
+    /* Save current audio recording to disk. */
+    void save_recording(const string &output_path);
 
     /* Get the sample rate of the audio system. */
     float get_sample_rate() { return sample_rate; }
@@ -87,26 +87,24 @@ public:
     /* Get the frames per buffer of the audio system. */
     int get_frames_per_buffer() { return frames_per_buffer; }
 
-    /* Save current audio recording to disk. */
-    void save_recording(const string &output_path);
-
 private:
     int bin_size;
     FFT fft;
     vector<float> magspec;
+    Feature feature;
     Corpus &db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
     const size_t num_search_results = 32;
     vector<size_t> return_indices;
+    int selected_unit;
     vector<float> distances;
     vector<int> markers;
     vector<string> filenames;
     Granulator granulator;
-    float gain_control;
-    Feature feature;
-    AudioRecorder audio_recorder;
+    float amplitude;
     float input_rms;
+    AudioRecorder audio_recorder;
     bool recording;
     bool ready;
 

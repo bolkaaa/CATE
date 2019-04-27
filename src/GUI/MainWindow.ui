@@ -2,13 +2,28 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>596</width>
-    <height>477</height>
+    <width>622</width>
+    <height>466</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>622</width>
+    <height>466</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>622</width>
+    <height>466</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>CATE</string>
@@ -26,6 +41,9 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QPushButton" name="start_playback">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Start Playback</string>
        </property>
@@ -40,13 +58,13 @@
      </item>
      <item>
       <widget class="QPushButton" name="analyse_directory">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Analyse Directory</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="input_devices_box"/>
      </item>
     </layout>
    </widget>
@@ -62,6 +80,9 @@
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <widget class="QPushButton" name="stop_playback">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Stop Playback</string>
        </property>
@@ -69,6 +90,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="stop_recording">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Stop Recording</string>
        </property>
@@ -76,13 +100,16 @@
      </item>
      <item>
       <widget class="QPushButton" name="load_corpus">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Load Corpus</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="output_devices_box"/>
      </item>
     </layout>
    </widget>
@@ -90,14 +117,14 @@
     <property name="geometry">
      <rect>
       <x>360</x>
-      <y>10</y>
+      <y>20</y>
       <width>181</width>
       <height>61</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>64</pointsize>
+      <pointsize>72</pointsize>
      </font>
     </property>
     <property name="text">
@@ -108,7 +135,7 @@
     <property name="geometry">
      <rect>
       <x>360</x>
-      <y>80</y>
+      <y>90</y>
       <width>91</width>
       <height>16</height>
      </rect>
@@ -122,18 +149,21 @@
      <string>© 2019 Liam Wyllie</string>
     </property>
    </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_3">
+   <widget class="QWidget" name="verticalLayoutWidget_5">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>180</y>
-      <width>291</width>
-      <height>81</height>
+      <y>170</y>
+      <width>111</width>
+      <height>231</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_4">
-     <item>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item alignment="Qt::AlignHCenter">
       <widget class="QSlider" name="grain_attack_slider">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="toolTip">
         <string>Grain Attack</string>
        </property>
@@ -150,21 +180,26 @@
         <number>127</number>
        </property>
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Vertical</enum>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="grain_attack_name">
          <property name="text">
           <string>Grain Attack</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="grain_attack_value">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>0.0</string>
          </property>
@@ -172,39 +207,62 @@
        </item>
       </layout>
      </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_6"/>
+     </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_4">
+   <widget class="QWidget" name="verticalLayoutWidget_9">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>260</y>
-      <width>291</width>
-      <height>90</height>
+      <x>240</x>
+      <y>170</y>
+      <width>117</width>
+      <height>231</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_5">
-     <item>
+    <layout class="QVBoxLayout" name="verticalLayout_6">
+     <item alignment="Qt::AlignHCenter">
       <widget class="QSlider" name="grain_release_slider">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Grain Attack</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="accessibleName">
+        <string/>
+       </property>
+       <property name="accessibleDescription">
+        <string/>
+       </property>
        <property name="maximum">
         <number>127</number>
        </property>
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Vertical</enum>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="grain_release_name">
          <property name="text">
           <string>Grain Release</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="grain_release_value">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>0.0</string>
          </property>
@@ -212,116 +270,62 @@
        </item>
       </layout>
      </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_8"/>
+     </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_5">
+   <widget class="QWidget" name="verticalLayoutWidget_10">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>260</y>
-      <width>291</width>
-      <height>86</height>
+      <x>470</x>
+      <y>170</y>
+      <width>117</width>
+      <height>231</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_6">
-     <item>
-      <widget class="QSlider" name="grain_width_slider">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+    <layout class="QVBoxLayout" name="verticalLayout_13">
+     <item alignment="Qt::AlignHCenter">
+      <widget class="QSlider" name="grain_size_slider">
+       <property name="enabled">
+        <bool>true</bool>
        </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_6">
-       <item>
-        <widget class="QLabel" name="grain_width_name">
-         <property name="text">
-          <string>Grain Width</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="grain_width_value">
-         <property name="text">
-          <string>0.0</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_6">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>180</y>
-      <width>291</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_7">
-     <item>
-      <widget class="QSlider" name="grain_density_slider">
-       <property name="minimum">
-        <number>0</number>
+       <property name="toolTip">
+        <string>Grain Attack</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="accessibleName">
+        <string/>
+       </property>
+       <property name="accessibleDescription">
+        <string/>
        </property>
        <property name="maximum">
         <number>127</number>
        </property>
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Vertical</enum>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_5">
-       <item>
-        <widget class="QLabel" name="grain_density_name">
-         <property name="text">
-          <string>Grain Density</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="grain_density_value">
-         <property name="text">
-          <string>0.0</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_7">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>340</y>
-      <width>291</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_8">
-     <item>
-      <widget class="QSlider" name="grain_size_slider">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_7">
-       <item>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="grain_size_name">
          <property name="text">
           <string>Grain Size</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="grain_size_value">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>0.0</string>
          </property>
@@ -329,45 +333,134 @@
        </item>
       </layout>
      </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_11"/>
+     </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_8">
+   <widget class="QWidget" name="verticalLayoutWidget_11">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>340</y>
-      <width>291</width>
-      <height>81</height>
+      <x>360</x>
+      <y>170</y>
+      <width>111</width>
+      <height>231</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_9">
-     <item>
-      <widget class="QSlider" name="grain_amplitude_slider">
+    <layout class="QVBoxLayout" name="verticalLayout_14">
+     <item alignment="Qt::AlignHCenter">
+      <widget class="QSlider" name="grain_density_slider">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Grain Attack</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="accessibleName">
+        <string/>
+       </property>
+       <property name="accessibleDescription">
+        <string/>
+       </property>
        <property name="maximum">
         <number>127</number>
        </property>
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Vertical</enum>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
+      <layout class="QVBoxLayout" name="verticalLayout_8">
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="grain_density_name">
+         <property name="text">
+          <string>Grain Density</string>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="grain_density_value">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>0.0</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_12"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_12">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>170</y>
+      <width>117</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_15">
+     <item alignment="Qt::AlignHCenter">
+      <widget class="QSlider" name="grain_amplitude_slider">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Grain Attack</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="accessibleName">
+        <string/>
+       </property>
+       <property name="accessibleDescription">
+        <string/>
+       </property>
+       <property name="maximum">
+        <number>127</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="grain_amplitude_name">
          <property name="text">
           <string>Grain Amplitude</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="grain_amplitude_value">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>0.0</string>
          </property>
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_13"/>
      </item>
     </layout>
    </widget>
@@ -377,7 +470,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>596</width>
+     <width>622</width>
      <height>22</height>
     </rect>
    </property>
