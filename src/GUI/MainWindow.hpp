@@ -31,17 +31,17 @@
 
 using std::string;
 
-/* The main Qt application window class. It contains most of the objects and
- * data needed to run the program. */
-
 namespace Ui {
 
+/* From .ui file */
 class MainWindow;
 
 }
 
 namespace CATE {
 
+/* The main Qt application window class. It contains most of the objects and
+ * data needed to run the program. */
 class MainWindow : public QMainWindow
 {
 Q_OBJECT

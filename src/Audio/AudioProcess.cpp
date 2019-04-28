@@ -57,12 +57,16 @@ int AudioProcess::processing_callback(const void *input_buffer,
     auto *input = const_cast<float *>(static_cast<const float *>(input_buffer));
     auto *output = static_cast<float *>(output_buffer);
     auto i = 0;
+    float input_sum = 0.0f;
+    float rms = 0.0f;
 
     select_unit(input);
 
     /* Main audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
+        input_sum += std::pow(*input++, 2);
+
         float out = amplitude * granulator.synthesize(current_marker, current_file_path);
 
         *output++ = out; // L
@@ -73,6 +77,10 @@ int AudioProcess::processing_callback(const void *input_buffer,
             audio_recorder.write(out);
         }
     }
+
+    rms = std::sqrt(input_sum / frames_per_buffer);
+
+    emit(status_output(rms));
 
     return paContinue;
 }

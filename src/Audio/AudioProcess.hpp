@@ -105,7 +105,6 @@ private:
     string current_file_path;
     Granulator granulator;
     float amplitude;
-    float input_rms;
     AudioRecorder audio_recorder;
     bool recording;
     bool ready;
@@ -116,6 +115,9 @@ protected:
                             unsigned long frames_per_buffer,
                             const PaStreamCallbackTimeInfo *time_info,
                             PaStreamCallbackFlags status_flags) override;
+
+signals:
+    void status_output(float);
 };
 
 } // CATE

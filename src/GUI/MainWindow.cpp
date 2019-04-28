@@ -88,6 +88,7 @@ void MainWindow::stop_recording_button_pressed()
         {
             audio_process.start_stream();
         }
+
         return;
     }
 
@@ -124,17 +125,17 @@ void MainWindow::analyse_directory_button_pressed()
 void MainWindow::load_corpus_button_pressed()
 {
     string db_path = open_file_dialog("*.json");
-//
-//    if (db_path.empty())
-//    {
-//        return;
-//    }
-//
-//    db.set_json_file(db_path);
-//    db.read_json_data();
-//    db.load_files();
-//
-//    rebuild_audio_process();
+
+    if (db_path.empty())
+    {
+        return;
+    }
+
+    db.set_json_file(db_path);
+    db.read_json_data();
+    db.load_files();
+
+    rebuild_audio_process();
 }
 
 

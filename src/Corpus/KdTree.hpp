@@ -29,11 +29,10 @@ using nanoflann::KDTreeSingleIndexAdaptor;
 using nanoflann::KDTreeSingleIndexAdaptorParams;
 using nanoflann::L2_Simple_Adaptor;
 
-/* KdTree includes the functionality from the nanoflann library to implement a K-d Tree for doing nearest neighbour
- * searches of data stored within a "PointCloud" class. */
-
 namespace CATE {
 
+/* KdTree is a typedef for functionality from the nanoflann library, with KdTreeParams storing some necessary
+ * constants. */
 class KdTreeParams
 {
 public:
