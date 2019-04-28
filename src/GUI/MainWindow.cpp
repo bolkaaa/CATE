@@ -21,6 +21,7 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <portaudio.h>
+#include <QStandardPaths>
 
 #include "../Audio/AudioBuffer.hpp"
 #include "../Audio/AudioProcess.hpp"
@@ -38,12 +39,12 @@ MainWindow::MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &poin
 {
     ui->setupUi(this);
 
-    connect(ui->start_playback, SIGNAL(pressed()), this, SLOT(start_playback_button_pressed()));
-    connect(ui->stop_playback, SIGNAL(pressed()), this, SLOT(stop_playback_button_pressed()));
-    connect(ui->start_recording, SIGNAL(pressed()), this, SLOT(start_recording_button_pressed()));
-    connect(ui->stop_recording, SIGNAL(pressed()), this, SLOT(stop_recording_button_pressed()));
-    connect(ui->analyse_directory, SIGNAL(pressed()), this, SLOT(analyse_directory_button_pressed()));
-    connect(ui->load_corpus, SIGNAL(pressed()), this, SLOT(load_corpus_button_pressed()));
+    connect(ui->start_playback, SIGNAL(clicked()), this, SLOT(start_playback_button_pressed()));
+    connect(ui->stop_playback, SIGNAL(clicked()), this, SLOT(stop_playback_button_pressed()));
+    connect(ui->start_recording, SIGNAL(clicked()), this, SLOT(start_recording_button_pressed()));
+    connect(ui->stop_recording, SIGNAL(clicked()), this, SLOT(stop_recording_button_pressed()));
+    connect(ui->analyse_directory, SIGNAL(clicked()), this, SLOT(analyse_directory_button_pressed()));
+    connect(ui->load_corpus, SIGNAL(clicked()), this, SLOT(load_corpus_button_pressed()));
 
     connect(ui->grain_amplitude_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_amplitude(int)));
     connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
@@ -123,39 +124,40 @@ void MainWindow::analyse_directory_button_pressed()
 void MainWindow::load_corpus_button_pressed()
 {
     string db_path = open_file_dialog("*.json");
-    if (db_path.empty())
-    {
-        return;
-    }
-
-    db.set_json_file(db_path);
-    db.read_json_data();
-    db.load_files();
-
-    rebuild_audio_process();
+//
+//    if (db_path.empty())
+//    {
+//        return;
+//    }
+//
+//    db.set_json_file(db_path);
+//    db.read_json_data();
+//    db.load_files();
+//
+//    rebuild_audio_process();
 }
 
 
 string MainWindow::directory_dialog()
 {
-    string directory_path = QFileDialog::getExistingDirectory(this,
+    QString directory_path = QFileDialog::getExistingDirectory(this,
                                                               tr("Select Directory"),
-                                                              "./",
+                                                              get_home_dir_path(),
                                                               QFileDialog::ShowDirsOnly |
-                                                              QFileDialog::DontResolveSymlinks).toUtf8().constData();
+                                                              QFileDialog::DontResolveSymlinks);
 
 
-    return directory_path;
+    return qstring_to_string(directory_path);
 }
 
 string MainWindow::save_file_dialog(string file_types)
 {
-    string file_path = QFileDialog::getSaveFileName(this,
+    QString file_path = QFileDialog::getSaveFileName(this,
                                                     tr("File Destination"),
-                                                    "./",
-                                                    tr(file_types.c_str())).toUtf8().constData();
+                                                    get_home_dir_path(),
+                                                    tr(file_types.c_str()));
 
-    return file_path;
+    return qstring_to_string(file_path);
 }
 
 int MainWindow::int_dialog_box(string message, int default_value, int min_value, int max_value, int step_size)
@@ -176,12 +178,12 @@ int MainWindow::int_dialog_box(string message, int default_value, int min_value,
 
 string MainWindow::open_file_dialog(string file_types)
 {
-    string file_path = QFileDialog::getOpenFileName(this,
+    QString file_path = QFileDialog::getOpenFileName(this,
                                                     tr("Select File"),
-                                                    "./",
-                                                    tr(file_types.c_str())).toUtf8().constData();
+                                                    get_home_dir_path(),
+                                                    tr(file_types.c_str()));
 
-    return file_path;
+    return qstring_to_string(file_path);
 }
 
 void MainWindow::rebuild_audio_process()
@@ -248,10 +250,25 @@ float MainWindow::scale_slider(int val, float min, float max)
     return scaled_val;
 }
 
-QString MainWindow::convert_string(const std::string &str)
+QString MainWindow::string_to_qstring(const std::string &str)
 {
     QString qstr = QString::fromUtf8(str.c_str());
     return qstr;
+}
+
+string MainWindow::qstring_to_string(const QString &qstr)
+{
+    string str = qstr.toUtf8().constData();
+    return str;
+}
+
+QString MainWindow::get_home_dir_path()
+{
+    QString home_dir_path = QStandardPaths::locate(QStandardPaths::HomeLocation,
+                                                   QString(),
+                                                   QStandardPaths::LocateDirectory);
+
+    return home_dir_path;
 }
 
 } // CATE

@@ -68,7 +68,13 @@ private:
     float scale_slider(int val, float min, float max);
 
     /* Return a Qstring from a std::string input. */
-    QString convert_string(const std::string &str);
+    QString string_to_qstring(const std::string &str);
+
+    /* Return a std::string from a Qstring input. */
+    string qstring_to_string(const QString &qstr);
+
+    /* Return the path of the user's home directory (cross-platform). */
+    QString get_home_dir_path();
 
     /* When database files have changed, recreate data points and reload the granulator. */
     void rebuild_audio_process();
