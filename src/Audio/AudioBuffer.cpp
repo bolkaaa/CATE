@@ -18,6 +18,7 @@
 */
 
 #include <iostream>
+
 #include "AudioBuffer.hpp"
 
 namespace CATE {

@@ -17,13 +17,13 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include "AudioProcess.hpp"
-#include "../Analysis/FFT.hpp"
-#include "../Synthesis/Scheduler.hpp"
-
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
+
+#include "AudioProcess.hpp"
+#include "src/Analysis/FFT.hpp"
+#include "src/Synthesis/Scheduler.hpp"
 
 namespace CATE {
 

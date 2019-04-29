@@ -24,8 +24,8 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include <boost/filesystem.hpp>
 
+#include <boost/filesystem.hpp>
 #include "sndfile.hh"
 #include "samplerate.h"
 

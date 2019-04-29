@@ -19,7 +19,7 @@
 
 #include <vector>
 
-#include "../Audio/AudioBuffer.hpp"
+#include "src/Audio/AudioBuffer.hpp"
 #include "Feature.hpp"
 
 using std::vector;

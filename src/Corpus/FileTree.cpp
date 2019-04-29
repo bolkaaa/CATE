@@ -19,9 +19,9 @@
 
 #include <vector>
 
-#include "FileTree.hpp"
-
 #include <boost/filesystem.hpp>
+
+#include "FileTree.hpp"
 
 using std::vector;
 using std::string;

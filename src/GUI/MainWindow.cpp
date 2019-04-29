@@ -23,10 +23,10 @@
 #include <portaudio.h>
 #include <QStandardPaths>
 
-#include "../Audio/AudioBuffer.hpp"
-#include "../Audio/AudioProcess.hpp"
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
+#include "src/Audio/AudioBuffer.hpp"
+#include "src/Audio/AudioProcess.hpp"
 
 namespace CATE {
 
