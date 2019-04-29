@@ -27,21 +27,21 @@
 
 namespace CATE {
 
-AudioProcess::AudioProcess(Corpus &db, PointCloud &point_cloud, KdTree &kd_tree)
-        : AudioEngine(48000.0f, 256, 2, 2),
+AudioProcess::AudioProcess(AudioSettings &audio_settings, Corpus &db, PointCloud &point_cloud, KdTree &kd_tree)
+        : audio_settings(audio_settings),
+          AudioEngine(audio_settings),
           db(db),
           point_cloud(point_cloud),
           kd_tree(kd_tree),
-          bin_size(1024),
-          fft(FFT(bin_size, frames_per_buffer)),
-          magspec(vector<float>(bin_size / 2 + 1)),
-          feature(bin_size),
+          fft(FFT(audio_settings)),
+          magspec(vector<float>(audio_settings.get_bin_size() / 2 + 1)),
+          feature(audio_settings.get_bin_size()),
           return_indices(vector<size_t>(num_search_results)),
           distances(vector<float>(num_search_results)),
-          granulator(db.get_files(), sample_rate),
+          granulator(db.get_files(), audio_settings.get_sample_rate()),
           amplitude(0.5),
           ready(false),
-          audio_recorder(sample_rate),
+          audio_recorder(audio_settings.get_sample_rate()),
           recording(false)
 {
 }
@@ -79,8 +79,6 @@ int AudioProcess::processing_callback(const void *input_buffer,
     }
 
     rms = std::sqrt(input_sum / frames_per_buffer);
-
-    emit(status_output(rms));
 
     return paContinue;
 }
@@ -127,7 +125,7 @@ void AudioProcess::reload_granulator()
 
 void AudioProcess::save_recording(const string &output_path)
 {
-    audio_recorder.save(output_path, output_channels, sample_rate);
+    audio_recorder.save(output_path, audio_settings.get_num_output_channels(), audio_settings.get_sample_rate());
 }
 
 void AudioProcess::select_unit(float *input)
@@ -143,9 +141,9 @@ void AudioProcess::select_unit(float *input)
     };
 
     kd_tree.knnSearch(&search_points[0],
-            num_search_results,
-            &return_indices[0],
-            &distances[0]);
+                      num_search_results,
+                      &return_indices[0],
+                      &distances[0]);
 
     current_marker = point_cloud.points[return_indices[0]].marker;
     current_file_path = point_cloud.points[return_indices[0]].file_path;

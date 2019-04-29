@@ -115,8 +115,7 @@ void MainWindow::analyse_directory_button_pressed()
     db.set_json_file(db_path);
     db.add_directory(dir_path);
     db.load_files();
-    db.convert_sample_rates(audio_process.get_sample_rate());
-    db.sliding_window_analysis(audio_process.get_bin_size(), audio_process.get_frames_per_buffer());
+    db.sliding_window_analysis();
     db.write_json_file();
 
     rebuild_audio_process();
@@ -237,7 +236,7 @@ void MainWindow::set_grain_density(int new_value)
 
 void MainWindow::set_grain_size(int new_value)
 {
-    const int min = 32;
+    const int min = 64;
     const int max = 1024;
     int size = static_cast<int>(scale_slider(new_value, min, max));
     audio_process.set_grain_size(size);

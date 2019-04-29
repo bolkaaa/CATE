@@ -43,10 +43,11 @@ namespace CATE {
  * collection of audio file paths and associated segmentation markers and
  * analysis data, forming the basis for the corpus of the concatenative
  * synthesis system. */
-
 class Corpus
 {
 public:
+    Corpus(const AudioSettings &audio_settings);
+
     /* Load database from another file. */
     void set_json_file(const string &new_file_path);
 
@@ -67,7 +68,7 @@ public:
 
     /* For each audio file in database, compute audio features for a sliding
      * window of <frames_per_buffer> samples,and store in a JSON file. */
-    void sliding_window_analysis(int bin_size, int frames_per_buffer);
+    void sliding_window_analysis();
 
     /* Convert all files in database to a new sample rate. */
     void convert_sample_rates(double new_sr);
@@ -82,12 +83,9 @@ public:
     bool has_data();
 
 private:
-    /* JSON data object, storing file paths, segmentation frame markers and
-     * analysis data. */
     Json db;
     string db_file_path;
-
-    /* The audio files stored in the database. */
+    const AudioSettings &audio_settings;
     map<string, AudioFile> files;
 };
 

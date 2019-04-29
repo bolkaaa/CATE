@@ -80,6 +80,7 @@ private:
     void rebuild_audio_process();
 
     Ui::MainWindow *ui;
+    AudioSettings audio_settings;
     Corpus &db;
     AudioProcess &audio_process;
     PointCloud &point_cloud;

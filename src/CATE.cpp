@@ -23,7 +23,7 @@
 #include "src/Corpus/PointCloud.hpp"
 #include "src/Corpus/Corpus.hpp"
 #include "src/Corpus/KdTree.hpp"
-#include "src/Audio/AudioBuffer.hpp"
+#include "src/Audio/AudioSettings.hpp"
 #include "src/GUI/MainWindow.hpp"
 
 using CATE::KdTree;
@@ -31,15 +31,17 @@ using CATE::KdTreeParams;
 using CATE::Corpus;
 using CATE::PointCloud;
 using CATE::MainWindow;
+using CATE::AudioSettings;
 using CATE::AudioProcess;
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    Corpus corpus;
     PointCloud point_cloud;
     KdTree kd_tree(KdTreeParams::num_features, point_cloud, KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf));
-    AudioProcess audio_process(corpus, point_cloud, kd_tree);
+    AudioSettings audio_settings;
+    Corpus corpus(audio_settings);
+    AudioProcess audio_process(audio_settings, corpus, point_cloud, kd_tree);
     MainWindow main_window(audio_process, corpus, point_cloud, kd_tree);
     main_window.show();
 

@@ -26,7 +26,8 @@
 
 #include <fftw3.h>
 
-#include "../Audio/AudioBuffer.hpp"
+#include "src/Audio/AudioBuffer.hpp"
+#include "src/Audio/AudioSettings.hpp"
 
 using std::vector;
 using std::complex;
@@ -41,7 +42,7 @@ namespace CATE {
 class FFT
 {
 public:
-    FFT(int bin_size, int frames_per_buffer);
+    FFT(const AudioSettings &audio_settings);
 
     ~FFT();
 
@@ -62,8 +63,8 @@ private:
     void compute_magspec();
 
     int bin_size;
+    int buffer_size;
     int output_size;
-    int frames_per_buffer;
     vector<double> data;
     vector<complex<double> > spectrum;
     vector<float> magspec;

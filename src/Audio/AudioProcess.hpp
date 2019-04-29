@@ -27,6 +27,7 @@
 #include "AudioEngine.hpp"
 #include "AudioBuffer.hpp"
 #include "AudioRecorder.hpp"
+#include "AudioSettings.hpp"
 #include "src/Analysis/FFT.hpp"
 #include "src/Analysis/Feature.hpp"
 #include "src/Corpus/Corpus.hpp"
@@ -43,7 +44,7 @@ class AudioProcess : public QObject, public AudioEngine
 Q_OBJECT
 
 public:
-    AudioProcess(Corpus &db, PointCloud &point_cloud, KdTree &kd_tree);
+    AudioProcess(AudioSettings &audio_settings, Corpus &db, PointCloud &point_cloud, KdTree &kd_tree);
 
     /* Reload granulator when database has changed. */
     void reload_granulator();
@@ -78,20 +79,11 @@ public:
     /* Save current audio recording to disk. */
     void save_recording(const string &output_path);
 
-    /* Get the sample rate of the audio system. */
-    float get_sample_rate() { return sample_rate; }
-
-    /* Get the bin size of the audio system. */
-    int get_bin_size() { return bin_size; }
-
-    /* Get the frames per buffer of the audio system. */
-    int get_frames_per_buffer() { return frames_per_buffer; }
-
 private:
     /* Determine the next segment from the corpus to access via KNN search. */
     void select_unit(float *input);
 
-    int bin_size;
+    AudioSettings &audio_settings;
     FFT fft;
     vector<float> magspec;
     Feature feature;
@@ -115,9 +107,6 @@ protected:
                             unsigned long frames_per_buffer,
                             const PaStreamCallbackTimeInfo *time_info,
                             PaStreamCallbackFlags status_flags) override;
-
-signals:
-    void status_output(float);
 };
 
 } // CATE

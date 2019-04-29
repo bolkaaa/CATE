@@ -25,16 +25,10 @@
 
 namespace CATE {
 
-AudioEngine::AudioEngine(float sample_rate, unsigned long frames_per_buffer, int input_channels,
-                         int output_channels)
-        : sample_rate(sample_rate),
-          frames_per_buffer(frames_per_buffer),
-          input_channels(input_channels),
-          output_channels(output_channels),
-          input_device(Pa_GetDefaultInputDevice()),
-          output_device(Pa_GetDefaultOutputDevice())
+AudioEngine::AudioEngine(const AudioSettings &audio_settings)
+        : audio_settings(audio_settings),
+          is_running(false)
 {
-    is_running = false;
     init();
 }
 
@@ -68,7 +62,7 @@ void AudioEngine::init()
     }
 
     use_default_devices();
-    configure_inputs_outputs();
+    configure_stream_parameters();
 }
 
 PaError AudioEngine::start_stream()
@@ -81,10 +75,10 @@ PaError AudioEngine::start_stream()
     is_running = true;
 
     error = Pa_OpenStream(&stream,
-                          &input_params,
-                          &output_params,
-                          sample_rate,
-                          frames_per_buffer,
+                          &input_parameters,
+                          &output_parameters,
+                          audio_settings.get_sample_rate(),
+                          audio_settings.get_buffer_size(),
                           paNoFlag,
                           &AudioEngine::static_callback,
                           this);
@@ -130,21 +124,21 @@ int AudioEngine::stop_stream()
 
 void AudioEngine::use_default_devices()
 {
-    input_device = Pa_GetDefaultInputDevice();
-    output_device = Pa_GetDefaultOutputDevice();
+    audio_settings.set_input_device(Pa_GetDefaultInputDevice());
+    audio_settings.set_output_device(Pa_GetDefaultOutputDevice());
 }
 
-void AudioEngine::configure_inputs_outputs()
+void AudioEngine::configure_stream_parameters()
 {
-    input_params.device = input_device;
-    input_params.channelCount = input_channels;
-    input_params.sampleFormat = paFloat32;
-    input_params.hostApiSpecificStreamInfo = nullptr;
+    input_parameters.device = audio_settings.get_input_device();
+    input_parameters.channelCount = Pa_GetDeviceInfo(audio_settings.get_input_device())->maxInputChannels;
+    input_parameters.sampleFormat = paFloat32;
+    input_parameters.hostApiSpecificStreamInfo = nullptr;
 
-    output_params.channelCount = output_channels;
-    output_params.device = output_device;
-    output_params.sampleFormat = paFloat32;
-    output_params.hostApiSpecificStreamInfo = nullptr;
+    output_parameters.device = audio_settings.get_output_device();
+    output_parameters.channelCount = Pa_GetDeviceInfo(audio_settings.get_output_device())->maxOutputChannels;
+    output_parameters.sampleFormat = paFloat32;
+    output_parameters.hostApiSpecificStreamInfo = nullptr;
 }
 
 vector<string> AudioEngine::get_device_list()

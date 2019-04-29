@@ -44,6 +44,7 @@ class Scheduler
 public:
     Scheduler(const map<string, AudioFile> &files, float sample_rate);
 
+    /* Load audio file map into scheduler. */
     void load_files(const map<string, AudioFile> &new_files);
 
     /* Calculate grain activations. */
@@ -74,7 +75,7 @@ private:
     /* Fill buffer from filename and file position. */
     void fill_buffer(int marker, const string &file_name);
 
-    int max_grains = 32;
+    int max_grains = 16;
     int grain_size = 1024;
     vector<Grain> grains;
     map<string, AudioFile> files;

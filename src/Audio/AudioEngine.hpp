@@ -25,6 +25,8 @@
 
 #include <portaudio.h>
 
+#include "AudioSettings.hpp"
+
 using std::vector;
 using std::string;
 
@@ -39,7 +41,7 @@ namespace CATE {
 class AudioEngine
 {
 public:
-    AudioEngine(float sample_rate, unsigned long frames_per_buffer, int input_channels, int output_channels);
+    AudioEngine(const AudioSettings &audio_settings);
 
     ~AudioEngine();
 
@@ -48,12 +50,6 @@ public:
 
     /* Stop the PortAudio stream. */
     int stop_stream();
-
-    /* Set new PortAudio input device. */
-    void set_input_device(int new_input_device) { input_device = new_input_device; }
-
-    /* Set new PortAudio output device. */
-    void set_output_device(int new_output_device) { output_device = new_output_device; };
 
     /* Get list of names of audio devices. */
     vector<string> get_device_list();
@@ -66,7 +62,7 @@ private:
     void use_default_devices();
 
     /* Configure inputs and outputs. */
-    void configure_inputs_outputs();
+    void configure_stream_parameters();
 
 protected:
     /* The main processing callback function. */
@@ -92,16 +88,11 @@ protected:
     }
 
     PaStream *stream;
+    PaStreamParameters input_parameters;
+    PaStreamParameters output_parameters;
     PaError error;
-    PaDeviceIndex input_device;
-    PaDeviceIndex output_device;
-    PaStreamParameters input_params;
-    PaStreamParameters output_params;
-    float sample_rate;
-    unsigned long frames_per_buffer;
+    AudioSettings audio_settings;
     bool is_running;
-    int input_channels;
-    int output_channels;
 };
 
 } // CATE

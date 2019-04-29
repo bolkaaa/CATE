@@ -14,7 +14,7 @@ Scheduler::Scheduler(const map<string, AudioFile> &files, float sample_rate)
           next_onset(0),
           grain_index(0),
           gen(seed()),
-          grain_density(32),
+          grain_density(100),
           grain_width(0.5),
           dist(uniform_real_distribution<float>(0.0f, 1.0f))
 {
@@ -82,12 +82,8 @@ float Scheduler::synthesize_grains()
 int Scheduler::get_next_inter_onset()
 {
     float random_value = dist(gen);
-
-    auto avg_onset = static_cast<int>(sample_rate / grain_density);
-    auto min_onset = static_cast<int>(avg_onset - (avg_onset * grain_width));
-    auto max_onset = static_cast<int>(avg_onset + (avg_onset * grain_width));
-    auto inter_onset = static_cast<int>(1 + (min_onset + (random_value * (max_onset - min_onset))));
-
+    auto grains_per_second = static_cast<int>(sample_rate / grain_density);
+    auto inter_onset = 1 + (grains_per_second * random_value);
     return inter_onset;
 }
 

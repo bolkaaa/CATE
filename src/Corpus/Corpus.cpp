@@ -37,6 +37,10 @@ using std::string;
 
 namespace CATE {
 
+Corpus::Corpus(const AudioSettings &audio_settings)
+        : audio_settings(audio_settings)
+{
+}
 
 void Corpus::add_file(const string &path)
 {
@@ -92,15 +96,17 @@ void Corpus::load_files()
     }
 }
 
-void Corpus::sliding_window_analysis(int bin_size, int frames_per_buffer)
+void Corpus::sliding_window_analysis()
 {
     int segment_index = 0;
-    FFT fft(bin_size, frames_per_buffer);
+    FFT fft(audio_settings);
+    int bin_size = audio_settings.get_bin_size();
+    int buffer_size = audio_settings.get_buffer_size();
     vector<float> magspec(bin_size);
 
     for (auto b : files)
     {
-        map<int, AudioBuffer> frames = segment_frames(b.second.data, frames_per_buffer);
+        map<int, AudioBuffer> frames = segment_frames(b.second.data, buffer_size);
 
         for (auto it = frames.begin(); it != frames.end(); ++it)
         {
@@ -156,5 +162,6 @@ bool Corpus::has_data()
 {
     return !db.empty();
 }
+
 
 } // CATE

@@ -27,14 +27,13 @@
 
 using std::vector;
 using std::complex;
-using CATE::AudioBuffer;
 
 namespace CATE {
 
-FFT::FFT(int bin_size, int frames_per_buffer)
-        : bin_size(bin_size),
+FFT::FFT(const AudioSettings &audio_settings)
+        : bin_size(audio_settings.get_bin_size()),
+          buffer_size(audio_settings.get_buffer_size()),
           output_size(bin_size / 2 + 1),
-          frames_per_buffer(frames_per_buffer),
           data(vector<double>(bin_size)),
           spectrum(vector<complex<double> >(output_size)),
           magspec(vector<float>(output_size)),
@@ -59,13 +58,13 @@ float FFT::window(int i, int n)
 void FFT::fill(float *input)
 {
     /* Fill data array with input multiplied by windowing function. */
-    for (auto i = 0; i < frames_per_buffer; ++i)
+    for (auto i = 0; i < buffer_size; ++i)
     {
         data[i] = input[i] * window(i, bin_size);
     }
 
     /* Pad range from <frames_per_buffer> to <bin_size> with zeroes. */
-    for (auto i = frames_per_buffer; i < bin_size; ++i)
+    for (auto i = buffer_size; i < bin_size; ++i)
     {
         data[i] = 0.0;
     }
