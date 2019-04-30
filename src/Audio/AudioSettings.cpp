@@ -1,5 +1,7 @@
 #include "AudioSettings.hpp"
 
+#include <iostream>
+
 namespace CATE {
 
 AudioSettings::AudioSettings()

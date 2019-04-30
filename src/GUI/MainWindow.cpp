@@ -23,6 +23,7 @@
 #include <portaudio.h>
 #include <QStandardPaths>
 
+#include "Util.hpp"
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
 #include "src/Audio/AudioBuffer.hpp"
@@ -164,22 +165,6 @@ string MainWindow::save_file_dialog(string file_types)
     return qstring_to_string(file_path);
 }
 
-int MainWindow::int_dialog_box(string message, int default_value, int min_value, int max_value, int step_size)
-{
-    bool ok = true;
-
-    int value = QInputDialog::getInt(this,
-                                     tr("Integer"),
-                                     tr(message.c_str()),
-                                     default_value,
-                                     min_value,
-                                     max_value,
-                                     step_size,
-                                     &ok);
-
-    return value;
-}
-
 string MainWindow::open_file_dialog(string file_types)
 {
     QString file_path = QFileDialog::getOpenFileName(this,
@@ -204,11 +189,11 @@ void MainWindow::rebuild_audio_process()
 
 void MainWindow::set_grain_amplitude(int new_value)
 {
-    const float min = 0.0f;
+    const float min = 0.01f;
     const float max = 1.0f;
     float amplitude = scale_slider(new_value, min, max);
     audio_process.set_amplitude(amplitude);
-    ui->grain_amplitude_value->setText(QString::number(amplitude));
+    update_number_label(ui->grain_amplitude_value, amplitude);
 }
 
 void MainWindow::set_grain_attack(int new_value)
@@ -217,7 +202,7 @@ void MainWindow::set_grain_attack(int new_value)
     const float max = 1.0f;
     float attack = scale_slider(new_value, min, max);
     audio_process.set_grain_attack(attack);
-    ui->grain_attack_value->setText(QString::number(attack));
+    update_number_label(ui->grain_attack_value, attack);
 }
 
 void MainWindow::set_grain_release(int new_value)
@@ -226,7 +211,7 @@ void MainWindow::set_grain_release(int new_value)
     const float max = 1.0f;
     float release = scale_slider(new_value, min, max);
     audio_process.set_grain_release(release);
-    ui->grain_release_value->setText(QString::number(release));
+    update_number_label(ui->grain_release_value, release);
 }
 
 void MainWindow::set_grain_density(int new_value)
@@ -235,35 +220,22 @@ void MainWindow::set_grain_density(int new_value)
     const int max = 512;
     int density = static_cast<int>(scale_slider(new_value, min, max));
     audio_process.set_grain_density(density);
-    ui->grain_density_value->setText(QString::number(density));
+    update_number_label(ui->grain_density_value, density);
 }
 
 void MainWindow::set_grain_size(int new_value)
 {
     const int min = 64;
     const int max = 1024;
-    int size = static_cast<int>(scale_slider(new_value, min, max));
-    audio_process.set_grain_size(size);
-    ui->grain_size_value->setText(QString::number(size));
+    int grain_size = static_cast<int>(scale_slider(new_value, min, max));
+    audio_process.set_grain_size(grain_size);
+    update_number_label(ui->grain_size_value, grain_size);
 }
-
 
 float MainWindow::scale_slider(int val, float min, float max)
 {
     float scaled_val = (max - min) * (static_cast<float>(val) / slider_max) + min;
     return scaled_val;
-}
-
-QString MainWindow::string_to_qstring(const std::string &str)
-{
-    QString qstr = QString::fromUtf8(str.c_str());
-    return qstr;
-}
-
-string MainWindow::qstring_to_string(const QString &qstr)
-{
-    string str = qstr.toUtf8().constData();
-    return str;
 }
 
 QString MainWindow::get_home_dir_path()

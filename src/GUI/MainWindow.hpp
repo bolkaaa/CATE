@@ -23,6 +23,7 @@
 #include <QMainWindow>
 #include <QSlider>
 #include <QString>
+#include <QLabel>
 
 #include "src/Corpus/Corpus.hpp"
 #include "src/Corpus/KdTree.hpp"
@@ -63,17 +64,8 @@ private:
     /* Prompt user to select a file path to save to, getting its path. */
     string save_file_dialog(string file_types);
 
-    /* Prompt user to input an integer value. */
-    int int_dialog_box(string message, int default_value, int min_value, int max_value, int step_size);
-
     /* Convert slider value to a value within a range. */
     float scale_slider(int val, float min, float max);
-
-    /* Return a Qstring from a std::string input. */
-    QString string_to_qstring(const std::string &str);
-
-    /* Return a std::string from a Qstring input. */
-    string qstring_to_string(const QString &qstr);
 
     /* Return the path of the user's home directory (cross-platform). */
     QString get_home_dir_path();

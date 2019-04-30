@@ -51,6 +51,15 @@ private:
 
 public slots:
     void sample_rate_changed(int selection_index);
+
+    void bin_size_changed(int selection_index);
+
+    void buffer_size_changed(int selection_index);
+
+    void input_device_changed(int selection_index);
+
+    void output_device_changed(int selection_index);
+
 };
 
 } // CATE

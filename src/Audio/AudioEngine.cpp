@@ -162,4 +162,28 @@ const int AudioEngine::get_num_output_channels()
     return info->maxOutputChannels;
 }
 
+void AudioEngine::set_input_device(int selection_index)
+{
+    int num_devices = Pa_GetDeviceCount();
+
+    if (selection_index < 0 || selection_index > num_devices)
+    {
+        return;
+    }
+
+    input_device = selection_index;
+}
+
+void AudioEngine::set_output_device(int selection_index)
+{
+    int num_devices = Pa_GetDeviceCount();
+
+    if (selection_index < 0 || selection_index > num_devices)
+    {
+        return;
+    }
+
+    output_device = selection_index;
+}
+
 } // CATE

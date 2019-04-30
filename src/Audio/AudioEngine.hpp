@@ -60,9 +60,17 @@ public:
     /* Get default output audio device index. */
     const int get_default_output_device() const { return Pa_GetDefaultOutputDevice(); }
 
+    /* Get number of input channels of current input device. */
     const int get_num_input_channels();
 
+    /* Get number of output channels of current input device. */
     const int get_num_output_channels();
+
+    /* Set current input device through index of available devices. */
+    void set_input_device(int selection_index);
+
+    /* Set current output device through index of available devices. */
+    void set_output_device(int selection_index);
 
 private:
     /* Run initialisation commands. */

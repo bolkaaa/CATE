@@ -21,6 +21,10 @@ AudioSettingsWindow::AudioSettingsWindow(AudioSettings &audio_settings, AudioPro
     populate_boxes();
 
     connect(ui->sample_rate_box, SIGNAL(currentIndexChanged(int)), this, SLOT(sample_rate_changed(int)));
+    connect(ui->buffer_size_box, SIGNAL(currentIndexChanged(int)), this, SLOT(buffer_size_changed(int)));
+    connect(ui->bin_size_box, SIGNAL(currentIndexChanged(int)), this, SLOT(bin_size_changed(int)));
+    connect(ui->input_device_box, SIGNAL(currentIndexChanged(int)), this, SLOT(input_device_changed(int)));
+    connect(ui->output_device_box, SIGNAL(currentIndexChanged(int)), this, SLOT(output_device_changed(int)));
 }
 
 void AudioSettingsWindow::populate_boxes()
@@ -50,7 +54,37 @@ void AudioSettingsWindow::populate_boxes()
 
 void AudioSettingsWindow::sample_rate_changed(int selection_index)
 {
+    audio_process.stop_stream();
     audio_settings.set_sample_rate(selection_index);
+    audio_process.start_stream();
+}
+
+void AudioSettingsWindow::buffer_size_changed(int selection_index)
+{
+    audio_process.stop_stream();
+    audio_settings.set_buffer_size(selection_index);
+    audio_process.start_stream();
+}
+
+void AudioSettingsWindow::bin_size_changed(int selection_index)
+{
+    audio_process.stop_stream();
+    audio_settings.set_bin_size(selection_index);
+    audio_process.start_stream();
+}
+
+void AudioSettingsWindow::input_device_changed(int selection_index)
+{
+    audio_process.stop_stream();
+    audio_process.set_input_device(selection_index);
+    audio_process.start_stream();
+}
+
+void AudioSettingsWindow::output_device_changed(int selection_index)
+{
+    audio_process.stop_stream();
+    audio_process.set_output_device(selection_index);
+    audio_process.start_stream();
 }
 
 } // CATE
