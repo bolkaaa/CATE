@@ -48,6 +48,9 @@ private:
     Ui::AudioSettingsWindow *ui;
     AudioSettings &audio_settings;
     AudioProcess &audio_process;
+
+public slots:
+    void sample_rate_changed(int selection_index);
 };
 
 } // CATE

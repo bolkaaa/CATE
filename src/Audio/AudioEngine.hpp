@@ -60,12 +60,13 @@ public:
     /* Get default output audio device index. */
     const int get_default_output_device() const { return Pa_GetDefaultOutputDevice(); }
 
+    const int get_num_input_channels();
+
+    const int get_num_output_channels();
+
 private:
     /* Run initialisation commands. */
     void init();
-
-    /* Set input and output devices to system defaults. */
-    void use_default_devices();
 
     /* Configure inputs and outputs. */
     void configure_stream_parameters();
@@ -96,8 +97,10 @@ protected:
     PaStream *stream;
     PaStreamParameters input_parameters;
     PaStreamParameters output_parameters;
-    PaError error;
+    PaDeviceIndex input_device;
+    PaDeviceIndex output_device;
     AudioSettings &audio_settings;
+    PaError error;
     bool is_running;
 };
 

@@ -30,6 +30,11 @@ AudioEngine::AudioEngine(AudioSettings &audio_settings)
           is_running(false)
 {
     init();
+
+    input_device = get_default_input_device();
+    output_device = get_default_output_device();
+
+    configure_stream_parameters();
 }
 
 AudioEngine::~AudioEngine()
@@ -54,15 +59,11 @@ int AudioEngine::processing_callback(const void *input_buffer,
 
 void AudioEngine::init()
 {
-    error = Pa_Initialize();
-
-    if (error != paNoError)
+    if (Pa_Initialize() != paNoError)
     {
         std::cerr << "PortAudio Error: " << Pa_GetErrorText(error) << "\n";
+        return;
     }
-
-    use_default_devices();
-    configure_stream_parameters();
 }
 
 PaError AudioEngine::start_stream()
@@ -122,21 +123,15 @@ int AudioEngine::stop_stream()
     return error;
 }
 
-void AudioEngine::use_default_devices()
-{
-    audio_settings.set_input_device(Pa_GetDefaultInputDevice());
-    audio_settings.set_output_device(Pa_GetDefaultOutputDevice());
-}
-
 void AudioEngine::configure_stream_parameters()
 {
-    input_parameters.device = audio_settings.get_input_device();
-    input_parameters.channelCount = Pa_GetDeviceInfo(audio_settings.get_input_device())->maxInputChannels;
+    input_parameters.device = input_device;
+    input_parameters.channelCount = get_num_input_channels();
     input_parameters.sampleFormat = paFloat32;
     input_parameters.hostApiSpecificStreamInfo = nullptr;
 
-    output_parameters.device = audio_settings.get_output_device();
-    output_parameters.channelCount = Pa_GetDeviceInfo(audio_settings.get_output_device())->maxOutputChannels;
+    output_parameters.device = output_device;
+    output_parameters.channelCount = get_num_output_channels();
     output_parameters.sampleFormat = paFloat32;
     output_parameters.hostApiSpecificStreamInfo = nullptr;
 }
@@ -153,6 +148,18 @@ vector<string> AudioEngine::get_available_devices()
     }
 
     return device_list;
+}
+
+const int AudioEngine::get_num_input_channels()
+{
+    const PaDeviceInfo *info = Pa_GetDeviceInfo(input_device);
+    return info->maxInputChannels;
+}
+
+const int AudioEngine::get_num_output_channels()
+{
+    const PaDeviceInfo *info = Pa_GetDeviceInfo(output_device);
+    return info->maxOutputChannels;
 }
 
 } // CATE

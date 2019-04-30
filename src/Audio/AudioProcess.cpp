@@ -125,7 +125,7 @@ void AudioProcess::reload_granulator()
 
 void AudioProcess::save_recording(const string &output_path)
 {
-    audio_recorder.save(output_path, audio_settings.get_num_output_channels(), audio_settings.get_sample_rate());
+    audio_recorder.save(output_path, get_num_output_channels(), audio_settings.get_sample_rate());
 }
 
 void AudioProcess::select_unit(float *input)

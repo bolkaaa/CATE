@@ -19,6 +19,8 @@ AudioSettingsWindow::AudioSettingsWindow(AudioSettings &audio_settings, AudioPro
     ui->setupUi(this);
 
     populate_boxes();
+
+    connect(ui->sample_rate_box, SIGNAL(currentIndexChanged(int)), this, SLOT(sample_rate_changed(int)));
 }
 
 void AudioSettingsWindow::populate_boxes()
@@ -44,6 +46,11 @@ void AudioSettingsWindow::populate_boxes()
     ui->bin_size_box->setCurrentIndex(audio_settings.get_default_bin_size_index());
     ui->input_device_box->setCurrentIndex(audio_process.get_default_input_device());
     ui->output_device_box->setCurrentIndex(audio_process.get_default_output_device());
+}
+
+void AudioSettingsWindow::sample_rate_changed(int selection_index)
+{
+    audio_settings.set_sample_rate(selection_index);
 }
 
 } // CATE

@@ -53,62 +53,40 @@ public:
     /* Get current sample rate. */
     float get_sample_rate() const { return sample_rate; }
 
-    /* Get current input device. */
-    int get_input_device() const { return input_device; }
-
-    /* Get current output device. */
-    int get_output_device() const { return output_device; }
-
-    /* Get number of input channels. */
-    int get_num_input_channels() const { return num_input_channels; }
-
-    /* Get number of output channels. */
-    int get_num_output_channels() const { return num_output_channels; }
-
     /* Get current FFT bin size. */
     int get_bin_size() const { return bin_size; }
 
-    /* Set current buffer size to new value. */
-    void set_buffer_size(unsigned long new_buffer_size) { buffer_size = new_buffer_size; }
-
-    /* Set current sample rate to new value. */
-    void set_sample_rate(float new_sample_rate) { sample_rate = new_sample_rate; }
-
-    /* Set current input device index to new value. */
-    void set_input_device(int new_input_device) { input_device = new_input_device; }
-
-    /* Set current output device index to new value. */
-    void set_output_device(int new_output_device) { output_device = new_output_device; }
-
-    /* set current number of input channels to new value. */
-    void set_num_input_channels(int new_num_input_channels) { num_input_channels = new_num_input_channels; }
-
-    /* set current number of output channels to new value. */
-    void set_num_output_channels(int new_num_output_channels) { num_output_channels = new_num_output_channels; }
-
-    /* Set current FFT bin size to new value. */
-    void set_bin_size(int new_bin_size) { bin_size = new_bin_size; }
-
+    /* Get list of available default buffer sizes. */
     const vector<unsigned long> get_available_buffer_sizes() const { return available_buffer_sizes; }
 
+    /* Get list of available default sample rates. */
     const vector<float> get_available_sample_rates() const { return available_sample_rates; }
 
+    /* Get list of available default bin sizes. */
     const vector<int> get_available_bin_sizes() const { return available_bin_sizes; }
 
+    /* Get default buffer size index. */
     const int get_default_buffer_size_index() const { return default_buffer_size_index; }
 
+    /* Get default sample rate index. */
     const int get_default_sample_rate_index() const { return default_sample_rate_index; }
 
+    /* Get default bin size index. */
     const int get_default_bin_size_index() const { return default_bin_size_index; }
+
+    /* Set buffer size through index of default buffer sizes. */
+    void set_buffer_size(int selection_index);
+
+    /* Set bin size through index of default bin sizes. */
+    void set_bin_size(int selection_index);
+
+    /* Set sample rate through index of default sample rates. */
+    void set_sample_rate(int selection_index);
 
 private:
     unsigned long buffer_size;
     float sample_rate;
     int bin_size;
-    int input_device;
-    int output_device;
-    int num_input_channels;
-    int num_output_channels;
     const int default_buffer_size_index = 3;
     const int default_sample_rate_index = 0;
     const int default_bin_size_index = 2;
