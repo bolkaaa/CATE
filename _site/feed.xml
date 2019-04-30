@@ -1,4 +1,67 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-04-16T16:51:00+01:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Finalising Some Features and Starting Unit Testing</title><link href="/2019/04/14/finalising-some-features-and-starting-unit-testing.html" rel="alternate" type="text/html" title="Finalising Some Features and Starting Unit Testing" /><published>2019-04-14T00:00:00+01:00</published><updated>2019-04-14T00:00:00+01:00</updated><id>/2019/04/14/finalising-some-features-and-starting-unit-testing</id><content type="html" xml:base="/2019/04/14/finalising-some-features-and-starting-unit-testing.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-04-30T12:18:01+01:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Overall Improvements to Program</title><link href="/2019/04/28/overall-improvements-to-program.html" rel="alternate" type="text/html" title="Overall Improvements to Program" /><published>2019-04-28T00:00:00+01:00</published><updated>2019-04-28T00:00:00+01:00</updated><id>/2019/04/28/overall-improvements-to-program</id><content type="html" xml:base="/2019/04/28/overall-improvements-to-program.html">&lt;p&gt;Compared to last week, there were many improvements to the program this week, to
+its features as well as the quality of the code through refactoring. While I am
+trying to avoid adding significant new features, I am highly focused on
+improving the existing ones. I will break down the improvements to the program I
+have made this week.&lt;/p&gt;
+
+&lt;h3 id=&quot;synthesis&quot;&gt;Synthesis&lt;/h3&gt;
+&lt;p&gt;The granulation engine is now much more flexible, as the grain size can be
+controlled in real time through a slider. Overall, I am quite happy with how it
+sounds and find it quite aesthetically interesting compared to previous results
+I had.&lt;/p&gt;
+
+&lt;h3 id=&quot;interface&quot;&gt;Interface&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://files.catbox.moe/1gctlq.png&quot; alt=&quot;Program Window&quot; /&gt;
+I have improved the interface of the program a lot:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Value of parameters is now visible through number displays&lt;/li&gt;
+  &lt;li&gt;The layout of the window is now better-organised&lt;/li&gt;
+  &lt;li&gt;The window is now fixed in size, so the UI elements cannot be displaced through resizing&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The interface is now mostly complete, however I still need to add an option in the GUI to change the following audio settings:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;sample rate&lt;/li&gt;
+  &lt;li&gt;buffer size&lt;/li&gt;
+  &lt;li&gt;FFT bin size&lt;/li&gt;
+  &lt;li&gt;input device&lt;/li&gt;
+  &lt;li&gt;output device&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This will be in the form of a secondary window that provides control over each
+of these elements through dropdown menus, similar to how control over these
+elements is provided in software such as PureData or Max/MSP.&lt;/p&gt;
+
+&lt;p&gt;Additionally, I made a minor improvement this week to the interface by altering
+the signals and slots code such that the buttons in the interface that result in
+dialog windows no longer stay highlighted after the action has been carried out.
+This was solved by changing instances of the pressed() signal to clicked()
+instances.&lt;/p&gt;
+
+&lt;h3 id=&quot;audio-settings-class&quot;&gt;Audio Settings Class&lt;/h3&gt;
+&lt;p&gt;As a step towards solving the problem stated previously, I have created a new
+class: AudioSettings, containing the parameters mentioned above. It is designed
+to be used as a “singleton” object, with one instantiation in the main function
+and a reference to it passed to other objects in the program, so that they can
+share the same settings. To this end, I will design the class so that the copy
+constructor and assignment operator functions are private. This is a common C++
+technique when you wish to disallow copying or assigning of an object to another
+object, which is relevant in this case.&lt;/p&gt;
+
+&lt;h3 id=&quot;audio-analysis&quot;&gt;Audio Analysis&lt;/h3&gt;
+&lt;p&gt;Although I do not wish to add many more elements to the program, before
+finalising things, I would like to improve the audio analysis code somewhat. The
+spectral kurtosis feature was added recently to improve the overall unit
+selection performance. I would like to spend some time if possible to improve
+the feature extraction code and make it more modular. Additionally, I may add a
+normalisation stage to the feature extractors.&lt;/p&gt;
+
+&lt;h3 id=&quot;future-plans&quot;&gt;Future Plans&lt;/h3&gt;
+&lt;p&gt;I am aiming to get the writing and documentation finished within the next week
+or so, while also doing a bit more work and unit test writing for the program.
+Then, the final week will be dedicated to improving the program, finalising the
+CMake build/executables and tying up other loose ends.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Compared to last week, there were many improvements to the program this week, to its features as well as the quality of the code through refactoring. While I am trying to avoid adding significant new features, I am highly focused on improving the existing ones. I will break down the improvements to the program I have made this week.</summary></entry><entry><title type="html">Lots of Writing and Not Much Progress</title><link href="/2019/04/21/lots-of-writing-and-not-much-progress.html" rel="alternate" type="text/html" title="Lots of Writing and Not Much Progress" /><published>2019-04-21T00:00:00+01:00</published><updated>2019-04-21T00:00:00+01:00</updated><id>/2019/04/21/lots-of-writing-and-not-much-progress</id><content type="html" xml:base="/2019/04/21/lots-of-writing-and-not-much-progress.html">&lt;p&gt;This week there were less changes made in the program as development has started slowing down due to the program mostly being complete, and the fact that I need to work on the project writeup. Most of the changes were minor code cleanups and some interface improvements. Notably, I also improved aspects of the program’s design through separating some functionality into dedicated classes, in the case of AudioRecorder. Next week’s post will be much lengthier as I return to working on the program more intensely, as the writing gets closer to the completion and I try to make the program as good as it can be.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This week there were less changes made in the program as development has started slowing down due to the program mostly being complete, and the fact that I need to work on the project writeup. Most of the changes were minor code cleanups and some interface improvements. Notably, I also improved aspects of the program’s design through separating some functionality into dedicated classes, in the case of AudioRecorder. Next week’s post will be much lengthier as I return to working on the program more intensely, as the writing gets closer to the completion and I try to make the program as good as it can be.</summary></entry><entry><title type="html">Finalising Some Features and Starting Unit Testing</title><link href="/2019/04/14/finalising-some-features-and-starting-unit-testing.html" rel="alternate" type="text/html" title="Finalising Some Features and Starting Unit Testing" /><published>2019-04-14T00:00:00+01:00</published><updated>2019-04-14T00:00:00+01:00</updated><id>/2019/04/14/finalising-some-features-and-starting-unit-testing</id><content type="html" xml:base="/2019/04/14/finalising-some-features-and-starting-unit-testing.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;While continuing to work on the report, I have also added some final features in
 the software. These included adding amplitude following of the microphone input
 for the synthesis output, and adding the functionality for recording output to a
@@ -684,206 +747,4 @@ be necessary so I can perform the comparisons efficiently in the audio loop.&lt;
 &lt;p&gt;Additionally, I want to implement better error handling with my PortAudio code
 and clean it up in general. I will refrain from doing a lot of GUI work right
 now, although I might add some kind of text output in the main window for
-debugging pourposes.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This Week This week, I’ve been working on the following parts of my program:</summary></entry><entry><title type="html">Moving Onwards: Real-time Audio Analysis</title><link href="/2019/02/17/going-forwards-with-real-time-audio-analysis.html" rel="alternate" type="text/html" title="Moving Onwards: Real-time Audio Analysis" /><published>2019-02-17T00:00:00+00:00</published><updated>2019-02-17T00:00:00+00:00</updated><id>/2019/02/17/going-forwards-with-real-time-audio-analysis</id><content type="html" xml:base="/2019/02/17/going-forwards-with-real-time-audio-analysis.html">&lt;h3 id=&quot;thoughts-on-the-programs-direction&quot;&gt;Thoughts on the Program’s Direction&lt;/h3&gt;
-&lt;p&gt;I have been thinking a lot about my aims with the program and my report, and the
-particular niche of musical concatenative synthesis I would like to explore. One
-aspect I would like to focus more strongly on, is the notion of working with
-real-time audio input. Thus, CATE would primarily be an experimental tool for
-generating variations of an audio source in real-time. Essentially, this will be
-a type of audio effect, where the incoming audio is transformed according to its
-analysed features.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;CataRT&lt;/em&gt; offers this functionality, but overall it’s a more general-purpose
-realisation of corpus-based concatenative synthesis in a musical context. I
-would aim to focus on this aspect of the technique and see how it can be
-expanded upon and made more usable by electronic music practitioners such as
-myself. One aspect that would be important to me, would be for the system to
-easily “playable” by a solo performer/composer. Thus, the control of the system
-should require little intervention after an initial configuration process. It
-may be useful to do more research into current studies in improvisation-based
-music software systems. The paper &lt;em&gt;Electro/Acoustic Improvisation and Deeply
-Listening Machines&lt;/em&gt; touches upon some ideas related to this.&lt;/p&gt;
-
-&lt;p&gt;Ideally, the relationship between the source sound and the new sound
-concatenated from the corpus should be identifiable. As discussed with my
-supervisor, one potentially interesting approach could be for there to be some
-level of control over the distance function of the system. For instance, the
-user of the program can specify for the output to be close in features to the
-audio input, or this could be inverted and the resulting output could have
-features that are the opposite of this. Some probabilistic systems could be
-added, so that the chance of similar or dissimilar sonic output is controllable.&lt;/p&gt;
-
-&lt;h3 id=&quot;technical-aspects-of-processing-real-time-data&quot;&gt;Technical Aspects of Processing Real-Time Data&lt;/h3&gt;
-&lt;p&gt;The first thing that I wanted to achieve this week was to implement a lock-free
-circular buffer/ring buffer class for my program. In real-time audio processing
-applications, circular buffers are a very useful data structure, as they allow
-the program to operate on fixed blocks of samples that are updated as new data
-comes into the system.&lt;/p&gt;
-
-&lt;p&gt;After doing a lot of research, I found a suitable implementation in the book
-&lt;em&gt;Audio Anecdotes II: Tools, Tips, and Techniques for Digital Audio&lt;/em&gt;, and I am
-now using it in my Synth class. Data from the microphone is continuously pushed
-into the buffer, which can then be popped into auxillary buffers for processing.
-At the moment, I am just directing the input straight to output in this manner.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Circular_Buffer_Animation.gif/400px-Circular_Buffer_Animation.gif&quot; alt=&quot;Ring Buffer&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;audio-analysis&quot;&gt;Audio Analysis&lt;/h3&gt;
-&lt;p&gt;I have also been weighing up my options when approaching the audio analysis
-aspects of my program. I had the decision to either use a library that provided
-this functionality for me, or to implement it myself. I wanted to keep with my
-plan of implementing most features at a low level, but I am also wary of
-balancing my time spent and not taking too long implementing certain aspects of
-the program. I will compare my findings when looking at several libraries for C++:&lt;/p&gt;
-
-&lt;h4 id=&quot;essentia&quot;&gt;&lt;strong&gt;Essentia&lt;/strong&gt;&lt;/h4&gt;
-&lt;p&gt;This is a well-established library for doing audio analysis in C++, which
-includes many of the most widely-used audio feature extraction algorithms. The
-advantage of using it would be the time saved in not implementing such code
-myself, and that it may possess less errors than self-written code. That being
-said, integrating a large library’s functionality into my existing codebase also
-brings with it some potential issues. Additionally, it would also be doing
-much of the work for me, getting in the way of my learning how to implement such
-processes myself. Although the end-result is of course important, one of my main
-aims with this project is to get better at audio programming and understanding
-signal processing, even if the process is more time consuming and error-prone.&lt;/p&gt;
-
-&lt;h4 id=&quot;fftw3&quot;&gt;&lt;strong&gt;fftw3&lt;/strong&gt;&lt;/h4&gt;
-&lt;p&gt;This is a comparatively low-level library that primarily computes discrete
-fourier transforms of signal vectors, through a highly efficient FFT algorithm.
-This approach intrigued me as I wanted to gain more experience working with DFTs
-in C++ and it would mean that although I wouldn’t have to create my own FFT
-algorithm, I would have to implement much of the analysis code myself.&lt;/p&gt;
-
-&lt;p&gt;In the end, I moved forwards with using the fftw3 library and planning the
-creation of my own analysis functions, while keeping time constraints in mind. I
-am aiming to give myself plenty of time and have the option to revert to
-fallback approaches if the approach turns out to be too demanding. I can also
-switch to using Essentia or another option later on this way, if needed.&lt;/p&gt;
-
-&lt;h3 id=&quot;plans-moving-forwards&quot;&gt;Plans moving forwards&lt;/h3&gt;
-&lt;p&gt;I have been working at quite a low level and the progress towards a working
-prototype has been slow, due to the time that developing components from the
-ground up can take. I want to stand by my approach, as it has been invaluable in
-learning how to write audio/DSP code in C++, and I have been enjoying the
-experience. That being said, it has made it difficult to reason about the aims
-and success of my program, since I am still relatively far away from a working
-prototype. With that in mind, I am aiming to move a bit faster with my
-production schedule. I am now starting the audio analysis aspects of the program
-and then working on the synthesis aspect shortly after.&lt;/p&gt;
-
-&lt;p&gt;I am aiming to achieve a basic working command-line-only prototype within the
-next several weeks, which I will flesh out further from there after assessing
-its results.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Thoughts on the Program’s Direction I have been thinking a lot about my aims with the program and my report, and the particular niche of musical concatenative synthesis I would like to explore. One aspect I would like to focus more strongly on, is the notion of working with real-time audio input. Thus, CATE would primarily be an experimental tool for generating variations of an audio source in real-time. Essentially, this will be a type of audio effect, where the incoming audio is transformed according to its analysed features.</summary></entry><entry><title type="html">Handling the Audio Database</title><link href="/2019/02/10/handling-audio-file-database.html" rel="alternate" type="text/html" title="Handling the Audio Database" /><published>2019-02-10T00:00:00+00:00</published><updated>2019-02-10T00:00:00+00:00</updated><id>/2019/02/10/handling-audio-file-database</id><content type="html" xml:base="/2019/02/10/handling-audio-file-database.html">&lt;h3 id=&quot;loading-a-directory-of-audio-files&quot;&gt;Loading a Directory of Audio Files&lt;/h3&gt;
-&lt;p&gt;My first objective was to find a way of automatically loading every
-audio file from a directory into memory in the program.&lt;/p&gt;
-
-&lt;p&gt;After doing some research, I realised that this functionality only
-exists natively in C++ with the C++17 standard, and I am using the
-earlier C++14 standard in my project for compatibility
-purposes. Therefore, I decided to use the filesystem header from the
-boost library. This required installing the boost headers on my system
-as I have not used them before when working with C++, and modifying my
-CMakeLists file. After experimenting with the boost/filesystem
-functions, I eventually implemented a way of getting the path of every
-file deeper than a specified directory, using a recursive process:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;A first, non-recursive function generates a list of all paths from a root directory.&lt;/li&gt;
-  &lt;li&gt;The recursive function calls this function as its first statement.&lt;/li&gt;
-  &lt;li&gt;It then iterates over that list.&lt;/li&gt;
-  &lt;li&gt;If it encounters a directory path, the recursive function is called
-again, passing the path as a parameter.&lt;/li&gt;
-  &lt;li&gt;Otherwise, the recursive function adds the path to the final path list.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;This has been working well for the particular directory of example
-sounds I am using. One particular issue that might arise is if the
-user has a directory filled with a mixture of audio files and
-non-audio files, which could result in the contents of those non-audio
-files being treated as sample data. I may have to test for this case
-and implement a way of checking if a file is an audio file or not.&lt;/p&gt;
-
-&lt;h3 id=&quot;pre-processing-the-audio-database&quot;&gt;Pre-processing the Audio Database&lt;/h3&gt;
-&lt;p&gt;My first idea was to convert every audio file loaded to the same
-sample rate (the standard 44.1kHz CD-quality rate). I chose to do
-this, as I had read in some papers relating to doing audio analysis on
-a database of sounds that this would result in more effective
-results. It also made it easier to test audio files with my program,
-as it means I don’t have to do any interpolation in the actual audio
-processing function. I implemented a function for converting an audio
-file to a new sample rate using the
-&lt;a href=&quot;https://github.com/erikd/libsamplerate&quot;&gt;libsamplerate&lt;/a&gt;
-library. Although I have been generally sticking to my philosophy of
-avoiding C libraries and preferring native C++ code, I was only
-implementing a very small function contained within my AudioBuffer
-class, so I had no problems with it in this case. I found it
-preferable to use this library than implementing my own sample rate
-interpolation for a number of reasons:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Likely more efficient, faster, safer etc. than an implementation of my own.&lt;/li&gt;
-  &lt;li&gt;Simplifies my own codebase by requiring less code.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;That being said, I did become interested in sample rate interpolation when looking into this, and it’s something that I would like to implement myself in the future.&lt;/p&gt;
-
-&lt;h3 id=&quot;python-utilities&quot;&gt;Python Utilities&lt;/h3&gt;
-&lt;p&gt;It has been my plan with this project to make use of the Numpy and
-Matplotlib libraries for the Python programming language, to help with
-the creation of C++ DSP code. This week I created some simple plotting
-tools which allow me to quickly view the waveform or spectrum of a
-given audio file. When I am developing the audio analysis functions,
-it will be helpful to prototype them in Python and plot their results
-before implementing them in C++.&lt;/p&gt;
-
-&lt;h3 id=&quot;sdif-files&quot;&gt;SDIF Files&lt;/h3&gt;
-&lt;p&gt;I began to research the SDIF file format more, thinking about how I
-could use it in my program. I plan to implement the simplest parts
-of its functionality to begin with, reading and writing files and
-printing their contents in my program. When I progress to the audio
-analysis aspects later, I will start to flesh out the SDIF code more.&lt;/p&gt;
-
-&lt;h3 id=&quot;audio-buffer-segmentation&quot;&gt;Audio Buffer Segmentation&lt;/h3&gt;
-&lt;p&gt;At this point I also wanted to experiment with splitting AudioBuffer
-objects into sub-objects and playing them back with a modified version
-of the Synth class. This was successful, and I was able to play back
-short snippets of files from the database. It made me think about how
-I will handle the segmentation process later on, as I realised that
-pre-segmenting every audio file will likely be impractical and
-inflexible. I looked back to how existing concatenative synthesis
-implementations such as CataRT deal with this, and realised that
-storing segmentation positions as numeric data may be the best
-option. I can then do the actual segmentation in real-time in the
-Synth::process function. Right now my understanding of this process
-based on my research into concatenative synthesis is as follows:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;The audio database is analysed, and segmentation markers are
-generated along with descriptors.&lt;/li&gt;
-  &lt;li&gt;The information is stored in files to be recalled later. Each
-segment may have its own row in the database along with columns of
-features extracted from the audio analysis process.&lt;/li&gt;
-  &lt;li&gt;During the synthesis stage, the user specifies target parameters,
-and a combination of segments from the database are generated&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Once I begin working on the the analysis and synthesis stage of the
-program, I will be able to experiment with the approach more. I plan
-to first implement a non-realtime version which will allow me to
-experiment with different target parameters through the command line
-and create automated tests, which should make the process easier,
-although I will also need a way of testing its real-time capabilities.&lt;/p&gt;
-
-&lt;h3 id=&quot;moving-forwards&quot;&gt;Moving Forwards&lt;/h3&gt;
-&lt;p&gt;At this point I have already partially completed some goals from weeks
-3 and 4 of the production schedule. My goal at this point is to take
-some time to improve the code that I already written along with the
-rest of those production targets, while doing more reading and
-planning of the analysis and synthesis stage.&lt;/p&gt;
-
-&lt;p&gt;I have still not implemented audio input recording, which I will
-definitely aim to achieve in the next two weeks. I also want to
-implement a better command line interface with best practises for C++
-CLI programs, expanding upon the simple interface I currently have,
-which directly uses the argc and argv parameters inherited from C.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Loading a Directory of Audio Files My first objective was to find a way of automatically loading every audio file from a directory into memory in the program.</summary></entry></feed>
+debugging pourposes.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This Week This week, I’ve been working on the following parts of my program:</summary></entry></feed>
