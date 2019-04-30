@@ -20,7 +20,9 @@
 #ifndef AUDIOSETTINGS_HPP
 #define AUDIOSETTINGS_HPP
 
-#include <array>
+#include <vector>
+
+using std::vector;
 
 namespace CATE {
 
@@ -37,13 +39,13 @@ public:
     void operator=(AudioSettings &rhs) = delete;
 
     /* Get default buffer size from fixed list of buffer sizes. */
-    unsigned long default_buffer_size() const { return buffer_size_list[4]; }
+    unsigned long default_buffer_size() const { return available_buffer_sizes[4]; }
 
     /* Get default sample rate from fixed list of sample rates. */
-    float default_sample_rate() const { return sample_rate_list[0]; }
+    float default_sample_rate() const { return available_sample_rates[0]; }
 
     /* Get default FFT bin size from fixed list of bin sizes. */
-    int default_bin_size() const { return bin_size_list[2]; }
+    int default_bin_size() const { return available_bin_sizes[2]; }
 
     /* Get current buffer size. */
     unsigned long get_buffer_size() const { return buffer_size; }
@@ -87,6 +89,18 @@ public:
     /* Set current FFT bin size to new value. */
     void set_bin_size(int new_bin_size) { bin_size = new_bin_size; }
 
+    const vector<unsigned long> get_available_buffer_sizes() const { return available_buffer_sizes; }
+
+    const vector<float> get_available_sample_rates() const { return available_sample_rates; }
+
+    const vector<int> get_available_bin_sizes() const { return available_bin_sizes; }
+
+    const int get_default_buffer_size_index() const { return default_buffer_size_index; }
+
+    const int get_default_sample_rate_index() const { return default_sample_rate_index; }
+
+    const int get_default_bin_size_index() const { return default_bin_size_index; }
+
 private:
     unsigned long buffer_size;
     float sample_rate;
@@ -95,9 +109,12 @@ private:
     int output_device;
     int num_input_channels;
     int num_output_channels;
-    const std::array<unsigned long, 8> buffer_size_list = {32, 64, 128, 256, 512, 1024, 2056, 4096};
-    const std::array<float, 4> sample_rate_list = {44100.0f, 48000.0f, 88200.0f, 96000.0f};
-    const std::array<int, 8> bin_size_list = {256, 512, 1024, 2056, 4096, 8192};
+    const int default_buffer_size_index = 3;
+    const int default_sample_rate_index = 0;
+    const int default_bin_size_index = 2;
+    const vector<unsigned long> available_buffer_sizes = {32, 64, 128, 256, 512, 1024, 2056, 4096};
+    const vector<float> available_sample_rates = {44100.0f, 48000.0f, 88200.0f, 96000.0f};
+    const vector<int> available_bin_sizes = {256, 512, 1024, 2056, 4096, 8192};
 };
 
 } // CATE

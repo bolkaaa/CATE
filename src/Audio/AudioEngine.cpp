@@ -141,7 +141,7 @@ void AudioEngine::configure_stream_parameters()
     output_parameters.hostApiSpecificStreamInfo = nullptr;
 }
 
-vector<string> AudioEngine::get_device_list()
+vector<string> AudioEngine::get_available_devices()
 {
     int num_devices = Pa_GetDeviceCount();
     vector<string> device_list(num_devices);
@@ -154,6 +154,5 @@ vector<string> AudioEngine::get_device_list()
 
     return device_list;
 }
-
 
 } // CATE

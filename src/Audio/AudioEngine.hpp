@@ -52,7 +52,13 @@ public:
     int stop_stream();
 
     /* Get list of names of audio devices. */
-    vector<string> get_device_list();
+    vector<string> get_available_devices();
+
+    /* Get default input audio device index. */
+    const int get_default_input_device() const { return Pa_GetDefaultInputDevice(); }
+
+    /* Get default output audio device index. */
+    const int get_default_output_device() const { return Pa_GetDefaultOutputDevice(); }
 
 private:
     /* Run initialisation commands. */

@@ -48,7 +48,7 @@ set(SOURCE_FILES
         src/Audio/AudioSettings.cpp
         src/Audio/AudioSettings.hpp
         src/GUI/AudioSettingsWindow.cpp
-        src/GUI/AudioSettingsWindow.hpp)
+        src/GUI/AudioSettingsWindow.hpp src/GUI/Util.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

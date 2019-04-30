@@ -34,7 +34,7 @@ MainWindow::MainWindow(AudioProcess &audio_process, AudioSettings &audio_setting
                        KdTree &kd_tree)
         : ui(new Ui::MainWindow),
           audio_settings(audio_settings),
-          audio_settings_window(audio_settings, nullptr),
+          audio_settings_window(audio_settings, audio_process, nullptr),
           audio_process(audio_process),
           db(db),
           point_cloud(point_cloud),

@@ -23,6 +23,7 @@
 #include <QDialog>
 
 #include "src/Audio/AudioSettings.hpp"
+#include "src/Audio/AudioProcess.hpp"
 
 namespace Ui {
 
@@ -38,11 +39,15 @@ class AudioSettingsWindow : public QDialog
 Q_OBJECT
 
 public:
-    AudioSettingsWindow(AudioSettings &audio_settings, QWidget *parent = nullptr);
+    AudioSettingsWindow(AudioSettings &audio_settings, AudioProcess &audio_process, QWidget *parent = nullptr);
 
 private:
+    /* Populate the Qt ComboBox widgets with audio parameter values. */
+    void populate_boxes();
+
     Ui::AudioSettingsWindow *ui;
     AudioSettings &audio_settings;
+    AudioProcess &audio_process;
 };
 
 } // CATE
