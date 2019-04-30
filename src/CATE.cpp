@@ -42,7 +42,8 @@ int main(int argc, char *argv[])
     AudioSettings audio_settings;
     Corpus corpus(audio_settings);
     AudioProcess audio_process(audio_settings, corpus, point_cloud, kd_tree);
-    MainWindow main_window(audio_process, corpus, point_cloud, kd_tree);
+    MainWindow main_window(audio_process, audio_settings, corpus, point_cloud, kd_tree);
+
     main_window.show();
 
     return app.exec();

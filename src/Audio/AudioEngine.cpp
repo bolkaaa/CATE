@@ -25,7 +25,7 @@
 
 namespace CATE {
 
-AudioEngine::AudioEngine(const AudioSettings &audio_settings)
+AudioEngine::AudioEngine(AudioSettings &audio_settings)
         : audio_settings(audio_settings),
           is_running(false)
 {

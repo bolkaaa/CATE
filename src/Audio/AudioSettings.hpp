@@ -30,6 +30,12 @@ class AudioSettings
 public:
     AudioSettings();
 
+    /* Deleted copy constructor. */
+    AudioSettings(const AudioSettings &rhs) = delete;
+
+    /* Deleted copy assignment operator. */
+    void operator=(AudioSettings &rhs) = delete;
+
     /* Get default buffer size from fixed list of buffer sizes. */
     unsigned long default_buffer_size() const { return buffer_size_list[4]; }
 

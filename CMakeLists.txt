@@ -19,8 +19,6 @@ set(SOURCE_FILES
         src/Audio/AudioBuffer.cpp
         src/Audio/AudioFile.hpp
         src/Audio/AudioFile.cpp
-        src/Audio/RingBuffer.hpp
-        src/Audio/RingBuffer.cpp
         src/Analysis/FFT.hpp
         src/Analysis/FFT.cpp
         src/Analysis/Feature.cpp
@@ -48,7 +46,9 @@ set(SOURCE_FILES
         src/Audio/AudioRecorder.cpp
         src/Audio/AudioRecorder.hpp
         src/Audio/AudioSettings.cpp
-        src/Audio/AudioSettings.hpp)
+        src/Audio/AudioSettings.hpp
+        src/GUI/AudioSettingsWindow.cpp
+        src/GUI/AudioSettingsWindow.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

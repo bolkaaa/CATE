@@ -41,7 +41,7 @@ namespace CATE {
 class AudioEngine
 {
 public:
-    AudioEngine(const AudioSettings &audio_settings);
+    AudioEngine(AudioSettings &audio_settings);
 
     ~AudioEngine();
 
@@ -91,7 +91,7 @@ protected:
     PaStreamParameters input_parameters;
     PaStreamParameters output_parameters;
     PaError error;
-    AudioSettings audio_settings;
+    AudioSettings &audio_settings;
     bool is_running;
 };
 

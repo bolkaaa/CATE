@@ -30,8 +30,11 @@
 
 namespace CATE {
 
-MainWindow::MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &point_cloud, KdTree &kd_tree)
+MainWindow::MainWindow(AudioProcess &audio_process, AudioSettings &audio_settings, Corpus &db, PointCloud &point_cloud,
+                       KdTree &kd_tree)
         : ui(new Ui::MainWindow),
+          audio_settings(audio_settings),
+          audio_settings_window(audio_settings, nullptr),
           audio_process(audio_process),
           db(db),
           point_cloud(point_cloud),
@@ -45,6 +48,7 @@ MainWindow::MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &poin
     connect(ui->stop_recording, SIGNAL(clicked()), this, SLOT(stop_recording_button_pressed()));
     connect(ui->analyse_directory, SIGNAL(clicked()), this, SLOT(analyse_directory_button_pressed()));
     connect(ui->load_corpus, SIGNAL(clicked()), this, SLOT(load_corpus_button_pressed()));
+    connect(ui->audio_settings, SIGNAL(clicked()), this, SLOT(audio_settings_button_pressed()));
 
     connect(ui->grain_amplitude_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_amplitude(int)));
     connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
@@ -141,10 +145,10 @@ void MainWindow::load_corpus_button_pressed()
 string MainWindow::directory_dialog()
 {
     QString directory_path = QFileDialog::getExistingDirectory(this,
-                                                              tr("Select Directory"),
-                                                              get_home_dir_path(),
-                                                              QFileDialog::ShowDirsOnly |
-                                                              QFileDialog::DontResolveSymlinks);
+                                                               tr("Select Directory"),
+                                                               get_home_dir_path(),
+                                                               QFileDialog::ShowDirsOnly |
+                                                               QFileDialog::DontResolveSymlinks);
 
 
     return qstring_to_string(directory_path);
@@ -153,9 +157,9 @@ string MainWindow::directory_dialog()
 string MainWindow::save_file_dialog(string file_types)
 {
     QString file_path = QFileDialog::getSaveFileName(this,
-                                                    tr("File Destination"),
-                                                    get_home_dir_path(),
-                                                    tr(file_types.c_str()));
+                                                     tr("File Destination"),
+                                                     get_home_dir_path(),
+                                                     tr(file_types.c_str()));
 
     return qstring_to_string(file_path);
 }
@@ -179,9 +183,9 @@ int MainWindow::int_dialog_box(string message, int default_value, int min_value,
 string MainWindow::open_file_dialog(string file_types)
 {
     QString file_path = QFileDialog::getOpenFileName(this,
-                                                    tr("Select File"),
-                                                    get_home_dir_path(),
-                                                    tr(file_types.c_str()));
+                                                     tr("Select File"),
+                                                     get_home_dir_path(),
+                                                     tr(file_types.c_str()));
 
     return qstring_to_string(file_path);
 }
@@ -269,6 +273,11 @@ QString MainWindow::get_home_dir_path()
                                                    QStandardPaths::LocateDirectory);
 
     return home_dir_path;
+}
+
+void MainWindow::audio_settings_button_pressed()
+{
+    audio_settings_window.exec();
 }
 
 } // CATE

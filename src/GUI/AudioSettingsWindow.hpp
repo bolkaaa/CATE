@@ -17,42 +17,32 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef RING_BUFFER_HPP
-#define RING_BUFFER_HPP
+#ifndef AUDIOSETTINGSWINDOW_HPP
+#define AUDIOSETTINGSWINDOW_HPP
 
-#include <algorithm>
+#include <QDialog>
 
-#include "AudioBuffer.hpp"
+#include "src/Audio/AudioSettings.hpp"
 
-/* Based on lock-free ring buffer implementation in "Audio Anecdotes Volume 2
- * (Greenebaum, Barzel)". Will be used if I do some concurrent audio processing
- * later on (not doing so at the moment). */
+namespace Ui {
+
+/* From .ui file */
+class AudioSettingsWindow;
+
+} // Ui
 
 namespace CATE {
 
-class RingBuffer
+class AudioSettingsWindow : public QDialog
 {
+Q_OBJECT
+
 public:
-    /* Allocate memory for ring buffer. */
-    explicit RingBuffer(int size);
-
-    /* Insert element at head. */
-    void push(float elem);
-
-    /* Get tail element. */
-    void pop(float &output);
-
-    /* Calculate samples available in buffer. */
-    int samples_available();
-
-    /* Calculate space left in buffer. */
-    int space_available();
+    AudioSettingsWindow(AudioSettings &audio_settings, QWidget *parent = nullptr);
 
 private:
-    AudioBuffer data;
-    int head;
-    int tail;
-    int high_water_mark;
+    Ui::AudioSettingsWindow *ui;
+    AudioSettings &audio_settings;
 };
 
 } // CATE

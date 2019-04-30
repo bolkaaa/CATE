@@ -28,6 +28,7 @@
 #include "src/Corpus/KdTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioProcess.hpp"
+#include "AudioSettingsWindow.hpp"
 
 using std::string;
 
@@ -36,7 +37,7 @@ namespace Ui {
 /* From .ui file */
 class MainWindow;
 
-}
+} // Ui
 
 namespace CATE {
 
@@ -47,7 +48,8 @@ class MainWindow : public QMainWindow
 Q_OBJECT
 
 public:
-    MainWindow(AudioProcess &audio_process, Corpus &db, PointCloud &point_cloud, KdTree &kd_tree);
+    MainWindow(AudioProcess &audio_process, AudioSettings &audio_settings, Corpus &db, PointCloud &point_cloud,
+               KdTree &kd_tree);
 
     ~MainWindow();
 
@@ -80,7 +82,8 @@ private:
     void rebuild_audio_process();
 
     Ui::MainWindow *ui;
-    AudioSettings audio_settings;
+    AudioSettingsWindow audio_settings_window;
+    AudioSettings &audio_settings;
     Corpus &db;
     AudioProcess &audio_process;
     PointCloud &point_cloud;
@@ -88,6 +91,7 @@ private:
     const int slider_max = 127;
 
 public slots:
+
     /* When playback start button in UI is pressed, audio stream is started. */
     void start_playback_button_pressed();
 
@@ -105,6 +109,9 @@ public slots:
 
     /* When load corpus button in UI is pressed, user selects existing corpus data to use. */
     void load_corpus_button_pressed();
+
+    /* When audio settings button in UI is pressed, dialog box allows setting audio parameters. */
+    void audio_settings_button_pressed();
 
     /* Set grain attack time through slider. */
     void set_grain_attack(int new_value);
