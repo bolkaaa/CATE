@@ -56,35 +56,50 @@ void AudioSettingsWindow::sample_rate_changed(int selection_index)
 {
     audio_process.stop_stream();
     audio_settings.set_sample_rate(selection_index);
-    audio_process.start_stream();
+    if (audio_process.is_ready())
+    {
+        audio_process.start_stream();
+    }
 }
 
 void AudioSettingsWindow::buffer_size_changed(int selection_index)
 {
     audio_process.stop_stream();
     audio_settings.set_buffer_size(selection_index);
-    audio_process.start_stream();
+    if (audio_process.is_ready())
+    {
+        audio_process.start_stream();
+    }
 }
 
 void AudioSettingsWindow::bin_size_changed(int selection_index)
 {
     audio_process.stop_stream();
     audio_settings.set_bin_size(selection_index);
-    audio_process.start_stream();
+    if (audio_process.is_ready())
+    {
+        audio_process.start_stream();
+    }
 }
 
 void AudioSettingsWindow::input_device_changed(int selection_index)
 {
     audio_process.stop_stream();
     audio_process.set_input_device(selection_index);
-    audio_process.start_stream();
+    if (audio_process.is_ready())
+    {
+        audio_process.start_stream();
+    }
 }
 
 void AudioSettingsWindow::output_device_changed(int selection_index)
 {
     audio_process.stop_stream();
     audio_process.set_output_device(selection_index);
-    audio_process.start_stream();
+    if (audio_process.is_ready())
+    {
+        audio_process.start_stream();
+    }
 }
 
 } // CATE

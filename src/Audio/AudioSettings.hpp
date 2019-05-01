@@ -26,7 +26,8 @@ using std::vector;
 
 namespace CATE {
 
-/* Functionality for storing audio settings used throughout the program. */
+/* Functionality for storing audio settings used throughout the program, with possible settings for each
+ * parameter stored as a fixed number of options.  */
 class AudioSettings
 {
 public:

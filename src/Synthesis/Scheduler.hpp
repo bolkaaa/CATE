@@ -75,8 +75,8 @@ private:
     /* Fill buffer from filename and file position. */
     void fill_buffer(int marker, const string &file_name);
 
-    int max_grains = 16;
-    int grain_size = 1024;
+    int max_grains = 128;
+    int grain_size = 256;
     vector<Grain> grains;
     map<string, AudioFile> files;
     AudioBuffer buffer;

@@ -67,7 +67,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
     {
         input_sum += std::pow(*input++, 2);
 
-        float out = amplitude * granulator.synthesize(current_marker, current_file_path);
+        const float out = amplitude * granulator.synthesize(current_marker, current_file_path);
 
         *output++ = out; // L
         *output++ = out; // R

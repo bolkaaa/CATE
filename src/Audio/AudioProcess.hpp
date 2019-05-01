@@ -70,10 +70,10 @@ public:
     /* Set grain size of synthesis grains. */
     void set_grain_size(int new_grain_size);
 
-    /* Boolean flag for whether audio process is ready to be used. */
+    /* Get flag for whether audio process is ready to be used. */
     bool is_ready() { return ready; }
 
-    /* Enable ready flag. */
+    /* Enable "ready" flag. */
     void enable() { ready = true; }
 
     /* Save current audio recording to disk. */

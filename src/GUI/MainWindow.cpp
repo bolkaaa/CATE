@@ -225,8 +225,8 @@ void MainWindow::set_grain_density(int new_value)
 
 void MainWindow::set_grain_size(int new_value)
 {
-    const int min = 64;
-    const int max = 1024;
+    const int min = 32;
+    const int max = 256;
     int grain_size = static_cast<int>(scale_slider(new_value, min, max));
     audio_process.set_grain_size(grain_size);
     update_number_label(ui->grain_size_value, grain_size);
