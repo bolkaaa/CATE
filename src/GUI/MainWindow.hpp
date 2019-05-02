@@ -60,10 +60,10 @@ private:
     string directory_dialog();
 
     /* Prompt user to select a file to open, getting its path. */
-    string open_file_dialog(string file_types);
+    string open_file_dialog(const string &file_types);
 
     /* Prompt user to select a file path to save to, getting its path. */
-    string save_file_dialog(string file_types);
+    string save_file_dialog(const string &file_types);
 
     /* Convert slider value to a value within a range. */
     float scale_slider(int val, float min, float max);
@@ -84,7 +84,7 @@ private:
     AudioProcess &audio_process;
     PointCloud &point_cloud;
     KdTree &kd_tree;
-    const int slider_max = 127;
+    const int slider_resolution = 1024;
 
 public slots:
 

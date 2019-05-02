@@ -36,13 +36,19 @@ MainWindow::MainWindow(AudioProcess &audio_process, AudioSettings &audio_setting
                        KdTree &kd_tree)
         : ui(new Ui::MainWindow),
           audio_settings(audio_settings),
-          audio_settings_window(audio_settings, audio_process, nullptr),
+          audio_settings_window(audio_settings, audio_process),
           audio_process(audio_process),
           db(db),
           point_cloud(point_cloud),
           kd_tree(kd_tree)
 {
     ui->setupUi(this);
+
+    ui->grain_attack_slider->setMaximum(slider_resolution);
+    ui->grain_sustain_slider->setMaximum(slider_resolution);
+    ui->grain_release_slider->setMaximum(slider_resolution);
+    ui->grain_density_slider->setMaximum(slider_resolution);
+    ui->grain_size_slider->setMaximum(slider_resolution);
 
     connect(ui->start_playback, SIGNAL(clicked()), this, SLOT(start_playback_button_pressed()));
     connect(ui->stop_playback, SIGNAL(clicked()), this, SLOT(stop_playback_button_pressed()));
@@ -52,8 +58,8 @@ MainWindow::MainWindow(AudioProcess &audio_process, AudioSettings &audio_setting
     connect(ui->load_corpus, SIGNAL(clicked()), this, SLOT(load_corpus_button_pressed()));
     connect(ui->audio_settings, SIGNAL(clicked()), this, SLOT(audio_settings_button_pressed()));
 
-    connect(ui->grain_amplitude_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_sustain(int)));
     connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
+    connect(ui->grain_sustain_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_sustain(int)));
     connect(ui->grain_release_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
     connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
     connect(ui->grain_size_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_size(int)));
@@ -156,7 +162,7 @@ string MainWindow::directory_dialog()
     return qstring_to_string(directory_path);
 }
 
-string MainWindow::save_file_dialog(string file_types)
+string MainWindow::save_file_dialog(const string &file_types)
 {
     QString file_path = QFileDialog::getSaveFileName(this,
                                                      tr("File Destination"),
@@ -166,7 +172,7 @@ string MainWindow::save_file_dialog(string file_types)
     return qstring_to_string(file_path);
 }
 
-string MainWindow::open_file_dialog(string file_types)
+string MainWindow::open_file_dialog(const string &file_types)
 {
     QString file_path = QFileDialog::getOpenFileName(this,
                                                      tr("Select File"),
@@ -194,7 +200,7 @@ void MainWindow::set_grain_sustain(int new_value)
     const float max = 1.0f;
     float sustain = scale_slider(new_value, min, max);
     audio_process.set_grain_sustain(sustain);
-    update_number_label(ui->grain_amplitude_value, sustain);
+    update_number_label(ui->grain_sustain_value, sustain);
 }
 
 void MainWindow::set_grain_attack(int new_value)
@@ -227,7 +233,7 @@ void MainWindow::set_grain_density(int new_value)
 void MainWindow::set_grain_size(int new_value)
 {
     const int min = 32;
-    const int max = 1024;
+    const int max = 256;
     int grain_size = static_cast<int>(scale_slider(new_value, min, max));
     audio_process.set_grain_size(grain_size);
     update_number_label(ui->grain_size_value, grain_size);
@@ -235,7 +241,7 @@ void MainWindow::set_grain_size(int new_value)
 
 float MainWindow::scale_slider(int val, float min, float max)
 {
-    float scaled_val = (max - min) * (static_cast<float>(val) / slider_max) + min;
+    float scaled_val = (max - min) * (static_cast<float>(val) / slider_resolution) + min;
     return scaled_val;
 }
 
@@ -257,5 +263,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     audio_process.stop_stream();
 }
+
 
 } // CATE

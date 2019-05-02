@@ -426,7 +426,7 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_15">
      <item alignment="Qt::AlignHCenter">
-      <widget class="QSlider" name="grain_amplitude_slider">
+      <widget class="QSlider" name="grain_sustain_slider">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -453,14 +453,14 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item alignment="Qt::AlignHCenter">
-        <widget class="QLabel" name="grain_amplitude_name">
+        <widget class="QLabel" name="grain_sustain_name">
          <property name="text">
-          <string>Grain Amplitude</string>
+          <string>Grain Sustain</string>
          </property>
         </widget>
        </item>
        <item alignment="Qt::AlignHCenter">
-        <widget class="QLabel" name="grain_amplitude_value">
+        <widget class="QLabel" name="grain_sustain_value">
          <property name="font">
           <font>
            <pointsize>10</pointsize>

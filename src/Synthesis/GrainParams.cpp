@@ -3,9 +3,9 @@
 
 GrainParams::GrainParams()
     : max_grains(32),
-      grain_size(1024),
+      grain_size(256),
       grain_density(100),
-      grain_width(0.999)
+      grain_width(0.5)
 {
 }
 
