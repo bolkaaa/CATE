@@ -22,6 +22,7 @@
 #include <QInputDialog>
 #include <portaudio.h>
 #include <QStandardPaths>
+#include <QtWidgets>
 
 #include "Util.hpp"
 #include "MainWindow.hpp"
@@ -226,7 +227,7 @@ void MainWindow::set_grain_density(int new_value)
 void MainWindow::set_grain_size(int new_value)
 {
     const int min = 32;
-    const int max = 256;
+    const int max = 1024;
     int grain_size = static_cast<int>(scale_slider(new_value, min, max));
     audio_process.set_grain_size(grain_size);
     update_number_label(ui->grain_size_value, grain_size);
@@ -250,6 +251,11 @@ QString MainWindow::get_home_dir_path()
 void MainWindow::audio_settings_button_pressed()
 {
     audio_settings_window.exec();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    audio_process.stop_stream();
 }
 
 } // CATE

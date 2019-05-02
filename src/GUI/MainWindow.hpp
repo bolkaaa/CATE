@@ -24,6 +24,7 @@
 #include <QSlider>
 #include <QString>
 #include <QLabel>
+#include <QEvent>
 
 #include "src/Corpus/Corpus.hpp"
 #include "src/Corpus/KdTree.hpp"
@@ -72,6 +73,9 @@ private:
 
     /* When database files have changed, recreate data points and reload the granulator. */
     void rebuild_audio_process();
+
+    /* Overriding Qt closeEvent function to define behaviour for when window is closed. */
+    void closeEvent(QCloseEvent *event);
 
     Ui::MainWindow *ui;
     AudioSettingsWindow audio_settings_window;
