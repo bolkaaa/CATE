@@ -44,7 +44,7 @@ private:
 
 template<class T>
 Rand<T>::Rand(T min, T max)
-    : gen(random_device{}())
+        : gen(random_device{}())
 {
 }
 
