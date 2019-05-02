@@ -40,40 +40,40 @@ public:
     void operator=(AudioSettings &rhs) = delete;
 
     /* Get default buffer size from fixed list of buffer sizes. */
-    unsigned long default_buffer_size() const { return available_buffer_sizes[4]; }
+    inline unsigned long default_buffer_size() const { return available_buffer_sizes[4]; }
 
     /* Get default sample rate from fixed list of sample rates. */
-    float default_sample_rate() const { return available_sample_rates[0]; }
+    inline float default_sample_rate() const { return available_sample_rates[0]; }
 
     /* Get default FFT bin size from fixed list of bin sizes. */
-    int default_bin_size() const { return available_bin_sizes[2]; }
+    inline int default_bin_size() const { return available_bin_sizes[2]; }
 
     /* Get current buffer size. */
-    unsigned long get_buffer_size() const { return buffer_size; }
+    inline unsigned long get_buffer_size() const { return buffer_size; }
 
     /* Get current sample rate. */
-    float get_sample_rate() const { return sample_rate; }
+    inline float get_sample_rate() const { return sample_rate; }
 
     /* Get current FFT bin size. */
-    int get_bin_size() const { return bin_size; }
+    inline int get_bin_size() const { return bin_size; }
 
     /* Get list of available default buffer sizes. */
-    const vector<unsigned long> get_available_buffer_sizes() const { return available_buffer_sizes; }
+    inline const vector<unsigned long> get_available_buffer_sizes() const { return available_buffer_sizes; }
 
     /* Get list of available default sample rates. */
-    const vector<float> get_available_sample_rates() const { return available_sample_rates; }
+    inline const vector<float> get_available_sample_rates() const { return available_sample_rates; }
 
     /* Get list of available default bin sizes. */
-    const vector<int> get_available_bin_sizes() const { return available_bin_sizes; }
+    inline const vector<int> get_available_bin_sizes() const { return available_bin_sizes; }
 
     /* Get default buffer size index. */
-    const int get_default_buffer_size_index() const { return default_buffer_size_index; }
+    inline const int get_default_buffer_size_index() const { return default_buffer_size_index; }
 
     /* Get default sample rate index. */
-    const int get_default_sample_rate_index() const { return default_sample_rate_index; }
+    inline const int get_default_sample_rate_index() const { return default_sample_rate_index; }
 
     /* Get default bin size index. */
-    const int get_default_bin_size_index() const { return default_bin_size_index; }
+    inline const int get_default_bin_size_index() const { return default_bin_size_index; }
 
     /* Set buffer size through index of default buffer sizes. */
     void set_buffer_size(int selection_index);

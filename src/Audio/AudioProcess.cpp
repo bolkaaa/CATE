@@ -126,8 +126,9 @@ void AudioProcess::save_recording(const string &output_path)
 void AudioProcess::select_unit(float *input)
 {
     fft.fill(input);
-    fft.compute();
-    fft.get_magspec(magspec);
+    fft.compute_spectrum();
+    fft.compute_magspec();
+    magspec = fft.get_magspec();
 
     const float search_points[3] = {
             feature.centroid(magspec),

@@ -47,23 +47,22 @@ public:
     ~FFT();
 
     /* Fill input data array. */
-    void fill(float *input);
+    void fill(const float *input);
 
-    /* Compute DFT and magnitude spectrum of input data. */
-    void compute();
+    /* Compute complex spectrum of input data. */
+    void compute_spectrum();
 
-    /* Pass magnitude spectrum array to output buffer. */
-    void get_magspec(vector<float> &output);
+    /* Compute magnitude spectrum from complex spectrum. */
+    void compute_magspec();
+
+    /* Get magnitude spectrum vector. */
+    inline vector<float> get_magspec() { return magspec; };
 
     /* Calculate Hanning window function for a given index and size n. */
     float window(int i, int n);
 
 private:
-    /* Compute magnitude spectrum from complex spectrum. */
-    void compute_magspec();
-
-    int bin_size;
-    int buffer_size;
+    const AudioSettings &audio_settings;
     int output_size;
     vector<double> data;
     vector<complex<double> > spectrum;

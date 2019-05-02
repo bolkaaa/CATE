@@ -99,22 +99,20 @@ void Corpus::sliding_window_analysis()
 {
     int segment_index = 0;
     FFT fft(audio_settings);
-    int bin_size = audio_settings.get_bin_size();
-    int buffer_size = audio_settings.get_buffer_size();
-    vector<float> magspec(bin_size);
 
     for (const auto &file : files)
     {
-        map<int, AudioBuffer> frames = segment_frames(file.second.data, buffer_size);
+        map<int, AudioBuffer> frames = segment_frames(file.second.data, audio_settings.get_buffer_size());
 
         for (auto &frame : frames)
         {
             int marker = frame.first;
             AudioBuffer segment = frame.second;
             fft.fill(&segment[0]);
-            fft.compute();
-            fft.get_magspec(magspec);
-            Feature feature(bin_size);
+            fft.compute_spectrum();
+            fft.compute_magspec();
+            vector<float> magspec = fft.get_magspec();
+            Feature feature(audio_settings.get_bin_size());
 
             float centroid = feature.centroid(magspec);
             float flatness = feature.flatness(magspec);

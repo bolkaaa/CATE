@@ -31,15 +31,14 @@ using std::complex;
 namespace CATE {
 
 FFT::FFT(const AudioSettings &audio_settings)
-        : bin_size(audio_settings.get_bin_size()),
-          buffer_size(audio_settings.get_buffer_size()),
-          output_size(bin_size / 2 + 1),
-          data(vector<double>(bin_size)),
+        : audio_settings(audio_settings),
+          output_size(audio_settings.get_bin_size() / 2 + 1),
+          data(vector<double>(audio_settings.get_bin_size())),
           spectrum(vector<complex<double> >(output_size)),
           magspec(vector<float>(output_size)),
-          plan(fftw_plan_dft_r2c_1d(bin_size,
-                                    reinterpret_cast<double*>(&data[0]),
-                                    reinterpret_cast<fftw_complex*>(&spectrum[0]),
+          plan(fftw_plan_dft_r2c_1d(audio_settings.get_bin_size(),
+                                    reinterpret_cast<double *>(&data[0]),
+                                    reinterpret_cast<fftw_complex *>(&spectrum[0]),
                                     FFTW_ESTIMATE))
 {
 }
@@ -55,33 +54,24 @@ float FFT::window(int i, int n)
     return hanning;
 }
 
-void FFT::fill(float *input)
+void FFT::fill(const float *input)
 {
     /* Fill data array with input multiplied by windowing function. */
-    for (auto i = 0; i < buffer_size; ++i)
+    for (auto i = 0; i < audio_settings.get_buffer_size(); ++i)
     {
-        data[i] = input[i] * window(i, bin_size);
+        data[i] = input[i] * window(i, audio_settings.get_bin_size());
     }
 
     /* Pad range from <frames_per_buffer> to <bin_size> with zeroes. */
-    for (auto i = buffer_size; i < bin_size; ++i)
+    for (auto i = audio_settings.get_buffer_size(); i < audio_settings.get_bin_size(); ++i)
     {
         data[i] = 0.0;
     }
 }
 
-void FFT::compute()
+void FFT::compute_spectrum()
 {
     fftw_execute(plan);
-    compute_magspec();
-}
-
-void FFT::get_magspec(vector<float> &output)
-{
-    for (auto i = 0; i < output_size; ++i)
-    {
-        output[i] = magspec[i];
-    }
 }
 
 void FFT::compute_magspec()
