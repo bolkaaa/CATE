@@ -23,7 +23,7 @@
 #include <vector>
 
 #include <nlohmann/json.hpp>
-#include "../../include/nanoflann.hpp"
+#include "include/nanoflann.hpp"
 
 #include "FileTree.hpp"
 #include "Entry.hpp"
@@ -35,6 +35,7 @@
 
 using std::vector;
 using std::string;
+using std::pair;
 using Json = nlohmann::json;
 
 namespace CATE {
@@ -48,26 +49,23 @@ class Corpus
 public:
     Corpus(const AudioSettings &audio_settings);
 
-    /* Load database from another file. */
-    void set_json_file(const string &new_file_path);
+    /* Load analysis data from another file. */
+    void set_file(const string &new_file_path);
 
-    /* Read JSON file into memory. */
-    void read_json_data();
+    /* Read analysis data file into memory. */
+    void read_file();
 
-    /* Save the JSON database to JSON file, with pretty printing. */
-    void write_json_file();
-
-    /* Add a single file to the database. */
-    void add_file(const string &path);
+    /* Save the analysis data to file, with pretty printing. */
+    void write_file();
 
     /* Add all files deeper than specified directory to the database. */
     void add_directory(const string &directory_path);
 
-    /* Iterate over JSON database and load audio files into <files>. */
-    void load_files();
+    /* Iterate over paths in db object and load audio files into map. */
+    void load_audio_from_db();
 
     /* For each audio file in database, compute audio features for a sliding
-     * window of <frames_per_buffer> samples,and store in a JSON file. */
+     * window of <frames_per_buffer> samples, and store in file. */
     void sliding_window_analysis();
 
     /* Convert all files in database to a new sample rate. */
@@ -77,15 +75,19 @@ public:
     PointCloud create_point_cloud();
 
     /* Get access to audio files. */
-    map<string, AudioFile> get_files() const { return files; };
+    inline map<string, AudioFile> get_files() const { return files; };
 
     /* Returns true if data within db object is not null. */
     bool has_data();
 
 private:
+    /* Calculate magnitude spectrum of frame of audio data. */
+    vector<float> calculate_frame_spectrum(const pair<int, AudioBuffer> &frame);
+
     Json db;
-    string db_file_path;
+    string data_path;
     const AudioSettings &audio_settings;
+    FFT fft;
     map<string, AudioFile> files;
 };
 

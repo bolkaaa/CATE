@@ -35,9 +35,8 @@ class Point
 public:
     int marker;
     string file_path;
-    float centroid;
-    float flatness;
-    float kurtosis;
+    float a;
+    float b;
 };
 
 /* Stores a container of data points and functions used by K-d tree system. */
@@ -47,24 +46,23 @@ public:
     vector<Point> points;
 
     /* Return number of data points. */
-    inline int kdtree_get_point_count() const
-    { return points.size(); }
+    inline int kdtree_get_point_count() const { return points.size(); }
 
     /* Get element at dimension dim of point i in class. */
     inline float kdtree_get_pt(const int i, const int dim) const
     {
         if (dim == 0)
         {
-            return points[i].centroid;
-        } else
+            return points[i].a;
+        }
+        else
         {
-            return points[i].flatness;
+            return points[i].b;
         }
     }
 
-    template<class BBOX>
-    bool kdtree_get_bbox(BBOX &) const
-    { return false; }
+    template <class BBOX>
+    bool kdtree_get_bbox(BBOX &) const { return false; }
 };
 
 } // CATE

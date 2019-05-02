@@ -38,15 +38,9 @@ using std::string;
 namespace CATE {
 
 Corpus::Corpus(const AudioSettings &audio_settings)
-        : audio_settings(audio_settings)
+        : audio_settings(audio_settings),
+          fft(audio_settings)
 {
-}
-
-void Corpus::add_file(const string &path)
-{
-    Entry entry(path);
-    Json json_object = to_json_entry(entry);
-    db.push_back(json_object);
 }
 
 void Corpus::add_directory(const string &directory_path)
@@ -56,24 +50,25 @@ void Corpus::add_directory(const string &directory_path)
 
     for (const auto &path : file_paths)
     {
-        add_file(path);
+        AudioFile file(path);
+        files.insert(pair<string, AudioFile>(path, file));
     }
 }
 
-void Corpus::set_json_file(const string &new_file_path)
+void Corpus::set_file(const string &new_file_path)
 {
-    db_file_path = new_file_path;
+    data_path = new_file_path;
 }
 
-void Corpus::write_json_file()
+void Corpus::write_file()
 {
-    std::ofstream file(db_file_path);
+    std::ofstream file(data_path);
     file << std::setw(4) << db;
 }
 
-void Corpus::read_json_data()
+void Corpus::read_file()
 {
-    std::ifstream ifstream(db_file_path);
+    std::ifstream ifstream(data_path);
     ifstream >> db;
 }
 
@@ -85,47 +80,46 @@ void Corpus::convert_sample_rates(double new_sr)
     }
 }
 
-void Corpus::load_files()
+vector<float> Corpus::calculate_frame_spectrum(const pair<int, AudioBuffer> &frame)
 {
-    for (const auto &entry : db)
+    AudioBuffer buffer(frame.second);
+
+    fft.fill(&buffer[0]);
+    fft.compute_spectrum();
+    fft.compute_magspec();
+    vector<float> magspec = fft.get_magspec();
+
+    return magspec;
+}
+
+void Corpus::load_audio_from_db()
+{
+    for (auto entry : db)
     {
-        const string path = entry["path"];
-        std::pair<string, AudioFile> file(path, AudioFile(path));
-        files.insert(file);
+        string path = entry["path"];
+        files[path] = AudioFile(path);
     }
 }
 
 void Corpus::sliding_window_analysis()
 {
-    int segment_index = 0;
-    FFT fft(audio_settings);
-
-    for (const auto &file : files)
+    for (auto &file : files)
     {
         map<int, AudioBuffer> frames = segment_frames(file.second.data, audio_settings.get_buffer_size());
 
         for (auto &frame : frames)
         {
-            int marker = frame.first;
-            AudioBuffer segment = frame.second;
-            fft.fill(&segment[0]);
-            fft.compute_spectrum();
-            fft.compute_magspec();
-            vector<float> magspec = fft.get_magspec();
+            vector<float> magspec = calculate_frame_spectrum(frame);
             Feature feature(audio_settings.get_bin_size());
+            Json unit;
 
-            float centroid = feature.centroid(magspec);
-            float flatness = feature.flatness(magspec);
-            float kurtosis = feature.kurtosis(magspec);
+            unit["path"] = file.first;
+            unit["marker"] = frame.first;
+            unit["centroid"] = feature.centroid(magspec);
+            unit["flatness"] = feature.flatness(magspec);
 
-            db[segment_index]["path"] = file.first;
-            db[segment_index]["markers"].emplace_back(marker);
-            db[segment_index]["centroid"].emplace_back(centroid);
-            db[segment_index]["flatness"].emplace_back(flatness);
-            db[segment_index]["kurtosis"].emplace_back(kurtosis);
+            db.emplace_back(unit);
         }
-
-        ++segment_index;
     }
 }
 
@@ -135,20 +129,14 @@ PointCloud Corpus::create_point_cloud()
 
     for (auto entry : db)
     {
-        int num_segments = entry["markers"].size();
+        int marker = entry["marker"];
+        string file_path = entry["path"];
+        float centroid = entry["centroid"];
+        float flatness = entry["flatness"];
 
-        for (auto i = 0; i < num_segments; ++i)
-        {
-            int marker = entry["markers"][i];
-            string file_path = entry["path"];
-            float centroid = entry["centroid"][i];
-            float flatness = entry["flatness"][i];
-            float kurtosis = entry["kurtosis"][i];
+        Point point {marker, file_path, centroid, flatness};
 
-            Point point {marker, file_path, centroid, flatness, kurtosis};
-
-            cloud.points.emplace_back(point);
-        }
+        cloud.points.emplace_back(point);
     }
 
     return cloud;
@@ -158,6 +146,5 @@ bool Corpus::has_data()
 {
     return !db.empty();
 }
-
 
 } // CATE

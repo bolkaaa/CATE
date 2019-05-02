@@ -124,11 +124,10 @@ void MainWindow::analyse_directory_button_pressed()
         return;
     }
 
-    db.set_json_file(db_path);
+    db.set_file(db_path);
     db.add_directory(dir_path);
-    db.load_files();
     db.sliding_window_analysis();
-    db.write_json_file();
+    db.write_file();
 
     rebuild_audio_process();
 }
@@ -142,9 +141,9 @@ void MainWindow::load_corpus_button_pressed()
         return;
     }
 
-    db.set_json_file(db_path);
-    db.read_json_data();
-    db.load_files();
+    db.set_file(db_path);
+    db.read_file();
+    db.load_audio_from_db();
 
     rebuild_audio_process();
 }
