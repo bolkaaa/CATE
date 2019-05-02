@@ -38,7 +38,7 @@ AudioProcess::AudioProcess(AudioSettings &audio_settings, Corpus &db, PointCloud
           feature(audio_settings.get_bin_size()),
           return_indices(vector<size_t>(num_search_results)),
           distances(vector<float>(num_search_results)),
-          granulator(db.get_files(), audio_settings.get_sample_rate()),
+          granulator(audio_settings.get_sample_rate()),
           amplitude(0.5),
           ready(false),
           audio_recorder(audio_settings.get_sample_rate()),
@@ -58,16 +58,13 @@ int AudioProcess::processing_callback(const void *input_buffer,
     auto *output = static_cast<float *>(output_buffer);
     auto i = 0;
     float input_sum = 0.0f;
-    float rms = 0.0f;
 
     select_unit(input);
 
     /* Main audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
-        input_sum += std::pow(*input++, 2);
-
-        const float out = amplitude * granulator.synthesize(current_marker, current_file_path);
+        const float out = granulator.synthesize(current_marker, current_file_path);
 
         *output++ = out; // L
         *output++ = out; // R
@@ -77,8 +74,6 @@ int AudioProcess::processing_callback(const void *input_buffer,
             audio_recorder.write(out);
         }
     }
-
-    rms = std::sqrt(input_sum / frames_per_buffer);
 
     return paContinue;
 }
@@ -93,9 +88,9 @@ void AudioProcess::stop_recording()
     recording = false;
 }
 
-void AudioProcess::set_amplitude(float new_amplitude)
+void AudioProcess::set_grain_sustain(float new_grain_sustain)
 {
-    amplitude = new_amplitude;
+    granulator.set_grain_sustain(new_grain_sustain);
 }
 
 void AudioProcess::set_grain_attack(float new_grain_attack)

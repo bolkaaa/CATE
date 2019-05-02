@@ -28,6 +28,7 @@
 #include "Grain.hpp"
 #include "EnvelopeParams.hpp"
 #include "Rand.hpp"
+#include "GrainParams.hpp"
 
 using std::vector;
 using std::array;
@@ -39,25 +40,13 @@ namespace CATE {
 class Scheduler
 {
 public:
-    Scheduler(const map<string, AudioFile> &files, float sample_rate);
+    Scheduler(GrainParams &grain_params, EnvelopeParams &envelope_params, float sample_rate);
 
     /* Load audio file map into scheduler. */
     void load_files(const map<string, AudioFile> &new_files);
 
     /* Calculate grain activations. */
     float schedule(int marker, const string &filename);
-
-    /* Set new grain attack value. */
-    void set_grain_attack(float new_grain_attack);
-
-    /* Set new grain release value. */
-    void set_grain_release(float new_grain_release);
-
-    /* Set new grain density value. */
-    void set_grain_density(int new_grain_density);
-
-    /* Set new grain size. */
-    void set_grain_size(int new_grain_size);
 
 private:
     /* Mix all currently active grains to a single output. */
@@ -72,18 +61,14 @@ private:
     /* Fill buffer from filename and file position. */
     void fill_buffer(int marker, const string &file_name);
 
-    int max_grains = 128;
-    int grain_size = 256;
-    int grain_density;
-    float grain_width;
-    float sample_rate;
+    GrainParams &grain_params;
+    EnvelopeParams &envelope_params;
     vector<Grain> grains;
     map<string, AudioFile> files;
     AudioBuffer buffer;
-    EnvelopeParams env_params;
-    Rand<float> rand;
     int next_onset;
-    int grain_index;
+    Rand<float> rand;
+    float sample_rate;
 };
 
 } // CATE

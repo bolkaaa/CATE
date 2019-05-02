@@ -25,20 +25,16 @@
 #include "src/Audio/AudioFile.hpp"
 #include "src/Corpus/Corpus.hpp"
 #include "EnvelopeParams.hpp"
+#include "GrainParams.hpp"
 #include "Scheduler.hpp"
-
-using std::map;
 
 namespace CATE {
 
-/* Granulator is the high-level interface that contains all the functionality
- * for the granular synthesis process. The audio files within the set of audio files are stored in memory as a
- * std::map, so the audio data can be retrieved through providing the filename.
- * */
+/* Granulator is the high-level interface that contains all the functionality for the granular synthesis process. */
 class Granulator
 {
 public:
-    Granulator(const map<string, AudioFile> &files, float sample_rate);
+    explicit Granulator(float sample_rate);
 
     /* Load files from corpus into files variable. */
     void load_files(const Corpus &corpus);
@@ -48,6 +44,9 @@ public:
 
     /* Set new grain attack value. */
     void set_grain_attack(float new_grain_attack);
+
+    /* Set new grain sustain value. */
+    void set_grain_sustain(float new_grain_sustain);
 
     /* Set new grain decay value. */
     void set_grain_release(float new_grain_release);
@@ -59,6 +58,8 @@ public:
     void set_grain_size(int new_grain_size);
 
 private:
+    GrainParams grain_params;
+    EnvelopeParams envelope_params;
     Scheduler scheduler;
     float sample_rate;
 };

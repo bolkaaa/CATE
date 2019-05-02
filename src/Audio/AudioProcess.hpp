@@ -62,7 +62,7 @@ public:
     void set_grain_release(float new_grain_release);
 
     /* Set amplitude of synthesis output. */
-    void set_amplitude(float new_amplitude);
+    void set_grain_sustain(float new_grain_sustain);
 
     /* Set density value of synthesis grains. */
     void set_grain_density(int new_grain_density);

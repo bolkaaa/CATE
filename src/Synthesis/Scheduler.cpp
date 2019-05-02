@@ -5,23 +5,20 @@
 
 namespace CATE {
 
-Scheduler::Scheduler(const map<string, AudioFile> &files, float sample_rate)
-        : files(files),
+Scheduler::Scheduler(GrainParams &grain_params, EnvelopeParams &envelope_params, float sample_rate)
+        : grain_params(grain_params),
+          envelope_params(envelope_params),
           sample_rate(sample_rate),
-          buffer(AudioBuffer(grain_size)),
-          grains(vector<Grain>(max_grains)),
-          env_params(EnvelopeParams(grain_size)),
+          buffer(AudioBuffer(grain_params.get_grain_size())),
+          grains(vector<Grain>(grain_params.get_max_grains())),
           next_onset(0),
-          grain_index(0),
-          grain_density(100),
-          grain_width(0.5),
           rand(Rand<float>(0.0f, 1.0f))
 {
 }
 
 void Scheduler::fill_buffer(int marker, const string &file_name)
 {
-    for (int i = 0; i < grain_size; ++i)
+    for (int i = 0; i < grain_params.get_grain_size(); ++i)
     {
         int file_pos = i + marker;
 
@@ -43,7 +40,7 @@ void Scheduler::create_grain(int marker, const string &file_name)
         if (!grain.is_active())
         {
             fill_buffer(marker, file_name);
-            grain = Grain(buffer, env_params);
+            grain = Grain(buffer, envelope_params);
             return;
         }
     }
@@ -80,29 +77,9 @@ float Scheduler::synthesize_grains()
 int Scheduler::get_next_inter_onset()
 {
     float random_value = rand.get();
-    auto grains_per_second = static_cast<int>(sample_rate / grain_density);
+    auto grains_per_second = static_cast<int>(sample_rate / grain_params.get_grain_density());
     auto inter_onset = 1 + (grains_per_second * random_value);
     return inter_onset;
-}
-
-void Scheduler::set_grain_attack(float new_grain_attack)
-{
-    env_params.set_attack(new_grain_attack);
-}
-
-void Scheduler::set_grain_release(float new_grain_release)
-{
-    env_params.set_release(new_grain_release);
-}
-
-void Scheduler::set_grain_density(int new_grain_density)
-{
-    grain_density = new_grain_density;
-}
-
-void Scheduler::set_grain_size(int new_grain_size)
-{
-    grain_size = new_grain_size;
 }
 
 void Scheduler::load_files(const map<string, AudioFile> &new_files)

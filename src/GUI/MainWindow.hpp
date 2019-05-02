@@ -115,7 +115,7 @@ public slots:
     void set_grain_density(int new_value);
 
     /* Set grain amplitude value through slider. */
-    void set_grain_amplitude(int new_value);
+    void set_grain_sustain(int new_value);
 
     /* Set grain size value through slider. */
     void set_grain_size(int new_value);

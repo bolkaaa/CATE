@@ -51,7 +51,7 @@ MainWindow::MainWindow(AudioProcess &audio_process, AudioSettings &audio_setting
     connect(ui->load_corpus, SIGNAL(clicked()), this, SLOT(load_corpus_button_pressed()));
     connect(ui->audio_settings, SIGNAL(clicked()), this, SLOT(audio_settings_button_pressed()));
 
-    connect(ui->grain_amplitude_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_amplitude(int)));
+    connect(ui->grain_amplitude_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_sustain(int)));
     connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
     connect(ui->grain_release_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
     connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
@@ -187,13 +187,13 @@ void MainWindow::rebuild_audio_process()
     }
 }
 
-void MainWindow::set_grain_amplitude(int new_value)
+void MainWindow::set_grain_sustain(int new_value)
 {
-    const float min = 0.01f;
+    const float min = 0.00f;
     const float max = 1.0f;
-    float amplitude = scale_slider(new_value, min, max);
-    audio_process.set_amplitude(amplitude);
-    update_number_label(ui->grain_amplitude_value, amplitude);
+    float sustain = scale_slider(new_value, min, max);
+    audio_process.set_grain_sustain(sustain);
+    update_number_label(ui->grain_amplitude_value, sustain);
 }
 
 void MainWindow::set_grain_attack(int new_value)
