@@ -5,9 +5,9 @@
 namespace CATE {
 
 Grain::Grain()
-        : remaining_samples(0),
-          src(AudioBuffer()),
-          env(env_params)
+        : src(AudioBuffer()),
+          env(env_params),
+          remaining_samples(0)
 {
 }
 
@@ -33,5 +33,6 @@ bool Grain::is_active() const
 {
     return (remaining_samples > 0);
 }
+
 
 } // CATE

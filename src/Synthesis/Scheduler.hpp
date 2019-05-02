@@ -23,17 +23,14 @@
 
 #include <vector>
 #include <array>
-#include <random>
 
 #include "src/Audio/AudioFile.hpp"
 #include "Grain.hpp"
 #include "EnvelopeParams.hpp"
+#include "Rand.hpp"
 
 using std::vector;
 using std::array;
-using std::random_device;
-using std::mt19937;
-using std::uniform_real_distribution;
 
 namespace CATE {
 
@@ -77,18 +74,16 @@ private:
 
     int max_grains = 128;
     int grain_size = 256;
+    int grain_density;
+    float grain_width;
+    float sample_rate;
     vector<Grain> grains;
     map<string, AudioFile> files;
     AudioBuffer buffer;
-    random_device seed;
-    mt19937 gen;
-    uniform_real_distribution<float> dist;
     EnvelopeParams env_params;
-    int grain_density;
-    float grain_width;
+    Rand<float> rand;
     int next_onset;
     int grain_index;
-    float sample_rate;
 };
 
 } // CATE

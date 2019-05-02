@@ -13,13 +13,11 @@ Scheduler::Scheduler(const map<string, AudioFile> &files, float sample_rate)
           env_params(EnvelopeParams{0.5f, 0.5f, 0.5f, grain_size}),
           next_onset(0),
           grain_index(0),
-          gen(seed()),
           grain_density(100),
           grain_width(0.5),
-          dist(uniform_real_distribution<float>(0.0f, 1.0f))
+          rand(Rand<float>(0.0f, 1.0f))
 {
 }
-
 
 void Scheduler::fill_buffer(int marker, const string &file_name)
 {
@@ -81,7 +79,7 @@ float Scheduler::synthesize_grains()
 
 int Scheduler::get_next_inter_onset()
 {
-    float random_value = dist(gen);
+    float random_value = rand.get();
     auto grains_per_second = static_cast<int>(sample_rate / grain_density);
     auto inter_onset = 1 + (grains_per_second * random_value);
     return inter_onset;
