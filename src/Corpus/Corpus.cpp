@@ -57,7 +57,6 @@ void Corpus::add_directory(const string &directory_path)
     for (const auto &path : file_paths)
     {
         add_file(path);
-        std::cout << "Added: " << path << "\n";
     }
 }
 
@@ -128,7 +127,6 @@ void Corpus::sliding_window_analysis()
             db[segment_index]["kurtosis"].emplace_back(kurtosis);
         }
 
-        std::cout << "Analysed: " << b.first << "\n";
         ++segment_index;
     }
 }
