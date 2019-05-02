@@ -6,6 +6,7 @@ namespace CATE {
 
 Grain::Grain()
         : src(AudioBuffer()),
+          env_params(EnvelopeParams(0)),
           env(env_params),
           remaining_samples(0)
 {

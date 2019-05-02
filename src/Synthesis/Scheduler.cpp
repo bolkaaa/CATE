@@ -10,7 +10,7 @@ Scheduler::Scheduler(const map<string, AudioFile> &files, float sample_rate)
           sample_rate(sample_rate),
           buffer(AudioBuffer(grain_size)),
           grains(vector<Grain>(max_grains)),
-          env_params(EnvelopeParams{0.5f, 0.5f, 0.5f, grain_size}),
+          env_params(EnvelopeParams(grain_size)),
           next_onset(0),
           grain_index(0),
           grain_density(100),
@@ -87,12 +87,12 @@ int Scheduler::get_next_inter_onset()
 
 void Scheduler::set_grain_attack(float new_grain_attack)
 {
-    env_params.attack = new_grain_attack;
+    env_params.set_attack(new_grain_attack);
 }
 
 void Scheduler::set_grain_release(float new_grain_release)
 {
-    env_params.release = new_grain_release;
+    env_params.set_release(new_grain_release);
 }
 
 void Scheduler::set_grain_density(int new_grain_density)

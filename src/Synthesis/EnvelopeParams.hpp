@@ -26,11 +26,39 @@ namespace CATE {
 class EnvelopeParams
 {
 public:
-    float attack = 0.5f;
-    float sustain = 0.5f;
-    float release = 0.5f;
-    int sample_size = 0;
+    EnvelopeParams(int sample_size);
+
+    /* Get attack value. */
+    float get_attack() const { return attack; }
+
+    /* Get sustain value. */
+    float get_sustain() const { return sustain; }
+
+    /* Get release value. */
+    float get_release() const { return release; }
+
+    /* Get sample size value. */
+    float get_sample_size() const { return sample_size; }
+
+    /* Set attack value. */
+    void set_attack(float new_attack) { attack = new_attack; }
+
+    /* Set sustain value. */
+    void set_sustain(float new_sustain) { sustain = new_sustain; }
+
+    /* Set release value. */
+    void set_release(float new_release) { release = new_release; }
+
+    /* Set sample size value. */
+    void set_sample_size(int new_sample_size) { sample_size = new_sample_size; }
+
+private:
+    int sample_size;
+    float attack;
+    float sustain;
+    float release;
 };
+
 
 } // CATE
 

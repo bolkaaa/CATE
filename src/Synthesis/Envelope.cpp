@@ -15,12 +15,12 @@ Envelope::Envelope(const EnvelopeParams &params)
 
 float Envelope::synthesize()
 {
-    auto attack_samples = static_cast<int>(params.sample_size * params.attack);
-    auto release_samples = static_cast<int>(params.sample_size * params.release);
+    auto attack_samples = static_cast<int>(params.get_sample_size() * params.get_attack());
+    auto release_samples = static_cast<int>(params.get_sample_size() * params.get_release());
 
     if (index < attack_samples) // attack
     {
-        amp_incr = params.sustain / attack_samples;
+        amp_incr = params.get_sustain() / attack_samples;
     }
     else if (attack_samples < index && index < release_samples) // sustain
     {
@@ -28,7 +28,7 @@ float Envelope::synthesize()
     }
     else // release
     {
-        amp_incr = -(params.sustain / release_samples);
+        amp_incr = -(params.get_sustain() / release_samples);
     }
 
     ++index;
