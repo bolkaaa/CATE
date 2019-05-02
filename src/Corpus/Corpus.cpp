@@ -103,14 +103,14 @@ void Corpus::sliding_window_analysis()
     int buffer_size = audio_settings.get_buffer_size();
     vector<float> magspec(bin_size);
 
-    for (auto b : files)
+    for (const auto &file : files)
     {
-        map<int, AudioBuffer> frames = segment_frames(b.second.data, buffer_size);
+        map<int, AudioBuffer> frames = segment_frames(file.second.data, buffer_size);
 
-        for (auto it = frames.begin(); it != frames.end(); ++it)
+        for (auto &frame : frames)
         {
-            int marker = it->first;
-            AudioBuffer segment = it->second;
+            int marker = frame.first;
+            AudioBuffer segment = frame.second;
             fft.fill(&segment[0]);
             fft.compute();
             fft.get_magspec(magspec);
@@ -120,7 +120,7 @@ void Corpus::sliding_window_analysis()
             float flatness = feature.flatness(magspec);
             float kurtosis = feature.kurtosis(magspec);
 
-            db[segment_index]["path"] = b.first;
+            db[segment_index]["path"] = file.first;
             db[segment_index]["markers"].emplace_back(marker);
             db[segment_index]["centroid"].emplace_back(centroid);
             db[segment_index]["flatness"].emplace_back(flatness);
