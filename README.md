@@ -6,7 +6,6 @@ A corpus-based concatenative synthesis application written in C++ (work in progr
 ### Build dependencies
 - portaudio
 - libsndfile
-- libsamplerate
 - fftw3
 - boost/filesystem
 - qt5
