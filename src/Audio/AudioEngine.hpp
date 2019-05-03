@@ -22,6 +22,7 @@
 
 #include <cstdlib>
 #include <vector>
+#include <string>
 
 #include <portaudio.h>
 
@@ -71,6 +72,9 @@ public:
 
     /* Set current output device through index of available devices. */
     void set_output_device(int selection_index);
+
+    /* Given a PaError code, return the error text. */
+    inline string report_error(PaError error_code) const { return string(Pa_GetErrorText(error_code)); }
 
 private:
     /* Run initialisation commands. */

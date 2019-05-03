@@ -72,9 +72,22 @@ MainWindow::~MainWindow()
 
 void MainWindow::start_playback_button_pressed()
 {
+    int error_code = 0;
+
     if (audio_process.is_ready())
     {
-        audio_process.start_stream();
+        error_code = audio_process.start_stream();
+
+        if (!error_code)
+        {
+            std::cerr << audio_process.report_error(error_code) << "\n";
+        }
+    }
+    else
+    {
+        QMessageBox msg;
+        msg.setText("No files loaded.");
+        msg.exec();
     }
 }
 
@@ -169,7 +182,7 @@ string MainWindow::directory_dialog()
 
     if (directory_path.empty())
     {
-        throw std::invalid_argument("Empty directory path.");
+        throw std::invalid_argument("Empty directory path when selecting directory.");
     }
 
     return directory_path;
