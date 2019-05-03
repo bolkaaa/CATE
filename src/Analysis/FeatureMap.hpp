@@ -36,7 +36,7 @@ using std::pair;
 namespace CATE {
 
 /* Typedef for function pointer to feature extraction function. */
-typedef float (*Feature)(const MagSpec&);
+typedef float (*Feature)(const Magspec&);
 
 /* Typedef for container of feature values. */
 typedef vector<float> FeatureVector;
@@ -67,7 +67,7 @@ public:
 
 private:
     /* Given a frame of audio, calculate its magnitude spectrum. */
-    MagSpec calculate_frame_spectrum(const AudioFrame &frame);
+    Magspec calculate_frame_spectrum(const AudioFrame &frame);
 
     /* Fill vector of feature extractor function pointers. */
     void populate_extractors();

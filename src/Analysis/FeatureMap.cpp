@@ -39,7 +39,7 @@ void FeatureMap::populate_extractors()
     {
         string name = elem.first;
         Feature feature = elem.second;
-        Extractor extractor {name, feature};
+        Extractor extractor{name, feature};
         feature_extractors.emplace_back(extractor);
         feature_map[name] = vector<float>();
     }
@@ -47,11 +47,12 @@ void FeatureMap::populate_extractors()
 
 void FeatureMap::compute_vectors(map<int, AudioBuffer> audio_frames)
 {
-    for (auto &extractor : feature_extractors)
+    for (auto &frame : audio_frames)
     {
-        for (auto &frame : audio_frames)
+        Magspec magspec = calculate_frame_spectrum(frame);
+
+        for (auto &extractor : feature_extractors)
         {
-            vector<float> magspec = calculate_frame_spectrum(frame);
             float value = extractor.feature(magspec);
             feature_map[extractor.name].emplace_back(value);
         }

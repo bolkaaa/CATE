@@ -93,7 +93,7 @@ private:
     Granulator granulator;
     AudioRecorder audio_recorder;
     FFT fft;
-    MagSpec magspec;
+    Magspec magspec;
     const size_t num_search_results = 1;
     int next_marker;
     string next_file_path;

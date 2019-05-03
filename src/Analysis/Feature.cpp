@@ -18,10 +18,11 @@
 #include <numeric>
 
 #include "Feature.hpp"
+#include "Math.hpp"
 
 namespace CATE {
 
-float spectral_centroid(const MagSpec &magspec)
+float spectral_centroid(const Magspec &magspec)
 {
     auto sum = 0.0f;
     auto weighted_sum = 0.0f;
@@ -36,13 +37,13 @@ float spectral_centroid(const MagSpec &magspec)
 
     if (sum == 0.0f)
     {
-        return 0.0f;
+        return sum;
     }
 
     return weighted_sum / sum;
 }
 
-float spectral_flatness(const MagSpec &magspec)
+float spectral_flatness(const Magspec &magspec)
 {
     auto a = Math::geometric_mean<float, float>(magspec);
     auto b = Math::arithmetic_mean<float, float>(magspec);

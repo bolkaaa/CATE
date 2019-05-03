@@ -19,21 +19,15 @@
 
 #include <vector>
 
-#include "src/Audio/AudioSettings.hpp"
-#include "src/Audio/AudioBuffer.hpp"
-#include "Feature.hpp"
 #include "FFT.hpp"
-#include "Math.hpp"
-
-using std::vector;
 
 namespace CATE {
 
-/* The quotient of the sum and weighted sum of a mangnitude spectrum. Characterises "brightness" of a sound. */
-float spectral_centroid(const MagSpec &magspec);
+/* The quotient of the sum and weighted sum of a magnitude spectrum. Characterises "brightness" of a sound. */
+float spectral_centroid(const Magspec &magspec);
 
 /* Ratio of geometric mean of magnitude spectrum to its arithmetic mean. Characteristic of "noisiness" of a signal. */
-float spectral_flatness(const MagSpec &magspec);
+float spectral_flatness(const Magspec &magspec);
 
 } // CATE
 

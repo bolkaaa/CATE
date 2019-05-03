@@ -37,8 +37,6 @@ using CATE::AudioProcess;
 
 int main(int argc, char *argv[])
 {
-    const bool debug = false;
-
     QApplication app(argc, argv);
 
     /* Instantiate point cloud and k-d tree data structures. */
@@ -64,13 +62,6 @@ int main(int argc, char *argv[])
                            point_cloud,
                            kd_tree);
     main_window.show();
-
-    if (debug)
-    {
-        // ...
-
-        return 0;
-    }
 
     return app.exec();
 }
