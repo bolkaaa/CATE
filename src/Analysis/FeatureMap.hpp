@@ -63,7 +63,7 @@ public:
     inline map<string, FeatureVector> get_features() const { return feature_map; }
 
     /* Used to inform the rest of the system of how many features are present. */
-    static const int num_features = 2;
+    static const int num_features = 3;
 
 private:
     /* Given a frame of audio, calculate its magnitude spectrum. */

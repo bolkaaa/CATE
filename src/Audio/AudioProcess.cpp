@@ -127,6 +127,7 @@ Unit AudioProcess::select_unit(const float *input)
 
     const float search_points[FeatureMap::num_features] = {
             spectral_centroid(magspec),
+            spectral_rolloff(magspec),
             spectral_flatness(magspec),
     };
 

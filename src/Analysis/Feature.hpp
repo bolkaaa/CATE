@@ -26,6 +26,9 @@ namespace CATE {
 /* The quotient of the sum and weighted sum of a magnitude spectrum. Characterises "brightness" of a sound. */
 float spectral_centroid(const Magspec &magspec);
 
+/* Ratio beneath which a particular percentage (85%) of the spectrum's energy is contained. */
+float spectral_rolloff(const Magspec &magspec);
+
 /* Ratio of geometric mean of magnitude spectrum to its arithmetic mean. Characteristic of "noisiness" of a signal. */
 float spectral_flatness(const Magspec &magspec);
 

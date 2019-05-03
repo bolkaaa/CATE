@@ -56,4 +56,32 @@ float spectral_flatness(const Magspec &magspec)
     return a / b;
 }
 
+float spectral_rolloff(const Magspec &magspec)
+{
+    const float cutoff = 0.85f;
+    auto total_energy = std::accumulate(magspec.begin(), magspec.end(), 0.0);
+    const auto energy_at_cutoff = cutoff * total_energy;
+    auto energy = 0.0f;
+    auto i = 0;
+    auto bin_index = 0;
+
+    /* Find bin index at which accumulated energy at that point exceeds the cutoff energy. */
+    for (auto x : magspec)
+    {
+        energy += x;
+
+        if (energy > energy_at_cutoff)
+        {
+            bin_index = i;
+            break;
+        }
+
+        ++i;
+    }
+
+    auto rolloff = static_cast<float>(bin_index) / static_cast<float>(magspec.size());
+
+    return rolloff;
+}
+
 } // CATE

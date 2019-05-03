@@ -32,6 +32,7 @@ void FeatureMap::populate_extractors()
 {
     map<string, Feature> function_map = {
             {"centroid", spectral_centroid},
+            {"rolloff", spectral_rolloff},
             {"flatness", spectral_flatness}
     };
 
@@ -66,7 +67,7 @@ vector<float> FeatureMap::calculate_frame_spectrum(const pair<int, AudioBuffer> 
     fft.fill(&buffer[0]);
     fft.compute_spectrum();
     fft.compute_magspec();
-    vector<float> magspec = fft.get_magspec();
+    Magspec magspec = fft.get_magspec();
 
     return magspec;
 }
