@@ -22,10 +22,9 @@
 #include <iomanip>
 
 #include "sndfile.hh"
-#include "../../include/nanoflann.hpp"
+#include "include/nanoflann.hpp"
 
 #include "Corpus.hpp"
-#include "Entry.hpp"
 #include "FileTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioFile.hpp"
@@ -66,19 +65,11 @@ void Corpus::read_file(const string &file_path)
     ifstream >> data;
 }
 
-void Corpus::convert_sample_rates(double new_sr)
-{
-    for (auto &file : files)
-    {
-        file.second.convert_sample_rate(new_sr);
-    }
-}
-
 void Corpus::load_audio_from_db()
 {
-    for (auto entry : data.items())
+    for (const auto &entry : data.items())
     {
-        string path = entry.key();
+        const string &path = entry.key();
         files[path] = AudioFile(path);
     }
 }

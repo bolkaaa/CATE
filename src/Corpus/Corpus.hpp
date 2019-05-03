@@ -25,9 +25,8 @@
 #include <nlohmann/json.hpp>
 #include "include/nanoflann.hpp"
 
-#include "FileTree.hpp"
-#include "Entry.hpp"
 #include "PointCloud.hpp"
+#include "FileTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioFile.hpp"
 #include "src/Analysis/FeatureMap.hpp"
@@ -64,9 +63,6 @@ public:
      * window of <frames_per_buffer> samples, and store in file. */
     void sliding_window_analysis();
 
-    /* Convert all files in database to a new sample rate. */
-    void convert_sample_rates(double new_sr);
-
     /* From features in database, create point cloud to be used by KNN search. */
     PointCloud create_point_cloud();
 
@@ -75,10 +71,6 @@ public:
 
     /* Returns true if data within db object is not null. */
     bool has_data();
-
-    void test()
-    {
-    }
 
 private:
     /* Given a std::map, get a std::vector of its keys. */
@@ -94,7 +86,6 @@ private:
 
         return keys;
     }
-
 
     Json data;
     FeatureMap feature_map;

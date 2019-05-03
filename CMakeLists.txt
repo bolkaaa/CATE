@@ -31,8 +31,6 @@ set(SOURCE_FILES
         src/Analysis/FeatureMap.hpp
         src/Corpus/FileTree.hpp
         src/Corpus/FileTree.cpp
-        src/Corpus/Entry.hpp
-        src/Corpus/Entry.cpp
         src/Corpus/Corpus.hpp
         src/Corpus/Corpus.cpp
         src/Corpus/PointCloud.hpp

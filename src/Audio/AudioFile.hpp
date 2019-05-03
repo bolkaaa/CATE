@@ -27,10 +27,8 @@
 
 #include <boost/filesystem.hpp>
 #include "sndfile.hh"
-#include "samplerate.h"
 
 #include "AudioBuffer.hpp"
-#include "src/Analysis/Feature.hpp"
 
 using std::vector;
 using std::string;
@@ -46,7 +44,6 @@ class AudioFile
 public:
     explicit AudioFile() = default;
 
-    /* Instantiate with file read from path. */
     explicit AudioFile(const string &path);
 
     /* Read audio file from path. */
@@ -54,9 +51,6 @@ public:
 
     /* Write buffer object to output file. */
     void write(const AudioBuffer &buffer, int channels, float sample_rate, const string &path);
-
-    /* Convert audio file data to new sample rate. */
-    void convert_sample_rate(float new_sample_rate);
 
     AudioBuffer data;
     string path;
