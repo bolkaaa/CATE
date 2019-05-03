@@ -140,11 +140,11 @@ void MainWindow::analyse_directory_button_pressed()
 
 void MainWindow::load_corpus_button_pressed()
 {
-    string corpus_path = open_file_dialog("*.json");
+    string corpus_path;
 
     try
     {
-        corpus_path = save_file_dialog("*.json");
+        corpus_path = open_file_dialog("*.json");
     }
     catch (std::invalid_argument &e)
     {

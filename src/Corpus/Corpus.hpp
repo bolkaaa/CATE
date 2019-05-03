@@ -76,11 +76,12 @@ public:
     /* Returns true if data within db object is not null. */
     bool has_data();
 
-private:
-    /* Calculate magnitude spectrum of frame of audio data. */
-    vector<float> calculate_frame_spectrum(const pair<int, AudioBuffer> &frame);
+    void test()
+    {
+    }
 
-    /* Given std::map, get a std::vector of its keys. */
+private:
+    /* Given a std::map, get a std::vector of its keys. */
     template <class A, class B>
     static inline vector<A> get_keys(map<A, B> m)
     {
@@ -93,6 +94,7 @@ private:
 
         return keys;
     }
+
 
     Json data;
     FeatureMap feature_map;

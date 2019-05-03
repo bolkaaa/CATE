@@ -26,12 +26,20 @@ FeatureMap::FeatureMap(const AudioSettings &audio_settings)
           fft(audio_settings)
 {
     populate_extractors();
+
 }
 
 void FeatureMap::populate_extractors()
 {
-    feature_extractors.emplace_back(Extractor{spectral_centroid, "centroid"});
-    feature_extractors.emplace_back(Extractor{spectral_flatness, "flatness"});
+    string feature;
+
+    feature = "centroid";
+    feature_extractors.emplace_back(Extractor{spectral_centroid, feature});
+    feature_map[feature] = vector<float>();
+
+    feature = "flatness";
+    feature_extractors.emplace_back(Extractor{spectral_flatness, feature});
+    feature_map[feature] = vector<float>();
 }
 
 void FeatureMap::compute_vectors(map<int, AudioBuffer> audio_frames)

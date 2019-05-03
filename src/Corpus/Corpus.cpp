@@ -57,7 +57,7 @@ void Corpus::add_directory(const string &directory_path)
 void Corpus::write_file(const string &file_path)
 {
     std::ofstream file(file_path);
-    file << data;
+    file << std::setw(4) << data;
 }
 
 void Corpus::read_file(const string &file_path)
@@ -76,9 +76,9 @@ void Corpus::convert_sample_rates(double new_sr)
 
 void Corpus::load_audio_from_db()
 {
-    for (auto entry : data)
+    for (auto entry : data.items())
     {
-        string path = entry["path"];
+        string path = entry.key();
         files[path] = AudioFile(path);
     }
 }
@@ -89,21 +89,25 @@ void Corpus::sliding_window_analysis()
     {
         map<int, AudioBuffer> frames = segment_frames(file.second.data, audio_settings.get_buffer_size());
         feature_map.compute_vectors(frames);
-        auto features = feature_map.get_features();
-        string file_path = file.first;
-        vector<int> marker = get_keys<int, AudioBuffer>(frames);
 
-        data[file.first]["marker"] = marker;
+        auto features = feature_map.get_features();
+        auto markers = get_keys<int, AudioBuffer>(frames);
+        auto file_path = file.first;
+
         for (auto f : features)
         {
             data[file_path][f.first] = f.second;
         }
+
+        data[file.first]["marker"] = markers;
     }
 }
 
 PointCloud Corpus::create_point_cloud()
 {
     PointCloud cloud;
+    auto features = feature_map.get_features();
+    vector<string> feature_names = get_keys<string, vector<float> >(features);
 
     for (auto &segment : data.items())
     {
@@ -111,12 +115,12 @@ PointCloud Corpus::create_point_cloud()
 
         for (auto i = 0; i < n; ++i)
         {
-            auto path = segment.key();
+            const auto &path = segment.key();
             auto marker = segment.value()["marker"][i];
-            auto centroid = segment.value()["centroid"][i];
-            auto flatness = segment.value()["flatness"][i];
+            auto a = segment.value()[feature_names[0]][i];
+            auto b = segment.value()[feature_names[1]][i];
 
-            Point point{path, marker, centroid, flatness};
+            Point point{path, marker, a, b};
 
             cloud.add(point);
         }

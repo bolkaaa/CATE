@@ -36,7 +36,7 @@ using CATE::AudioProcess;
 
 int main(int argc, char *argv[])
 {
-    const bool debug = true;
+    const bool debug = false;
 
     QApplication app(argc, argv);
     PointCloud point_cloud;
@@ -48,9 +48,6 @@ int main(int argc, char *argv[])
 
     if (debug)
     {
-        string test_path = "/Users/lrwz/CATE/audio_files/piano_notes";
-        corpus.add_directory(test_path);
-        corpus.sliding_window_analysis();
 
         return 0;
     }

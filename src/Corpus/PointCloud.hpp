@@ -26,6 +26,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include "src/Analysis/FeatureMap.hpp"
+
 using std::vector;
 using std::string;
 
