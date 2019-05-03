@@ -55,7 +55,6 @@ int AudioProcess::processing_callback(const void *input_buffer,
     auto *input = static_cast<const float *>(input_buffer);
     auto *output = static_cast<float *>(output_buffer);
     auto i = 0;
-    float input_sum = 0.0f;
 
     select_unit(input);
 
@@ -123,13 +122,11 @@ void AudioProcess::save_recording(const string &output_path)
 
 void AudioProcess::select_unit(const float *input)
 {
-    fft.fill(input);
-    fft.compute_spectrum();
-    fft.compute_magspec();
+    compute_magspec(input);
 
     const float search_points[FeatureMap::num_features] = {
-            spectral_centroid(fft.get_magspec()),
-            spectral_flatness(fft.get_magspec()),
+            spectral_centroid(magspec),
+            spectral_flatness(magspec),
     };
 
     kd_tree.knnSearch(&search_points[0],
@@ -137,11 +134,17 @@ void AudioProcess::select_unit(const float *input)
                       &return_indices[0],
                       &distances[0]);
 
-
     int point_cloud_index = return_indices[0];
-
     next_marker = point_cloud.get_marker(point_cloud_index);
     next_file_path = point_cloud.get_file_path(point_cloud_index);
+}
+
+void AudioProcess::compute_magspec(const float *input)
+{
+    fft.fill(input);
+    fft.compute_spectrum();
+    fft.compute_magspec();
+    magspec = fft.get_magspec();
 }
 
 } // CATE

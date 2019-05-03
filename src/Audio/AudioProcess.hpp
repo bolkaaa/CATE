@@ -83,19 +83,22 @@ private:
     /* Determine the next segment from the corpus to access via KNN search. */
     void select_unit(const float *input);
 
+    /* Compute magnitude spectrum of input frame. */
+    void compute_magspec(const float *input);
+
     AudioSettings &audio_settings;
-    FFT fft;
-    vector<float> magspec;
     Corpus &db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
-    const size_t num_search_results = 1;
-    vector<size_t> return_indices;
-    vector<float> distances;
-    int next_marker = 0;
-    string next_file_path;
     Granulator granulator;
     AudioRecorder audio_recorder;
+    FFT fft;
+    MagSpec magspec;
+    const size_t num_search_results = 1;
+    int next_marker;
+    string next_file_path;
+    vector<size_t> return_indices;
+    vector<float> distances;
     bool recording;
     bool ready;
 

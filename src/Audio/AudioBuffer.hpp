@@ -25,6 +25,7 @@
 
 using std::vector;
 using std::map;
+using std::pair;
 
 namespace CATE {
 
@@ -32,9 +33,14 @@ namespace CATE {
  * libraries used in CATE, it uses floats and isn't templated. */
 typedef std::vector<float> AudioBuffer;
 
-/* Given an AudioBuffer, segment into a std::map where the key of each subset is its frame position in samples, and the
- * value of each subset is an AudioBuffer of size <frame_size>. */
-map<int, AudioBuffer> segment_frames(const AudioBuffer &source, int frame_size);
+/* Alias for individual frame of audio, where the key is a positional marker and the value is audio data. */
+typedef pair<int, AudioBuffer> AudioFrame;
+
+/* Alias for std::map where the key is frame position in samples and the value is the audio data. */
+typedef map<int, AudioBuffer> AudioFramePool;
+
+/* Given an AudioBuffer, segment into an AudioFrameSet. */
+AudioFramePool segment_frames(const AudioBuffer &source, int frame_size);
 
 } // CATE
 

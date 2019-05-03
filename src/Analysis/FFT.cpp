@@ -33,9 +33,9 @@ namespace CATE {
 FFT::FFT(const AudioSettings &audio_settings)
         : audio_settings(audio_settings),
           output_size(audio_settings.get_bin_size() / 2 + 1),
-          data(vector<double>(audio_settings.get_bin_size())),
-          spectrum(vector<complex<double> >(output_size)),
-          magspec(vector<float>(output_size)),
+          data(AudioBuffer(audio_settings.get_bin_size())),
+          spectrum(Spectrum(output_size)),
+          magspec(MagSpec(output_size)),
           plan(fftw_plan_dft_r2c_1d(audio_settings.get_bin_size(),
                                     reinterpret_cast<double *>(&data[0]),
                                     reinterpret_cast<fftw_complex *>(&spectrum[0]),
@@ -65,7 +65,7 @@ void FFT::fill(const float *input)
     /* Pad range from <frames_per_buffer> to <bin_size> with zeroes. */
     for (auto i = audio_settings.get_buffer_size(); i < audio_settings.get_bin_size(); ++i)
     {
-        data[i] = 0.0;
+        data[i] = 0.0f;
     }
 }
 

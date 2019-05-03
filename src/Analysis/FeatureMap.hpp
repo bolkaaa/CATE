@@ -36,7 +36,10 @@ using std::pair;
 namespace CATE {
 
 /* Typedef for function pointer to feature extraction function. */
-typedef float (*Feature)(const vector<float>&);
+typedef float (*Feature)(const MagSpec&);
+
+/* Typedef for container of feature values. */
+typedef vector<float> FeatureVector;
 
 /* A representation of a pointer to a feature extraction function and corresponding name. */
 class Extractor
@@ -53,24 +56,24 @@ class FeatureMap
 public:
     explicit FeatureMap(const AudioSettings &audio_settings);
 
-    /* Given a map of audio input frames, compute feature map. */
-    void compute_vectors(map<int, AudioBuffer> audio_frames);
+    /* Given a pool of audio frames, compute feature map. */
+    void compute_vectors(AudioFramePool audio_frames);
 
     /* Get feature map. */
-    inline map<string, vector<float> > get_features() const { return feature_map; }
+    inline map<string, FeatureVector> get_features() const { return feature_map; }
 
     /* Used to inform the rest of the system of how many features are present. */
     static const int num_features = 2;
 
 private:
     /* Given a frame of audio, calculate its magnitude spectrum. */
-    vector<float> calculate_frame_spectrum(const pair<int, AudioBuffer> &frame);
+    MagSpec calculate_frame_spectrum(const AudioFrame &frame);
 
     /* Fill vector of feature extractor function pointers. */
     void populate_extractors();
 
+    map<string, FeatureVector> feature_map;
     vector<Extractor> feature_extractors;
-    map<string, vector<float> > feature_map;
     const AudioSettings &audio_settings;
     FFT fft;
 };

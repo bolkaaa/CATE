@@ -27,38 +27,40 @@ using std::vector;
 using std::log;
 using std::exp;
 
-class Math
+namespace CATE {
+
+namespace Math {
+
+/* Return geometric mean (Nth root of product of N values) of vector. */
+template <class A, class B>
+inline A geometric_mean(const vector<B> &v)
 {
-public:
-    /* Return geometric mean (Nth root of product of N values) of vector. */
-    template <class A, class B>
-    inline static A geometric_mean(const vector<B> &v)
+    auto log_sum = 0.0f;
+
+    for (auto x : v)
     {
-        auto log_sum = 0.0f;
-
-        for (auto x : v)
-        {
-            log_sum += log(x);
-        }
-
-        return exp(log_sum / v.size());
+        log_sum += log(x);
     }
 
-    /* Return arithmetic mean (sum of N values divided by n) of vector. */
-    template <class A, class B>
-    inline static A arithmetic_mean(const vector<B> &v)
+    return exp(log_sum / v.size());
+}
+
+/* Return arithmetic mean (sum of N values divided by n) of vector. */
+template <class A, class B>
+inline A arithmetic_mean(const vector<B> &v)
+{
+    auto sum = 0.0f;
+
+    for (auto x : v)
     {
-        auto sum = 0.0f;
-
-        for (auto x : v)
-        {
-            sum += x;
-        }
-
-        return sum / v.size();
+        sum += x;
     }
 
-};
+    return sum / v.size();
+}
 
+} // Math
+
+} // Cate
 
 #endif //MATH_HPP

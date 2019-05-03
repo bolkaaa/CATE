@@ -45,7 +45,7 @@ namespace CATE {
 class Corpus
 {
 public:
-    Corpus(const AudioSettings &audio_settings);
+    explicit Corpus(const AudioSettings &audio_settings);
 
     /* Read analysis data file into memory. */
     void read_file(const string &file_path);

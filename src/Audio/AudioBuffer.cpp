@@ -23,18 +23,18 @@
 
 namespace CATE {
 
-map<int, AudioBuffer> segment_frames(const AudioBuffer &source, int frame_size)
+AudioFramePool segment_frames(const AudioBuffer &source, int frame_size)
 {
-    map<int, AudioBuffer> frames;
+    AudioFramePool frames;
     auto n = source.size();
     auto remaining_space = n % frame_size;
     auto frame_counter = 0;
 
     for (auto it = source.begin(); it != (source.end() - remaining_space); it += frame_size)
     {
-        AudioBuffer segment_data(it, it + frame_size);
-        std::pair<int, AudioBuffer> segment = {frame_counter, segment_data};
-        frames.insert(segment);
+        AudioBuffer data(it, it + frame_size);
+        AudioFrame frame = {frame_counter, data};;
+        frames.insert(frame);
         frame_counter += frame_size;
     }
 

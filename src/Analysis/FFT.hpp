@@ -39,6 +39,9 @@ using std::complex;
 
 namespace CATE {
 
+typedef vector<complex<double> > Spectrum;
+typedef vector<float> MagSpec;
+
 class FFT
 {
 public:
@@ -56,7 +59,7 @@ public:
     void compute_magspec();
 
     /* Get magnitude spectrum vector. */
-    inline vector<float> get_magspec() { return magspec; };
+    inline MagSpec get_magspec() const { return magspec; };
 
     /* Calculate Hanning window function for a given index and size n. */
     float window(int i, int n);
@@ -64,9 +67,9 @@ public:
 private:
     const AudioSettings &audio_settings;
     int output_size;
-    vector<double> data;
-    vector<complex<double> > spectrum;
-    vector<float> magspec;
+    AudioBuffer data;
+    Spectrum spectrum;
+    MagSpec magspec;
     fftw_plan plan;
 };
 

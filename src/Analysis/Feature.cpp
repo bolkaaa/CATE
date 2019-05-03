@@ -21,30 +21,28 @@
 
 namespace CATE {
 
-float spectral_centroid(const vector<float> &magspec)
+float spectral_centroid(const MagSpec &magspec)
 {
-    auto magnitudes = 0.0f;
-    auto weighted_magnitudes = 0.0f;
-    auto i = 0;
+    auto sum = 0.0f;
+    auto weighted_sum = 0.0f;
+    auto i = 1;
 
-    for (auto x : magspec)
+    for (auto k : magspec)
     {
-        magnitudes += x;
-        weighted_magnitudes += (x * i);
-        ++i;
+        sum += k;
+        weighted_sum += k * i;
+        i += 1;
     }
 
-    /* Protect against divide-by-zero errors. */
-    if (magnitudes > 0)
+    if (sum == 0.0f)
     {
-        auto c = static_cast<float>(weighted_magnitudes / magnitudes);
-        return c;
+        return 0.0f;
     }
 
-    return 0.0f;
+    return weighted_sum / sum;
 }
 
-float spectral_flatness(const vector<float> &magspec)
+float spectral_flatness(const MagSpec &magspec)
 {
     auto a = Math::geometric_mean<float, float>(magspec);
     auto b = Math::arithmetic_mean<float, float>(magspec);
