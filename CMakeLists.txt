@@ -53,7 +53,8 @@ set(SOURCE_FILES
         src/Synthesis/Rand.hpp
         src/Synthesis/EnvelopeParams.cpp
         src/Synthesis/GrainParams.cpp
-        src/Synthesis/GrainParams.hpp)
+        src/Synthesis/GrainParams.hpp
+        src/Analysis/Math.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

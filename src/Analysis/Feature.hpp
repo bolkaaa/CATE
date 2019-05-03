@@ -22,6 +22,7 @@
 #include "src/Audio/AudioSettings.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "Feature.hpp"
+#include "Math.hpp"
 
 using std::vector;
 
