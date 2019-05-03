@@ -31,6 +31,7 @@ using CATE::KdTreeParams;
 using CATE::Corpus;
 using CATE::PointCloud;
 using CATE::MainWindow;
+using CATE::FeatureMap;
 using CATE::AudioSettings;
 using CATE::AudioProcess;
 
@@ -39,20 +40,37 @@ int main(int argc, char *argv[])
     const bool debug = false;
 
     QApplication app(argc, argv);
+
+    /* Instantiate point cloud and k-d tree data structures. */
     PointCloud point_cloud;
-    KdTree kd_tree(KdTreeParams::num_features, point_cloud, KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf));
+    KDTreeSingleIndexAdaptorParams adaptor_params(KdTreeParams::max_leaf);
+    const int num_features = FeatureMap::num_features;
+    KdTree kd_tree(num_features,
+                   point_cloud,
+                   adaptor_params);
+
+    /* Set up the audio system. */
     AudioSettings audio_settings;
     Corpus corpus(audio_settings);
-    AudioProcess audio_process(audio_settings, corpus, point_cloud, kd_tree);
-    MainWindow main_window(audio_process, audio_settings, corpus, point_cloud, kd_tree);
+    AudioProcess audio_process(audio_settings,
+                               corpus,
+                               point_cloud,
+                               kd_tree);
+
+    /* Run the GUI. */
+    MainWindow main_window(audio_process,
+                           audio_settings,
+                           corpus,
+                           point_cloud,
+                           kd_tree);
+    main_window.show();
 
     if (debug)
     {
+        // ...
 
         return 0;
     }
-
-    main_window.show();
 
     return app.exec();
 }

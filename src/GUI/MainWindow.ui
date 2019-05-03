@@ -9,165 +9,31 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>622</width>
-    <height>466</height>
+    <width>592</width>
+    <height>495</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>622</width>
-    <height>466</height>
+    <width>592</width>
+    <height>495</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>622</width>
-    <height>466</height>
+    <width>592</width>
+    <height>495</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>CATE</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="verticalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>171</width>
-      <height>161</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QPushButton" name="start_playback">
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>Start Playback</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="start_recording">
-       <property name="text">
-        <string>Start Recording</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="analyse_directory">
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>Analyse Directory</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="audio_settings">
-       <property name="text">
-        <string>Audio Settings</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>10</y>
-      <width>171</width>
-      <height>161</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QPushButton" name="stop_playback">
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>Stop Playback</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="stop_recording">
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>Stop Recording</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="load_corpus">
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>Load Corpus</string>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="clear_corpus">
-       <property name="text">
-        <string>Clear Corpus</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>20</y>
-      <width>181</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>72</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>CATE</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>90</y>
-      <width>91</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>9</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>© 2019 Liam Wyllie</string>
-    </property>
-   </widget>
    <widget class="QWidget" name="verticalLayoutWidget_5">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>180</y>
+      <y>210</y>
       <width>111</width>
       <height>230</height>
      </rect>
@@ -230,8 +96,8 @@
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>180</y>
-      <width>117</width>
+      <y>210</y>
+      <width>127</width>
       <height>230</height>
      </rect>
     </property>
@@ -293,12 +159,15 @@
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>180</y>
+      <y>210</y>
       <width>117</width>
       <height>230</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_13">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout"/>
+     </item>
      <item alignment="Qt::AlignHCenter">
       <widget class="QSlider" name="grain_size_slider">
        <property name="enabled">
@@ -356,7 +225,7 @@
     <property name="geometry">
      <rect>
       <x>360</x>
-      <y>180</y>
+      <y>210</y>
       <width>111</width>
       <height>230</height>
      </rect>
@@ -419,7 +288,7 @@
     <property name="geometry">
      <rect>
       <x>120</x>
-      <y>180</y>
+      <y>210</y>
       <width>117</width>
       <height>230</height>
      </rect>
@@ -478,13 +347,129 @@
      </item>
     </layout>
    </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>271</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="1" column="0">
+      <widget class="QPushButton" name="start_recording">
+       <property name="text">
+        <string>Start Recording</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="start_playback">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>Start Playback</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="stop_playback">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>Stop Playback</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="stop_recording">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>Stop Recording</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>90</y>
+      <width>271</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="2" column="0">
+      <widget class="QPushButton" name="load_corpus">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>Load Corpus</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="analyse_directory">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>Analyse Directory</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="audio_settings">
+       <property name="text">
+        <string>Audio Settings</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>10</y>
+      <width>281</width>
+      <height>181</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="font">
+        <font>
+         <family>Helvetica Neue</family>
+         <pointsize>100</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>CATE</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>622</width>
+     <width>592</width>
      <height>22</height>
     </rect>
    </property>

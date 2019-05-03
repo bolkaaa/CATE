@@ -26,20 +26,23 @@ FeatureMap::FeatureMap(const AudioSettings &audio_settings)
           fft(audio_settings)
 {
     populate_extractors();
-
 }
 
 void FeatureMap::populate_extractors()
 {
-    string feature;
+    map<string, Feature> function_map = {
+            {"centroid", spectral_centroid},
+            {"flatness", spectral_flatness}
+    };
 
-    feature = "centroid";
-    feature_extractors.emplace_back(Extractor{spectral_centroid, feature});
-    feature_map[feature] = vector<float>();
-
-    feature = "flatness";
-    feature_extractors.emplace_back(Extractor{spectral_flatness, feature});
-    feature_map[feature] = vector<float>();
+    for (const auto &elem : function_map)
+    {
+        string name = elem.first;
+        Feature feature = elem.second;
+        Extractor extractor {name, feature};
+        feature_extractors.emplace_back(extractor);
+        feature_map[name] = vector<float>();
+    }
 }
 
 void FeatureMap::compute_vectors(map<int, AudioBuffer> audio_frames)
@@ -49,7 +52,7 @@ void FeatureMap::compute_vectors(map<int, AudioBuffer> audio_frames)
         for (auto &frame : audio_frames)
         {
             vector<float> magspec = calculate_frame_spectrum(frame);
-            float value = extractor.function(magspec);
+            float value = extractor.feature(magspec);
             feature_map[extractor.name].emplace_back(value);
         }
     }

@@ -127,7 +127,7 @@ void AudioProcess::select_unit(const float *input)
     fft.compute_spectrum();
     fft.compute_magspec();
 
-    const float search_points[KdTreeParams::num_features] = {
+    const float search_points[FeatureMap::num_features] = {
             spectral_centroid(fft.get_magspec()),
             spectral_flatness(fft.get_magspec()),
     };

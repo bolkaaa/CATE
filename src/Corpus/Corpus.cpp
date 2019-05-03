@@ -28,6 +28,7 @@
 #include "FileTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioFile.hpp"
+#include "KdTree.hpp"
 
 using std::vector;
 using std::unordered_map;
@@ -98,7 +99,7 @@ PointCloud Corpus::create_point_cloud()
 {
     PointCloud cloud;
     auto features = feature_map.get_features();
-    vector<string> feature_names = get_keys<string, vector<float> >(features);
+    auto feature_names = get_keys<string, vector<float> >(features);
 
     for (auto &segment : data.items())
     {
@@ -106,12 +107,18 @@ PointCloud Corpus::create_point_cloud()
 
         for (auto i = 0; i < n; ++i)
         {
-            const auto &path = segment.key();
-            auto marker = segment.value()["marker"][i];
-            auto a = segment.value()[feature_names[0]][i];
-            auto b = segment.value()[feature_names[1]][i];
+            Point point;
 
-            Point point{path, marker, a, b};
+            /* Add file path and marker to point. */
+            point.file_path = segment.key();
+            point.marker = segment.value()["marker"][i];
+
+            /* Add each dimension of feature to point. */
+            for (const auto &f : feature_names)
+            {
+                auto value = segment.value()[f][i];
+                point.features.emplace_back(value);
+            }
 
             cloud.add(point);
         }

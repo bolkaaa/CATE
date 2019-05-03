@@ -39,8 +39,7 @@ class Point
 public:
     string file_path;
     int marker;
-    float feature_a;
-    float feature_b;
+    vector<float> features;
 };
 
 /* Stores a container of data points and functions used by K-d tree system. */
@@ -62,14 +61,7 @@ public:
     /* Get element at dimension dim of point i in class. */
     inline float kdtree_get_pt(const int i, const int dim) const
     {
-        if (dim == 0)
-        {
-            return points[i].feature_a;
-        }
-        else
-        {
-            return points[i].feature_b;
-        }
+        return points[i].features[dim];
     }
 
     template<class BBOX>
