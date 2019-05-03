@@ -21,12 +21,7 @@
 
 namespace CATE {
 
-Feature::Feature(int bin_size)
-        : bin_size(bin_size)
-{
-}
-
-float Feature::centroid(const vector<float> &magspec)
+float spectral_centroid(const vector<float> &magspec)
 {
     auto magnitudes = 0.0f;
     auto weighted_magnitudes = 0.0f;
@@ -49,7 +44,7 @@ float Feature::centroid(const vector<float> &magspec)
     return 0.0f;
 }
 
-float Feature::flatness(const vector<float> &magspec)
+float spectral_flatness(const vector<float> &magspec)
 {
     auto sum = 0.0f;
     auto log_sum = 0.0f;
@@ -73,32 +68,6 @@ float Feature::flatness(const vector<float> &magspec)
     }
 
     return flatness;
-}
-
-float Feature::kurtosis(const vector<float> &magspec)
-{
-    float m2 = 0.0f;
-    float m4 = 0.0f;
-    float mean = calculate_magspec_mean(magspec);
-
-    for (auto x : magspec)
-    {
-        float diff = x - mean;
-        m2 += (diff * diff);
-        m4 += (diff * diff * diff);
-    }
-
-    m2 /= magspec.size();
-    m4 /= magspec.size();
-
-    return (m2 == 0) ? -3.0f : ((m4 / (m2 * m2)) - 3.0f);
-}
-
-float Feature::calculate_magspec_mean(const vector<float> &magspec)
-{
-    auto sum = std::accumulate(magspec.begin(), magspec.end(), 0.0f);
-    auto mean = sum / static_cast<float>(magspec.size());
-    return mean;
 }
 
 } // CATE

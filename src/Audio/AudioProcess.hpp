@@ -81,22 +81,20 @@ public:
 
 private:
     /* Determine the next segment from the corpus to access via KNN search. */
-    void select_unit(float *input);
+    void select_unit(const float *input);
 
     AudioSettings &audio_settings;
     FFT fft;
     vector<float> magspec;
-    Feature feature;
     Corpus &db;
     PointCloud &point_cloud;
     KdTree &kd_tree;
     const size_t num_search_results = 1;
     vector<size_t> return_indices;
     vector<float> distances;
-    int current_marker = 0;
-    string current_file_path;
+    int next_marker = 0;
+    string next_file_path;
     Granulator granulator;
-    float amplitude;
     AudioRecorder audio_recorder;
     bool recording;
     bool ready;

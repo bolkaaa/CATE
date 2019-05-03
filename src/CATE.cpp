@@ -36,6 +36,8 @@ using CATE::AudioProcess;
 
 int main(int argc, char *argv[])
 {
+    const bool debug = true;
+
     QApplication app(argc, argv);
     PointCloud point_cloud;
     KdTree kd_tree(KdTreeParams::num_features, point_cloud, KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf));
@@ -43,6 +45,15 @@ int main(int argc, char *argv[])
     Corpus corpus(audio_settings);
     AudioProcess audio_process(audio_settings, corpus, point_cloud, kd_tree);
     MainWindow main_window(audio_process, audio_settings, corpus, point_cloud, kd_tree);
+
+    if (debug)
+    {
+        string test_path = "/Users/lrwz/CATE/audio_files/piano_notes";
+        corpus.add_directory(test_path);
+        corpus.sliding_window_analysis();
+
+        return 0;
+    }
 
     main_window.show();
 

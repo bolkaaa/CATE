@@ -19,10 +19,16 @@ set(SOURCE_FILES
         src/Audio/AudioBuffer.cpp
         src/Audio/AudioFile.hpp
         src/Audio/AudioFile.cpp
+        src/Audio/AudioRecorder.cpp
+        src/Audio/AudioRecorder.hpp
+        src/Audio/AudioSettings.cpp
+        src/Audio/AudioSettings.hpp
         src/Analysis/FFT.hpp
         src/Analysis/FFT.cpp
         src/Analysis/Feature.cpp
         src/Analysis/Feature.hpp
+        src/Analysis/FeatureMap.cpp
+        src/Analysis/FeatureMap.hpp
         src/Corpus/FileTree.hpp
         src/Corpus/FileTree.cpp
         src/Corpus/Entry.hpp
@@ -33,6 +39,9 @@ set(SOURCE_FILES
         src/Corpus/KdTree.hpp
         src/GUI/MainWindow.hpp
         src/GUI/MainWindow.cpp
+        src/GUI/AudioSettingsWindow.cpp
+        src/GUI/AudioSettingsWindow.hpp
+        src/GUI/Util.hpp
         src/Synthesis/Granulator.cpp
         src/Synthesis/Granulator.hpp
         src/Synthesis/Envelope.cpp
@@ -43,12 +52,10 @@ set(SOURCE_FILES
         src/Synthesis/Grain.hpp
         src/Synthesis/Scheduler.cpp
         src/Synthesis/Scheduler.hpp
-        src/Audio/AudioRecorder.cpp
-        src/Audio/AudioRecorder.hpp
-        src/Audio/AudioSettings.cpp
-        src/Audio/AudioSettings.hpp
-        src/GUI/AudioSettingsWindow.cpp
-        src/GUI/AudioSettingsWindow.hpp src/GUI/Util.hpp src/Synthesis/Rand.hpp src/Synthesis/EnvelopeParams.cpp src/Synthesis/GrainParams.cpp src/Synthesis/GrainParams.hpp)
+        src/Synthesis/Rand.hpp
+        src/Synthesis/EnvelopeParams.cpp
+        src/Synthesis/GrainParams.cpp
+        src/Synthesis/GrainParams.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

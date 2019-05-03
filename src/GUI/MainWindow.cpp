@@ -38,7 +38,7 @@ MainWindow::MainWindow(AudioProcess &audio_process, AudioSettings &audio_setting
           audio_settings(audio_settings),
           audio_settings_window(audio_settings, audio_process),
           audio_process(audio_process),
-          db(db),
+          corpus(db),
           point_cloud(point_cloud),
           kd_tree(kd_tree)
 {
@@ -92,10 +92,16 @@ void MainWindow::stop_recording_button_pressed()
 {
     audio_process.stop_recording();
     audio_process.stop_stream();
+    string output_path;
 
-    string output_path = save_file_dialog("*.wav");
-    if (output_path.empty())
+    try
     {
+        output_path = save_file_dialog("*.wav");
+    }
+    catch (std::invalid_argument &e)
+    {
+        std::cerr << e.what() << "\n";
+
         if (audio_process.is_ready())
         {
             audio_process.start_stream();
@@ -111,39 +117,43 @@ void MainWindow::stop_recording_button_pressed()
 void MainWindow::analyse_directory_button_pressed()
 {
     audio_process.stop_stream();
+    string audio_dir_path;
+    string corpus_path;
 
-    string dir_path = directory_dialog();
-    if (dir_path.empty())
+    try
     {
+        audio_dir_path = directory_dialog();
+        corpus_path = save_file_dialog("*.json");
+    }
+    catch (std::invalid_argument &e)
+    {
+        std::cerr << e.what() << "\n";
         return;
     }
 
-    string db_path = save_file_dialog("*.json");
-    if (db_path.empty())
-    {
-        return;
-    }
-
-    db.set_file(db_path);
-    db.add_directory(dir_path);
-    db.sliding_window_analysis();
-    db.write_file();
+    corpus.add_directory(audio_dir_path);
+    corpus.sliding_window_analysis();
+    corpus.write_file(corpus_path);
 
     rebuild_audio_process();
 }
 
 void MainWindow::load_corpus_button_pressed()
 {
-    string db_path = open_file_dialog("*.json");
+    string corpus_path = open_file_dialog("*.json");
 
-    if (db_path.empty())
+    try
     {
+        corpus_path = save_file_dialog("*.json");
+    }
+    catch (std::invalid_argument &e)
+    {
+        std::cerr << e.what() << "\n";
         return;
     }
 
-    db.set_file(db_path);
-    db.read_file();
-    db.load_audio_from_db();
+    corpus.read_file(corpus_path);
+    corpus.load_audio_from_db();
 
     rebuild_audio_process();
 }
@@ -151,43 +161,57 @@ void MainWindow::load_corpus_button_pressed()
 
 string MainWindow::directory_dialog()
 {
-    QString directory_path = QFileDialog::getExistingDirectory(this,
-                                                               tr("Select Directory"),
-                                                               get_home_dir_path(),
-                                                               QFileDialog::ShowDirsOnly |
-                                                               QFileDialog::DontResolveSymlinks);
+    string directory_path = qstring_to_string(QFileDialog::getExistingDirectory(this,
+                                                                                tr("Select Directory"),
+                                                                                get_home_dir_path(),
+                                                                                QFileDialog::ShowDirsOnly |
+                                                                                QFileDialog::DontResolveSymlinks));
 
+    if (directory_path.empty())
+    {
+        throw std::invalid_argument("Empty directory path.");
+    }
 
-    return qstring_to_string(directory_path);
+    return directory_path;
 }
 
 string MainWindow::save_file_dialog(const string &file_types)
 {
-    QString file_path = QFileDialog::getSaveFileName(this,
-                                                     tr("File Destination"),
-                                                     get_home_dir_path(),
-                                                     tr(file_types.c_str()));
+    string file_path = qstring_to_string(QFileDialog::getSaveFileName(this,
+                                                                      tr("File Destination"),
+                                                                      get_home_dir_path(),
+                                                                      tr(file_types.c_str())));
 
-    return qstring_to_string(file_path);
+    if (file_path.empty())
+    {
+        throw std::invalid_argument("Empty file path when saving file.");
+    }
+
+    return file_path;
 }
 
 string MainWindow::open_file_dialog(const string &file_types)
 {
-    QString file_path = QFileDialog::getOpenFileName(this,
-                                                     tr("Select File"),
-                                                     get_home_dir_path(),
-                                                     tr(file_types.c_str()));
+    string file_path = qstring_to_string(QFileDialog::getOpenFileName(this,
+                                                                      tr("Select File"),
+                                                                      get_home_dir_path(),
+                                                                      tr(file_types.c_str())));
 
-    return qstring_to_string(file_path);
+    if (file_path.empty())
+    {
+        throw std::invalid_argument("Empty file path when opening file.");
+    }
+
+    return file_path;
 }
 
 void MainWindow::rebuild_audio_process()
 {
-    point_cloud = db.create_point_cloud();
+    point_cloud = corpus.create_point_cloud();
     kd_tree.buildIndex();
     audio_process.reload_granulator();
 
-    if (db.has_data())
+    if (corpus.has_data())
     {
         audio_process.enable();
     }

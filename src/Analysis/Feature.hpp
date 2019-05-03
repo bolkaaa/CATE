@@ -19,6 +19,7 @@
 
 #include <vector>
 
+#include "src/Audio/AudioSettings.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "Feature.hpp"
 
@@ -26,30 +27,14 @@ using std::vector;
 
 namespace CATE {
 
-/* The Feature class represents the audio features used in the analysis processes in CATE. */
-class Feature
-{
-public:
-    Feature(int bin_size);
+/* Weighted mean of frequencies, with magnitudes as weights. Perceptually,
+ * the "center of mass" of the spectrum. Characterises "brightness" of a
+ * sound. */
+float spectral_centroid(const vector<float> &magspec);
 
-    /* Weighted mean of frequencies, with magnitudes as weights. Perceptually,
-     * the "center of mass" of the spectrum. Characterises "brightness" of a
-     * sound. */
-    float centroid(const vector<float> &magspec);
-
-    /* Ratio of geometric mean of magnitude spectrum to its arithmetic mean.
-     * Characteristic of "noisiness" of a signal. */
-    float flatness(const vector<float> &magspec);
-
-    /* Measure of flatness of signal around its mean. */
-    float kurtosis(const vector<float> &magspec);
-
-private:
-    /* Calculate mean of given magnitude spectrum. */
-    float calculate_magspec_mean(const vector<float> &magspec);
-
-    int bin_size;
-};
+/* Ratio of geometric mean of magnitude spectrum to its arithmetic mean.
+ * Characteristic of "noisiness" of a signal. */
+float spectral_flatness(const vector<float> &magspec);
 
 } // CATE
 

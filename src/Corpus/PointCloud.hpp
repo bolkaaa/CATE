@@ -1,3 +1,5 @@
+#include <utility>
+
 /*
   CATE: Concatenative Audio Processing Application
   Copyright (c) 2019 Liam Wyllie. All rights reserved.
@@ -29,21 +31,28 @@ using std::string;
 
 namespace CATE {
 
-/* Data structure of points used in analysis process. */
+/* Data structure of a single unit point used in analysis process. */
 class Point
 {
 public:
-    int marker;
     string file_path;
-    float a;
-    float b;
+    int marker;
+    float feature_a;
+    float feature_b;
 };
 
 /* Stores a container of data points and functions used by K-d tree system. */
 class PointCloud
 {
 public:
-    vector<Point> points;
+    /* Add a point to the cloud. */
+    inline void add(const Point &p) { points.emplace_back(p); }
+
+    /* Get file path at specified index of cloud. */
+    inline string get_file_path(const int i) const { return points[i].file_path; }
+
+    /* Get segmentation marker at specified index of cloud. */
+    inline int get_marker(const int i) const { return points[i].marker; }
 
     /* Return number of data points. */
     inline int kdtree_get_point_count() const { return points.size(); }
@@ -53,16 +62,19 @@ public:
     {
         if (dim == 0)
         {
-            return points[i].a;
+            return points[i].feature_a;
         }
         else
         {
-            return points[i].b;
+            return points[i].feature_b;
         }
     }
 
-    template <class BBOX>
+    template<class BBOX>
     bool kdtree_get_bbox(BBOX &) const { return false; }
+
+private:
+    vector<Point> points;
 };
 
 } // CATE

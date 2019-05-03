@@ -30,8 +30,7 @@
 #include "PointCloud.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioFile.hpp"
-#include "src/Analysis/FFT.hpp"
-#include "src/Analysis/Feature.hpp"
+#include "src/Analysis/FeatureMap.hpp"
 
 using std::vector;
 using std::string;
@@ -49,14 +48,11 @@ class Corpus
 public:
     Corpus(const AudioSettings &audio_settings);
 
-    /* Load analysis data from another file. */
-    void set_file(const string &new_file_path);
-
     /* Read analysis data file into memory. */
-    void read_file();
+    void read_file(const string &file_path);
 
     /* Save the analysis data to file, with pretty printing. */
-    void write_file();
+    void write_file(const string &file_path);
 
     /* Add all files deeper than specified directory to the database. */
     void add_directory(const string &directory_path);
@@ -84,10 +80,23 @@ private:
     /* Calculate magnitude spectrum of frame of audio data. */
     vector<float> calculate_frame_spectrum(const pair<int, AudioBuffer> &frame);
 
-    Json db;
-    string data_path;
+    /* Given std::map, get a std::vector of its keys. */
+    template <class A, class B>
+    static inline vector<A> get_keys(map<A, B> m)
+    {
+        vector<A> keys;
+
+        for (auto &elem : m)
+        {
+            keys.emplace_back(elem.first);
+        }
+
+        return keys;
+    }
+
+    Json data;
+    FeatureMap feature_map;
     const AudioSettings &audio_settings;
-    FFT fft;
     map<string, AudioFile> files;
 };
 

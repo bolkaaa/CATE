@@ -80,14 +80,13 @@ private:
     Ui::MainWindow *ui;
     AudioSettingsWindow audio_settings_window;
     AudioSettings &audio_settings;
-    Corpus &db;
+    Corpus &corpus;
     AudioProcess &audio_process;
     PointCloud &point_cloud;
     KdTree &kd_tree;
     const int slider_resolution = 1024;
 
 public slots:
-
     /* When playback start button in UI is pressed, audio stream is started. */
     void start_playback_button_pressed();
 

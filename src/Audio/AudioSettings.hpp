@@ -40,7 +40,7 @@ public:
     void operator=(AudioSettings &rhs) = delete;
 
     /* Get default buffer size from fixed list of buffer sizes. */
-    inline unsigned long default_buffer_size() const { return available_buffer_sizes[4]; }
+    inline unsigned long default_buffer_size() const { return available_buffer_sizes[3]; }
 
     /* Get default sample rate from fixed list of sample rates. */
     inline float default_sample_rate() const { return available_sample_rates[0]; }

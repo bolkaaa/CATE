@@ -35,11 +35,9 @@ AudioProcess::AudioProcess(AudioSettings &audio_settings, Corpus &db, PointCloud
           kd_tree(kd_tree),
           fft(FFT(audio_settings)),
           magspec(vector<float>(audio_settings.get_bin_size() / 2 + 1)),
-          feature(audio_settings.get_bin_size()),
           return_indices(vector<size_t>(num_search_results)),
           distances(vector<float>(num_search_results)),
           granulator(audio_settings.get_sample_rate()),
-          amplitude(0.5),
           ready(false),
           audio_recorder(audio_settings.get_sample_rate()),
           recording(false)
@@ -54,7 +52,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
 {
     static_cast<void>(status_flags);
     static_cast<void>(time_info);
-    auto *input = const_cast<float *>(static_cast<const float *>(input_buffer));
+    auto *input = static_cast<const float *>(input_buffer);
     auto *output = static_cast<float *>(output_buffer);
     auto i = 0;
     float input_sum = 0.0f;
@@ -64,7 +62,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
     /* Main audio output block. */
     for (i = 0; i < frames_per_buffer; ++i)
     {
-        const float out = granulator.synthesize(current_marker, current_file_path);
+        const float out = granulator.synthesize(next_marker, next_file_path);
 
         *output++ = out; // L
         *output++ = out; // R
@@ -123,17 +121,15 @@ void AudioProcess::save_recording(const string &output_path)
     audio_recorder.save(output_path, get_num_output_channels(), audio_settings.get_sample_rate());
 }
 
-void AudioProcess::select_unit(float *input)
+void AudioProcess::select_unit(const float *input)
 {
     fft.fill(input);
     fft.compute_spectrum();
     fft.compute_magspec();
-    magspec = fft.get_magspec();
 
-    const float search_points[3] = {
-            feature.centroid(magspec),
-            feature.flatness(magspec),
-            feature.kurtosis(magspec)
+    const float search_points[KdTreeParams::num_features] = {
+            spectral_centroid(fft.get_magspec()),
+            spectral_flatness(fft.get_magspec()),
     };
 
     kd_tree.knnSearch(&search_points[0],
@@ -141,8 +137,11 @@ void AudioProcess::select_unit(float *input)
                       &return_indices[0],
                       &distances[0]);
 
-    current_marker = point_cloud.points[return_indices[0]].marker;
-    current_file_path = point_cloud.points[return_indices[0]].file_path;
+
+    int point_cloud_index = return_indices[0];
+
+    next_marker = point_cloud.get_marker(point_cloud_index);
+    next_file_path = point_cloud.get_file_path(point_cloud_index);
 }
 
 } // CATE
