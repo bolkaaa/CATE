@@ -11,9 +11,9 @@ Granulator::Granulator(float sample_rate)
 {
 }
 
-float Granulator::synthesize(int marker, string filename)
+float Granulator::synthesize(Unit unit)
 {
-    float output = scheduler.schedule(marker, filename);
+    float output = scheduler.schedule(unit.marker, unit.file_path);
     return output;
 }
 

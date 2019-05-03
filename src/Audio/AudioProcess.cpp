@@ -54,14 +54,13 @@ int AudioProcess::processing_callback(const void *input_buffer,
     static_cast<void>(time_info);
     auto *input = static_cast<const float *>(input_buffer);
     auto *output = static_cast<float *>(output_buffer);
-    auto i = 0;
 
-    select_unit(input);
+    Unit unit = select_unit(input);
 
     /* Main audio output block. */
-    for (i = 0; i < frames_per_buffer; ++i)
+    for (unsigned long i = 0; i < frames_per_buffer; ++i)
     {
-        const float out = granulator.synthesize(next_marker, next_file_path);
+        const float out = granulator.synthesize(unit);
 
         *output++ = out; // L
         *output++ = out; // R
@@ -120,8 +119,10 @@ void AudioProcess::save_recording(const string &output_path)
     audio_recorder.save(output_path, get_num_output_channels(), audio_settings.get_sample_rate());
 }
 
-void AudioProcess::select_unit(const float *input)
+Unit AudioProcess::select_unit(const float *input)
 {
+    Unit unit;
+
     compute_magspec(input);
 
     const float search_points[FeatureMap::num_features] = {
@@ -135,8 +136,10 @@ void AudioProcess::select_unit(const float *input)
                       &distances[0]);
 
     int point_cloud_index = return_indices[0];
-    next_marker = point_cloud.get_marker(point_cloud_index);
-    next_file_path = point_cloud.get_file_path(point_cloud_index);
+    unit.marker = point_cloud.get_marker(point_cloud_index);
+    unit.file_path = point_cloud.get_file_path(point_cloud_index);
+
+    return unit;
 }
 
 void AudioProcess::compute_magspec(const float *input)

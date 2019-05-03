@@ -30,6 +30,14 @@
 
 namespace CATE {
 
+/* Representation of position in audio file. */
+class Unit
+{
+public:
+    string file_path;
+    int marker;
+};
+
 /* Granulator is the high-level interface that contains all the functionality for the granular synthesis process. */
 class Granulator
 {
@@ -40,7 +48,7 @@ public:
     void load_files(const Corpus &corpus);
 
     /* Get the next sample value from the granulator. */
-    float synthesize(int marker, string filename);
+    float synthesize(Unit unit);
 
     /* Set new grain attack value. */
     void set_grain_attack(float new_grain_attack);

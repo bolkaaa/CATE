@@ -81,7 +81,7 @@ public:
 
 private:
     /* Determine the next segment from the corpus to access via KNN search. */
-    void select_unit(const float *input);
+    Unit select_unit(const float *input);
 
     /* Compute magnitude spectrum of input frame. */
     void compute_magspec(const float *input);

@@ -42,6 +42,8 @@ public:
     vector<float> features;
 };
 
+
+
 /* Stores a container of data points and functions used by K-d tree system. */
 class PointCloud
 {
