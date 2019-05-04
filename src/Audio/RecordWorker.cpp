@@ -43,6 +43,7 @@ void RecordWorker::record_data_received(CATE::RingBuffer *ring_buffer)
 void RecordWorker::save_recording(const std::string &output_path, int channels)
 {
     record_data.write(channels, audio_settings->get_sample_rate(), output_path);
+    record_data.data.clear();
 }
 
 } // CATE

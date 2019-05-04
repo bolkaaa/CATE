@@ -52,6 +52,7 @@ public:
     /* Write data to output WAV file. */
     void write(int channels, float sample_rate, const string &path);
 
+
     AudioBuffer data;
     string path;
     float sample_rate;
