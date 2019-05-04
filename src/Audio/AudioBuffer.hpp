@@ -40,7 +40,7 @@ typedef pair<int, AudioBuffer> AudioFrame;
 typedef map<int, AudioBuffer> AudioFramePool;
 
 /* Given an AudioBuffer, segment into an AudioFrameSet. */
-AudioFramePool segment_frames(const AudioBuffer &source, int frame_size);
+AudioFramePool segment_frames(const AudioBuffer &source, int frame_size, int hop_size);
 
 } // CATE
 

@@ -77,9 +77,12 @@ void Corpus::load_audio_from_db()
 
 void Corpus::sliding_window_analysis()
 {
+    const auto buffer_size = audio_settings.get_buffer_size();
+    const auto hop_size = buffer_size / 2;
+
     for (auto &file : files)
     {
-        map<int, AudioBuffer> frames = segment_frames(file.second.data, audio_settings.get_buffer_size());
+        map<int, AudioBuffer> frames = segment_frames(file.second.data, buffer_size, hop_size);
         feature_map.compute_vectors(frames);
 
         auto features = feature_map.get_features();

@@ -23,19 +23,19 @@
 
 namespace CATE {
 
-AudioFramePool segment_frames(const AudioBuffer &source, int frame_size)
+AudioFramePool segment_frames(const AudioBuffer &source, int frame_size, int hop_size)
 {
     AudioFramePool frames;
     auto n = source.size();
     auto remaining_space = n % frame_size;
     auto frame_counter = 0;
 
-    for (auto it = source.begin(); it != (source.end() - remaining_space); it += frame_size)
+    for (auto it = source.begin(); it != (source.end() - remaining_space); it += hop_size)
     {
         AudioBuffer data(it, it + frame_size);
-        AudioFrame frame = {frame_counter, data};;
+        AudioFrame frame = {frame_counter, data};
         frames.insert(frame);
-        frame_counter += frame_size;
+        frame_counter += hop_size;
     }
 
     return frames;
