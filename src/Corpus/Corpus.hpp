@@ -31,6 +31,7 @@
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioFile.hpp"
 #include "src/Analysis/FeatureMap.hpp"
+#include "src/Util/NonCopyable.hpp"
 
 using std::vector;
 using std::string;
@@ -40,12 +41,11 @@ using Json = nlohmann::json;
 
 namespace CATE {
 
-
 /* The Corpus class handles functionality for persistently storing a
  * collection of audio file paths and associated segmentation markers and
  * analysis data, forming the basis for the corpus of the concatenative
  * synthesis system. */
-class Corpus
+class Corpus : NonCopyable
 {
 public:
     Corpus(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<PointCloud> &point_cloud);

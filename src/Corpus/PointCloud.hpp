@@ -27,6 +27,7 @@
 #include <iostream>
 
 #include "src/Analysis/FeatureMap.hpp"
+#include "src/Util/NonCopyable.hpp"
 
 using std::vector;
 using std::string;
@@ -43,7 +44,7 @@ public:
 };
 
 /* Stores a container of data points and functions used by K-d tree system. */
-class PointCloud
+class PointCloud : NonCopyable
 {
 public:
     /* Add a point to the cloud. */

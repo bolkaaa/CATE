@@ -24,7 +24,7 @@
 #include <QStandardPaths>
 #include <QtWidgets>
 
-#include "Util.hpp"
+#include "QtUtil.hpp"
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
 #include "src/Audio/AudioBuffer.hpp"

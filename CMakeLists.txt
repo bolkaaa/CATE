@@ -39,7 +39,7 @@ set(SOURCE_FILES
         src/GUI/MainWindow.cpp
         src/GUI/AudioSettingsWindow.cpp
         src/GUI/AudioSettingsWindow.hpp
-        src/GUI/Util.hpp
+        src/GUI/QtUtil.hpp
         src/Synthesis/Granulator.cpp
         src/Synthesis/Granulator.hpp
         src/Synthesis/Envelope.cpp
@@ -54,7 +54,7 @@ set(SOURCE_FILES
         src/Synthesis/EnvelopeParams.cpp
         src/Synthesis/GrainParams.cpp
         src/Synthesis/GrainParams.hpp
-        src/Analysis/Math.hpp)
+        src/Analysis/Math.hpp src/Util/NonCopyable.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

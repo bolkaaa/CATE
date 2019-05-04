@@ -1,5 +1,5 @@
-#ifndef UTIL_HPP
-#define UTIL_HPP
+#ifndef QTUTIL_HPP
+#define QTUTIL_HPP
 
 #include <vector>
 #include <sstream>

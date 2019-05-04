@@ -22,22 +22,18 @@
 
 #include <vector>
 
+#include "src/Util/NonCopyable.hpp"
+
 using std::vector;
 
 namespace CATE {
 
 /* Functionality for storing audio settings used throughout the program, with possible settings for each
  * parameter stored as a fixed number of options.  */
-class AudioSettings
+class AudioSettings : NonCopyable
 {
 public:
     AudioSettings();
-
-    /* Deleted copy constructor. */
-    AudioSettings(const AudioSettings &rhs) = delete;
-
-    /* Deleted copy assignment operator. */
-    void operator=(AudioSettings &rhs) = delete;
 
     /* Get default buffer size from fixed list of buffer sizes. */
     inline unsigned long default_buffer_size() const { return available_buffer_sizes[3]; }

@@ -27,6 +27,7 @@
 #include <portaudio.h>
 
 #include "AudioSettings.hpp"
+#include "src/Util/NonCopyable.hpp"
 
 using std::vector;
 using std::string;
@@ -39,10 +40,10 @@ namespace CATE {
   It defines the callback functions, which the AudioProcess class creates its
   own versions of when it inherits from the base AudioEngine class.
  */
-class AudioEngine
+class AudioEngine : NonCopyable
 {
 public:
-    AudioEngine(AudioSettings *audio_settings);
+    explicit AudioEngine(AudioSettings *audio_settings);
 
     ~AudioEngine();
 

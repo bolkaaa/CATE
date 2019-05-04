@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include "Util.hpp"
+#include "QtUtil.hpp"
 #include "AudioSettingsWindow.hpp"
 #include "ui_AudioSettingsWindow.h"
 
