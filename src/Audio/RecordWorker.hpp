@@ -17,26 +17,37 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include "Source.hpp"
+#ifndef RECORDWORKER_HPP
+#define RECORDWORKER_HPP
+
+#include <QObject>
+
+#include "src/Audio/AudioSettings.hpp"
+#include "src/Audio/AudioFile.hpp"
+#include "src/Audio/RingBuffer.hpp"
+
+using std::string;
 
 namespace CATE {
 
-Source::Source(const AudioBuffer &buffer)
-        : buffer(buffer),
-          index(0)
+class RecordWorker : public QObject
 {
-}
+Q_OBJECT
+public:
+    RecordWorker(AudioSettings *audio_settings);
 
-float Source::synthesize()
-{
-    if (index > buffer.size())
-    {
-        return 0.0f;
-    }
+    /* Write record_buffer to output file. */
+    void save_recording(const std::string &output_path, int channels);
 
-    float sample = buffer[index];
-    ++index;
-    return sample;
-}
+public slots:
+    /* Pop available sample from ring buffer and write to record_buffer. */
+    void record_data_received(RingBuffer *ring_buffer);
+
+private:
+    const AudioSettings *audio_settings;
+    AudioFile record_data;
+};
 
 } // CATE
+
+#endif

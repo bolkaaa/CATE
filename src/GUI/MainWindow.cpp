@@ -28,7 +28,10 @@
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
 #include "src/Audio/AudioBuffer.hpp"
+#include "src/Audio/RingBuffer.hpp"
 #include "src/Audio/AudioProcess.hpp"
+
+using std::make_unique;
 
 namespace CATE {
 
@@ -44,15 +47,19 @@ MainWindow::MainWindow(const unique_ptr<AudioSettings> &audio_settings, const un
           grain_params(grain_params.get()),
           env_params(env_params.get()),
           kd_tree(kd_tree),
+          record_worker(new RecordWorker(audio_settings.get())),
+          record_thread(new QThread),
           audio_settings_window(audio_settings.get(), audio_process.get(), grain_params.get())
 {
     ui->setupUi(this);
 
-    ui->grain_attack_slider->setMaximum(slider_resolution);
-    ui->grain_sustain_slider->setMaximum(slider_resolution);
-    ui->grain_release_slider->setMaximum(slider_resolution);
-    ui->grain_density_slider->setMaximum(slider_resolution);
-    ui->grain_size_slider->setMaximum(slider_resolution);
+    record_worker->moveToThread(record_thread);
+
+    connect(audio_process.get(),
+            SIGNAL(send_record_data(RingBuffer*)),
+            record_worker,
+            SLOT(record_data_received
+            (RingBuffer*)));
 
     connect(ui->start_playback, SIGNAL(clicked()), this, SLOT(start_playback_button_pressed()));
     connect(ui->stop_playback, SIGNAL(clicked()), this, SLOT(stop_playback_button_pressed()));
@@ -61,6 +68,12 @@ MainWindow::MainWindow(const unique_ptr<AudioSettings> &audio_settings, const un
     connect(ui->analyse_directory, SIGNAL(clicked()), this, SLOT(analyse_directory_button_pressed()));
     connect(ui->load_corpus, SIGNAL(clicked()), this, SLOT(load_corpus_button_pressed()));
     connect(ui->audio_settings, SIGNAL(clicked()), this, SLOT(audio_settings_button_pressed()));
+
+    ui->grain_attack_slider->setMaximum(slider_resolution);
+    ui->grain_sustain_slider->setMaximum(slider_resolution);
+    ui->grain_release_slider->setMaximum(slider_resolution);
+    ui->grain_density_slider->setMaximum(slider_resolution);
+    ui->grain_size_slider->setMaximum(slider_resolution);
 
     connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
     connect(ui->grain_sustain_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_sustain(int)));
@@ -81,7 +94,8 @@ void MainWindow::start_playback_button_pressed()
         {
             std::cerr << audio_process->report_error(error_code) << "\n";
         }
-    } else
+    }
+    else
     {
         QMessageBox msg;
         msg.setText("No files loaded.");
@@ -97,14 +111,15 @@ void MainWindow::stop_playback_button_pressed()
 void MainWindow::start_recording_button_pressed()
 {
     audio_process->start_recording();
+    record_thread->start();
 }
 
 void MainWindow::stop_recording_button_pressed()
 {
     audio_process->stop_recording();
     audio_process->stop_stream();
-    string output_path;
 
+    string output_path;
     try
     {
         output_path = save_file_dialog("*.wav");
@@ -121,7 +136,8 @@ void MainWindow::stop_recording_button_pressed()
         return;
     }
 
-    audio_process->save_recording(output_path);
+    record_worker->save_recording(output_path, audio_process->get_num_output_channels());
+
     audio_process->start_stream();
 }
 
@@ -297,6 +313,5 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     audio_process->stop_stream();
 }
-
 
 } // CATE

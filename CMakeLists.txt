@@ -19,8 +19,6 @@ set(SOURCE_FILES
         src/Audio/AudioBuffer.cpp
         src/Audio/AudioFile.hpp
         src/Audio/AudioFile.cpp
-        src/Audio/AudioRecorder.cpp
-        src/Audio/AudioRecorder.hpp
         src/Audio/AudioSettings.cpp
         src/Audio/AudioSettings.hpp
         src/Analysis/FFT.hpp
@@ -54,7 +52,12 @@ set(SOURCE_FILES
         src/Synthesis/EnvelopeParams.cpp
         src/Synthesis/GrainParams.cpp
         src/Synthesis/GrainParams.hpp
-        src/Analysis/Math.hpp src/Util/NonCopyable.hpp)
+        src/Analysis/Math.hpp
+        src/Util/NonCopyable.hpp
+        src/Audio/RecordWorker.cpp
+        src/Audio/RecordWorker.hpp
+        src/Audio/RingBuffer.cpp
+        src/Audio/RingBuffer.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

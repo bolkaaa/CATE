@@ -1,5 +1,3 @@
-#include <utility>
-
 /*
   CATE: Concatenative Audio Processing Application
   Copyright (c) 2019 Liam Wyllie. All rights reserved.
@@ -23,6 +21,7 @@
 #define POINTCLOUD_HPP
 
 #include <vector>
+#include <utility>
 #include <cstdlib>
 #include <iostream>
 

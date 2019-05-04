@@ -49,8 +49,8 @@ public:
     /* Read audio file from path. */
     void read();
 
-    /* Write buffer object to output file. */
-    void write(const AudioBuffer &buffer, int channels, float sample_rate, const string &path);
+    /* Write data to output WAV file. */
+    void write(int channels, float sample_rate, const string &path);
 
     AudioBuffer data;
     string path;

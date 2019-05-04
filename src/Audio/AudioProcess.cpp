@@ -39,9 +39,9 @@ AudioProcess::AudioProcess(const unique_ptr<AudioSettings> &audio_settings, cons
           grain_params(grain_params.get()),
           env_params(env_params.get()),
           granulator(audio_settings.get(), grain_params.get(), env_params.get()),
+          ring_buffer(new RingBuffer(512)),
           return_indices(num_search_results),
           distances(num_search_results),
-          audio_recorder(audio_settings->get_sample_rate()),
           ready(false),
           recording(false)
 {
@@ -68,9 +68,11 @@ int AudioProcess::processing_callback(const void *input_buffer,
         *output++ = out; // L
         *output++ = out; // R
 
+        /* While recording, current output sample is continuously written to ring buffer. */
         if (recording)
         {
-            audio_recorder.write(out);
+            ring_buffer->push(out);
+            emit send_record_data(ring_buffer);
         }
     }
 
@@ -84,7 +86,6 @@ void AudioProcess::reload_granulator()
 
 void AudioProcess::save_recording(const string &output_path)
 {
-    audio_recorder.save(output_path, get_num_output_channels(), audio_settings->get_sample_rate());
 }
 
 Unit AudioProcess::select_unit(const float *input, int n)
@@ -118,6 +119,5 @@ void AudioProcess::compute_magspec(const float *input, int n)
     fft.compute_magspec();
     magspec = fft.get_magspec();
 }
-
 
 } // CATE

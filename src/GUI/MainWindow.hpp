@@ -32,6 +32,7 @@
 #include "src/Corpus/KdTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioProcess.hpp"
+#include "src/Audio/RecordWorker.hpp"
 #include "AudioSettingsWindow.hpp"
 
 using std::string;
@@ -89,10 +90,12 @@ private:
     EnvelopeParams *env_params;
     GrainParams *grain_params;
     KdTree &kd_tree;
+    QThread *record_thread;
+    RecordWorker* record_worker;
+    AudioBuffer record_data;
     const int slider_resolution = 1024;
 
 public slots:
-
     /* When playback start button in UI is pressed, audio stream is started. */
     void start_playback_button_pressed();
 

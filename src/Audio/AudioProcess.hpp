@@ -27,8 +27,8 @@
 
 #include "AudioEngine.hpp"
 #include "AudioBuffer.hpp"
-#include "AudioRecorder.hpp"
 #include "AudioSettings.hpp"
+#include "RingBuffer.hpp"
 #include "src/Analysis/FFT.hpp"
 #include "src/Analysis/Feature.hpp"
 #include "src/Corpus/Corpus.hpp"
@@ -83,14 +83,17 @@ private:
     GrainParams *grain_params;
     EnvelopeParams *env_params;
     Granulator granulator;
-    AudioRecorder audio_recorder;
     FFT fft;
     Magspec magspec;
     const size_t num_search_results = 1;
     vector<size_t> return_indices;
     vector<float> distances;
+    RingBuffer *ring_buffer;
     bool recording;
     bool ready;
+
+signals:
+    void send_record_data(RingBuffer *ring_buffer);
 
 protected:
     int processing_callback(const void *input_buffer,
@@ -98,6 +101,7 @@ protected:
                             unsigned long buffer_size,
                             const PaStreamCallbackTimeInfo *time_info,
                             PaStreamCallbackFlags status_flags) override;
+
 };
 
 } // CATE

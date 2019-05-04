@@ -17,26 +17,32 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include "Source.hpp"
+#include <iostream>
+
+#include "RecordWorker.hpp"
+#include "AudioFile.hpp"
 
 namespace CATE {
 
-Source::Source(const AudioBuffer &buffer)
-        : buffer(buffer),
-          index(0)
+RecordWorker::RecordWorker(AudioSettings *audio_settings)
+        : audio_settings(audio_settings)
 {
 }
 
-float Source::synthesize()
+void RecordWorker::record_data_received(CATE::RingBuffer *ring_buffer)
 {
-    if (index > buffer.size())
-    {
-        return 0.0f;
-    }
+    auto sample = 0.0f;
 
-    float sample = buffer[index];
-    ++index;
-    return sample;
+    if (ring_buffer->samples_available())
+    {
+        ring_buffer->pop(sample);
+        record_data.data.emplace_back(sample);
+    }
+}
+
+void RecordWorker::save_recording(const std::string &output_path, int channels)
+{
+    record_data.write(channels, audio_settings->get_sample_rate(), output_path);
 }
 
 } // CATE

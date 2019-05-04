@@ -17,31 +17,40 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef AUDIORECORD_HPP
-#define AUDIORECORD_HPP
+#ifndef RING_BUFFER_HPP
+#define RING_BUFFER_HPP
+
+#include <algorithm>
 
 #include "AudioBuffer.hpp"
 
 namespace CATE {
 
-class AudioRecorder
+/* Based on lock-free ring buffer implementation in "Audio Anecdotes Volume 2
+ * (Greenebaum, Barzel)". */
+class RingBuffer
 {
 public:
-    AudioRecorder(float sample_rate);
+    /* Allocate memory for ring buffer. */
+    explicit RingBuffer(int size);
 
-    /* Write audio sample to audio buffer. */
-    void write(float sample);
+    /* Insert element at head. */
+    void push(float elem);
 
-    /* Save recording data to output file. */
-    void save(const std::string &output_path, int num_channels, float sample_rate);
+    /* Get tail element. */
+    void pop(float &output);
+
+    /* Calculate samples available in buffer. */
+    int samples_available();
+
+    /* Calculate space left in buffer. */
+    int space_available();
 
 private:
-    float sample_rate;
-    const float max_recording_minutes = 60.0f;
-    int max_recording_size;
-    int record_pos;
-    AudioBuffer buffer;
-
+    AudioBuffer data;
+    int head;
+    int tail;
+    int high_water_mark;
 };
 
 } // CATE

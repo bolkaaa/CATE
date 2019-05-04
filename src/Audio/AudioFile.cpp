@@ -54,11 +54,11 @@ void AudioFile::read()
     channels = file.channels();
 }
 
-void AudioFile::write(const AudioBuffer &buffer, int channels, float sample_rate, const string &path)
+void AudioFile::write(int channels, float sample_rate, const string &path)
 {
     int format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
     SndfileHandle file(path, SFM_WRITE, format, channels, static_cast<int>(sample_rate));
-    file.write(&buffer[0], buffer.size());
+    file.write(&data[0], static_cast<sf_count_t>(data.size()));
 }
 
 } // CATE
