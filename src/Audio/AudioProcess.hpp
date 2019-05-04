@@ -48,44 +48,26 @@ Q_OBJECT
 
 public:
     AudioProcess(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<Corpus> &db,
-                 const unique_ptr<PointCloud> &point_cloud, const KdTree &kd_tree);
-
-    ~AudioProcess();
+                 const unique_ptr<PointCloud> &point_cloud, const unique_ptr<GrainParams> &grain_params,
+                 const unique_ptr<EnvelopeParams> &env_params, const KdTree &kd_tree);
 
     /* Reload granulator when database has changed. */
     void reload_granulator();
 
     /* Start recording audio output. */
-    void start_recording();
+    inline void start_recording() { recording = true; };
 
     /* Stop recording audio output. */
-    void stop_recording();
-
-    /* Set attack value of synthesis grains. */
-    void set_grain_attack(float new_grain_attack);
-
-    /* Set decay value of synthesis grains. */
-    void set_grain_release(float new_grain_release);
-
-    /* Set amplitude of synthesis output. */
-    void set_grain_sustain(float new_grain_sustain);
-
-    /* Set density value of synthesis grains. */
-    void set_grain_density(int new_grain_density);
-
-    /* Set grain size of synthesis grains. */
-    void set_grain_size(int new_grain_size);
-
-    /* Get flag for whether audio process is ready to be used. */
-    bool is_ready()
-    { return ready; }
-
-    /* Enable "ready" flag. */
-    void enable()
-    { ready = true; }
+    inline void stop_recording() { recording = false; };
 
     /* Save current audio recording to disk. */
     void save_recording(const string &output_path);
+
+    /* Get flag for whether audio process is ready to be used. */
+    bool is_ready() { return ready; }
+
+    /* Enable "ready" flag. */
+    void enable() { ready = true; }
 
 private:
     /* Determine the next segment from the corpus to access via KNN search. */

@@ -69,11 +69,6 @@ MainWindow::MainWindow(const unique_ptr<AudioSettings> &audio_settings, const un
     connect(ui->grain_size_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_size(int)));
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
 void MainWindow::start_playback_button_pressed()
 {
     int error_code = 0;
@@ -238,7 +233,7 @@ void MainWindow::set_grain_sustain(int new_value)
     const float min = 0.00f;
     const float max = 1.0f;
     float sustain = scale_slider(new_value, min, max);
-    audio_process->set_grain_sustain(sustain);
+    env_params->set_sustain(sustain);
     update_number_label(ui->grain_sustain_value, sustain);
 }
 
@@ -247,7 +242,7 @@ void MainWindow::set_grain_attack(int new_value)
     const float min = 0.1f;
     const float max = 1.0f;
     float attack = scale_slider(new_value, min, max);
-    audio_process->set_grain_attack(attack);
+    env_params->set_attack(attack);
     update_number_label(ui->grain_attack_value, attack);
 }
 
@@ -256,7 +251,7 @@ void MainWindow::set_grain_release(int new_value)
     const float min = 0.1f;
     const float max = 1.0f;
     float release = scale_slider(new_value, min, max);
-    audio_process->set_grain_release(release);
+    env_params->set_release(release);
     update_number_label(ui->grain_release_value, release);
 }
 
@@ -265,7 +260,7 @@ void MainWindow::set_grain_density(int new_value)
     const int min = 1;
     const int max = 512;
     int density = static_cast<int>(scale_slider(new_value, min, max));
-    audio_process->set_grain_density(density);
+    grain_params->set_grain_density(density);
     update_number_label(ui->grain_density_value, density);
 }
 
@@ -274,7 +269,7 @@ void MainWindow::set_grain_size(int new_value)
     const int min = 32;
     const int max = 256;
     int grain_size = static_cast<int>(scale_slider(new_value, min, max));
-    audio_process->set_grain_size(grain_size);
+    grain_params->set_grain_size(grain_size);
     update_number_label(ui->grain_size_value, grain_size);
 }
 

@@ -52,6 +52,8 @@ int main(int argc, char *argv[])
     auto audio_process = make_unique<CATE::AudioProcess>(audio_settings,
                                                          corpus,
                                                          point_cloud,
+                                                         grain_params,
+                                                         env_params,
                                                          kd_tree);
 
     /* Instantiate and load GUI. */
@@ -62,6 +64,9 @@ int main(int argc, char *argv[])
                                                      grain_params,
                                                      env_params,
                                                      kd_tree);
+
+
+
     main_window->show();
 
     return app.exec();

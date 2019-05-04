@@ -58,8 +58,6 @@ public:
                const unique_ptr<GrainParams> &grain_params, const unique_ptr<EnvelopeParams> &env_params,
                KdTree &kd_tree);
 
-    ~MainWindow();
-
 private:
     /* Prompt user to select a directory. */
     string directory_dialog();
@@ -80,7 +78,7 @@ private:
     void rebuild_audio_process();
 
     /* Overriding Qt closeEvent function to define behaviour for when window is closed. */
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
 
     Ui::MainWindow *ui;
     AudioSettingsWindow audio_settings_window;

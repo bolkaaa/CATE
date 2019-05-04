@@ -28,28 +28,23 @@
 namespace CATE {
 
 AudioProcess::AudioProcess(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<Corpus> &db,
-                           const unique_ptr<PointCloud> &point_cloud, const KdTree &kd_tree)
+                           const unique_ptr<PointCloud> &point_cloud, const unique_ptr<GrainParams> &grain_params,
+                           const unique_ptr<EnvelopeParams> &env_params, const KdTree &kd_tree)
         : audio_settings(audio_settings.get()),
           AudioEngine(audio_settings.get()),
           db(db.get()),
           point_cloud(point_cloud.get()),
           kd_tree(kd_tree),
           fft(audio_settings.get()),
-          grain_params(new GrainParams),
-          env_params(new EnvelopeParams(grain_params->get_grain_size())),
-          granulator(audio_settings.get(), grain_params, env_params),
+          grain_params(grain_params.get()),
+          env_params(env_params.get()),
+          granulator(audio_settings.get(), grain_params.get(), env_params.get()),
           return_indices(num_search_results),
           distances(num_search_results),
-          ready(false),
           audio_recorder(audio_settings->get_sample_rate()),
+          ready(false),
           recording(false)
 {
-}
-
-AudioProcess::~AudioProcess()
-{
-    delete grain_params;
-    delete env_params;
 }
 
 int AudioProcess::processing_callback(const void *input_buffer,
@@ -82,41 +77,6 @@ int AudioProcess::processing_callback(const void *input_buffer,
     return paContinue;
 }
 
-void AudioProcess::start_recording()
-{
-    recording = true;
-}
-
-void AudioProcess::stop_recording()
-{
-    recording = false;
-}
-
-void AudioProcess::set_grain_sustain(float new_grain_sustain)
-{
-    env_params->set_sustain(new_grain_sustain);
-}
-
-void AudioProcess::set_grain_attack(float new_grain_attack)
-{
-    env_params->set_attack(new_grain_attack);
-}
-
-void AudioProcess::set_grain_release(float new_grain_release)
-{
-    env_params->set_release(new_grain_release);
-}
-
-void AudioProcess::set_grain_density(int new_grain_density)
-{
-    grain_params->set_grain_density(new_grain_density);
-}
-
-void AudioProcess::set_grain_size(int new_grain_size)
-{
-    grain_params->set_grain_size(new_grain_size);
-}
-
 void AudioProcess::reload_granulator()
 {
     granulator.load_files(*db);
@@ -140,9 +100,9 @@ Unit AudioProcess::select_unit(const float *input, int n)
     };
 
     kd_tree.knnSearch(&search_points[0],
-                       num_search_results,
-                       &return_indices[0],
-                       &distances[0]);
+                      num_search_results,
+                      &return_indices[0],
+                      &distances[0]);
 
     int point_cloud_index = return_indices[0];
     unit.marker = point_cloud->get_marker(point_cloud_index);
