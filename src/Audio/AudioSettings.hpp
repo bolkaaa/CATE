@@ -88,9 +88,11 @@ private:
     unsigned long buffer_size;
     float sample_rate;
     int bin_size;
+
     const int default_buffer_size_index = 3;
     const int default_sample_rate_index = 0;
     const int default_bin_size_index = 2;
+
     const vector<unsigned long> available_buffer_sizes = {32, 64, 128, 256, 512, 1024, 2056, 4096};
     const vector<float> available_sample_rates = {44100.0f, 48000.0f, 88200.0f, 96000.0f};
     const vector<int> available_bin_sizes = {256, 512, 1024, 2056, 4096, 8192};

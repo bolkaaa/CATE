@@ -65,6 +65,9 @@ public:
     /* Set new grain size value. */
     void set_grain_size(int new_grain_size);
 
+    /* Get grain size. */
+    inline const int get_grain_size() const { return grain_params.get_grain_size(); }
+
 private:
     GrainParams grain_params;
     EnvelopeParams envelope_params;

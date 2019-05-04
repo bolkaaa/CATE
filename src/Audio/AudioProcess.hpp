@@ -81,10 +81,10 @@ public:
 
 private:
     /* Determine the next segment from the corpus to access via KNN search. */
-    Unit select_unit(const float *input);
+    Unit select_unit(const float *input, int n);
 
     /* Compute magnitude spectrum of input frame. */
-    void compute_magspec(const float *input);
+    void compute_magspec(const float *input, int n);
 
     AudioSettings &audio_settings;
     Corpus &db;
@@ -105,7 +105,7 @@ private:
 protected:
     int processing_callback(const void *input_buffer,
                             void *output_buffer,
-                            unsigned long frames_per_buffer,
+                            unsigned long buffer_size,
                             const PaStreamCallbackTimeInfo *time_info,
                             PaStreamCallbackFlags status_flags) override;
 };

@@ -54,16 +54,16 @@ float FFT::window(int i, int n)
     return hanning;
 }
 
-void FFT::fill(const float *input)
+void FFT::fill(const float *input, int n)
 {
     /* Fill data array with input multiplied by windowing function. */
-    for (auto i = 0; i < audio_settings.get_buffer_size(); ++i)
+    for (auto i = 0; i < n; ++i)
     {
-        data[i] = input[i] * window(i, audio_settings.get_bin_size());
+        data[i] = input[i] * window(i, n);
     }
 
-    /* Pad range from <frames_per_buffer> to <bin_size> with zeroes. */
-    for (auto i = audio_settings.get_buffer_size(); i < audio_settings.get_bin_size(); ++i)
+    /* Pad range from <n> to <bin_size> with zeroes. */
+    for (auto i = n; i < audio_settings.get_bin_size(); ++i)
     {
         data[i] = 0.0;
     }

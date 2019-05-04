@@ -46,7 +46,7 @@ AudioProcess::AudioProcess(AudioSettings &audio_settings, Corpus &db, PointCloud
 
 int AudioProcess::processing_callback(const void *input_buffer,
                                       void *output_buffer,
-                                      unsigned long frames_per_buffer,
+                                      unsigned long buffer_size,
                                       const PaStreamCallbackTimeInfo *time_info,
                                       PaStreamCallbackFlags status_flags)
 {
@@ -55,10 +55,10 @@ int AudioProcess::processing_callback(const void *input_buffer,
     auto *input = static_cast<const float *>(input_buffer);
     auto *output = static_cast<float *>(output_buffer);
 
-    Unit unit = select_unit(input);
+    Unit unit = select_unit(input, granulator.get_grain_size());
 
     /* Main audio output block. */
-    for (unsigned long i = 0; i < frames_per_buffer; ++i)
+    for (unsigned long i = 0; i < buffer_size; ++i)
     {
         const float out = granulator.synthesize(unit);
 
@@ -119,11 +119,11 @@ void AudioProcess::save_recording(const string &output_path)
     audio_recorder.save(output_path, get_num_output_channels(), audio_settings.get_sample_rate());
 }
 
-Unit AudioProcess::select_unit(const float *input)
+Unit AudioProcess::select_unit(const float *input, int n)
 {
     Unit unit;
 
-    compute_magspec(input);
+    compute_magspec(input, n);
 
     const float search_points[FeatureMap::num_features] = {
             spectral_centroid(magspec),
@@ -143,9 +143,9 @@ Unit AudioProcess::select_unit(const float *input)
     return unit;
 }
 
-void AudioProcess::compute_magspec(const float *input)
+void AudioProcess::compute_magspec(const float *input, int n)
 {
-    fft.fill(input);
+    fft.fill(input, n);
     fft.compute_spectrum();
     fft.compute_magspec();
     magspec = fft.get_magspec();

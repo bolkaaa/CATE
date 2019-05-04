@@ -50,7 +50,7 @@ public:
     ~FFT();
 
     /* Fill input data array. */
-    void fill(const float *input);
+    void fill(const float *input, int n);
 
     /* Compute complex spectrum of input data. */
     void compute_spectrum();

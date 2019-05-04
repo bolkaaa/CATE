@@ -64,7 +64,7 @@ vector<float> FeatureMap::calculate_frame_spectrum(const pair<int, AudioBuffer> 
 {
     AudioBuffer buffer(frame.second);
 
-    fft.fill(&buffer[0]);
+    fft.fill(&buffer[0], buffer.size());
     fft.compute_spectrum();
     fft.compute_magspec();
     Magspec magspec = fft.get_magspec();
