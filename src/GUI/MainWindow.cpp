@@ -32,15 +32,19 @@
 
 namespace CATE {
 
-MainWindow::MainWindow(AudioProcess &audio_process, AudioSettings &audio_settings, Corpus &db, PointCloud &point_cloud,
+MainWindow::MainWindow(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<AudioProcess> &audio_process,
+                       const unique_ptr<Corpus> &db, const unique_ptr<PointCloud> &point_cloud,
+                       const unique_ptr<GrainParams> &grain_params, const unique_ptr<EnvelopeParams> &env_params,
                        KdTree &kd_tree)
         : ui(new Ui::MainWindow),
-          audio_settings(audio_settings),
-          audio_settings_window(audio_settings, audio_process),
-          audio_process(audio_process),
-          corpus(db),
-          point_cloud(point_cloud),
-          kd_tree(kd_tree)
+          audio_settings(audio_settings.get()),
+          audio_process(audio_process.get()),
+          corpus(db.get()),
+          point_cloud(point_cloud.get()),
+          grain_params(grain_params.get()),
+          env_params(env_params.get()),
+          kd_tree(kd_tree),
+          audio_settings_window(audio_settings.get(), audio_process.get(), grain_params.get())
 {
     ui->setupUi(this);
 
@@ -74,16 +78,15 @@ void MainWindow::start_playback_button_pressed()
 {
     int error_code = 0;
 
-    if (audio_process.is_ready())
+    if (audio_process->is_ready())
     {
-        error_code = audio_process.start_stream();
+        error_code = audio_process->start_stream();
 
         if (!error_code)
         {
-            std::cerr << audio_process.report_error(error_code) << "\n";
+            std::cerr << audio_process->report_error(error_code) << "\n";
         }
-    }
-    else
+    } else
     {
         QMessageBox msg;
         msg.setText("No files loaded.");
@@ -93,18 +96,18 @@ void MainWindow::start_playback_button_pressed()
 
 void MainWindow::stop_playback_button_pressed()
 {
-    audio_process.stop_stream();
+    audio_process->stop_stream();
 }
 
 void MainWindow::start_recording_button_pressed()
 {
-    audio_process.start_recording();
+    audio_process->start_recording();
 }
 
 void MainWindow::stop_recording_button_pressed()
 {
-    audio_process.stop_recording();
-    audio_process.stop_stream();
+    audio_process->stop_recording();
+    audio_process->stop_stream();
     string output_path;
 
     try
@@ -115,21 +118,21 @@ void MainWindow::stop_recording_button_pressed()
     {
         std::cerr << e.what() << "\n";
 
-        if (audio_process.is_ready())
+        if (audio_process->is_ready())
         {
-            audio_process.start_stream();
+            audio_process->start_stream();
         }
 
         return;
     }
 
-    audio_process.save_recording(output_path);
-    audio_process.start_stream();
+    audio_process->save_recording(output_path);
+    audio_process->start_stream();
 }
 
 void MainWindow::analyse_directory_button_pressed()
 {
-    audio_process.stop_stream();
+    audio_process->stop_stream();
     string audio_dir_path;
     string corpus_path;
 
@@ -144,9 +147,9 @@ void MainWindow::analyse_directory_button_pressed()
         return;
     }
 
-    corpus.add_directory(audio_dir_path);
-    corpus.sliding_window_analysis();
-    corpus.write_file(corpus_path);
+    corpus->add_directory(audio_dir_path);
+    corpus->sliding_window_analysis();
+    corpus->write_file(corpus_path);
 
     rebuild_audio_process();
 }
@@ -165,8 +168,8 @@ void MainWindow::load_corpus_button_pressed()
         return;
     }
 
-    corpus.read_file(corpus_path);
-    corpus.load_audio_from_db();
+    corpus->read_file(corpus_path);
+    corpus->load_audio_from_db();
 
     rebuild_audio_process();
 }
@@ -220,13 +223,13 @@ string MainWindow::open_file_dialog(const string &file_types)
 
 void MainWindow::rebuild_audio_process()
 {
-    point_cloud = corpus.create_point_cloud();
+    corpus->rebuild_point_cloud();
     kd_tree.buildIndex();
-    audio_process.reload_granulator();
+    audio_process->reload_granulator();
 
-    if (corpus.has_data())
+    if (corpus->has_data())
     {
-        audio_process.enable();
+        audio_process->enable();
     }
 }
 
@@ -235,7 +238,7 @@ void MainWindow::set_grain_sustain(int new_value)
     const float min = 0.00f;
     const float max = 1.0f;
     float sustain = scale_slider(new_value, min, max);
-    audio_process.set_grain_sustain(sustain);
+    audio_process->set_grain_sustain(sustain);
     update_number_label(ui->grain_sustain_value, sustain);
 }
 
@@ -244,7 +247,7 @@ void MainWindow::set_grain_attack(int new_value)
     const float min = 0.1f;
     const float max = 1.0f;
     float attack = scale_slider(new_value, min, max);
-    audio_process.set_grain_attack(attack);
+    audio_process->set_grain_attack(attack);
     update_number_label(ui->grain_attack_value, attack);
 }
 
@@ -253,7 +256,7 @@ void MainWindow::set_grain_release(int new_value)
     const float min = 0.1f;
     const float max = 1.0f;
     float release = scale_slider(new_value, min, max);
-    audio_process.set_grain_release(release);
+    audio_process->set_grain_release(release);
     update_number_label(ui->grain_release_value, release);
 }
 
@@ -262,7 +265,7 @@ void MainWindow::set_grain_density(int new_value)
     const int min = 1;
     const int max = 512;
     int density = static_cast<int>(scale_slider(new_value, min, max));
-    audio_process.set_grain_density(density);
+    audio_process->set_grain_density(density);
     update_number_label(ui->grain_density_value, density);
 }
 
@@ -271,7 +274,7 @@ void MainWindow::set_grain_size(int new_value)
     const int min = 32;
     const int max = 256;
     int grain_size = static_cast<int>(scale_slider(new_value, min, max));
-    audio_process.set_grain_size(grain_size);
+    audio_process->set_grain_size(grain_size);
     update_number_label(ui->grain_size_value, grain_size);
 }
 
@@ -297,7 +300,7 @@ void MainWindow::audio_settings_button_pressed()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    audio_process.stop_stream();
+    audio_process->stop_stream();
 }
 
 

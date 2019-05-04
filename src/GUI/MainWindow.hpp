@@ -20,6 +20,8 @@
 #ifndef MAIN_WINDOW_HPP
 #define MAIN_WINDOW_HPP
 
+#include <memory>
+
 #include <QMainWindow>
 #include <QSlider>
 #include <QString>
@@ -33,6 +35,7 @@
 #include "AudioSettingsWindow.hpp"
 
 using std::string;
+using std::unique_ptr;
 
 namespace Ui {
 
@@ -50,7 +53,9 @@ class MainWindow : public QMainWindow
 Q_OBJECT
 
 public:
-    MainWindow(AudioProcess &audio_process, AudioSettings &audio_settings, Corpus &db, PointCloud &point_cloud,
+    MainWindow(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<AudioProcess> &audio_process,
+               const unique_ptr<Corpus> &db, const unique_ptr<PointCloud> &point_cloud,
+               const unique_ptr<GrainParams> &grain_params, const unique_ptr<EnvelopeParams> &env_params,
                KdTree &kd_tree);
 
     ~MainWindow();
@@ -79,14 +84,17 @@ private:
 
     Ui::MainWindow *ui;
     AudioSettingsWindow audio_settings_window;
-    AudioSettings &audio_settings;
-    Corpus &corpus;
-    AudioProcess &audio_process;
-    PointCloud &point_cloud;
+    AudioSettings *audio_settings;
+    Corpus *corpus;
+    AudioProcess *audio_process;
+    PointCloud *point_cloud;
+    EnvelopeParams *env_params;
+    GrainParams *grain_params;
     KdTree &kd_tree;
     const int slider_resolution = 1024;
 
 public slots:
+
     /* When playback start button in UI is pressed, audio stream is started. */
     void start_playback_button_pressed();
 

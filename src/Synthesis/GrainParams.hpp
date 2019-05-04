@@ -20,6 +20,8 @@
 #ifndef GRAINPARAMS_HPP
 #define GRAINPARAMS_HPP
 
+namespace CATE {
+
 class GrainParams
 {
 public:
@@ -55,5 +57,7 @@ private:
     float grain_density;
     float grain_width;
 };
+
+} // CATE
 
 #endif //GRAINPARAMS_HPP

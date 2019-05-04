@@ -20,6 +20,7 @@
 #ifndef DATABASE_HPP
 #define DATABASE_HPP
 
+#include <memory>
 #include <vector>
 
 #include <nlohmann/json.hpp>
@@ -34,6 +35,7 @@
 using std::vector;
 using std::string;
 using std::pair;
+using std::unique_ptr;
 using Json = nlohmann::json;
 
 namespace CATE {
@@ -46,7 +48,7 @@ namespace CATE {
 class Corpus
 {
 public:
-    explicit Corpus(const AudioSettings &audio_settings);
+    Corpus(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<PointCloud> &point_cloud);
 
     /* Read analysis data file into memory. */
     void read_file(const string &file_path);
@@ -65,7 +67,7 @@ public:
     void sliding_window_analysis();
 
     /* From features in database, create point cloud to be used by KNN search. */
-    PointCloud create_point_cloud();
+    void rebuild_point_cloud();
 
     /* Get access to audio files. */
     inline map<string, AudioFile> get_files() const { return files; };
@@ -90,7 +92,8 @@ private:
 
     Json data;
     FeatureMap feature_map;
-    const AudioSettings &audio_settings;
+    AudioSettings *audio_settings;
+    PointCloud *point_cloud;
     map<string, AudioFile> files;
 };
 

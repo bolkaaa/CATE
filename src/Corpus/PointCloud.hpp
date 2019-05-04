@@ -42,14 +42,15 @@ public:
     vector<float> features;
 };
 
-
-
 /* Stores a container of data points and functions used by K-d tree system. */
 class PointCloud
 {
 public:
     /* Add a point to the cloud. */
     inline void add(const Point &p) { points.emplace_back(p); }
+
+    /* Clear all points from cloud. */
+    void clear() { points.clear(); };
 
     /* Get file path at specified index of cloud. */
     inline string get_file_path(const int i) const { return points[i].file_path; }

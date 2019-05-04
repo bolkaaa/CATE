@@ -24,6 +24,7 @@
 #include <vector>
 #include <array>
 
+#include "src/Audio/AudioSettings.hpp"
 #include "src/Audio/AudioFile.hpp"
 #include "Grain.hpp"
 #include "EnvelopeParams.hpp"
@@ -37,10 +38,14 @@ namespace CATE {
 
 /* Handles activation of grains, based upon onset times. It handles grain allocation and mixing of grains to form a
  * single output. */
+
+typedef vector<Grain> GrainPool;
+
 class Scheduler
 {
 public:
-    Scheduler(GrainParams &grain_params, EnvelopeParams &envelope_params, float sample_rate);
+    Scheduler(AudioSettings *audio_settings, GrainParams *grain_params,
+              EnvelopeParams *envelope_params);
 
     /* Load audio file map into scheduler. */
     void load_files(const map<string, AudioFile> &new_files);
@@ -61,14 +66,14 @@ private:
     /* Fill buffer from filename and file position. */
     void fill_buffer(int marker, const string &file_name);
 
-    GrainParams &grain_params;
-    EnvelopeParams &envelope_params;
-    vector<Grain> grains;
+    AudioSettings *audio_settings;
+    GrainParams *grain_params;
+    EnvelopeParams *envelope_params;
+    GrainPool grains;
     map<string, AudioFile> files;
     AudioBuffer buffer;
     int next_onset;
     Rand<float> rand;
-    float sample_rate;
 };
 
 } // CATE

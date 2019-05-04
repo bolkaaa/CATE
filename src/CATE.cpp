@@ -17,6 +17,8 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#include <memory>
+
 #include <QApplication>
 #include "include/nanoflann.hpp"
 
@@ -24,44 +26,43 @@
 #include "src/Corpus/Corpus.hpp"
 #include "src/Corpus/KdTree.hpp"
 #include "src/Audio/AudioSettings.hpp"
+#include "src/Synthesis/GrainParams.hpp"
 #include "src/GUI/MainWindow.hpp"
 
-using CATE::KdTree;
-using CATE::KdTreeParams;
-using CATE::Corpus;
-using CATE::PointCloud;
-using CATE::MainWindow;
-using CATE::FeatureMap;
-using CATE::AudioSettings;
-using CATE::AudioProcess;
+using std::unique_ptr;
+using std::make_unique;
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
     /* Instantiate point cloud and k-d tree data structures. */
-    PointCloud point_cloud;
-    KDTreeSingleIndexAdaptorParams adaptor_params(KdTreeParams::max_leaf);
-    const int num_features = FeatureMap::num_features;
-    KdTree kd_tree(num_features,
-                   point_cloud,
-                   adaptor_params);
+    auto point_cloud = make_unique<CATE::PointCloud>();
+    auto adaptor_params(CATE::KdTreeParams::max_leaf);
+    const auto num_features = CATE::FeatureMap::num_features;
+    CATE::KdTree kd_tree(num_features,
+                         *point_cloud,
+                         adaptor_params);
 
-    /* Set up the audio system. */
-    AudioSettings audio_settings;
-    Corpus corpus(audio_settings);
-    AudioProcess audio_process(audio_settings,
-                               corpus,
-                               point_cloud,
-                               kd_tree);
+    /* Instantiate audio objects. */
+    auto audio_settings = make_unique<CATE::AudioSettings>();
+    auto corpus = make_unique<CATE::Corpus>(audio_settings, point_cloud);
+    auto grain_params = make_unique<CATE::GrainParams>();
+    auto env_params = make_unique<CATE::EnvelopeParams>(grain_params->get_grain_size());
+    auto audio_process = make_unique<CATE::AudioProcess>(audio_settings,
+                                                         corpus,
+                                                         point_cloud,
+                                                         kd_tree);
 
-    /* Run the GUI. */
-    MainWindow main_window(audio_process,
-                           audio_settings,
-                           corpus,
-                           point_cloud,
-                           kd_tree);
-    main_window.show();
+    /* Instantiate and load GUI. */
+    auto main_window = make_unique<CATE::MainWindow>(audio_settings,
+                                                     audio_process,
+                                                     corpus,
+                                                     point_cloud,
+                                                     grain_params,
+                                                     env_params,
+                                                     kd_tree);
+    main_window->show();
 
     return app.exec();
 }

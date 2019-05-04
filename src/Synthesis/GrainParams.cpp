@@ -1,11 +1,13 @@
 
 #include "GrainParams.hpp"
 
+namespace CATE {
+
 GrainParams::GrainParams()
-    : max_grains(32),
-      grain_size(256),
-      grain_density(100),
-      grain_width(0.5)
+        : max_grains(32),
+          grain_size(256),
+          grain_density(100),
+          grain_width(0.5)
 {
 }
 
@@ -48,3 +50,5 @@ void GrainParams::set_grain_width(float grain_width)
 {
     GrainParams::grain_width = grain_width;
 }
+
+} // CATE

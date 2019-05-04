@@ -37,8 +37,9 @@ using std::string;
 
 namespace CATE {
 
-Corpus::Corpus(const AudioSettings &audio_settings)
-        : audio_settings(audio_settings),
+Corpus::Corpus(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<PointCloud> &point_cloud)
+        : audio_settings(audio_settings.get()),
+          point_cloud(point_cloud.get()),
           feature_map(audio_settings)
 {
 }
@@ -77,7 +78,7 @@ void Corpus::load_audio_from_db()
 
 void Corpus::sliding_window_analysis()
 {
-    const auto buffer_size = audio_settings.get_buffer_size();
+    const auto buffer_size = 1024;
     const auto hop_size = buffer_size / 2;
 
     for (auto &file : files)
@@ -98,9 +99,10 @@ void Corpus::sliding_window_analysis()
     }
 }
 
-PointCloud Corpus::create_point_cloud()
+void Corpus::rebuild_point_cloud()
 {
-    PointCloud cloud;
+    point_cloud->clear();
+
     auto features = feature_map.get_features();
     auto feature_names = get_keys<string, vector<float> >(features);
 
@@ -123,11 +125,9 @@ PointCloud Corpus::create_point_cloud()
                 point.features.emplace_back(value);
             }
 
-            cloud.add(point);
+            point_cloud->add(point);
         }
     }
-
-    return cloud;
 }
 
 bool Corpus::has_data()

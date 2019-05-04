@@ -20,6 +20,7 @@
 #ifndef AUDIO_PROCESS_HPP
 #define AUDIO_PROCESS_HPP
 
+#include <memory>
 #include <vector>
 
 #include <QObject>
@@ -34,6 +35,8 @@
 #include "src/Corpus/KdTree.hpp"
 #include "src/Synthesis/Granulator.hpp"
 
+using std::unique_ptr;
+
 namespace CATE {
 
 /* The audio processing occurs in AudioProcess, which inherits from the
@@ -44,7 +47,10 @@ class AudioProcess : public QObject, public AudioEngine
 Q_OBJECT
 
 public:
-    AudioProcess(AudioSettings &audio_settings, Corpus &db, PointCloud &point_cloud, KdTree &kd_tree);
+    AudioProcess(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<Corpus> &db,
+                 const unique_ptr<PointCloud> &point_cloud, const KdTree &kd_tree);
+
+    ~AudioProcess();
 
     /* Reload granulator when database has changed. */
     void reload_granulator();
@@ -71,10 +77,12 @@ public:
     void set_grain_size(int new_grain_size);
 
     /* Get flag for whether audio process is ready to be used. */
-    bool is_ready() { return ready; }
+    bool is_ready()
+    { return ready; }
 
     /* Enable "ready" flag. */
-    void enable() { ready = true; }
+    void enable()
+    { ready = true; }
 
     /* Save current audio recording to disk. */
     void save_recording(const string &output_path);
@@ -86,17 +94,17 @@ private:
     /* Compute magnitude spectrum of input frame. */
     void compute_magspec(const float *input, int n);
 
-    AudioSettings &audio_settings;
-    Corpus &db;
-    PointCloud &point_cloud;
-    KdTree &kd_tree;
+    AudioSettings *audio_settings;
+    Corpus *db;
+    PointCloud *point_cloud;
+    const KdTree &kd_tree;
+    GrainParams *grain_params;
+    EnvelopeParams *env_params;
     Granulator granulator;
     AudioRecorder audio_recorder;
     FFT fft;
     Magspec magspec;
     const size_t num_search_results = 1;
-    int next_marker;
-    string next_file_path;
     vector<size_t> return_indices;
     vector<float> distances;
     bool recording;

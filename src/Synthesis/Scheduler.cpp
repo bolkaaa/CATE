@@ -5,12 +5,13 @@
 
 namespace CATE {
 
-Scheduler::Scheduler(GrainParams &grain_params, EnvelopeParams &envelope_params, float sample_rate)
-        : grain_params(grain_params),
+Scheduler::Scheduler(AudioSettings *audio_settings, GrainParams *grain_params,
+                     EnvelopeParams *envelope_params)
+        : audio_settings(audio_settings),
+          grain_params(grain_params),
           envelope_params(envelope_params),
-          sample_rate(sample_rate),
-          buffer(AudioBuffer(grain_params.get_grain_size())),
-          grains(vector<Grain>(grain_params.get_max_grains())),
+          buffer(grain_params->get_grain_size()),
+          grains(grain_params->get_max_grains()),
           next_onset(0),
           rand(Rand<float>(0.0f, 1.0f))
 {
@@ -18,15 +19,14 @@ Scheduler::Scheduler(GrainParams &grain_params, EnvelopeParams &envelope_params,
 
 void Scheduler::fill_buffer(int marker, const string &file_name)
 {
-    for (int i = 0; i < grain_params.get_grain_size(); ++i)
+    for (int i = 0; i < grain_params->get_grain_size(); ++i)
     {
         int file_pos = i + marker;
 
         if (file_pos < files[file_name].data.size())
         {
             buffer[i] = files[file_name].data[file_pos];
-        }
-        else
+        } else
         {
             buffer[i] = 0.0f;
         }
@@ -40,7 +40,7 @@ void Scheduler::create_grain(int marker, const string &file_name)
         if (!grain.is_active())
         {
             fill_buffer(marker, file_name);
-            grain = Grain(buffer, envelope_params);
+            grain = Grain(buffer, *envelope_params);
             return;
         }
     }
@@ -77,8 +77,8 @@ float Scheduler::synthesize_grains()
 int Scheduler::get_next_inter_onset()
 {
     float random_value = rand.get();
-    auto grains_per_second = static_cast<int>(sample_rate / grain_params.get_grain_density());
-    auto inter_onset = 1 + (grains_per_second * random_value);
+    auto grains_per_second = audio_settings->get_sample_rate() / grain_params->get_grain_density();
+    auto inter_onset = static_cast<int>(1 + (grains_per_second * random_value));
     return inter_onset;
 }
 

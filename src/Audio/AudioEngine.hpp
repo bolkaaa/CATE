@@ -42,7 +42,7 @@ namespace CATE {
 class AudioEngine
 {
 public:
-    AudioEngine(AudioSettings &audio_settings);
+    AudioEngine(AudioSettings *audio_settings);
 
     ~AudioEngine();
 
@@ -107,11 +107,11 @@ protected:
     }
 
     PaStream *stream;
+    AudioSettings *audio_settings;
     PaStreamParameters input_parameters;
     PaStreamParameters output_parameters;
     PaDeviceIndex input_device;
     PaDeviceIndex output_device;
-    AudioSettings &audio_settings;
     PaError error;
     bool is_running;
 };

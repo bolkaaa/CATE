@@ -21,9 +21,9 @@
 
 namespace CATE {
 
-FeatureMap::FeatureMap(const AudioSettings &audio_settings)
-        : audio_settings(audio_settings),
-          fft(audio_settings)
+FeatureMap::FeatureMap(const unique_ptr<AudioSettings> &audio_settings)
+        : audio_settings(audio_settings.get()),
+          fft(audio_settings.get())
 {
     populate_extractors();
 }

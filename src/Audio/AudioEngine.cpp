@@ -25,7 +25,7 @@
 
 namespace CATE {
 
-AudioEngine::AudioEngine(AudioSettings &audio_settings)
+AudioEngine::AudioEngine(AudioSettings *audio_settings)
         : audio_settings(audio_settings),
           is_running(false)
 {
@@ -78,8 +78,8 @@ PaError AudioEngine::start_stream()
     error = Pa_OpenStream(&stream,
                           &input_parameters,
                           &output_parameters,
-                          audio_settings.get_sample_rate(),
-                          audio_settings.get_buffer_size(),
+                          audio_settings->get_sample_rate(),
+                          audio_settings->get_buffer_size(),
                           paNoFlag,
                           &AudioEngine::static_callback,
                           this);

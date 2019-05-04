@@ -45,7 +45,7 @@ typedef vector<float> Magspec;
 class FFT
 {
 public:
-    FFT(const AudioSettings &audio_settings);
+    explicit FFT(AudioSettings *audio_settings);
 
     ~FFT();
 
@@ -65,7 +65,7 @@ public:
     float window(int i, int n);
 
 private:
-    const AudioSettings &audio_settings;
+    AudioSettings *audio_settings;
     int output_size;
     vector<double> data;
     Spectrum spectrum;

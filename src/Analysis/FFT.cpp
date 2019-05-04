@@ -30,13 +30,13 @@ using std::complex;
 
 namespace CATE {
 
-FFT::FFT(const AudioSettings &audio_settings)
+FFT::FFT(AudioSettings *audio_settings)
         : audio_settings(audio_settings),
-          output_size(audio_settings.get_bin_size() / 2 + 1),
-          data(vector<double>(audio_settings.get_bin_size())),
+          output_size(audio_settings->get_bin_size() / 2 + 1),
+          data(vector<double>(audio_settings->get_bin_size())),
           spectrum(Spectrum(output_size)),
           magspec(Magspec(output_size)),
-          plan(fftw_plan_dft_r2c_1d(audio_settings.get_bin_size(),
+          plan(fftw_plan_dft_r2c_1d(audio_settings->get_bin_size(),
                                     reinterpret_cast<double *>(&data[0]),
                                     reinterpret_cast<fftw_complex *>(&spectrum[0]),
                                     FFTW_ESTIMATE))
@@ -63,7 +63,7 @@ void FFT::fill(const float *input, int n)
     }
 
     /* Pad range from <n> to <bin_size> with zeroes. */
-    for (auto i = n; i < audio_settings.get_bin_size(); ++i)
+    for (auto i = n; i < audio_settings->get_bin_size(); ++i)
     {
         data[i] = 0.0;
     }

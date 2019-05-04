@@ -22,6 +22,7 @@
 
 #include <vector>
 #include <map>
+#include <memory>
 
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioSettings.hpp"
@@ -31,6 +32,7 @@
 using std::map;
 using std::vector;
 using std::string;
+using std::unique_ptr;
 using std::pair;
 
 namespace CATE {
@@ -54,7 +56,7 @@ public:
 class FeatureMap
 {
 public:
-    explicit FeatureMap(const AudioSettings &audio_settings);
+    explicit FeatureMap(const unique_ptr<AudioSettings> &audio_settings);
 
     /* Given a pool of audio frames, compute feature map. */
     void compute_vectors(AudioFramePool audio_frames);
@@ -74,7 +76,7 @@ private:
 
     map<string, FeatureVector> feature_map;
     vector<Extractor> feature_extractors;
-    const AudioSettings &audio_settings;
+    AudioSettings *audio_settings;
     FFT fft;
 };
 

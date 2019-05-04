@@ -22,6 +22,7 @@
 
 #include <QDialog>
 
+#include "src/Synthesis/GrainParams.hpp"
 #include "src/Audio/AudioSettings.hpp"
 #include "src/Audio/AudioProcess.hpp"
 
@@ -39,25 +40,36 @@ class AudioSettingsWindow : public QDialog
 Q_OBJECT
 
 public:
-    AudioSettingsWindow(AudioSettings &audio_settings, AudioProcess &audio_process, QWidget *parent = nullptr);
+    AudioSettingsWindow(AudioSettings *audio_settings, AudioProcess *audio_process, GrainParams *grain_params,
+                        QWidget *parent = nullptr);
 
 private:
     /* Populate the Qt ComboBox widgets with audio parameter values. */
     void populate_boxes();
 
     Ui::AudioSettingsWindow *ui;
-    AudioSettings &audio_settings;
-    AudioProcess &audio_process;
+    AudioSettings *audio_settings;
+    AudioProcess *audio_process;
+    GrainParams *grain_params;
 
 public slots:
+
+    /* Action to take when sample rate value selected from dropdown box. */
     void sample_rate_changed(int selection_index);
 
+    /* Action to take when bin size value selected from dropdown box. */
     void bin_size_changed(int selection_index);
 
+    /* Action to take when buffer size value selected from dropdown box. */
     void buffer_size_changed(int selection_index);
 
+    /* Action to take when max grains value selected from dropdown box. */
+    void max_grains_changed(int selection_index);
+
+    /* Action to take when input device value selected from dropdown box. */
     void input_device_changed(int selection_index);
 
+    /* Action to take when output device value selected from dropdown box. */
     void output_device_changed(int selection_index);
 
 };
