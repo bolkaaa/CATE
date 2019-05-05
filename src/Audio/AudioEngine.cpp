@@ -23,13 +23,19 @@
 #include <cstdio>
 #include <iostream>
 
+using std::cerr;
+
 namespace CATE {
 
 AudioEngine::AudioEngine(AudioSettings *audio_settings)
         : audio_settings(audio_settings),
           is_running(false)
 {
-    init();
+    if (Pa_Initialize() != paNoError)
+    {
+        cerr << "PortAudio Error: " << Pa_GetErrorText(error) << "\n";
+        return;
+    }
 
     input_device = get_default_input_device();
     output_device = get_default_output_device();
@@ -55,15 +61,6 @@ int AudioEngine::processing_callback(const void *input_buffer,
     static_cast<void>(status_flags);
 
     return paContinue;
-}
-
-void AudioEngine::init()
-{
-    if (Pa_Initialize() != paNoError)
-    {
-        std::cerr << "PortAudio Error: " << Pa_GetErrorText(error) << "\n";
-        return;
-    }
 }
 
 PaError AudioEngine::start_stream()
@@ -136,14 +133,14 @@ void AudioEngine::configure_stream_parameters()
     output_parameters.hostApiSpecificStreamInfo = nullptr;
 }
 
-vector<string> AudioEngine::get_available_devices()
+DeviceList AudioEngine::get_available_devices()
 {
-    int num_devices = Pa_GetDeviceCount();
-    vector<string> device_list(num_devices);
+    auto num_devices = Pa_GetDeviceCount();
+    auto device_list = DeviceList(num_devices);
 
     for (auto i = 0; i < num_devices; ++i)
     {
-        const PaDeviceInfo *device_info = Pa_GetDeviceInfo(i);
+        const auto *device_info = Pa_GetDeviceInfo(i);
         device_list[i] = device_info->name;
     }
 
@@ -152,19 +149,19 @@ vector<string> AudioEngine::get_available_devices()
 
 const int AudioEngine::get_num_input_channels()
 {
-    const PaDeviceInfo *info = Pa_GetDeviceInfo(input_device);
+    const auto *info = Pa_GetDeviceInfo(input_device);
     return info->maxInputChannels;
 }
 
 const int AudioEngine::get_num_output_channels()
 {
-    const PaDeviceInfo *info = Pa_GetDeviceInfo(output_device);
+    const auto *info = Pa_GetDeviceInfo(output_device);
     return info->maxOutputChannels;
 }
 
 void AudioEngine::set_input_device(int selection_index)
 {
-    int num_devices = Pa_GetDeviceCount();
+    auto num_devices = Pa_GetDeviceCount();
 
     if (selection_index < 0 || selection_index > num_devices)
     {
@@ -176,7 +173,7 @@ void AudioEngine::set_input_device(int selection_index)
 
 void AudioEngine::set_output_device(int selection_index)
 {
-    int num_devices = Pa_GetDeviceCount();
+    auto num_devices = Pa_GetDeviceCount();
 
     if (selection_index < 0 || selection_index > num_devices)
     {

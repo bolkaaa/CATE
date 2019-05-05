@@ -17,48 +17,39 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#ifndef FILE_TREE_HPP
+#define FILE_TREE_HPP
+
 #include <vector>
-
-#include <boost/filesystem.hpp>
-
-#include "FileTree.hpp"
+#include <string>
 
 using std::vector;
 using std::string;
 
+/* These are some simple functions that together provide functionality for
+ * getting a list of all paths deeper than a specified root path. The filesystem
+ * part of the Boost library is used to achieve this. */
+
 namespace CATE {
 
-vector<string> get_subpaths(const string &root_path)
+typedef vector<string> PathList;
+typedef string Path;
+
+class PathTree
 {
-    vector<boost::filesystem::directory_entry> entries;
-    vector<string> sub_paths;
+public:
+    static PathList get_paths(const Path &root_path);
 
-    std::copy(boost::filesystem::directory_iterator(root_path),
-              boost::filesystem::directory_iterator(),
-              std::back_inserter(entries));
+private:
+    /* Get vector of filenames containing each subpath within <root_path>. */
+    static PathList get_subpaths(const Path &root_path);
 
-    for (auto entry : entries)
-    {
-        sub_paths.push_back(entry.path().string());
-    }
+    /* Recursively get all nested files from a root directory. Uses the <get_subpaths> function to achieve this. */
+    static void get_nested_files(PathList &paths, const Path &root_path);
 
-    return sub_paths;
-}
-
-void get_nested_files(vector<string> &paths, const string &root_path)
-{
-    vector<string> sub_paths = get_subpaths(root_path);
-
-    for (const auto &path : sub_paths)
-    {
-        if (boost::filesystem::is_directory(path))
-        {
-            get_nested_files(paths, path);
-        } else
-        {
-            paths.push_back(path);
-        }
-    }
-}
+    PathList path_list;
+};
 
 } // CATE
+
+#endif

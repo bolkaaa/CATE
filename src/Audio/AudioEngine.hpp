@@ -40,6 +40,10 @@ namespace CATE {
   It defines the callback functions, which the AudioProcess class creates its
   own versions of when it inherits from the base AudioEngine class.
  */
+
+typedef vector<string> DeviceList;
+typedef string ErrorText;
+
 class AudioEngine : NonCopyable
 {
 public:
@@ -54,7 +58,7 @@ public:
     int stop_stream();
 
     /* Get list of names of audio devices. */
-    vector<string> get_available_devices();
+    DeviceList get_available_devices();
 
     /* Get default input audio device index. */
     const int get_default_input_device() const { return Pa_GetDefaultInputDevice(); }
@@ -75,12 +79,9 @@ public:
     void set_output_device(int selection_index);
 
     /* Given a PaError code, return the error text. */
-    inline string report_error(PaError error_code) const { return string(Pa_GetErrorText(error_code)); }
+    inline ErrorText report_error(PaError error_code) const { return string(Pa_GetErrorText(error_code)); }
 
 private:
-    /* Run initialisation commands. */
-    void init();
-
     /* Configure inputs and outputs. */
     void configure_stream_parameters();
 

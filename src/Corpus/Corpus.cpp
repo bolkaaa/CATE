@@ -25,7 +25,7 @@
 #include "include/nanoflann.hpp"
 
 #include "Corpus.hpp"
-#include "FileTree.hpp"
+#include "PathTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioFile.hpp"
 #include "KdTree.hpp"
@@ -34,6 +34,8 @@ using std::vector;
 using std::unordered_map;
 using std::pair;
 using std::string;
+using std::ifstream;
+using std::ofstream;
 
 namespace CATE {
 
@@ -44,10 +46,9 @@ Corpus::Corpus(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr
 {
 }
 
-void Corpus::add_directory(const string &directory_path)
+void Corpus::add_directory(const Path &directory_path)
 {
-    vector<string> file_paths;
-    get_nested_files(file_paths, directory_path);
+    auto file_paths = PathTree::get_paths(directory_path);
 
     for (const auto &path : file_paths)
     {
@@ -55,15 +56,15 @@ void Corpus::add_directory(const string &directory_path)
     }
 }
 
-void Corpus::write_file(const string &file_path)
+void Corpus::write_file(const Path &file_path)
 {
-    std::ofstream file(file_path);
+    ofstream file(file_path);
     file << std::setw(4) << data;
 }
 
-void Corpus::read_file(const string &file_path)
+void Corpus::read_file(const Path &file_path)
 {
-    std::ifstream ifstream(file_path);
+    ifstream ifstream(file_path);
     ifstream >> data;
 }
 
@@ -71,7 +72,7 @@ void Corpus::load_audio_from_db()
 {
     for (const auto &entry : data.items())
     {
-        const string &path = entry.key();
+        const Path &path = entry.key();
         files[path] = AudioFile(path);
     }
 }

@@ -27,7 +27,7 @@
 #include "include/nanoflann.hpp"
 
 #include "PointCloud.hpp"
-#include "FileTree.hpp"
+#include "PathTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioFile.hpp"
 #include "src/Analysis/FeatureMap.hpp"

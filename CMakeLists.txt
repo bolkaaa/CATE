@@ -10,7 +10,6 @@ set(COPYRIGHT "Copyright (c) 2019 Liam Wyllie. All rights reserved.")
 set(IDENTIFIER "com.cate.CATE")
 
 set(SOURCE_FILES
-        src/CATE.cpp
         src/Audio/AudioEngine.hpp
         src/Audio/AudioEngine.cpp
         src/Audio/AudioProcess.hpp
@@ -27,8 +26,8 @@ set(SOURCE_FILES
         src/Analysis/Feature.hpp
         src/Analysis/FeatureMap.cpp
         src/Analysis/FeatureMap.hpp
-        src/Corpus/FileTree.hpp
-        src/Corpus/FileTree.cpp
+        src/Corpus/PathTree.hpp
+        src/Corpus/PathTree.cpp
         src/Corpus/Corpus.hpp
         src/Corpus/Corpus.cpp
         src/Corpus/PointCloud.hpp
@@ -59,6 +58,12 @@ set(SOURCE_FILES
         src/Audio/RingBuffer.cpp
         src/Audio/RingBuffer.hpp)
 
+set(TEST_FILES
+        ${SOURCE_FILES}
+        tests/main.cpp
+        tests/FileInputOutput.cpp
+        tests/TestConstants.hpp)
+
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
@@ -74,18 +79,26 @@ find_package(Qt5Widgets REQUIRED)
 # Main Executable
 add_executable(${PROJECT_NAME}
         ${OS_BUNDLE}
-        ${SOURCE_FILES}
+        ${SOURCE_FILES} src/cate.cpp
         ${META_FILES_TO_INCLUDE}
         ${RESOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME}
+# Tests Executable
+add_executable(TESTS
+        ${TEST_FILES})
+
+# Libraries
+set(LIBRARIES
         portaudio
         sndfile
         fftw3
         ${Boost_SYSTEM_LIBRARY}
         ${Boost_FILESYSTEM_LIBRARY}
-        ${CMAKE_THREAD_LIBS_INIT}
-        )
+        ${CMAKE_THREAD_LIBS_INIT})
+
+target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
+target_link_libraries(TESTS ${LIBRARIES})
 
 # Qt Modules
 qt5_use_modules(${PROJECT_NAME} Widgets)
+qt5_use_modules(TESTS Widgets)
