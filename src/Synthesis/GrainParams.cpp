@@ -18,55 +18,23 @@
 */
 
 #include "GrainParams.hpp"
+#include "src/Util/Util.hpp"
 
 namespace CATE {
 
 GrainParams::GrainParams()
-        : max_grains(32),
-          grain_size(256),
-          grain_density(100),
-          grain_width(0.5)
+        : grain_size(default_grain_size),
+          grain_density(default_grain_density),
+          max_grains(get_default_max_grains())
 {
 }
 
-int GrainParams::get_max_grains() const
+void GrainParams::set_max_grains(int selector_index)
 {
-    return max_grains;
-}
-
-int GrainParams::get_grain_size() const
-{
-    return grain_size;
-}
-
-float GrainParams::get_grain_density() const
-{
-    return grain_density;
-}
-
-float GrainParams::get_grain_width() const
-{
-    return grain_width;
-}
-
-void GrainParams::set_max_grains(int max_grains)
-{
-    GrainParams::max_grains = max_grains;
-}
-
-void GrainParams::set_grain_size(int grain_size)
-{
-    GrainParams::grain_size = grain_size;
-}
-
-void GrainParams::set_grain_density(float grain_density)
-{
-    GrainParams::grain_density = grain_density;
-}
-
-void GrainParams::set_grain_width(float grain_width)
-{
-    GrainParams::grain_width = grain_width;
+    if (valid_input(selector_index, available_max_grains.size()))
+    {
+        max_grains = available_max_grains[selector_index];
+    }
 }
 
 } // CATE

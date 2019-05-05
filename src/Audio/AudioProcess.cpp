@@ -39,7 +39,7 @@ AudioProcess::AudioProcess(const unique_ptr<AudioSettings> &audio_settings, cons
           grain_params(grain_params.get()),
           env_params(env_params.get()),
           granulator(audio_settings.get(), grain_params.get(), env_params.get()),
-          ring_buffer(new RingBuffer(512)),
+          ring_buffer(new RingBuffer(ring_buffer_size)),
           return_indices(num_search_results),
           distances(num_search_results),
           ready(false),
@@ -58,7 +58,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
     auto *input = static_cast<const float *>(input_buffer);
     auto *output = static_cast<float *>(output_buffer);
 
-    Unit unit = select_unit(input, grain_params->get_grain_size());
+    auto unit = select_unit(input, grain_params->get_grain_size());
 
     /* Main audio output block. */
     for (unsigned long i = 0; i < buffer_size; ++i)
@@ -72,7 +72,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
         if (recording)
         {
             ring_buffer->push(out);
-            emit send_record_data(ring_buffer);
+            emit send_record_data(ring_buffer.get());
         }
     }
 
@@ -82,15 +82,12 @@ int AudioProcess::processing_callback(const void *input_buffer,
 void AudioProcess::reload_granulator()
 {
     granulator.load_files(*db);
-}
-
-void AudioProcess::save_recording(const string &output_path)
-{
+    granulator.rebuild_grain_pool();
 }
 
 Unit AudioProcess::select_unit(const float *input, int n)
 {
-    Unit unit;
+    auto unit = Unit();
 
     compute_magspec(input, n);
 
@@ -105,7 +102,7 @@ Unit AudioProcess::select_unit(const float *input, int n)
                       &return_indices[0],
                       &distances[0]);
 
-    int point_cloud_index = return_indices[0];
+    auto point_cloud_index = return_indices[0];
     unit.marker = point_cloud->get_marker(point_cloud_index);
     unit.file_path = point_cloud->get_file_path(point_cloud_index);
 

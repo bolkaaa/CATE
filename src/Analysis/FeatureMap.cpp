@@ -25,16 +25,6 @@ FeatureMap::FeatureMap(const unique_ptr<AudioSettings> &audio_settings)
         : audio_settings(audio_settings.get()),
           fft(audio_settings.get())
 {
-    populate_extractors();
-}
-
-void FeatureMap::populate_extractors()
-{
-    map<string, Feature> function_map = {
-            {"centroid", spectral_centroid},
-            {"rolloff",  spectral_rolloff},
-            {"flatness", spectral_flatness}
-    };
 }
 
 FeatureVectorMap FeatureMap::compute_vectors(const AudioFramePool &audio_frames)
@@ -69,9 +59,9 @@ FeatureNameVector FeatureMap::get_feature_names() const
 {
     FeatureNameVector feature_names;
 
-    for (const auto &extractor : feature_extractors)
+    for (const auto &feature : function_map)
     {
-        feature_names.emplace_back(extractor.name);
+        feature_names.emplace_back(feature.first);
     }
 
     return feature_names;

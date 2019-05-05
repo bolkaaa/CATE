@@ -20,42 +20,59 @@
 #ifndef GRAINPARAMS_HPP
 #define GRAINPARAMS_HPP
 
+#include <vector>
+
+using std::vector;
+
 namespace CATE {
+
+typedef vector<int> MaxGrainsVector;
 
 class GrainParams
 {
 public:
     GrainParams();
 
-    /* Set maximum number of grains. */
-    void set_max_grains(int max_grains);
-
-    /* Set grain size. */
-    void set_grain_size(int grain_size);
-
-    /* Set grain density. */
-    void set_grain_density(float grain_density);
-
-    /* Set grain width. */
-    void set_grain_width(float grain_width);
-
     /* Get maximum number of grains. */
-    int get_max_grains() const;
+    int get_max_grains() const { return max_grains; }
 
     /* Get grain size. */
-    int get_grain_size() const;
+    int get_grain_size() const { return grain_size; }
 
     /* Get grain density. */
-    float get_grain_density() const;
+    float get_grain_density() const { return grain_density; }
 
-    /* Get grain width. */
-    float get_grain_width() const;
+    /* Set maximum number of grains from fixed set of available values. */
+    void set_max_grains(int selector_index);
+
+    /* Set grain size. */
+    void set_grain_size(int new_grain_size) { grain_size = new_grain_size; }
+
+    /* Set grain density. */
+    void set_grain_density(float new_grain_density) { grain_density = new_grain_density; }
+
+    /* Get default max grains value. */
+    const int get_default_max_grains() const { return available_max_grains[default_max_grains_index]; }
+
+    /* Get default max grains index. */
+    const int get_default_max_grains_index() const { return default_max_grains_index; }
+
+    /* Get default grain size value. */
+    const int get_default_grain_size() const { return default_grain_size; }
+
+    /* Get default grain density value. */
+    const float get_default_grain_density() const { return default_grain_density; }
+
+    inline const MaxGrainsVector get_available_max_grains() const { return available_max_grains; }
 
 private:
+    const MaxGrainsVector available_max_grains = { 8, 16, 24, 32, 48, 64, 128 };
+    const int default_max_grains_index = 3;
+    const int default_grain_size = 128;
+    const float default_grain_density = 100.0f;
     int max_grains;
     int grain_size;
     float grain_density;
-    float grain_width;
 };
 
 } // CATE

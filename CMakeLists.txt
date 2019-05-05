@@ -62,7 +62,7 @@ set(TEST_FILES
         ${SOURCE_FILES}
         tests/main.cpp
         tests/FileInputOutput.cpp
-        tests/TestConstants.hpp)
+        tests/TestConstants.hpp src/Util/Util.hpp tests/Corpus.cpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

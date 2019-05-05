@@ -80,30 +80,32 @@ void Corpus::load_audio_from_db()
 
 void Corpus::sliding_window_analysis()
 {
-    const auto buffer_size = 1024;
-    const auto hop_size = buffer_size / 2;
+    const auto frame_size = audio_settings->get_frame_size();
+    const auto hop_size = frame_size / 2;
 
     for (auto &file : files)
     {
-        AudioFramePool audio_frame_pool = segment_frames(file.second.data, buffer_size, hop_size);
+        AudioFramePool audio_frame_pool = segment_frames(file.second.data, frame_size, hop_size);
 
         auto features = feature_map.compute_vectors(audio_frame_pool);
         auto markers = get_keys<int, AudioBuffer>(audio_frame_pool);
         auto file_path = file.first;
 
+        /* Insert markers vector into JSON object. */
+        data[file.first]["marker"] = markers;
+
+        /* Insert features vectors into JSON object for each dimension. */
         for (const auto &f : features)
         {
             data[file_path][f.first] = f.second;
         }
 
-        data[file.first]["marker"] = markers;
     }
 }
 
 void Corpus::rebuild_point_cloud()
 {
     point_cloud->clear();
-
 
     for (auto &segment : data.items())
     {

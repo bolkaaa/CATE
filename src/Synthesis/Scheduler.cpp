@@ -106,5 +106,11 @@ void Scheduler::load_files(const map<string, AudioFile> &new_files)
     files = new_files;
 }
 
+void Scheduler::rebuild_grain_pool()
+{
+    auto max_grains = grain_params->get_max_grains();
+    grains = GrainPool(max_grains);
+}
+
 
 } // CATE

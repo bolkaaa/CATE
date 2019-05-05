@@ -71,9 +71,6 @@ public:
     static const int num_features = 3;
 
 private:
-    /* Fill vector of feature extractor function pointers. */
-    void populate_extractors();
-
     /* Given a frame of audio, calculate its magnitude spectrum. */
     Magspec calculate_frame_spectrum(const AudioFrame &audio_frame);
 
@@ -81,6 +78,12 @@ private:
     FeatureVectorMap feature_vector_map;
     AudioSettings *audio_settings;
     FFT fft;
+
+    map<string, Feature> function_map = {
+            {"centroid", spectral_centroid},
+            {"rolloff",  spectral_rolloff},
+            {"flatness", spectral_flatness}
+    };
 };
 
 } // CATE

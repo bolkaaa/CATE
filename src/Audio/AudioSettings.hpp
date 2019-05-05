@@ -100,8 +100,6 @@ public:
     /* Set frame size through index of default frame sizes. */
     void set_frame_size(int selection_index);
 
-    /* Check if input is in valid range. */
-    bool valid_input(int selection_index, int upper_range);
 
 private:
     float sample_rate;

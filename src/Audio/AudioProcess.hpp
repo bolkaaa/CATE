@@ -88,7 +88,8 @@ private:
     const size_t num_search_results = 1;
     vector<size_t> return_indices;
     vector<float> distances;
-    RingBuffer *ring_buffer;
+    const int ring_buffer_size = 512;
+    unique_ptr<RingBuffer> ring_buffer;
     bool recording;
     bool ready;
 

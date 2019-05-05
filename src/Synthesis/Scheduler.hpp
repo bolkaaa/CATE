@@ -53,6 +53,9 @@ public:
     /* Calculate grain activations. */
     float schedule(int marker, const string &filename);
 
+    /* Rebuild grain pool according to size changes. */
+    void rebuild_grain_pool();
+
 private:
     /* Mix all currently active grains to a single output. */
     float synthesize_grains();

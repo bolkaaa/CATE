@@ -17,9 +17,9 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include "AudioSettings.hpp"
 
-#include <iostream>
+#include "AudioSettings.hpp"
+#include "src/Util/Util.hpp"
 
 namespace CATE {
 
@@ -61,12 +61,6 @@ void AudioSettings::set_frame_size(int selection_index)
     {
         frame_size = available_frame_sizes[selection_index];
     }
-}
-
-bool AudioSettings::valid_input(int selection_index, int valid_range)
-{
-    bool valid = (selection_index >= 0 && selection_index < valid_range);
-    return valid;
 }
 
 } // CATE

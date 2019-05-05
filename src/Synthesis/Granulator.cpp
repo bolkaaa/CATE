@@ -43,4 +43,9 @@ void Granulator::load_files(const Corpus &corpus)
     scheduler.load_files(corpus.get_files());
 }
 
+void Granulator::rebuild_grain_pool()
+{
+    scheduler.rebuild_grain_pool();
+}
+
 } // CATE

@@ -44,6 +44,9 @@ class Granulator
 public:
     Granulator(AudioSettings *audio_settings, GrainParams *grain_params, EnvelopeParams *env_params);
 
+    /* Reallocate memory for grain objects according to size changes. */
+    void rebuild_grain_pool();
+
     /* Load files from corpus into files variable. */
     void load_files(const Corpus &corpus);
 
