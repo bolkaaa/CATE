@@ -35,31 +35,21 @@ using std::make_unique;
 
 namespace CATE {
 
-MainWindow::MainWindow(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<AudioProcess> &audio_process,
-                       const unique_ptr<Corpus> &db, const unique_ptr<PointCloud> &point_cloud,
-                       const unique_ptr<GrainParams> &grain_params, const unique_ptr<EnvelopeParams> &env_params,
-                       KdTree &kd_tree)
+MainWindow::MainWindow(AudioProcess *audio_process)
         : ui(new Ui::MainWindow),
-          audio_settings(audio_settings.get()),
-          audio_process(audio_process.get()),
-          corpus(db.get()),
-          point_cloud(point_cloud.get()),
-          grain_params(grain_params.get()),
-          env_params(env_params.get()),
-          kd_tree(kd_tree),
-          record_worker(new RecordWorker(audio_settings.get())),
+          audio_process(audio_process),
+          record_worker(new RecordWorker()),
           record_thread(new QThread),
-          audio_settings_window(audio_settings.get(), audio_process.get(), grain_params.get())
+          audio_settings_window(audio_process)
 {
     ui->setupUi(this);
 
     record_worker->moveToThread(record_thread);
 
-    connect(audio_process.get(),
+    connect(audio_process,
             SIGNAL(send_record_data(RingBuffer*)),
             record_worker,
-            SLOT(record_data_received
-            (RingBuffer*)));
+            SLOT(record_data_received(RingBuffer*)));
 
     connect(ui->start_playback, SIGNAL(clicked()), this, SLOT(start_playback_button_pressed()));
     connect(ui->stop_playback, SIGNAL(clicked()), this, SLOT(stop_playback_button_pressed()));
@@ -86,7 +76,7 @@ void MainWindow::start_playback_button_pressed()
 {
     int error_code = 0;
 
-    if (audio_process->is_ready())
+    if (audio_process->granulator_has_files())
     {
         error_code = audio_process->start_stream();
 
@@ -94,8 +84,7 @@ void MainWindow::start_playback_button_pressed()
         {
             std::cerr << audio_process->report_error(error_code) << "\n";
         }
-    }
-    else
+    } else
     {
         QMessageBox msg;
         msg.setText("No files loaded.");
@@ -128,7 +117,7 @@ void MainWindow::stop_recording_button_pressed()
     {
         std::cerr << e.what() << "\n";
 
-        if (audio_process->is_ready())
+        if (audio_process->granulator_has_files())
         {
             audio_process->start_stream();
         }
@@ -136,7 +125,9 @@ void MainWindow::stop_recording_button_pressed()
         return;
     }
 
-    record_worker->save_recording(output_path, audio_process->get_num_output_channels());
+    record_worker->save_recording(output_path,
+                                  audio_process->get_sample_rate(),
+                                  audio_process->get_num_output_channels());
 
     audio_process->start_stream();
 }
@@ -144,6 +135,7 @@ void MainWindow::stop_recording_button_pressed()
 void MainWindow::analyse_directory_button_pressed()
 {
     audio_process->stop_stream();
+
     string audio_dir_path;
     string corpus_path;
 
@@ -158,11 +150,7 @@ void MainWindow::analyse_directory_button_pressed()
         return;
     }
 
-    corpus->add_directory(audio_dir_path);
-    corpus->sliding_window_analysis();
-    corpus->write_file(corpus_path);
-
-    rebuild_audio_process();
+    audio_process->analyse_directory(audio_dir_path);
 }
 
 void MainWindow::load_corpus_button_pressed()
@@ -179,10 +167,7 @@ void MainWindow::load_corpus_button_pressed()
         return;
     }
 
-    corpus->read_file(corpus_path);
-    corpus->load_audio_from_db();
-
-    rebuild_audio_process();
+    audio_process->load_corpus(corpus_path);
 }
 
 
@@ -232,24 +217,12 @@ string MainWindow::open_file_dialog(const string &file_types)
     return file_path;
 }
 
-void MainWindow::rebuild_audio_process()
-{
-    corpus->rebuild_point_cloud();
-    kd_tree.buildIndex();
-    audio_process->reload_granulator();
-
-    if (corpus->has_data())
-    {
-        audio_process->enable();
-    }
-}
-
 void MainWindow::set_grain_sustain(int new_value)
 {
     const float min = 0.00f;
     const float max = 1.0f;
     float sustain = scale_slider(new_value, min, max);
-    env_params->set_sustain(sustain);
+    audio_process->set_grain_sustain(sustain);
     update_number_label(ui->grain_sustain_value, sustain);
 }
 
@@ -258,7 +231,7 @@ void MainWindow::set_grain_attack(int new_value)
     const float min = 0.1f;
     const float max = 1.0f;
     float attack = scale_slider(new_value, min, max);
-    env_params->set_attack(attack);
+    audio_process->set_grain_attack(attack);
     update_number_label(ui->grain_attack_value, attack);
 }
 
@@ -267,7 +240,7 @@ void MainWindow::set_grain_release(int new_value)
     const float min = 0.1f;
     const float max = 1.0f;
     float release = scale_slider(new_value, min, max);
-    env_params->set_release(release);
+    audio_process->set_grain_release(release);
     update_number_label(ui->grain_release_value, release);
 }
 
@@ -276,7 +249,7 @@ void MainWindow::set_grain_density(int new_value)
     const int min = 1;
     const int max = 512;
     int density = static_cast<int>(scale_slider(new_value, min, max));
-    grain_params->set_grain_density(density);
+    audio_process->set_grain_density(density);
     update_number_label(ui->grain_density_value, density);
 }
 
@@ -285,7 +258,7 @@ void MainWindow::set_grain_size(int new_value)
     const int min = 32;
     const int max = 256;
     int grain_size = static_cast<int>(scale_slider(new_value, min, max));
-    grain_params->set_grain_size(grain_size);
+    audio_process->set_grain_size(grain_size);
     update_number_label(ui->grain_size_value, grain_size);
 }
 

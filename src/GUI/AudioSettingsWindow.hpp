@@ -40,20 +40,16 @@ class AudioSettingsWindow : public QDialog
 Q_OBJECT
 
 public:
-    AudioSettingsWindow(AudioSettings *audio_settings, AudioProcess *audio_process, GrainParams *grain_params,
-                        QWidget *parent = nullptr);
+    AudioSettingsWindow(AudioProcess *audio_process, QWidget *parent = nullptr);
 
 private:
     /* Populate the Qt ComboBox widgets with audio parameter values. */
     void populate_boxes();
 
     Ui::AudioSettingsWindow *ui;
-    AudioSettings *audio_settings;
     AudioProcess *audio_process;
-    GrainParams *grain_params;
 
 public slots:
-
     /* Action to take when sample rate value selected from dropdown box. */
     void sample_rate_changed(int selection_index);
 

@@ -60,7 +60,7 @@ public:
 class FeatureMap
 {
 public:
-    explicit FeatureMap(const unique_ptr<AudioSettings> &audio_settings);
+    explicit FeatureMap(AudioSettings *audio_settings);
 
     /* Given a pool of audio frames, compute feature map. */
     FeatureVectorMap compute_vectors(const AudioFramePool &audio_frame_pool);

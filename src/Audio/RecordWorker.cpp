@@ -24,11 +24,6 @@
 
 namespace CATE {
 
-RecordWorker::RecordWorker(AudioSettings *audio_settings)
-        : audio_settings(audio_settings)
-{
-}
-
 void RecordWorker::record_data_received(CATE::RingBuffer *ring_buffer)
 {
     auto sample = 0.0f;
@@ -40,9 +35,9 @@ void RecordWorker::record_data_received(CATE::RingBuffer *ring_buffer)
     }
 }
 
-void RecordWorker::save_recording(const std::string &output_path, int channels)
+void RecordWorker::save_recording(const std::string &output_path, float sample_rate, int channels)
 {
-    record_data.write(channels, audio_settings->get_sample_rate(), output_path);
+    record_data.write(channels, sample_rate, output_path);
     record_data.data.clear();
 }
 

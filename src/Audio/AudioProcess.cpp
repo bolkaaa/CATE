@@ -27,22 +27,21 @@
 
 namespace CATE {
 
-AudioProcess::AudioProcess(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<Corpus> &db,
-                           const unique_ptr<PointCloud> &point_cloud, const unique_ptr<GrainParams> &grain_params,
-                           const unique_ptr<EnvelopeParams> &env_params, const KdTree &kd_tree)
-        : audio_settings(audio_settings.get()),
-          AudioEngine(audio_settings.get()),
-          db(db.get()),
-          point_cloud(point_cloud.get()),
+AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus,
+                           PointCloud *point_cloud, GrainParams *grain_params,
+                           EnvelopeParams *env_params, KdTree &kd_tree)
+        : audio_settings(audio_settings),
+          AudioEngine(audio_settings),
+          corpus(corpus),
+          point_cloud(point_cloud),
           kd_tree(kd_tree),
-          fft(audio_settings.get()),
-          grain_params(grain_params.get()),
-          env_params(env_params.get()),
-          granulator(audio_settings.get(), grain_params.get(), env_params.get()),
+          fft(audio_settings),
+          grain_params(grain_params),
+          env_params(env_params),
+          granulator(audio_settings, grain_params, env_params),
           ring_buffer(new RingBuffer(ring_buffer_size)),
           return_indices(num_search_results),
           distances(num_search_results),
-          ready(false),
           recording(false)
 {
 }
@@ -58,7 +57,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
     auto *input = static_cast<const float *>(input_buffer);
     auto *output = static_cast<float *>(output_buffer);
 
-    auto unit = select_unit(input, grain_params->get_grain_size());
+    auto unit = select_unit(input, buffer_size);
 
     /* Main audio output block. */
     for (unsigned long i = 0; i < buffer_size; ++i)
@@ -81,7 +80,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
 
 void AudioProcess::reload_granulator()
 {
-    granulator.load_files(*db);
+    granulator.load_files(corpus);
     granulator.rebuild_grain_pool();
 }
 
@@ -115,6 +114,27 @@ void AudioProcess::compute_magspec(const float *input, int n)
     fft.compute_spectrum();
     fft.compute_magspec();
     magspec = fft.get_magspec();
+}
+
+void AudioProcess::analyse_directory(const Path &directory_path)
+{
+    corpus->add_directory(directory_path);
+    corpus->sliding_window_analysis();
+}
+
+void AudioProcess::rebuild_data_points()
+{
+    corpus->rebuild_point_cloud();
+    kd_tree.buildIndex();
+    reload_granulator();
+}
+
+void AudioProcess::load_corpus(const Path &corpus_path)
+{
+    corpus->read_file(corpus_path);
+    corpus->load_audio_from_db();
+    granulator.load_files(corpus);
+    rebuild_data_points();
 }
 
 } // CATE

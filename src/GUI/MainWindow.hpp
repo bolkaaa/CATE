@@ -54,10 +54,7 @@ class MainWindow : public QMainWindow
 Q_OBJECT
 
 public:
-    MainWindow(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<AudioProcess> &audio_process,
-               const unique_ptr<Corpus> &db, const unique_ptr<PointCloud> &point_cloud,
-               const unique_ptr<GrainParams> &grain_params, const unique_ptr<EnvelopeParams> &env_params,
-               KdTree &kd_tree);
+    MainWindow(AudioProcess *audio_process);
 
 private:
     /* Prompt user to select a directory. */
@@ -75,24 +72,14 @@ private:
     /* Return the path of the user's home directory (cross-platform). */
     QString get_home_dir_path();
 
-    /* When database files have changed, recreate data points and reload the granulator. */
-    void rebuild_audio_process();
-
     /* Overriding Qt closeEvent function to define behaviour for when window is closed. */
     void closeEvent(QCloseEvent *event) override;
 
     Ui::MainWindow *ui;
     AudioSettingsWindow audio_settings_window;
-    AudioSettings *audio_settings;
-    Corpus *corpus;
     AudioProcess *audio_process;
-    PointCloud *point_cloud;
-    EnvelopeParams *env_params;
-    GrainParams *grain_params;
-    KdTree &kd_tree;
     QThread *record_thread;
-    RecordWorker* record_worker;
-    AudioBuffer record_data;
+    RecordWorker *record_worker;
     const int slider_resolution = 1024;
 
 public slots:

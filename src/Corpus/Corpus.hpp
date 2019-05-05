@@ -48,7 +48,7 @@ namespace CATE {
 class Corpus : NonCopyable
 {
 public:
-    Corpus(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<PointCloud> &point_cloud);
+    Corpus(AudioSettings *audio_settings, PointCloud *point_cloud);
 
     /* Read analysis data file into memory. */
     void read_file(const string &file_path);

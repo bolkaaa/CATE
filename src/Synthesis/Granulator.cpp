@@ -28,7 +28,8 @@ Granulator::Granulator(AudioSettings *audio_settings, GrainParams *grain_params,
         : audio_settings(audio_settings),
           grain_params(grain_params),
           env_params(env_params),
-          scheduler(audio_settings, grain_params, env_params)
+          scheduler(audio_settings, grain_params, env_params),
+          has_files(false)
 {
 }
 
@@ -38,9 +39,10 @@ float Granulator::synthesize(Unit unit)
     return output;
 }
 
-void Granulator::load_files(const Corpus &corpus)
+void Granulator::load_files(Corpus *corpus)
 {
-    scheduler.load_files(corpus.get_files());
+    scheduler.load_files(corpus->get_files());
+    has_files = true;
 }
 
 void Granulator::rebuild_grain_pool()

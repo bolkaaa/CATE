@@ -39,9 +39,9 @@ using std::ofstream;
 
 namespace CATE {
 
-Corpus::Corpus(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<PointCloud> &point_cloud)
-        : audio_settings(audio_settings.get()),
-          point_cloud(point_cloud.get()),
+Corpus::Corpus(AudioSettings *audio_settings, PointCloud *point_cloud)
+        : audio_settings(audio_settings),
+          point_cloud(point_cloud),
           feature_map(audio_settings)
 {
     feature_names = feature_map.get_feature_names();
@@ -80,7 +80,7 @@ void Corpus::load_audio_from_db()
 
 void Corpus::sliding_window_analysis()
 {
-    const auto frame_size = audio_settings->get_frame_size();
+    auto frame_size = audio_settings->get_frame_size();
     const auto hop_size = frame_size / 2;
 
     for (auto &file : files)

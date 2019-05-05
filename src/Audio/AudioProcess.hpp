@@ -47,9 +47,9 @@ class AudioProcess : public QObject, public AudioEngine
 Q_OBJECT
 
 public:
-    AudioProcess(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr<Corpus> &db,
-                 const unique_ptr<PointCloud> &point_cloud, const unique_ptr<GrainParams> &grain_params,
-                 const unique_ptr<EnvelopeParams> &env_params, const KdTree &kd_tree);
+    AudioProcess(AudioSettings *audio_settings, Corpus *db,
+                 PointCloud *point_cloud, GrainParams *grain_params,
+                 EnvelopeParams *env_params, KdTree &kd_tree);
 
     /* Reload granulator when database has changed. */
     void reload_granulator();
@@ -63,11 +63,39 @@ public:
     /* Save current audio recording to disk. */
     void save_recording(const string &output_path);
 
-    /* Get flag for whether audio process is ready to be used. */
-    bool is_ready() { return ready; }
+    /* Analyse the audio from a particular directory. */
+    void analyse_directory(const Path &directory_path);
 
-    /* Enable "ready" flag. */
-    void enable() { ready = true; }
+    /* Rebuild k-d tree index, point cloud and granulator files. */
+    void rebuild_data_points();
+
+    /* Load new corpus. */
+    void load_corpus(const Path &corpus_path);
+
+    /* Return status of whether granulator is ready to used. */
+    bool granulator_has_files() { return granulator.is_ready(); }
+
+    /* Set parameters. */
+    void set_grain_attack(float attack) { env_params->set_attack(attack); }
+    void set_grain_sustain(float sustain) { env_params->set_sustain(sustain); }
+    void set_grain_release(float release) { env_params->set_release(release); }
+    void set_grain_size(int size) { grain_params->set_grain_size(size); env_params->set_sample_size(size); }
+    void set_grain_density(float density) { grain_params->set_grain_density(density); }
+    void set_sample_rate(int selection_index) { audio_settings->set_sample_rate(selection_index); }
+    void set_buffer_size(int selection_index) { audio_settings->set_buffer_size(selection_index); }
+    void set_bin_size(int selection_index) { audio_settings->set_bin_size(selection_index); }
+    void set_max_grains(int selection_index) { grain_params->set_max_grains(selection_index); }
+
+    /* Get parameters. */
+    float get_sample_rate() const { return audio_settings->get_sample_rate(); }
+    const SampleRateVector get_available_sample_rates() const { return audio_settings->get_available_sample_rates(); }
+    const BinSizeVector get_available_bin_sizes() const { return audio_settings->get_available_bin_sizes(); }
+    const BufferSizeVector get_available_buffer_sizes() const { return audio_settings->get_available_buffer_sizes(); }
+    const MaxGrainsVector get_available_max_grains() const { return grain_params->get_available_max_grains(); }
+    const int get_default_sample_rate_index() const { return audio_settings->get_default_sample_rate_index(); }
+    const int get_default_bin_size_index() const { return audio_settings->get_default_bin_size_index(); }
+    const int get_default_buffer_size_index() const { return audio_settings->get_default_buffer_size_index(); }
+    const int get_default_max_grains_index() const { return grain_params->get_default_max_grains_index(); }
 
 private:
     /* Determine the next segment from the corpus to access via KNN search. */
@@ -77,9 +105,9 @@ private:
     void compute_magspec(const float *input, int n);
 
     AudioSettings *audio_settings;
-    Corpus *db;
+    Corpus *corpus;
     PointCloud *point_cloud;
-    const KdTree &kd_tree;
+    KdTree &kd_tree;
     GrainParams *grain_params;
     EnvelopeParams *env_params;
     Granulator granulator;
@@ -91,7 +119,6 @@ private:
     const int ring_buffer_size = 512;
     unique_ptr<RingBuffer> ring_buffer;
     bool recording;
-    bool ready;
 
 signals:
     void send_record_data(RingBuffer *ring_buffer);

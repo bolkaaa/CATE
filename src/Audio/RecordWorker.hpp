@@ -34,17 +34,14 @@ class RecordWorker : public QObject
 {
 Q_OBJECT
 public:
-    RecordWorker(AudioSettings *audio_settings);
-
     /* Write record_buffer to output file. */
-    void save_recording(const std::string &output_path, int channels);
+    void save_recording(const std::string &output_path, float sample_rate, int channels);
 
 public slots:
     /* Pop available sample from ring buffer and write to record_buffer. */
     void record_data_received(RingBuffer *ring_buffer);
 
 private:
-    const AudioSettings *audio_settings;
     AudioFile record_data;
 };
 

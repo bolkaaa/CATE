@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     /* Instantiate point cloud and k-d tree data structures. */
-    auto point_cloud = make_unique<CATE::PointCloud>();
+    auto point_cloud = new CATE::PointCloud;
     auto adaptor_params(CATE::KdTreeParams::max_leaf);
     const auto num_features = CATE::FeatureMap::num_features;
     CATE::KdTree kd_tree(num_features,
@@ -45,27 +45,19 @@ int main(int argc, char *argv[])
                          adaptor_params);
 
     /* Instantiate audio objects. */
-    auto audio_settings = make_unique<CATE::AudioSettings>();
-    auto corpus = make_unique<CATE::Corpus>(audio_settings, point_cloud);
-    auto grain_params = make_unique<CATE::GrainParams>();
-    auto env_params = make_unique<CATE::EnvelopeParams>(grain_params->get_grain_size());
-    auto audio_process = make_unique<CATE::AudioProcess>(audio_settings,
-                                                         corpus,
-                                                         point_cloud,
-                                                         grain_params,
-                                                         env_params,
-                                                         kd_tree);
+    auto audio_settings = new CATE::AudioSettings;
+    auto corpus = new CATE::Corpus(audio_settings, point_cloud);
+    auto grain_params = new CATE::GrainParams;
+    auto env_params = new CATE::EnvelopeParams(grain_params->get_grain_size());
+    auto audio_process = new CATE::AudioProcess(audio_settings,
+                                                corpus,
+                                                point_cloud,
+                                                grain_params,
+                                                env_params,
+                                                kd_tree);
 
     /* Instantiate and load GUI. */
-    auto main_window = make_unique<CATE::MainWindow>(audio_settings,
-                                                     audio_process,
-                                                     corpus,
-                                                     point_cloud,
-                                                     grain_params,
-                                                     env_params,
-                                                     kd_tree);
-
-
+    auto main_window = new CATE::MainWindow(audio_process);
 
     main_window->show();
 

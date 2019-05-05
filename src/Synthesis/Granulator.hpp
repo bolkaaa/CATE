@@ -48,16 +48,20 @@ public:
     void rebuild_grain_pool();
 
     /* Load files from corpus into files variable. */
-    void load_files(const Corpus &corpus);
+    void load_files(Corpus *corpus);
 
     /* Get the next sample value from the granulator. */
     float synthesize(Unit unit);
+
+    /* Return status of whether granulator has loaded files. */
+    bool is_ready() { return has_files; }
 
 private:
     AudioSettings *audio_settings;
     GrainParams *grain_params;
     EnvelopeParams *env_params;
     Scheduler scheduler;
+    bool has_files;
 };
 
 } // CATE
