@@ -24,9 +24,9 @@ namespace CATE {
 
 GrainParams::GrainParams()
         : grain_size(default_grain_size),
-          grain_density(default_grain_density),
-          max_grains(get_default_max_grains())
+          grain_density(default_grain_density)
 {
+    max_grains = get_default_max_grains();
 }
 
 void GrainParams::set_max_grains(int selector_index)

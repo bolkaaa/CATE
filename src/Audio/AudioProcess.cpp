@@ -28,16 +28,14 @@
 namespace CATE {
 
 AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus,
-                           PointCloud *point_cloud, GrainParams *grain_params,
-                           EnvelopeParams *env_params, KdTree &kd_tree)
+                           PointCloud *point_cloud, KdTree &kd_tree)
         : audio_settings(audio_settings),
           AudioEngine(audio_settings),
           corpus(corpus),
           point_cloud(point_cloud),
           kd_tree(kd_tree),
           fft(audio_settings),
-          grain_params(grain_params),
-          env_params(env_params),
+          env_params(grain_params.get_grain_size()),
           granulator(audio_settings, grain_params, env_params),
           ring_buffer(new RingBuffer(ring_buffer_size)),
           return_indices(num_search_results),
@@ -71,7 +69,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
         if (recording)
         {
             ring_buffer->push(out);
-            emit send_record_data(ring_buffer.get());
+            emit send_record_data(ring_buffer);
         }
     }
 

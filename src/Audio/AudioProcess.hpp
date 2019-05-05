@@ -47,9 +47,7 @@ class AudioProcess : public QObject, public AudioEngine
 Q_OBJECT
 
 public:
-    AudioProcess(AudioSettings *audio_settings, Corpus *db,
-                 PointCloud *point_cloud, GrainParams *grain_params,
-                 EnvelopeParams *env_params, KdTree &kd_tree);
+    AudioProcess(AudioSettings *audio_settings, Corpus *corpus, PointCloud *point_cloud, KdTree &kd_tree);
 
     /* Reload granulator when database has changed. */
     void reload_granulator();
@@ -59,9 +57,6 @@ public:
 
     /* Stop recording audio output. */
     inline void stop_recording() { recording = false; };
-
-    /* Save current audio recording to disk. */
-    void save_recording(const string &output_path);
 
     /* Analyse the audio from a particular directory. */
     void analyse_directory(const Path &directory_path);
@@ -76,26 +71,26 @@ public:
     bool granulator_has_files() { return granulator.is_ready(); }
 
     /* Set parameters. */
-    void set_grain_attack(float attack) { env_params->set_attack(attack); }
-    void set_grain_sustain(float sustain) { env_params->set_sustain(sustain); }
-    void set_grain_release(float release) { env_params->set_release(release); }
-    void set_grain_size(int size) { grain_params->set_grain_size(size); env_params->set_sample_size(size); }
-    void set_grain_density(float density) { grain_params->set_grain_density(density); }
+    void set_grain_attack(float attack) { granulator.set_grain_attack(attack); }
+    void set_grain_sustain(float sustain) { granulator.set_grain_sustain(sustain); }
+    void set_grain_release(float release) { granulator.set_grain_release(release); }
+    void set_grain_size(int size) { granulator.set_grain_size(size); env_params.set_sample_size(size); }
+    void set_grain_density(float density) { granulator.set_grain_density(density); }
     void set_sample_rate(int selection_index) { audio_settings->set_sample_rate(selection_index); }
     void set_buffer_size(int selection_index) { audio_settings->set_buffer_size(selection_index); }
     void set_bin_size(int selection_index) { audio_settings->set_bin_size(selection_index); }
-    void set_max_grains(int selection_index) { grain_params->set_max_grains(selection_index); }
+    void set_max_grains(int selection_index) { granulator.set_max_grains(selection_index); }
 
     /* Get parameters. */
     float get_sample_rate() const { return audio_settings->get_sample_rate(); }
     const SampleRateVector get_available_sample_rates() const { return audio_settings->get_available_sample_rates(); }
     const BinSizeVector get_available_bin_sizes() const { return audio_settings->get_available_bin_sizes(); }
     const BufferSizeVector get_available_buffer_sizes() const { return audio_settings->get_available_buffer_sizes(); }
-    const MaxGrainsVector get_available_max_grains() const { return grain_params->get_available_max_grains(); }
+    const MaxGrainsVector get_available_max_grains() const { return grain_params.get_available_max_grains(); }
     const int get_default_sample_rate_index() const { return audio_settings->get_default_sample_rate_index(); }
     const int get_default_bin_size_index() const { return audio_settings->get_default_bin_size_index(); }
     const int get_default_buffer_size_index() const { return audio_settings->get_default_buffer_size_index(); }
-    const int get_default_max_grains_index() const { return grain_params->get_default_max_grains_index(); }
+    const int get_default_max_grains_index() const { return grain_params.get_default_max_grains_index(); }
 
 private:
     /* Determine the next segment from the corpus to access via KNN search. */
@@ -108,8 +103,8 @@ private:
     Corpus *corpus;
     PointCloud *point_cloud;
     KdTree &kd_tree;
-    GrainParams *grain_params;
-    EnvelopeParams *env_params;
+    GrainParams grain_params;
+    EnvelopeParams env_params;
     Granulator granulator;
     FFT fft;
     Magspec magspec;
@@ -117,7 +112,7 @@ private:
     vector<size_t> return_indices;
     vector<float> distances;
     const int ring_buffer_size = 512;
-    unique_ptr<RingBuffer> ring_buffer;
+    RingBuffer *ring_buffer;
     bool recording;
 
 signals:

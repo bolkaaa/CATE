@@ -31,8 +31,8 @@ Grain::Grain()
 {
 }
 
-Grain::Grain(const AudioBuffer &buffer, EnvelopeParams env_params)
-        : remaining_samples(buffer.size()),
+Grain::Grain(const AudioBuffer &buffer, int size, EnvelopeParams env_params)
+        : remaining_samples(size),
           src(buffer),
           env_params(env_params),
           env(env_params)

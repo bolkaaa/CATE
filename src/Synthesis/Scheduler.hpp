@@ -44,17 +44,25 @@ typedef vector<Grain> GrainPool;
 class Scheduler
 {
 public:
-    Scheduler(AudioSettings *audio_settings, GrainParams *grain_params,
-              EnvelopeParams *envelope_params);
+    Scheduler(AudioSettings *audio_settings, GrainParams grain_params,
+              EnvelopeParams envelope_params);
 
     /* Load audio file map into scheduler. */
-    void load_files(const map<string, AudioFile> &new_files);
+    void load_files(const map<string, AudioFile> &files);
 
     /* Calculate grain activations. */
     float schedule(int marker, const string &filename);
 
     /* Rebuild grain pool according to size changes. */
     void rebuild_grain_pool();
+
+    /* Set parameters. */
+    void set_grain_attack(float attack) { env_params.set_attack(attack); }
+    void set_grain_sustain(float sustain) { env_params.set_sustain(sustain); }
+    void set_grain_release(float release) { env_params.set_release(release); }
+    void set_grain_size(int size) { grain_params.set_grain_size(size); env_params.set_sample_size(size); }
+    void set_grain_density(float density) { grain_params.set_grain_density(density); }
+    void set_max_grains(int selection_index) { grain_params.set_max_grains(selection_index); }
 
 private:
     /* Mix all currently active grains to a single output. */
@@ -67,11 +75,11 @@ private:
     int get_next_inter_onset();
 
     /* Fill buffer from filename and file position. */
-    void fill_buffer(int marker, const string &file_name);
+    void fill_buffer(int size, int marker, const string &file_name);
 
     AudioSettings *audio_settings;
-    GrainParams *grain_params;
-    EnvelopeParams *envelope_params;
+    GrainParams grain_params;
+    EnvelopeParams env_params;
     GrainPool grains;
     map<string, AudioFile> files;
     AudioBuffer buffer;

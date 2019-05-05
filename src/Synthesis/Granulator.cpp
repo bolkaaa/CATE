@@ -23,8 +23,8 @@ using std::vector;
 
 namespace CATE {
 
-Granulator::Granulator(AudioSettings *audio_settings, GrainParams *grain_params,
-                       EnvelopeParams *env_params)
+Granulator::Granulator(AudioSettings *audio_settings, GrainParams grain_params,
+                       EnvelopeParams env_params)
         : audio_settings(audio_settings),
           grain_params(grain_params),
           env_params(env_params),

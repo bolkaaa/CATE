@@ -29,16 +29,15 @@
 #include "src/Synthesis/GrainParams.hpp"
 #include "src/GUI/MainWindow.hpp"
 
-using std::unique_ptr;
-using std::make_unique;
+using CATE::KdTreeParams;
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
     /* Instantiate point cloud and k-d tree data structures. */
-    auto point_cloud = new CATE::PointCloud;
-    auto adaptor_params(CATE::KdTreeParams::max_leaf);
+    auto *point_cloud = new CATE::PointCloud;
+    KDTreeSingleIndexAdaptorParams adaptor_params(KdTreeParams::max_leaf);
     const auto num_features = CATE::FeatureMap::num_features;
     CATE::KdTree kd_tree(num_features,
                          *point_cloud,
@@ -47,19 +46,12 @@ int main(int argc, char *argv[])
     /* Instantiate audio objects. */
     auto audio_settings = new CATE::AudioSettings;
     auto corpus = new CATE::Corpus(audio_settings, point_cloud);
-    auto grain_params = new CATE::GrainParams;
-    auto env_params = new CATE::EnvelopeParams(grain_params->get_grain_size());
-    auto audio_process = new CATE::AudioProcess(audio_settings,
-                                                corpus,
-                                                point_cloud,
-                                                grain_params,
-                                                env_params,
-                                                kd_tree);
+    auto audio_process = new CATE::AudioProcess(audio_settings, corpus, point_cloud, kd_tree);
 
     /* Instantiate and load GUI. */
-    auto main_window = new CATE::MainWindow(audio_process);
+    CATE::MainWindow main_window(audio_process);
 
-    main_window->show();
+    main_window.show();
 
     return app.exec();
 }

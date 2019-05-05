@@ -42,7 +42,7 @@ public:
 class Granulator
 {
 public:
-    Granulator(AudioSettings *audio_settings, GrainParams *grain_params, EnvelopeParams *env_params);
+    Granulator(AudioSettings *audio_settings, GrainParams grain_params, EnvelopeParams env_params);
 
     /* Reallocate memory for grain objects according to size changes. */
     void rebuild_grain_pool();
@@ -56,10 +56,18 @@ public:
     /* Return status of whether granulator has loaded files. */
     bool is_ready() { return has_files; }
 
+    /* Set parameters. */
+    void set_grain_attack(float attack) { scheduler.set_grain_attack(attack); }
+    void set_grain_sustain(float sustain) { scheduler.set_grain_sustain(sustain); }
+    void set_grain_release(float release) { scheduler.set_grain_release(release); }
+    void set_grain_size(int size) { scheduler.set_grain_size(size); env_params.set_sample_size(size); }
+    void set_grain_density(float density) { scheduler.set_grain_density(density); }
+    void set_max_grains(int selection_index) { scheduler.set_max_grains(selection_index); }
+
 private:
     AudioSettings *audio_settings;
-    GrainParams *grain_params;
-    EnvelopeParams *env_params;
+    GrainParams grain_params;
+    EnvelopeParams env_params;
     Scheduler scheduler;
     bool has_files;
 };

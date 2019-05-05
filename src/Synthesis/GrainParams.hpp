@@ -33,37 +33,20 @@ class GrainParams
 public:
     GrainParams();
 
-    /* Get maximum number of grains. */
+    /* Get parameters. */
     int get_max_grains() const { return max_grains; }
-
-    /* Get grain size. */
     int get_grain_size() const { return grain_size; }
-
-    /* Get grain density. */
     float get_grain_density() const { return grain_density; }
-
-    /* Set maximum number of grains from fixed set of available values. */
-    void set_max_grains(int selector_index);
-
-    /* Set grain size. */
-    void set_grain_size(int new_grain_size) { grain_size = new_grain_size; }
-
-    /* Set grain density. */
-    void set_grain_density(float new_grain_density) { grain_density = new_grain_density; }
-
-    /* Get default max grains value. */
     const int get_default_max_grains() const { return available_max_grains[default_max_grains_index]; }
-
-    /* Get default max grains index. */
     const int get_default_max_grains_index() const { return default_max_grains_index; }
-
-    /* Get default grain size value. */
     const int get_default_grain_size() const { return default_grain_size; }
-
-    /* Get default grain density value. */
     const float get_default_grain_density() const { return default_grain_density; }
-
     inline const MaxGrainsVector get_available_max_grains() const { return available_max_grains; }
+
+    /* Set parameters. */
+    void set_max_grains(int selector_index);
+    void set_grain_size(int new_grain_size) { grain_size = new_grain_size; }
+    void set_grain_density(float new_grain_density) { grain_density = new_grain_density; }
 
 private:
     const MaxGrainsVector available_max_grains = { 8, 16, 24, 32, 48, 64, 128 };
