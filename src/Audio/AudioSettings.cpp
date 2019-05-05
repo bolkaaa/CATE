@@ -28,36 +28,45 @@ AudioSettings::AudioSettings()
     buffer_size = default_buffer_size();
     sample_rate = default_sample_rate();
     bin_size = default_bin_size();
+    frame_size = default_frame_size();
 }
 
 void AudioSettings::set_buffer_size(int selection_index)
 {
-    if (selection_index < 0 || selection_index > available_buffer_sizes.size())
+    if (valid_input(selection_index, available_buffer_sizes.size()))
     {
-        return;
+        buffer_size = available_buffer_sizes[selection_index];
     }
-
-    buffer_size = available_buffer_sizes[selection_index];
 }
 
 void AudioSettings::set_bin_size(int selection_index)
 {
-    if (selection_index < 0 || selection_index > available_bin_sizes.size())
+    if (valid_input(selection_index, available_bin_sizes.size()))
     {
-        return;
+        bin_size = available_bin_sizes[selection_index];
     }
-
-    bin_size = available_bin_sizes[selection_index];
 }
 
 void AudioSettings::set_sample_rate(int selection_index)
 {
-    if (selection_index < 0 || selection_index > available_sample_rates.size())
+    if (valid_input(selection_index, available_sample_rates.size()))
     {
-        return;
+        sample_rate = available_sample_rates[selection_index];
     }
+}
 
-    sample_rate = available_sample_rates[selection_index];
+void AudioSettings::set_frame_size(int selection_index)
+{
+    if (valid_input(selection_index, available_frame_sizes.size()))
+    {
+        frame_size = available_frame_sizes[selection_index];
+    }
+}
+
+bool AudioSettings::valid_input(int selection_index, int valid_range)
+{
+    bool valid = (selection_index >= 0 && selection_index < valid_range);
+    return valid;
 }
 
 } // CATE

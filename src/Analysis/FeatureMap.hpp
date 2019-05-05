@@ -33,20 +33,24 @@ using std::map;
 using std::vector;
 using std::string;
 using std::unique_ptr;
-using std::pair;
 
 namespace CATE {
 
-/* Typedef for function pointer to feature extraction function. */
-typedef float (*Feature)(const Magspec&);
-
-/* Typedef for container of feature values. */
+typedef float (*Feature)(const Magspec &); // Function pointer to feature extraction function.
 typedef vector<float> FeatureVector;
+typedef string FeatureName;
+typedef vector<string> FeatureNameVector;
+typedef map<FeatureName, FeatureVector> FeatureVectorMap ;
 
 /* A representation of a pointer to a feature extraction function and corresponding name. */
 class Extractor
 {
 public:
+    Extractor(const string &name, const Feature &feature)
+            : name(name), feature(feature)
+    {
+    }
+
     string name;
     Feature feature;
 };
@@ -59,23 +63,22 @@ public:
     explicit FeatureMap(const unique_ptr<AudioSettings> &audio_settings);
 
     /* Given a pool of audio frames, compute feature map. */
-    void compute_vectors(AudioFramePool audio_frames);
+    FeatureVectorMap compute_vectors(const AudioFramePool &audio_frame_pool);
 
-    /* Get feature map. */
-    inline map<string, FeatureVector> get_features() const { return feature_map; }
+    FeatureNameVector get_feature_names() const;
 
-    /* Used to inform the rest of the system of how many features are present. */
+    /* Used to inform program how many features there are in the system. */
     static const int num_features = 3;
 
 private:
-    /* Given a frame of audio, calculate its magnitude spectrum. */
-    Magspec calculate_frame_spectrum(const AudioFrame &frame);
-
     /* Fill vector of feature extractor function pointers. */
     void populate_extractors();
 
-    map<string, FeatureVector> feature_map;
+    /* Given a frame of audio, calculate its magnitude spectrum. */
+    Magspec calculate_frame_spectrum(const AudioFrame &audio_frame);
+
     vector<Extractor> feature_extractors;
+    FeatureVectorMap feature_vector_map;
     AudioSettings *audio_settings;
     FFT fft;
 };

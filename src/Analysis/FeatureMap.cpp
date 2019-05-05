@@ -32,44 +32,49 @@ void FeatureMap::populate_extractors()
 {
     map<string, Feature> function_map = {
             {"centroid", spectral_centroid},
-            {"rolloff", spectral_rolloff},
+            {"rolloff",  spectral_rolloff},
             {"flatness", spectral_flatness}
     };
-
-    for (const auto &elem : function_map)
-    {
-        string name = elem.first;
-        Feature feature = elem.second;
-        Extractor extractor{name, feature};
-        feature_extractors.emplace_back(extractor);
-        feature_map[name] = vector<float>();
-    }
 }
 
-void FeatureMap::compute_vectors(map<int, AudioBuffer> audio_frames)
+FeatureVectorMap FeatureMap::compute_vectors(const AudioFramePool &audio_frames)
 {
     for (auto &frame : audio_frames)
     {
-        Magspec magspec = calculate_frame_spectrum(frame);
+        auto magspec = calculate_frame_spectrum(frame);
 
-        for (auto &extractor : feature_extractors)
+        for (const auto &extractor : feature_extractors)
         {
-            float value = extractor.feature(magspec);
-            feature_map[extractor.name].emplace_back(value);
+            auto value = extractor.feature(magspec);
+            feature_vector_map[extractor.name].emplace_back(value);
         }
     }
+
+    return feature_vector_map;
 }
 
-vector<float> FeatureMap::calculate_frame_spectrum(const pair<int, AudioBuffer> &frame)
+Magspec FeatureMap::calculate_frame_spectrum(const AudioFrame &audio_frame)
 {
-    AudioBuffer buffer(frame.second);
+    auto buffer = audio_frame.second;
 
     fft.fill(&buffer[0], buffer.size());
     fft.compute_spectrum();
     fft.compute_magspec();
-    Magspec magspec = fft.get_magspec();
+    auto magspec = fft.get_magspec();
 
     return magspec;
+}
+
+FeatureNameVector FeatureMap::get_feature_names() const
+{
+    FeatureNameVector feature_names;
+
+    for (const auto &extractor : feature_extractors)
+    {
+        feature_names.emplace_back(extractor.name);
+    }
+
+    return feature_names;
 }
 
 } // CATE

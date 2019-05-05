@@ -53,16 +53,14 @@ void RingBuffer::pop(float &ref)
 int RingBuffer::samples_available()
 {
     auto samples = static_cast<int>((tail - head + data.size()) % data.size());
-
     return samples;
 }
 
 int RingBuffer::space_available()
 {
-    int free = static_cast<int>((head - tail + data.size() - 1) % data.size());
-    int undermark = high_water_mark - samples_available();
+    auto free = static_cast<int>((head - tail + data.size() - 1) % data.size());
+    auto undermark = high_water_mark - samples_available();
     auto space = std::min(undermark, free);
-
     return space;
 }
 

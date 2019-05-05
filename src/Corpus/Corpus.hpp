@@ -93,6 +93,7 @@ private:
     Json data;
     FeatureMap feature_map;
     AudioSettings *audio_settings;
+    FeatureNameVector feature_names;
     PointCloud *point_cloud;
     map<string, AudioFile> files;
 };

@@ -28,6 +28,11 @@ using std::vector;
 
 namespace CATE {
 
+typedef vector<float> SampleRateVector;
+typedef vector<unsigned long> BufferSizeVector;
+typedef vector<int> BinSizeVector;
+typedef vector<int> FrameSizeVector;
+
 /* Functionality for storing audio settings used throughout the program, with possible settings for each
  * parameter stored as a fixed number of options.  */
 class AudioSettings : NonCopyable
@@ -36,13 +41,16 @@ public:
     AudioSettings();
 
     /* Get default buffer size from fixed list of buffer sizes. */
-    inline unsigned long default_buffer_size() const { return available_buffer_sizes[3]; }
+    inline unsigned long default_buffer_size() const { return available_buffer_sizes[default_buffer_size_index]; }
 
     /* Get default sample rate from fixed list of sample rates. */
-    inline float default_sample_rate() const { return available_sample_rates[0]; }
+    inline float default_sample_rate() const { return available_sample_rates[default_sample_rate_index]; }
 
     /* Get default FFT bin size from fixed list of bin sizes. */
-    inline int default_bin_size() const { return available_bin_sizes[2]; }
+    inline int default_bin_size() const { return available_bin_sizes[default_bin_size_index]; }
+
+    /* Get default frame size from fixed list of frame sizes. */
+    inline int default_frame_size() const { return available_bin_sizes[default_frame_size_index]; }
 
     /* Get current buffer size. */
     inline unsigned long get_buffer_size() const { return buffer_size; }
@@ -53,14 +61,20 @@ public:
     /* Get current FFT bin size. */
     inline int get_bin_size() const { return bin_size; }
 
+    /* Get current FFT bin size. */
+    inline int get_frame_size() const { return frame_size; }
+
     /* Get list of available default buffer sizes. */
-    inline const vector<unsigned long> get_available_buffer_sizes() const { return available_buffer_sizes; }
+    inline const BufferSizeVector get_available_buffer_sizes() const { return available_buffer_sizes; }
 
     /* Get list of available default sample rates. */
-    inline const vector<float> get_available_sample_rates() const { return available_sample_rates; }
+    inline const SampleRateVector get_available_sample_rates() const { return available_sample_rates; }
 
     /* Get list of available default bin sizes. */
-    inline const vector<int> get_available_bin_sizes() const { return available_bin_sizes; }
+    inline const BinSizeVector get_available_bin_sizes() const { return available_bin_sizes; }
+
+    /* Get list of available default bin sizes. */
+    inline const FrameSizeVector get_available_frame_sizes() const { return available_frame_sizes; }
 
     /* Get default buffer size index. */
     inline const int get_default_buffer_size_index() const { return default_buffer_size_index; }
@@ -71,27 +85,39 @@ public:
     /* Get default bin size index. */
     inline const int get_default_bin_size_index() const { return default_bin_size_index; }
 
+    /* Get default frame size index. */
+    inline const int get_default_frame_size_index() const { return default_frame_size_index; }
+
+    /* Set sample rate through index of default sample rates. */
+    void set_sample_rate(int selection_index);
+
     /* Set buffer size through index of default buffer sizes. */
     void set_buffer_size(int selection_index);
 
     /* Set bin size through index of default bin sizes. */
     void set_bin_size(int selection_index);
 
-    /* Set sample rate through index of default sample rates. */
-    void set_sample_rate(int selection_index);
+    /* Set frame size through index of default frame sizes. */
+    void set_frame_size(int selection_index);
+
+    /* Check if input is in valid range. */
+    bool valid_input(int selection_index, int upper_range);
 
 private:
-    unsigned long buffer_size;
     float sample_rate;
+    unsigned long buffer_size;
     int bin_size;
+    int frame_size;
 
-    const int default_buffer_size_index = 3;
     const int default_sample_rate_index = 0;
+    const int default_buffer_size_index = 3;
     const int default_bin_size_index = 2;
+    const int default_frame_size_index = 1;
 
-    const vector<unsigned long> available_buffer_sizes = {32, 64, 128, 256, 512, 1024, 2056, 4096};
-    const vector<float> available_sample_rates = {44100.0f, 48000.0f, 88200.0f, 96000.0f};
-    const vector<int> available_bin_sizes = {256, 512, 1024, 2056, 4096, 8192};
+    const SampleRateVector available_sample_rates = {44100.0f, 48000.0f, 88200.0f, 96000.0f};
+    const BufferSizeVector available_buffer_sizes = {32, 64, 128, 256, 512, 1024, 2056, 4096};
+    const BinSizeVector available_bin_sizes = {256, 512, 1024, 2056, 4096, 8192};
+    const FrameSizeVector available_frame_sizes = {128, 256, 512, 1024};
 };
 
 } // CATE

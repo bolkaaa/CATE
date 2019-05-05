@@ -44,6 +44,7 @@ Corpus::Corpus(const unique_ptr<AudioSettings> &audio_settings, const unique_ptr
           point_cloud(point_cloud.get()),
           feature_map(audio_settings)
 {
+    feature_names = feature_map.get_feature_names();
 }
 
 void Corpus::add_directory(const Path &directory_path)
@@ -58,21 +59,21 @@ void Corpus::add_directory(const Path &directory_path)
 
 void Corpus::write_file(const Path &file_path)
 {
-    ofstream file(file_path);
+    auto file = ofstream(file_path);
     file << std::setw(4) << data;
 }
 
 void Corpus::read_file(const Path &file_path)
 {
-    ifstream ifstream(file_path);
-    ifstream >> data;
+    auto file = ifstream(file_path);
+    file >> data;
 }
 
 void Corpus::load_audio_from_db()
 {
     for (const auto &entry : data.items())
     {
-        const Path &path = entry.key();
+        const auto &path = entry.key();
         files[path] = AudioFile(path);
     }
 }
@@ -84,14 +85,13 @@ void Corpus::sliding_window_analysis()
 
     for (auto &file : files)
     {
-        map<int, AudioBuffer> frames = segment_frames(file.second.data, buffer_size, hop_size);
-        feature_map.compute_vectors(frames);
+        AudioFramePool audio_frame_pool = segment_frames(file.second.data, buffer_size, hop_size);
 
-        auto features = feature_map.get_features();
-        auto markers = get_keys<int, AudioBuffer>(frames);
+        auto features = feature_map.compute_vectors(audio_frame_pool);
+        auto markers = get_keys<int, AudioBuffer>(audio_frame_pool);
         auto file_path = file.first;
 
-        for (auto f : features)
+        for (const auto &f : features)
         {
             data[file_path][f.first] = f.second;
         }
@@ -104,8 +104,6 @@ void Corpus::rebuild_point_cloud()
 {
     point_cloud->clear();
 
-    auto features = feature_map.get_features();
-    auto feature_names = get_keys<string, vector<float> >(features);
 
     for (auto &segment : data.items())
     {
@@ -113,13 +111,13 @@ void Corpus::rebuild_point_cloud()
 
         for (auto i = 0; i < n; ++i)
         {
-            Point point;
+            auto point = Point();
 
             /* Add file path and marker to point. */
             point.file_path = segment.key();
             point.marker = segment.value()["marker"][i];
 
-            /* Add each dimension of feature to point. */
+            /* Add each feature dimension to point. */
             for (const auto &f : feature_names)
             {
                 auto value = segment.value()[f][i];
