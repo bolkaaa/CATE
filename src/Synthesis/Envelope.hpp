@@ -20,8 +20,6 @@
 #ifndef ENVELOPE_HPP
 #define ENVELOPE_HPP
 
-#include "EnvelopeParams.hpp"
-
 namespace CATE {
 
 /* Envelope contains functionality for the creation of a parabolic envelope,
@@ -29,16 +27,15 @@ namespace CATE {
 class Envelope
 {
 public:
-    Envelope(const EnvelopeParams &params);
+    Envelope();
 
     /* Synthesize the next sample value and return it. */
-    float synthesize();
+    float synthesize(int n, float attack, float sustain, float release);
 
 private:
     int index;
     float amp;
     float amp_incr;
-    EnvelopeParams params;
 };
 
 } // CATE

@@ -22,7 +22,6 @@
 
 #include <QDialog>
 
-#include "src/Synthesis/GrainParams.hpp"
 #include "src/Audio/AudioSettings.hpp"
 #include "src/Audio/AudioProcess.hpp"
 

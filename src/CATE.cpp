@@ -26,7 +26,6 @@
 #include "src/Corpus/Corpus.hpp"
 #include "src/Corpus/KdTree.hpp"
 #include "src/Audio/AudioSettings.hpp"
-#include "src/Synthesis/GrainParams.hpp"
 #include "src/GUI/MainWindow.hpp"
 
 using CATE::KdTreeParams;

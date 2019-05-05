@@ -66,8 +66,8 @@ private:
     /* Prompt user to select a file path to save to, getting its path. */
     string save_file_dialog(const string &file_types);
 
-    /* Convert slider value to a value within a range. */
-    float scale_slider(int val, float min, float max);
+    /* Convert value from an input range to an output range. */
+    float scale(float input, float input_min, float input_max, float output_min, float output_max);
 
     /* Return the path of the user's home directory (cross-platform). */
     QString get_home_dir_path();
@@ -75,12 +75,22 @@ private:
     /* Overriding Qt closeEvent function to define behaviour for when window is closed. */
     void closeEvent(QCloseEvent *event) override;
 
+    /* Initialise slider with defaults from parameter. */
+    template <class T>
+    void init_slider(Param<T> param, QSlider *slider, QLabel *label)
+    {
+        slider->setMaximum(slider_max);
+        auto slider_value = scale(param.start, param.min, param.max, 0, slider_max);
+        slider->setValue(static_cast<int>(slider_value));
+        update_number_label(label, param.start);
+    }
+
     Ui::MainWindow *ui;
     AudioSettingsWindow audio_settings_window;
     AudioProcess *audio_process;
     QThread *record_thread;
     RecordWorker *record_worker;
-    const int slider_resolution = 1024;
+    const int slider_max = 127;
 
 public slots:
     /* When playback start button in UI is pressed, audio stream is started. */

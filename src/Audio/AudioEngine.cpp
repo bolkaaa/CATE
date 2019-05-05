@@ -75,8 +75,8 @@ PaError AudioEngine::start_stream()
     error = Pa_OpenStream(&stream,
                           &input_parameters,
                           &output_parameters,
-                          audio_settings->get_sample_rate(),
-                          audio_settings->get_buffer_size(),
+                          audio_settings->get_sample_rate().value,
+                          audio_settings->get_buffer_size().value,
                           paNoFlag,
                           &AudioEngine::static_callback,
                           this);

@@ -24,15 +24,19 @@
 
 namespace CATE {
 
-Scheduler::Scheduler(AudioSettings *audio_settings, GrainParams grain_params,
-                     EnvelopeParams envelope_params)
+Scheduler::Scheduler(AudioSettings *audio_settings, Param<float> *grain_attack, Param<float> *grain_sustain,
+                     Param<float> *grain_release, Param<float> *grain_density, Param<int> *grain_size,
+                     FixedParam<int> *max_grains)
         : audio_settings(audio_settings),
-          grain_params(grain_params),
-          env_params(envelope_params),
-          buffer(512),
-          grains(512),
+          grain_attack(grain_attack),
+          grain_sustain(grain_sustain),
+          grain_release(grain_release),
+          grain_density(grain_density),
+          grain_size(grain_size),
+          grains(static_cast<std::size_t>(max_grains->value)),
+          buffer(static_cast<std::size_t>(grain_size->max)),
           next_onset(0),
-          rand(Rand<float>(0.0f, 1.0f))
+          rand(0.0f, 1.0f)
 {
 }
 
@@ -59,9 +63,8 @@ void Scheduler::create_grain(int marker, const string &file_name)
     {
         if (!grain.is_active())
         {
-            auto grain_size = grain_params.get_grain_size();
-            fill_buffer(grain_size, marker, file_name);
-            grain = Grain(buffer, grain_size, env_params);
+            fill_buffer(grain_size->value, marker, file_name);
+            grain = Grain(buffer, grain_size->value);
             return;
         }
     }
@@ -82,13 +85,13 @@ float Scheduler::schedule(int marker, const string &filename)
 
 float Scheduler::synthesize_grains()
 {
-    float output = 0.0f;
+    auto output = 0.0f;
 
     for (auto &grain : grains)
     {
         if (grain.is_active())
         {
-            output += grain.synthesize();
+            output += grain.synthesize(grain_attack->value, grain_attack->value, grain_release->value);
         }
     }
 
@@ -97,8 +100,8 @@ float Scheduler::synthesize_grains()
 
 int Scheduler::get_next_inter_onset()
 {
-    float random_value = rand.get();
-    auto grains_per_second = audio_settings->get_sample_rate() / grain_params.get_grain_density();
+    auto random_value = rand.get();
+    auto grains_per_second = audio_settings->get_sample_rate().value / grain_density->value;
     auto inter_onset = static_cast<int>(1 + (grains_per_second * random_value));
     return inter_onset;
 }
@@ -110,8 +113,7 @@ void Scheduler::load_files(const map<string, AudioFile> &files)
 
 void Scheduler::rebuild_grain_pool()
 {
-    auto max_grains = grain_params.get_max_grains();
-    grains = GrainPool(max_grains);
+    grains = GrainPool(static_cast<std::size_t>(max_grains->value));
 }
 
 

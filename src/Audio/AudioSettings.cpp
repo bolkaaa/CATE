@@ -17,50 +17,15 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-
 #include "AudioSettings.hpp"
-#include "src/Util/Util.hpp"
 
 namespace CATE {
 
 AudioSettings::AudioSettings()
+    : sample_rate({44100.0f, 48000.0f, 88200.0f, 96000.0f}, 0),
+      buffer_size({32, 64, 128, 256, 512, 1024, 2056, 4096}, 3),
+      bin_size({256, 512, 1024, 2056, 4096, 8192}, 2)
 {
-    buffer_size = default_buffer_size();
-    sample_rate = default_sample_rate();
-    bin_size = default_bin_size();
-    frame_size = default_frame_size();
-}
-
-void AudioSettings::set_buffer_size(int selection_index)
-{
-    if (valid_input(selection_index, available_buffer_sizes.size()))
-    {
-        buffer_size = available_buffer_sizes[selection_index];
-    }
-}
-
-void AudioSettings::set_bin_size(int selection_index)
-{
-    if (valid_input(selection_index, available_bin_sizes.size()))
-    {
-        bin_size = available_bin_sizes[selection_index];
-    }
-}
-
-void AudioSettings::set_sample_rate(int selection_index)
-{
-    if (valid_input(selection_index, available_sample_rates.size()))
-    {
-        sample_rate = available_sample_rates[selection_index];
-    }
-}
-
-void AudioSettings::set_frame_size(int selection_index)
-{
-    if (valid_input(selection_index, available_frame_sizes.size()))
-    {
-        frame_size = available_frame_sizes[selection_index];
-    }
 }
 
 } // CATE

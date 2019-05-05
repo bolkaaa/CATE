@@ -23,7 +23,6 @@
 #include "src/Audio/AudioFile.hpp"
 #include "Source.hpp"
 #include "Envelope.hpp"
-#include "EnvelopeParams.hpp"
 
 namespace CATE {
 
@@ -34,18 +33,21 @@ class Grain
 public:
     Grain();
 
-    Grain(const AudioBuffer &buffer, int size, EnvelopeParams env_params);
+    Grain(const AudioBuffer &buffer, int size);
 
     /* Synthesize sample from audio source and envelope. */
-    float synthesize();
+    float synthesize(float attack, float sustain, float release);
 
     /* Return active status. */
     bool is_active() const;
 
 private:
     int remaining_samples;
+    int size;
     Source src;
-    EnvelopeParams env_params;
+    float attack;
+    float sustain;
+    float release;
     Envelope env;
 };
 

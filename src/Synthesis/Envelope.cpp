@@ -24,22 +24,21 @@
 
 namespace CATE {
 
-Envelope::Envelope(const EnvelopeParams &params)
+Envelope::Envelope()
         : index(0),
           amp(0.0f),
-          amp_incr(0.0f),
-          params(params)
+          amp_incr(0.0f)
 {
 }
 
-float Envelope::synthesize()
+float Envelope::synthesize(int n, float attack, float sustain, float release)
 {
-    auto attack_samples = static_cast<int>(params.get_sample_size() * params.get_attack());
-    auto release_samples = static_cast<int>(params.get_sample_size() * params.get_release());
+    auto attack_samples = static_cast<int>(n * attack);
+    auto release_samples = static_cast<int>(n * release);
 
     if (index < attack_samples) // attack
     {
-        amp_incr = params.get_sustain() / attack_samples;
+        amp_incr = sustain / attack_samples;
     }
     else if (attack_samples < index && index < release_samples) // sustain
     {
@@ -47,7 +46,7 @@ float Envelope::synthesize()
     }
     else // release
     {
-        amp_incr = -(params.get_sustain() / release_samples);
+        amp_incr = -(sustain / release_samples);
     }
 
     ++index;

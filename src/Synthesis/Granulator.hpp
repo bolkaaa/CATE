@@ -24,8 +24,6 @@
 
 #include "src/Audio/AudioFile.hpp"
 #include "src/Corpus/Corpus.hpp"
-#include "EnvelopeParams.hpp"
-#include "GrainParams.hpp"
 #include "Scheduler.hpp"
 
 namespace CATE {
@@ -42,7 +40,7 @@ public:
 class Granulator
 {
 public:
-    Granulator(AudioSettings *audio_settings, GrainParams grain_params, EnvelopeParams env_params);
+    explicit Granulator(AudioSettings *audio_settings);
 
     /* Reallocate memory for grain objects according to size changes. */
     void rebuild_grain_pool();
@@ -57,17 +55,29 @@ public:
     bool is_ready() { return has_files; }
 
     /* Set parameters. */
-    void set_grain_attack(float attack) { scheduler.set_grain_attack(attack); }
-    void set_grain_sustain(float sustain) { scheduler.set_grain_sustain(sustain); }
-    void set_grain_release(float release) { scheduler.set_grain_release(release); }
-    void set_grain_size(int size) { scheduler.set_grain_size(size); env_params.set_sample_size(size); }
-    void set_grain_density(float density) { scheduler.set_grain_density(density); }
-    void set_max_grains(int selection_index) { scheduler.set_max_grains(selection_index); }
+    void set_grain_attack(float value) { grain_attack->value = value; }
+    void set_grain_sustain(float value) { grain_sustain->value = value; }
+    void set_grain_release(float value) { grain_release->value = value; }
+    void set_grain_size(int value) { grain_size->value = value; }
+    void set_grain_density(float value) { grain_density->value = value; }
+    void set_max_grains(int selection_index) { max_grains->set(selection_index); }
+
+    /* Get parameters. */
+    const Param<float> get_grain_attack() { return *(grain_attack); }
+    const Param<float> get_grain_sustain() { return *(grain_sustain); }
+    const Param<float> get_grain_release() { return *(grain_release); }
+    const Param<int> get_grain_size() { return *(grain_size); }
+    const Param<float> get_grain_density() { return *(grain_density); }
+    const FixedParam<int> get_max_grains() { return *(max_grains); }
 
 private:
+    Param<float> *grain_attack;
+    Param<float> *grain_sustain;
+    Param<float> *grain_release;
+    Param<float> *grain_density;
+    Param<int> *grain_size;
+    FixedParam<int> *max_grains;
     AudioSettings *audio_settings;
-    GrainParams grain_params;
-    EnvelopeParams env_params;
     Scheduler scheduler;
     bool has_files;
 };

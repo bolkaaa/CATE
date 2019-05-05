@@ -48,10 +48,8 @@ set(SOURCE_FILES
         src/Synthesis/Scheduler.cpp
         src/Synthesis/Scheduler.hpp
         src/Synthesis/Rand.hpp
-        src/Synthesis/EnvelopeParams.cpp
-        src/Synthesis/GrainParams.cpp
-        src/Synthesis/GrainParams.hpp
         src/Analysis/Math.hpp
+        src/Util/Param.hpp
         src/Util/NonCopyable.hpp
         src/Audio/RecordWorker.cpp
         src/Audio/RecordWorker.hpp
@@ -62,7 +60,8 @@ set(TEST_FILES
         ${SOURCE_FILES}
         tests/main.cpp
         tests/FileInputOutput.cpp
-        tests/TestConstants.hpp src/Util/Util.hpp tests/Corpus.cpp)
+        tests/TestConstants.hpp
+        tests/Corpus.cpp )
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

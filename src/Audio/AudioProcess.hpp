@@ -74,23 +74,22 @@ public:
     void set_grain_attack(float attack) { granulator.set_grain_attack(attack); }
     void set_grain_sustain(float sustain) { granulator.set_grain_sustain(sustain); }
     void set_grain_release(float release) { granulator.set_grain_release(release); }
-    void set_grain_size(int size) { granulator.set_grain_size(size); env_params.set_sample_size(size); }
+    void set_grain_size(int size) { granulator.set_grain_size(size); }
     void set_grain_density(float density) { granulator.set_grain_density(density); }
     void set_sample_rate(int selection_index) { audio_settings->set_sample_rate(selection_index); }
     void set_buffer_size(int selection_index) { audio_settings->set_buffer_size(selection_index); }
     void set_bin_size(int selection_index) { audio_settings->set_bin_size(selection_index); }
     void set_max_grains(int selection_index) { granulator.set_max_grains(selection_index); }
 
-    /* Get parameters. */
-    float get_sample_rate() const { return audio_settings->get_sample_rate(); }
-    const SampleRateVector get_available_sample_rates() const { return audio_settings->get_available_sample_rates(); }
-    const BinSizeVector get_available_bin_sizes() const { return audio_settings->get_available_bin_sizes(); }
-    const BufferSizeVector get_available_buffer_sizes() const { return audio_settings->get_available_buffer_sizes(); }
-    const MaxGrainsVector get_available_max_grains() const { return grain_params.get_available_max_grains(); }
-    const int get_default_sample_rate_index() const { return audio_settings->get_default_sample_rate_index(); }
-    const int get_default_bin_size_index() const { return audio_settings->get_default_bin_size_index(); }
-    const int get_default_buffer_size_index() const { return audio_settings->get_default_buffer_size_index(); }
-    const int get_default_max_grains_index() const { return grain_params.get_default_max_grains_index(); }
+    const FixedParam<float> get_sample_rate() { return audio_settings->get_sample_rate(); }
+    const FixedParam<unsigned long> get_buffer_size() { return audio_settings->get_buffer_size(); }
+    const FixedParam<int> get_bin_size() { return audio_settings->get_bin_size(); }
+    const FixedParam<int> get_max_grains() { return granulator.get_max_grains(); }
+    const Param<float> get_grain_attack() { return granulator.get_grain_attack(); }
+    const Param<float> get_grain_sustain() { return granulator.get_grain_sustain(); }
+    const Param<float> get_grain_release() { return granulator.get_grain_release(); }
+    const Param<float> get_grain_density() { return granulator.get_grain_density(); }
+    const Param<int> get_grain_size() { return granulator.get_grain_size(); }
 
 private:
     /* Determine the next segment from the corpus to access via KNN search. */
@@ -103,8 +102,6 @@ private:
     Corpus *corpus;
     PointCloud *point_cloud;
     KdTree &kd_tree;
-    GrainParams grain_params;
-    EnvelopeParams env_params;
     Granulator granulator;
     FFT fft;
     Magspec magspec;

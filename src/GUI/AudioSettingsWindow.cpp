@@ -49,17 +49,17 @@ AudioSettingsWindow::AudioSettingsWindow(AudioProcess *audio_process, QWidget *p
 
 void AudioSettingsWindow::populate_boxes()
 {
-    const SampleRateVector available_sample_rates = audio_process->get_available_sample_rates();
-    const BufferSizeVector available_buffer_sizes = audio_process->get_available_buffer_sizes();
-    const BinSizeVector available_bin_sizes = audio_process->get_available_bin_sizes();
-    const DeviceList available_audio_devices = audio_process->get_available_devices();
-    const MaxGrainsVector available_max_grains = audio_process->get_available_max_grains();
+    const auto sample_rate = audio_process->get_sample_rate();
+    const auto buffer_size = audio_process->get_buffer_size();
+    const auto bin_size = audio_process->get_bin_size();
+    const auto max_grains = audio_process->get_max_grains();
+    const auto available_audio_devices = audio_process->get_available_devices();
 
-    QStringList sample_rate_list = vector_to_qsl(available_sample_rates);
-    QStringList buffer_size_list = vector_to_qsl(available_buffer_sizes);
-    QStringList bin_size_list = vector_to_qsl(available_bin_sizes);
-    QStringList audio_device_list = vector_to_qsl(available_audio_devices);
-    QStringList max_grains_list = vector_to_qsl(available_max_grains);
+    auto sample_rate_list = vector_to_qsl(sample_rate.available_values);
+    auto buffer_size_list = vector_to_qsl(buffer_size.available_values);
+    auto bin_size_list = vector_to_qsl(bin_size.available_values);
+    auto max_grains_list = vector_to_qsl(max_grains.available_values);
+    auto audio_device_list = vector_to_qsl(available_audio_devices);
 
     ui->sample_rate_box->addItems(sample_rate_list);
     ui->buffer_size_box->addItems(buffer_size_list);
@@ -68,10 +68,10 @@ void AudioSettingsWindow::populate_boxes()
     ui->input_device_box->addItems(audio_device_list);
     ui->output_device_box->addItems(audio_device_list);
 
-    ui->sample_rate_box->setCurrentIndex(audio_process->get_default_sample_rate_index());
-    ui->buffer_size_box->setCurrentIndex(audio_process->get_default_buffer_size_index());
-    ui->bin_size_box->setCurrentIndex(audio_process->get_default_bin_size_index());
-    ui->max_grains_box->setCurrentIndex(audio_process->get_default_max_grains_index());
+    ui->sample_rate_box->setCurrentIndex(sample_rate.start_index);
+    ui->buffer_size_box->setCurrentIndex(buffer_size.start_index);
+    ui->bin_size_box->setCurrentIndex(bin_size.start_index);
+    ui->max_grains_box->setCurrentIndex(max_grains.start_index);
     ui->input_device_box->setCurrentIndex(audio_process->get_default_input_device());
     ui->output_device_box->setCurrentIndex(audio_process->get_default_output_device());
 }

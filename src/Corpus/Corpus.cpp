@@ -80,7 +80,7 @@ void Corpus::load_audio_from_db()
 
 void Corpus::sliding_window_analysis()
 {
-    auto frame_size = audio_settings->get_frame_size();
+    auto frame_size = audio_settings->get_bin_size().value;
     const auto hop_size = frame_size / 2;
 
     for (auto &file : files)

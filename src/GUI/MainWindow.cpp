@@ -46,6 +46,13 @@ MainWindow::MainWindow(AudioProcess *audio_process)
 
     record_worker->moveToThread(record_thread);
 
+    init_slider(audio_process->get_grain_attack(), ui->grain_attack_slider, ui->grain_attack_value);
+    init_slider(audio_process->get_grain_sustain(), ui->grain_sustain_slider, ui->grain_sustain_value);
+    init_slider(audio_process->get_grain_release(), ui->grain_release_slider, ui->grain_release_value);
+    init_slider(audio_process->get_grain_density(), ui->grain_density_slider, ui->grain_density_value);
+    init_slider(audio_process->get_grain_size(), ui->grain_size_slider, ui->grain_size_value);
+
+    /* Connect signals and slots. */
     connect(audio_process,
             SIGNAL(send_record_data(RingBuffer*)),
             record_worker,
@@ -58,12 +65,6 @@ MainWindow::MainWindow(AudioProcess *audio_process)
     connect(ui->analyse_directory, SIGNAL(clicked()), this, SLOT(analyse_directory_button_pressed()));
     connect(ui->load_corpus, SIGNAL(clicked()), this, SLOT(load_corpus_button_pressed()));
     connect(ui->audio_settings, SIGNAL(clicked()), this, SLOT(audio_settings_button_pressed()));
-
-    ui->grain_attack_slider->setMaximum(slider_resolution);
-    ui->grain_sustain_slider->setMaximum(slider_resolution);
-    ui->grain_release_slider->setMaximum(slider_resolution);
-    ui->grain_density_slider->setMaximum(slider_resolution);
-    ui->grain_size_slider->setMaximum(slider_resolution);
 
     connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
     connect(ui->grain_sustain_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_sustain(int)));
@@ -84,7 +85,8 @@ void MainWindow::start_playback_button_pressed()
         {
             std::cerr << audio_process->report_error(error_code) << "\n";
         }
-    } else
+    }
+    else
     {
         QMessageBox msg;
         msg.setText("No files loaded.");
@@ -126,7 +128,7 @@ void MainWindow::stop_recording_button_pressed()
     }
 
     record_worker->save_recording(output_path,
-                                  audio_process->get_sample_rate(),
+                                  audio_process->get_sample_rate().value,
                                   audio_process->get_num_output_channels());
 
     audio_process->start_stream();
@@ -217,55 +219,50 @@ string MainWindow::open_file_dialog(const string &file_types)
     return file_path;
 }
 
-void MainWindow::set_grain_sustain(int new_value)
-{
-    const float min = 0.00f;
-    const float max = 1.0f;
-    float sustain = scale_slider(new_value, min, max);
-    audio_process->set_grain_sustain(sustain);
-    update_number_label(ui->grain_sustain_value, sustain);
-}
-
 void MainWindow::set_grain_attack(int new_value)
 {
-    const float min = 0.1f;
-    const float max = 1.0f;
-    float attack = scale_slider(new_value, min, max);
-    audio_process->set_grain_attack(attack);
-    update_number_label(ui->grain_attack_value, attack);
+    auto grain_attack = audio_process->get_grain_attack();
+    float value = scale(new_value, 0, slider_max, grain_attack.min, grain_attack.max);
+    audio_process->set_grain_attack(value);
+    update_number_label(ui->grain_attack_value, value);
+}
+
+void MainWindow::set_grain_sustain(int new_value)
+{
+    auto grain_sustain = audio_process->get_grain_sustain();
+    float value = scale(new_value, 0, slider_max, grain_sustain.min, grain_sustain.max);
+    audio_process->set_grain_sustain(value);
+    update_number_label(ui->grain_sustain_value, value);
 }
 
 void MainWindow::set_grain_release(int new_value)
 {
-    const float min = 0.1f;
-    const float max = 1.0f;
-    float release = scale_slider(new_value, min, max);
-    audio_process->set_grain_release(release);
-    update_number_label(ui->grain_release_value, release);
+    auto grain_release = audio_process->get_grain_release();
+    float value = scale(new_value, 0, slider_max, grain_release.min, grain_release.max);
+    audio_process->set_grain_release(value);
+    update_number_label(ui->grain_release_value, value);
 }
 
 void MainWindow::set_grain_density(int new_value)
 {
-    const int min = 1;
-    const int max = 512;
-    int density = static_cast<int>(scale_slider(new_value, min, max));
-    audio_process->set_grain_density(density);
-    update_number_label(ui->grain_density_value, density);
+    auto grain_density = audio_process->get_grain_density();
+    float value = scale(new_value, 0, slider_max, grain_density.min, grain_density.max);
+    audio_process->set_grain_density(value);
+    update_number_label(ui->grain_density_value, value);
 }
 
 void MainWindow::set_grain_size(int new_value)
 {
-    const int min = 32;
-    const int max = 256;
-    int grain_size = static_cast<int>(scale_slider(new_value, min, max));
-    audio_process->set_grain_size(grain_size);
-    update_number_label(ui->grain_size_value, grain_size);
+    auto grain_size = audio_process->get_grain_size();
+    float value = scale(new_value, 0, slider_max, grain_size.min, grain_size.max);
+    audio_process->set_grain_size(value);
+    update_number_label(ui->grain_size_value, value);
 }
 
-float MainWindow::scale_slider(int val, float min, float max)
+float MainWindow::scale(float input, float input_min, float input_max, float output_min, float output_max)
 {
-    float scaled_val = (max - min) * (static_cast<float>(val) / slider_resolution) + min;
-    return scaled_val;
+    float output = (((input - input_min) * (output_max - output_min)) / (input_max - input_min)) + output_min;
+    return output;
 }
 
 QString MainWindow::get_home_dir_path()
