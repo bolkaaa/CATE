@@ -1,16 +1,6 @@
-#include "catch.hpp"
-
-#include <vector>
-
-#include "TestConstants.hpp"
-#include "src/Corpus/PathTree.hpp"
-#include "src/Audio/AudioFile.hpp"
+#include "TestHeader.hpp"
 
 using TestConstants::audio_test_file_list;
-using CATE::PathTree;
-using CATE::PathList;
-using CATE::Path;
-using CATE::AudioFile;
 
 bool paths_not_empty(const PathList &file_paths)
 {

@@ -54,8 +54,10 @@ float FFT::window(int i, int n)
     return hanning;
 }
 
-void FFT::fill(const float *input, int n)
+void FFT::fill(AudioBuffer input)
 {
+    auto n = input.size();
+
     /* Fill data array with input multiplied by windowing function. */
     for (auto i = 0; i < n; ++i)
     {

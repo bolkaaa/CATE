@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     /* Instantiate point cloud and k-d tree data structures. */
-    auto *point_cloud = new CATE::PointCloud;
+    auto point_cloud = new CATE::PointCloud;
     KDTreeSingleIndexAdaptorParams adaptor_params(KdTreeParams::max_leaf);
     const auto num_features = CATE::FeatureMap::num_features;
     CATE::KdTree kd_tree(num_features,
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     auto audio_process = new CATE::AudioProcess(audio_settings, corpus, point_cloud, kd_tree);
 
     /* Instantiate and load GUI. */
-    CATE::MainWindow main_window(audio_process);
+    CATE::MainWindow main_window(audio_process, audio_settings);
 
     main_window.show();
 

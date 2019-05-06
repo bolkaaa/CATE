@@ -17,28 +17,38 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <iostream>
+#ifndef ANALYSISWORKER_HPP
+#define ANALYSISWORKER_HPP
 
-#include "RecordWorker.hpp"
-#include "AudioFile.hpp"
+#include "src/Analysis/FFT.hpp"
+#include "src/Audio/RingBuffer.hpp"
+#include "src/Audio/AudioSettings.hpp"
+#include "src/Audio/AudioFile.hpp"
+
+#include <QObject>
 
 namespace CATE {
 
-void RecordWorker::output_data_received(RingBuffer *ring_buffer)
+class AnalysisWorker : public QObject
 {
-    auto sample = 0.0f;
+Q_OBJECT
+public:
+    AnalysisWorker(AudioSettings *audio_settings);
 
-    if (ring_buffer->samples_available())
-    {
-        ring_buffer->pop(sample);
-        record_data.data.emplace_back(sample);
-    }
-}
+public slots:
+    void input_data_received(RingBuffer *ring_buffer);
 
-void RecordWorker::save_recording(const std::string &output_path, float sample_rate, int channels)
-{
-    record_data.write(channels, sample_rate, output_path);
-    record_data.data.clear();
-}
+private:
+    void process();
+
+    AudioSettings *audio_settings;
+    const int buffer_size = 512;
+    int counter;
+    AudioBuffer buffer = AudioBuffer(buffer_size);
+    Magspec magspec = Magspec(buffer_size);
+    FFT fft;
+};
 
 } // CATE
+
+#endif

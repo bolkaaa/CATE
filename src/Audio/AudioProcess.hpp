@@ -35,8 +35,6 @@
 #include "src/Corpus/KdTree.hpp"
 #include "src/Synthesis/Granulator.hpp"
 
-using std::unique_ptr;
-
 namespace CATE {
 
 /* The audio processing occurs in AudioProcess, which inherits from the
@@ -47,9 +45,9 @@ class AudioProcess : public QObject, public AudioEngine
 Q_OBJECT
 
 public:
-    AudioProcess(AudioSettings *audio_settings, Corpus *corpus, PointCloud *point_cloud, KdTree &kd_tree);
+    AudioProcess(AudioSettings *audio_settings, Corpus *corpus, PointCloud *point_cloud, KdTree *kd_tree);
 
-    /* Reload granulator when database has changed. */
+    /* Reload granulator when corpus has changed. */
     void reload_granulator();
 
     /* Start recording audio output. */
@@ -101,7 +99,7 @@ private:
     AudioSettings *audio_settings;
     Corpus *corpus;
     PointCloud *point_cloud;
-    KdTree &kd_tree;
+    KdTree *kd_tree;
     Granulator granulator;
     FFT fft;
     Magspec magspec;
@@ -109,11 +107,16 @@ private:
     vector<size_t> return_indices;
     vector<float> distances;
     const int ring_buffer_size = 512;
-    RingBuffer *ring_buffer;
+    RingBuffer *input_ring_buffer;
+    RingBuffer *output_ring_buffer;
     bool recording;
 
 signals:
-    void send_record_data(RingBuffer *ring_buffer);
+    /* Emit input ring buffer as signal. */
+    void send_input_data(RingBuffer *input_ring_buffer);
+
+    /* Emit output ring buffer as signal. */
+    void send_output_data(RingBuffer *output_ring_buffer);
 
 protected:
     int processing_callback(const void *input_buffer,

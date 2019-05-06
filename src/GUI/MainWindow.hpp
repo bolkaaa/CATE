@@ -33,6 +33,7 @@
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioProcess.hpp"
 #include "src/Audio/RecordWorker.hpp"
+#include "src/Audio/AnalysisWorker.hpp"
 #include "AudioSettingsWindow.hpp"
 
 using std::string;
@@ -54,7 +55,7 @@ class MainWindow : public QMainWindow
 Q_OBJECT
 
 public:
-    MainWindow(AudioProcess *audio_process);
+    MainWindow(AudioProcess *audio_process, AudioSettings *audio_settings);
 
 private:
     /* Prompt user to select a directory. */
@@ -88,8 +89,11 @@ private:
     Ui::MainWindow *ui;
     AudioSettingsWindow audio_settings_window;
     AudioProcess *audio_process;
+    AudioSettings *audio_settings;
     QThread *record_thread;
+    QThread *analysis_thread;
     RecordWorker *record_worker;
+    AnalysisWorker *analysis_worker;
     const int slider_max = 127;
 
 public slots:

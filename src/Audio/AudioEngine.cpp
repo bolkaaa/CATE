@@ -183,4 +183,9 @@ void AudioEngine::set_output_device(int selection_index)
     output_device = selection_index;
 }
 
+void AudioEngine::sleep(int ms)
+{
+    Pa_Sleep(ms);
+}
+
 } // CATE

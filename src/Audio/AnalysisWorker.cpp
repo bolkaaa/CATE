@@ -17,28 +17,29 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <iostream>
-
-#include "RecordWorker.hpp"
-#include "AudioFile.hpp"
+#include "AnalysisWorker.hpp"
+#include "src/Analysis/Feature.hpp"
 
 namespace CATE {
 
-void RecordWorker::output_data_received(RingBuffer *ring_buffer)
+AnalysisWorker::AnalysisWorker(AudioSettings *audio_settings)
+        : audio_settings(audio_settings),
+          fft(audio_settings)
 {
-    auto sample = 0.0f;
-
-    if (ring_buffer->samples_available())
-    {
-        ring_buffer->pop(sample);
-        record_data.data.emplace_back(sample);
-    }
 }
 
-void RecordWorker::save_recording(const std::string &output_path, float sample_rate, int channels)
+void AnalysisWorker::input_data_received(RingBuffer *ring_buffer)
 {
-    record_data.write(channels, sample_rate, output_path);
-    record_data.data.clear();
+    ring_buffer->pop(buffer[counter]);
+
+    ++counter;
+
+    if (counter > buffer_size)
+    {
+        fft.fill(buffer);
+        fft.compute_spectrum();
+        counter -= buffer_size;
+    }
 }
 
 } // CATE

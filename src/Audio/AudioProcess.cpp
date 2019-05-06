@@ -28,7 +28,7 @@
 namespace CATE {
 
 AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus,
-                           PointCloud *point_cloud, KdTree &kd_tree)
+                           PointCloud *point_cloud, KdTree *kd_tree)
         : audio_settings(audio_settings),
           AudioEngine(audio_settings),
           corpus(corpus),
@@ -36,7 +36,8 @@ AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus,
           kd_tree(kd_tree),
           fft(audio_settings),
           granulator(audio_settings),
-          ring_buffer(new RingBuffer(ring_buffer_size)),
+          input_ring_buffer(new RingBuffer(ring_buffer_size)),
+          output_ring_buffer(new RingBuffer(ring_buffer_size)),
           return_indices(num_search_results),
           distances(num_search_results),
           recording(false)
@@ -51,15 +52,22 @@ int AudioProcess::processing_callback(const void *input_buffer,
 {
     static_cast<void>(status_flags);
     static_cast<void>(time_info);
-    auto *input = static_cast<const float *>(input_buffer);
+    const auto *input = static_cast<const float *>(input_buffer);
     auto *output = static_cast<float *>(output_buffer);
 
-    auto unit = select_unit(input, buffer_size);
+//    auto unit = select_unit(input, buffer_size);
 
     /* Main audio output block. */
     for (unsigned long i = 0; i < buffer_size; ++i)
     {
-        const float out = granulator.synthesize(unit);
+        const auto in = *input++;
+
+        input_ring_buffer->push(in);
+
+        emit send_input_data(input_ring_buffer);
+
+        // const auto out = granulator.synthesize(unit);
+        const auto out = 0.0f;
 
         *output++ = out; // L
         *output++ = out; // R
@@ -67,8 +75,8 @@ int AudioProcess::processing_callback(const void *input_buffer,
         /* While recording, current output sample is continuously written to ring buffer. */
         if (recording)
         {
-            ring_buffer->push(out);
-            emit send_record_data(ring_buffer);
+            output_ring_buffer->push(out);
+            emit send_output_data(output_ring_buffer);
         }
     }
 
@@ -85,7 +93,7 @@ Unit AudioProcess::select_unit(const float *input, int n)
 {
     auto unit = Unit();
 
-    compute_magspec(input, n);
+    // compute_magspec(input, n);
 
     const float search_points[FeatureMap::num_features] = {
             spectral_centroid(magspec),
@@ -93,7 +101,7 @@ Unit AudioProcess::select_unit(const float *input, int n)
             spectral_flatness(magspec),
     };
 
-    kd_tree.knnSearch(&search_points[0],
+    kd_tree->knnSearch(&search_points[0],
                       num_search_results,
                       &return_indices[0],
                       &distances[0]);
@@ -105,14 +113,6 @@ Unit AudioProcess::select_unit(const float *input, int n)
     return unit;
 }
 
-void AudioProcess::compute_magspec(const float *input, int n)
-{
-    fft.fill(input, n);
-    fft.compute_spectrum();
-    fft.compute_magspec();
-    magspec = fft.get_magspec();
-}
-
 void AudioProcess::analyse_directory(const Path &directory_path)
 {
     corpus->add_directory(directory_path);
@@ -122,7 +122,7 @@ void AudioProcess::analyse_directory(const Path &directory_path)
 void AudioProcess::rebuild_data_points()
 {
     corpus->rebuild_point_cloud();
-    kd_tree.buildIndex();
+    kd_tree->buildIndex();
     reload_granulator();
 }
 

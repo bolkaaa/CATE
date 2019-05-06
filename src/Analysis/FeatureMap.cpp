@@ -47,7 +47,7 @@ Magspec FeatureMap::calculate_frame_spectrum(const AudioFrame &audio_frame)
 {
     auto buffer = audio_frame.second;
 
-    fft.fill(&buffer[0], buffer.size());
+    fft.fill(buffer);
     fft.compute_spectrum();
     fft.compute_magspec();
     auto magspec = fft.get_magspec();

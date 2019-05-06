@@ -35,16 +35,19 @@ using std::make_unique;
 
 namespace CATE {
 
-MainWindow::MainWindow(AudioProcess *audio_process)
+MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_settings)
         : ui(new Ui::MainWindow),
           audio_process(audio_process),
-          record_worker(new RecordWorker()),
+          record_worker(new RecordWorker),
+          analysis_worker(new AnalysisWorker(audio_settings)),
           record_thread(new QThread),
+          analysis_thread(new QThread),
           audio_settings_window(audio_process)
 {
     ui->setupUi(this);
 
     record_worker->moveToThread(record_thread);
+    analysis_worker->moveToThread(analysis_thread);
 
     init_slider(audio_process->get_grain_attack(), ui->grain_attack_slider, ui->grain_attack_value);
     init_slider(audio_process->get_grain_sustain(), ui->grain_sustain_slider, ui->grain_sustain_value);
@@ -54,9 +57,14 @@ MainWindow::MainWindow(AudioProcess *audio_process)
 
     /* Connect signals and slots. */
     connect(audio_process,
-            SIGNAL(send_record_data(RingBuffer*)),
+            SIGNAL(send_input_data(RingBuffer * )),
+            analysis_worker,
+            SLOT(input_data_received(RingBuffer * )));
+
+    connect(audio_process,
+            SIGNAL(send_output_data(RingBuffer * )),
             record_worker,
-            SLOT(record_data_received(RingBuffer*)));
+            SLOT(output_data_received(RingBuffer * )));
 
     connect(ui->start_playback, SIGNAL(clicked()), this, SLOT(start_playback_button_pressed()));
     connect(ui->stop_playback, SIGNAL(clicked()), this, SLOT(stop_playback_button_pressed()));
@@ -75,23 +83,27 @@ MainWindow::MainWindow(AudioProcess *audio_process)
 
 void MainWindow::start_playback_button_pressed()
 {
-    int error_code = 0;
+    auto error_code = 0;
 
-    if (audio_process->granulator_has_files())
-    {
-        error_code = audio_process->start_stream();
+    // if (audio_process->granulator_has_files())
+    // {
 
-        if (!error_code)
-        {
-            std::cerr << audio_process->report_error(error_code) << "\n";
-        }
-    }
-    else
+    error_code = audio_process->start_stream();
+
+    if (!error_code)
     {
-        QMessageBox msg;
-        msg.setText("No files loaded.");
-        msg.exec();
+        std::cerr << audio_process->report_error(error_code) << "\n";
     }
+
+    analysis_thread->start();
+
+    //}
+//    else
+//    {
+//        QMessageBox msg;
+//        msg.setText("No files loaded.");
+//        msg.exec();
+//    }
 }
 
 void MainWindow::stop_playback_button_pressed()

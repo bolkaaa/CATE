@@ -57,6 +57,9 @@ public:
     /* Stop the PortAudio stream. */
     int stop_stream();
 
+    /* Sleep for specified time in milliseconds. */
+    void sleep(int ms);
+
     /* Get list of names of audio devices. */
     DeviceList get_available_devices();
 
