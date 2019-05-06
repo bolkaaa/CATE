@@ -36,7 +36,6 @@ Grain::Grain(const AudioBuffer &buffer, int size)
 {
 }
 
-// TODO: Try remaining samples instead of size in env
 float Grain::synthesize(float attack, float sustain, float release)
 {
     float source_output = src.synthesize();

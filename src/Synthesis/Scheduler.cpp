@@ -33,6 +33,7 @@ Scheduler::Scheduler(AudioSettings *audio_settings, Param<float> *grain_attack, 
           grain_release(grain_release),
           grain_density(grain_density),
           grain_size(grain_size),
+          max_grains(max_grains),
           grains(static_cast<std::size_t>(max_grains->value)),
           buffer(static_cast<std::size_t>(grain_size->max)),
           next_onset(0),
@@ -91,7 +92,7 @@ float Scheduler::synthesize_grains()
     {
         if (grain.is_active())
         {
-            output += grain.synthesize(grain_attack->value, grain_attack->value, grain_release->value);
+            output += grain.synthesize(grain_attack->value, grain_sustain->value, grain_release->value);
         }
     }
 

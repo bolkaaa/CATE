@@ -25,9 +25,9 @@ namespace CATE {
 
 Granulator::Granulator(AudioSettings *audio_settings)
         : audio_settings(audio_settings),
-          grain_attack(new Param<float>(0.5f, 0.0f, 1.0f)),
-          grain_sustain(new Param<float>(0.5f, 0.0f, 1.0f)),
-          grain_release(new Param<float>(0.5f, 0.0f, 1.0f)),
+          grain_attack(new Param<float>(0.5f, 0.05f, 0.95f)),
+          grain_sustain(new Param<float>(0.5f, 0.0f, 0.95f)),
+          grain_release(new Param<float>(0.5f, 0.05f, 0.95f)),
           grain_density(new Param<float>(100.0f, 1.0f, 512.0f)),
           grain_size(new Param<int>(128, 32, 256)),
           max_grains(new FixedParam<int>({8, 12, 16, 24, 32, 48, 64}, 2)),
