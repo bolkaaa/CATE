@@ -33,21 +33,19 @@ class Grain
 public:
     Grain();
 
-    Grain(const AudioBuffer &buffer, int size);
+    void fill(float value, int size);
+
+    void activate(int size);
 
     /* Synthesize sample from audio source and envelope. */
-    float synthesize(float attack, float sustain, float release);
+    float synthesize(int size, float attack, float sustain, float release);
 
     /* Return active status. */
     bool is_active() const;
 
 private:
     int remaining_samples;
-    int size;
     Source src;
-    float attack;
-    float sustain;
-    float release;
     Envelope env;
 };
 

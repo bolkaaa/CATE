@@ -116,7 +116,6 @@ protected:
                             unsigned long buffer_size,
                             const PaStreamCallbackTimeInfo *time_info,
                             PaStreamCallbackFlags status_flags) override;
-
 };
 
 } // CATE

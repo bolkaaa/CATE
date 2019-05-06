@@ -24,22 +24,26 @@
 namespace CATE {
 
 Grain::Grain()
-        : src(AudioBuffer()),
-          remaining_samples(0)
+        :  remaining_samples(0)
 {
 }
 
-Grain::Grain(const AudioBuffer &buffer, int size)
-        : remaining_samples(size),
-          size(size),
-          src(buffer)
+void Grain::fill(float value, int i)
 {
+    src.fill(value, i);
 }
 
-float Grain::synthesize(float attack, float sustain, float release)
+void Grain::activate(int size)
 {
-    float source_output = src.synthesize();
-    float env_output = env.synthesize(size, attack, sustain, release);
+    src.reset();
+    env.reset();
+    remaining_samples = size;
+}
+
+float Grain::synthesize(int size, float attack, float sustain, float release)
+{
+    auto source_output = src.synthesize();
+    auto env_output = env.synthesize(size, attack, sustain, release);
 
     --remaining_samples;
 
@@ -50,6 +54,5 @@ bool Grain::is_active() const
 {
     return (remaining_samples > 0);
 }
-
 
 } // CATE

@@ -60,6 +60,18 @@ bool knn_working()
     return true;
 }
 
+bool files_load_correctly()
+{
+    auto audio_settings = new AudioSettings;
+    Corpus corpus(audio_settings);
+    corpus.read_file("/Users/lrwz/CATE/analysis_data/piano_loops.json");
+    corpus.load_audio_from_db();
+
+    bool files_loaded = corpus.get_num_files() > 0;
+
+    return files_loaded;
+}
+
 TEST_CASE("Ensure that feature map is working.", "[single_file]")
 {
     REQUIRE(feature_map_working());
@@ -73,4 +85,9 @@ TEST_CASE("Ensure that corpus is working.", "[single_file]")
 TEST_CASE("Ensure that the nearest neighbours corpus search is working.", "[single_file]")
 {
     REQUIRE(knn_working());
+}
+
+TEST_CASE("Ensure that files load from corpus correctly.", "[single_file]")
+{
+    REQUIRE(files_load_correctly());
 }

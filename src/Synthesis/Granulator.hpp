@@ -35,25 +35,32 @@ class Granulator
 public:
     explicit Granulator(AudioSettings *audio_settings);
 
+    ~Granulator();
+
     /* Reallocate memory for grain objects according to size changes. */
     void rebuild_grain_pool();
 
     /* Load files from corpus into files variable. */
-    void load_files(Corpus *corpus);
+    void load_files(const map<string, AudioFile>& files);
+
+    void enable() { ready = true; }
+
+    bool is_ready() { return ready; }
 
     void enqueue(const Point &point)
     {
         unit_queue[queue_position] = point;
 
-        queue_position = (queue_position < max_units) ? (queue_position + 1) : (queue_position -=
-                max_units);
+        ++queue_position;
+
+        if (queue_position > max_units)
+        {
+            queue_position -= max_units;
+        }
     }
 
     /* Get the next sample value from the granulator. */
     float synthesize();
-
-    /* Return status of whether granulator has loaded files. */
-    bool is_ready() { return has_files; }
 
     /* Set parameters. */
     void set_grain_attack(float value) { grain_attack->value = value; }
@@ -72,6 +79,7 @@ public:
     const FixedParam<int> get_max_grains() { return *(max_grains); }
 
 private:
+
     Param<float> *grain_attack;
     Param<float> *grain_sustain;
     Param<float> *grain_release;
@@ -79,11 +87,12 @@ private:
     Param<int> *grain_size;
     FixedParam<int> *max_grains;
     AudioSettings *audio_settings;
-    Scheduler scheduler;
-    int max_units = 32;
+    const int max_units = 32;
     int queue_position = 0;
     vector<Point> unit_queue = vector<Point>(max_units);
+    Scheduler scheduler;
     bool has_files;
+    bool ready = false;
 };
 
 } // CATE

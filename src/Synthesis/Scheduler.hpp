@@ -50,7 +50,7 @@ public:
     void load_files(const map<string, AudioFile> &files);
 
     /* Calculate grain activations. */
-    float schedule(int marker, const string &filename);
+    float schedule();
 
     /* Rebuild grain pool according to size changes. */
     void rebuild_grain_pool();
@@ -60,14 +60,12 @@ private:
     float synthesize_grains();
 
     /* Create a new grain object at next index of grain pool. */
-    void create_grain(int marker, const string &file_name);
+    void activate_next_grain();
 
     /* Stochastically generate next inter-onset value. */
     int get_next_inter_onset();
 
-    /* Fill buffer from filename and file position. */
-    void fill_buffer(int size, int marker, const string &file_name);
-
+    string file = "/Users/lrwz/CATE/audio_files/piano_loops/29698__herbertboland__pianomood10.wav";
     AudioSettings *audio_settings;
     Param<float> *grain_attack;
     Param<float> *grain_sustain;
@@ -75,9 +73,9 @@ private:
     Param<float> *grain_density;
     Param<int> *grain_size;
     FixedParam<int> *max_grains;
-    GrainPool grains;
+    AudioBuffer buffer = AudioBuffer(grain_size->max);
+    GrainPool grain_pool;
     map<string, AudioFile> files;
-    AudioBuffer buffer;
     int next_onset;
     Rand<float> rand;
 };

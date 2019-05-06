@@ -260,7 +260,7 @@ void MainWindow::set_grain_density(int new_value)
 void MainWindow::set_grain_size(int new_value)
 {
     auto grain_size = audio_process->get_grain_size();
-    auto value = scale(new_value, 0, slider_max, grain_size.min, grain_size.max);
+    auto value = static_cast<int>(scale(new_value, 0, slider_max, grain_size.min, grain_size.max));
     audio_process->set_grain_size(value);
     update_number_label(ui->grain_size_value, value);
 }

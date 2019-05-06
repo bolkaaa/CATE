@@ -19,6 +19,7 @@
 
 #include <random>
 #include <cmath>
+#include <src/Corpus/PathTree.hpp>
 
 #include "Scheduler.hpp"
 
@@ -34,58 +35,30 @@ Scheduler::Scheduler(AudioSettings *audio_settings, Param<float> *grain_attack, 
           grain_density(grain_density),
           grain_size(grain_size),
           max_grains(max_grains),
-          grains(static_cast<std::size_t>(max_grains->value)),
-          buffer(static_cast<std::size_t>(grain_size->max)),
+          grain_pool(static_cast<std::size_t>(max_grains->value)),
           next_onset(0),
-          rand(0.0f, 1.0f)
+          rand(0.01f, 1.0f)
 {
 }
 
-void Scheduler::fill_buffer(int size, int marker, const string &file_name)
+void Scheduler::activate_next_grain()
 {
-    auto end_of_file = files[file_name].data.size();
-    auto amp = 0.0f;
-    auto amp_incr = 0.0f;
-
-    for (auto i = 0; i < size; ++i)
-    {
-        auto position = (i + marker);
-
-        if (i < (size / 2))
-        {
-            amp_incr = 1.0f / size / 2;
-        }
-        else if (i > (size / 2))
-        {
-            amp_incr = -(1.0f / size / 2);
-        }
-
-        amp += amp_incr;
-
-        auto output = (position < end_of_file) ? amp * files[file_name].data[position] : 0.0f;
-
-        buffer[i] = output;
-    }
-}
-
-void Scheduler::create_grain(int marker, const string &file_name)
-{
-    for (auto &grain : grains)
+    for (auto &grain : grain_pool)
     {
         if (!grain.is_active())
         {
-            fill_buffer(grain_size->value, marker, file_name);
-            grain = Grain(buffer, grain_size->value);
+            grain.activate(grain_size->value);
+
             return;
         }
     }
 }
 
-float Scheduler::schedule(int marker, const string &filename)
+float Scheduler::schedule()
 {
     if (next_onset == 0)
     {
-        create_grain(marker, filename);
+        activate_next_grain();
         next_onset += get_next_inter_onset();
     }
 
@@ -98,11 +71,14 @@ float Scheduler::synthesize_grains()
 {
     auto output = 0.0f;
 
-    for (auto &grain : grains)
+    for (auto &grain : grain_pool)
     {
         if (grain.is_active())
         {
-            output += grain.synthesize(grain_attack->value, grain_sustain->value, grain_release->value);
+            output += grain.synthesize(grain_size->value,
+                                       grain_attack->value,
+                                       grain_sustain->value,
+                                       grain_release->value);
         }
     }
 
@@ -113,18 +89,25 @@ int Scheduler::get_next_inter_onset()
 {
     auto random_value = rand.get();
     auto grains_per_second = audio_settings->get_sample_rate().value / grain_density->value;
-    auto inter_onset = static_cast<int>(1 + (grains_per_second * random_value));
+    auto inter_onset = 1 + static_cast<int>(grains_per_second * random_value);
     return inter_onset;
 }
 
-void Scheduler::load_files(const map<string, AudioFile> &files)
+void Scheduler::load_files(const map<string, AudioFile> &new_files)
 {
-    Scheduler::files = files;
+    for (auto &grain : grain_pool)
+    {
+        for (auto i = 0; i < grain_size->max; ++i)
+        {
+            auto value = files[file].data[i];
+            grain.fill(value, i);
+        }
+    }
 }
 
 void Scheduler::rebuild_grain_pool()
 {
-    grains = GrainPool(static_cast<std::size_t>(max_grains->value));
+    grain_pool = GrainPool(static_cast<std::size_t>(max_grains->value));
 }
 
 

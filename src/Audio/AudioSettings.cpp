@@ -23,7 +23,7 @@ namespace CATE {
 
 AudioSettings::AudioSettings()
     : sample_rate({44100.0f, 48000.0f, 88200.0f, 96000.0f}, 0),
-      buffer_size({32, 64, 128, 256, 512, 1024, 2056, 4096}, 3),
+      buffer_size({32, 64, 128, 256, 512, 1024, 2056, 4096}, 5),
       bin_size({256, 512, 1024, 2056, 4096, 8192}, 2)
 {
 }

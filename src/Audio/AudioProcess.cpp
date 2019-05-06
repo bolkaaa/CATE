@@ -65,13 +65,6 @@ int AudioProcess::processing_callback(const void *input_buffer,
         input_ring_buffer->push(in);
         emit send_input_data(input_ring_buffer);
 
-        while (unit_queue.samples_available())
-        {
-            auto next_point = Point();
-            unit_queue.pop(next_point);
-            granulator.enqueue(next_point);
-        }
-
         auto out = granulator.synthesize();
 
         *output++ = out; // L
@@ -88,19 +81,11 @@ int AudioProcess::processing_callback(const void *input_buffer,
     return paContinue;
 }
 
-void AudioProcess::reload_granulator()
-{
-}
-
 void AudioProcess::analyse_directory(const Path &directory_path)
 {
     corpus->add_directory(directory_path);
     corpus->sliding_window_analysis();
-}
-
-void AudioProcess::rebuild_data_points()
-{
-    reload_granulator();
+    corpus->rebuild_index();
 }
 
 void AudioProcess::load_corpus(const Path &corpus_path)
@@ -109,15 +94,19 @@ void AudioProcess::load_corpus(const Path &corpus_path)
     corpus->load_audio_from_db();
     corpus->rebuild_point_cloud();
     corpus->rebuild_index();
-    granulator.load_files(corpus);
-    granulator.rebuild_grain_pool();
+    map<string, AudioFile> files = corpus->get_files();
+    granulator.load_files(files);
 }
 
 void AudioProcess::search_results_received(RingBuffer<Point> *search_results)
 {
-    auto result = Point();
-    search_results->pop(result);
-    unit_queue.push(result);
+    while (search_results->samples_available())
+    {
+        auto result = Point();
+        std::cout << result.file_path << "\n";
+        search_results->pop(result);
+        unit_queue.push(result);
+    }
 }
 
 } // CATE

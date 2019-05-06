@@ -43,6 +43,8 @@ void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
         auto flatness = spectral_flatness(magspec);
         auto rolloff = spectral_rolloff(magspec);
 
+        std::cout << centroid << "    " << flatness << "    "  << rolloff << "\n";
+
         const float query[3] = {centroid, flatness, rolloff};
 
         corpus->search(query);

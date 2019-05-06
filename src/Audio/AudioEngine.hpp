@@ -96,6 +96,7 @@ protected:
                                     const PaStreamCallbackTimeInfo *time_info,
                                     PaStreamCallbackFlags status_flags);
 
+
     /* With PortAudio, a static callback function must be defined, which returns the custom callback function. */
     static int static_callback(const void *input_buffer,
                                void *output_buffer,

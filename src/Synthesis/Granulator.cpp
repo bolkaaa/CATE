@@ -28,24 +28,33 @@ Granulator::Granulator(AudioSettings *audio_settings)
           grain_attack(new Param<float>(0.5f, 0.05f, 0.95f)),
           grain_sustain(new Param<float>(0.5f, 0.0f, 0.95f)),
           grain_release(new Param<float>(0.5f, 0.05f, 0.95f)),
-          grain_density(new Param<float>(100.0f, 50.0f, 150.0f)),
-          grain_size(new Param<int>(8192, 1024, 8192)),
+          grain_density(new Param<float>(32.0f, 1.0f, 5000.0f)),
+          grain_size(new Param<int>(4096, 1024, 8192)),
           max_grains(new FixedParam<int>({8, 12, 16, 24, 32, 48, 64}, 2)),
-          unit_queue(32),
           scheduler(audio_settings, grain_attack, grain_sustain, grain_release, grain_density, grain_size, max_grains),
           has_files(false)
 {
 }
 
+Granulator::~Granulator()
+{
+    delete max_grains;
+    delete grain_size;
+    delete grain_density;
+    delete grain_release;
+    delete grain_sustain;
+    delete grain_attack;
+}
+
 float Granulator::synthesize()
 {
-    float output = scheduler.schedule(unit_queue[queue_position].marker, unit_queue[queue_position].file_path);
+    float output = scheduler.schedule();
     return output;
 }
 
-void Granulator::load_files(Corpus *corpus)
+void Granulator::load_files(const map<string, AudioFile>& files)
 {
-    scheduler.load_files(corpus->get_files());
+    scheduler.load_files(files);
     has_files = true;
 }
 

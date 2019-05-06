@@ -4,6 +4,7 @@
 #include "catch.hpp"
 
 #include <memory>
+#include <QApplication>
 
 #include "src/Analysis/FeatureMap.hpp"
 #include "src/Audio/AudioSettings.hpp"
@@ -13,6 +14,7 @@
 #include "src/Corpus/PointCloud.hpp"
 #include "src/Corpus/Corpus.hpp"
 #include "src/Synthesis/Rand.hpp"
+#include "src/GUI/MainWindow.hpp"
 
 using namespace CATE;
 

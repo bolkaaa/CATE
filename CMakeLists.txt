@@ -55,16 +55,16 @@ set(SOURCE_FILES
         src/Audio/RecordWorker.hpp
         src/Audio/AnalysisWorker.cpp
         src/Audio/AnalysisWorker.hpp
-        src/Audio/RingBuffer.cpp
         src/Audio/RingBuffer.hpp)
 
 set(TEST_FILES
         ${SOURCE_FILES}
         tests/main.cpp
-        tests/FileInputOutput.cpp
         tests/TestHeader.hpp
+        tests/FileInputOutput.cpp
         tests/Corpus.cpp
-        tests/Audio.cpp src/Audio/TestTone.cpp src/Audio/TestTone.hpp)
+        tests/Audio.cpp
+        tests/Synthesis.cpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

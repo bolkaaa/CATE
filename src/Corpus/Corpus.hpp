@@ -87,7 +87,9 @@ public:
     /* From features in database, create point cloud to be used by KNN search. */
     void rebuild_point_cloud();
 
-    int size() { return point_cloud->kdtree_get_point_count(); }
+    inline int size() const { return point_cloud->kdtree_get_point_count(); }
+
+    inline int get_num_files() const { return files.size(); }
 
     /* Get access to audio files. */
     inline map<string, AudioFile> get_files() const { return files; };

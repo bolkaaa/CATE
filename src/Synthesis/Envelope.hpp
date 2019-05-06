@@ -29,8 +29,11 @@ class Envelope
 public:
     Envelope();
 
+    /* Reset envelope generation parameters to 0. */
+    void reset();
+
     /* Synthesize the next sample value and return it. */
-    float synthesize(int n, float attack, float sustain, float release);
+    float synthesize(int size, float attack, float sustain, float release);
 
 private:
     int index;
