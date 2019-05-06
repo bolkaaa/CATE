@@ -58,11 +58,25 @@ public:
     /* Compute magnitude spectrum from complex spectrum. */
     void compute_magspec();
 
-    /* Get magnitude spectrum vector. */
-    inline Magspec get_magspec() const { return magspec; };
-
     /* Calculate Hanning window function for a given index and size n. */
     float window(int i, int n);
+
+    /* Return magnitude spectrum value at specified bin. */
+    float get_magspec_bin(int i) { return magspec[i]; }
+
+    /* Copy values from internal magspec object to external reference object. */
+    void get_magspec(Magspec &output)
+    {
+        for (auto i = 0; i < output_size; ++i)
+        {
+            output[i] = magspec[i];
+        }
+    }
+
+    Magspec get_magspec() const
+    {
+        return magspec;
+    }
 
 private:
     AudioSettings *audio_settings;

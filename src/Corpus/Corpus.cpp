@@ -41,7 +41,10 @@ namespace CATE {
 
 Corpus::Corpus(AudioSettings *audio_settings)
         : audio_settings(audio_settings),
-          kd_tree(new KdTree(num_features, point_cloud, KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf))),
+          point_cloud(new PointCloud()),
+          out_distances(num_search_results),
+          out_indices(num_search_results),
+          kd_tree(num_features, *point_cloud, KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf)),
           feature_map(audio_settings),
           feature_names(feature_map.get_feature_names())
 {
@@ -49,7 +52,7 @@ Corpus::Corpus(AudioSettings *audio_settings)
 
 void Corpus::rebuild_index()
 {
-    kd_tree->buildIndex();
+    kd_tree.buildIndex();
 }
 
 void Corpus::add_directory(const Path &directory_path)
@@ -109,7 +112,7 @@ void Corpus::sliding_window_analysis()
 
 void Corpus::rebuild_point_cloud()
 {
-    point_cloud.clear();
+    point_cloud->clear();
 
     for (auto &segment : data.items())
     {
@@ -130,14 +133,14 @@ void Corpus::rebuild_point_cloud()
                 point.features.emplace_back(value);
             }
 
-            point_cloud.add(point);
+            point_cloud->add(point);
         }
     }
 }
 
-bool Corpus::has_data()
+void Corpus::search(const float *query)
 {
-    return !data.empty();
+    kd_tree.knnSearch(query, num_search_results, &out_indices[0], &out_distances[0]);
 }
 
 } // CATE

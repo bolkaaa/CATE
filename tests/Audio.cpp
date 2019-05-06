@@ -28,7 +28,7 @@ bool stream_starts_correctly()
     AudioTest audio_test;
 
     audio_test.audio_process->start_stream();
-    audio_test.audio_process->sleep(1000);
+    audio_test.audio_process->sleep(4000);
 
     return true;
 }

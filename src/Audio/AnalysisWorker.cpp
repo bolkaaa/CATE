@@ -24,8 +24,13 @@ namespace CATE {
 
 AnalysisWorker::AnalysisWorker(AudioSettings *audio_settings)
         : audio_settings(audio_settings),
-          fft(audio_settings)
+          fft(audio_settings),
+          corpus(audio_settings)
 {
+    auto test_path = "/Users/lrwz/CATE/analysis_data/piano_loops.json";
+    corpus.read_file(test_path);
+    corpus.rebuild_point_cloud();
+    corpus.rebuild_index();
 }
 
 void AnalysisWorker::input_data_received(RingBuffer *ring_buffer)
@@ -36,10 +41,27 @@ void AnalysisWorker::input_data_received(RingBuffer *ring_buffer)
 
     if (counter > buffer_size)
     {
-        fft.fill(buffer);
-        fft.compute_spectrum();
+        do_fft();
+
+        auto centroid = spectral_centroid(magspec);
+        auto flatness = spectral_flatness(magspec);
+        auto rolloff = spectral_rolloff(magspec);
+
+        const float query[3] = {centroid, flatness, rolloff};
+
+        corpus.search(query);
+
         counter -= buffer_size;
     }
+}
+
+
+void AnalysisWorker::do_fft()
+{
+    fft.fill(buffer);
+    fft.compute_spectrum();
+    fft.compute_magspec();
+    fft.get_magspec(magspec);
 }
 
 } // CATE

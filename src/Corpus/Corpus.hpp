@@ -54,6 +54,9 @@ public:
     /* Rebuild k-d tree index. */
     void rebuild_index();
 
+    /* Search for nearest neighbours. */
+    void search(const float *query);
+
     /* Read analysis data file into memory. */
     void read_file(const string &file_path);
 
@@ -73,11 +76,10 @@ public:
     /* From features in database, create point cloud to be used by KNN search. */
     void rebuild_point_cloud();
 
+    int size() { return point_cloud->kdtree_get_point_count(); }
+
     /* Get access to audio files. */
     inline map<string, AudioFile> get_files() const { return files; };
-
-    /* Returns true if data within db object is not null. */
-    bool has_data();
 
 private:
     /* Given a std::map, get a std::vector of its keys. */
@@ -98,12 +100,12 @@ private:
     FeatureMap feature_map;
     AudioSettings *audio_settings;
     FeatureNameVector feature_names;
-    PointCloud point_cloud;
+    PointCloud *point_cloud;
     const int num_features = 3;
-    const size_t num_search_results = 1;
-    vector<size_t> return_indices;
-    vector<float> distances;
-    KdTree *kd_tree;
+    const size_t num_search_results = 32;
+    vector<size_t> out_indices;
+    vector<float> out_distances;
+    KdTree kd_tree;
     map<string, AudioFile> files;
 };
 

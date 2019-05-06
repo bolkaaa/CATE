@@ -52,12 +52,6 @@ public:
     /* Clear all points from cloud. */
     void clear() { points.clear(); };
 
-    /* Get file path at specified index of cloud. */
-    inline string get_file_path(const int i) const { return points[i].file_path; }
-
-    /* Get segmentation marker at specified index of cloud. */
-    inline int get_marker(const int i) const { return points[i].marker; }
-
     /* Return number of data points. */
     inline int kdtree_get_point_count() const { return points.size(); }
 
@@ -66,6 +60,8 @@ public:
     {
         return points[i].features[dim];
     }
+
+    inline Point get_point(const int i) { return points[i]; }
 
     template<class BBOX>
     bool kdtree_get_bbox(BBOX &) const { return false; }

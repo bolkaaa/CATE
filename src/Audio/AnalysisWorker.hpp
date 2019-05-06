@@ -21,6 +21,7 @@
 #define ANALYSISWORKER_HPP
 
 #include "src/Analysis/FFT.hpp"
+#include "src/Corpus/Corpus.hpp"
 #include "src/Audio/RingBuffer.hpp"
 #include "src/Audio/AudioSettings.hpp"
 #include "src/Audio/AudioFile.hpp"
@@ -39,9 +40,11 @@ public slots:
     void input_data_received(RingBuffer *ring_buffer);
 
 private:
-    void process();
+    /* Calculate magnitude spectrum of input from ring buffer. */
+    void do_fft();
 
     AudioSettings *audio_settings;
+    Corpus corpus;
     const int buffer_size = 512;
     int counter;
     AudioBuffer buffer = AudioBuffer(buffer_size);

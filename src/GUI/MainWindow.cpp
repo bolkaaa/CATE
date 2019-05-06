@@ -150,8 +150,8 @@ void MainWindow::analyse_directory_button_pressed()
 {
     audio_process->stop_stream();
 
-    string audio_dir_path;
-    string corpus_path;
+    auto audio_dir_path = string();
+    auto corpus_path = string();
 
     try
     {
@@ -169,7 +169,7 @@ void MainWindow::analyse_directory_button_pressed()
 
 void MainWindow::load_corpus_button_pressed()
 {
-    string corpus_path;
+    auto corpus_path = string();
 
     try
     {
@@ -187,11 +187,11 @@ void MainWindow::load_corpus_button_pressed()
 
 string MainWindow::directory_dialog()
 {
-    string directory_path = qstring_to_string(QFileDialog::getExistingDirectory(this,
-                                                                                tr("Select Directory"),
-                                                                                get_home_dir_path(),
-                                                                                QFileDialog::ShowDirsOnly |
-                                                                                QFileDialog::DontResolveSymlinks));
+    auto directory_path = qstring_to_string(QFileDialog::getExistingDirectory(this,
+                                                                              tr("Select Directory"),
+                                                                              get_home_dir_path(),
+                                                                              QFileDialog::ShowDirsOnly |
+                                                                              QFileDialog::DontResolveSymlinks));
 
     if (directory_path.empty())
     {
@@ -203,7 +203,7 @@ string MainWindow::directory_dialog()
 
 string MainWindow::save_file_dialog(const string &file_types)
 {
-    string file_path = qstring_to_string(QFileDialog::getSaveFileName(this,
+    auto file_path = qstring_to_string(QFileDialog::getSaveFileName(this,
                                                                       tr("File Destination"),
                                                                       get_home_dir_path(),
                                                                       tr(file_types.c_str())));
@@ -218,7 +218,7 @@ string MainWindow::save_file_dialog(const string &file_types)
 
 string MainWindow::open_file_dialog(const string &file_types)
 {
-    string file_path = qstring_to_string(QFileDialog::getOpenFileName(this,
+    auto file_path = qstring_to_string(QFileDialog::getOpenFileName(this,
                                                                       tr("Select File"),
                                                                       get_home_dir_path(),
                                                                       tr(file_types.c_str())));
@@ -234,7 +234,7 @@ string MainWindow::open_file_dialog(const string &file_types)
 void MainWindow::set_grain_attack(int new_value)
 {
     auto grain_attack = audio_process->get_grain_attack();
-    float value = scale(new_value, 0, slider_max, grain_attack.min, grain_attack.max);
+    auto value = scale(new_value, 0, slider_max, grain_attack.min, grain_attack.max);
     audio_process->set_grain_attack(value);
     update_number_label(ui->grain_attack_value, value);
 }
@@ -242,7 +242,7 @@ void MainWindow::set_grain_attack(int new_value)
 void MainWindow::set_grain_sustain(int new_value)
 {
     auto grain_sustain = audio_process->get_grain_sustain();
-    float value = scale(new_value, 0, slider_max, grain_sustain.min, grain_sustain.max);
+    auto value = scale(new_value, 0, slider_max, grain_sustain.min, grain_sustain.max);
     audio_process->set_grain_sustain(value);
     update_number_label(ui->grain_sustain_value, value);
 }
@@ -250,7 +250,7 @@ void MainWindow::set_grain_sustain(int new_value)
 void MainWindow::set_grain_release(int new_value)
 {
     auto grain_release = audio_process->get_grain_release();
-    float value = scale(new_value, 0, slider_max, grain_release.min, grain_release.max);
+    auto value = scale(new_value, 0, slider_max, grain_release.min, grain_release.max);
     audio_process->set_grain_release(value);
     update_number_label(ui->grain_release_value, value);
 }
@@ -258,7 +258,7 @@ void MainWindow::set_grain_release(int new_value)
 void MainWindow::set_grain_density(int new_value)
 {
     auto grain_density = audio_process->get_grain_density();
-    float value = scale(new_value, 0, slider_max, grain_density.min, grain_density.max);
+    auto value = scale(new_value, 0, slider_max, grain_density.min, grain_density.max);
     audio_process->set_grain_density(value);
     update_number_label(ui->grain_density_value, value);
 }
@@ -266,20 +266,20 @@ void MainWindow::set_grain_density(int new_value)
 void MainWindow::set_grain_size(int new_value)
 {
     auto grain_size = audio_process->get_grain_size();
-    float value = scale(new_value, 0, slider_max, grain_size.min, grain_size.max);
+    auto value = scale(new_value, 0, slider_max, grain_size.min, grain_size.max);
     audio_process->set_grain_size(value);
     update_number_label(ui->grain_size_value, value);
 }
 
 float MainWindow::scale(float input, float input_min, float input_max, float output_min, float output_max)
 {
-    float output = (((input - input_min) * (output_max - output_min)) / (input_max - input_min)) + output_min;
+    auto output = (((input - input_min) * (output_max - output_min)) / (input_max - input_min)) + output_min;
     return output;
 }
 
 QString MainWindow::get_home_dir_path()
 {
-    QString home_dir_path = QStandardPaths::locate(QStandardPaths::HomeLocation,
+    auto home_dir_path = QStandardPaths::locate(QStandardPaths::HomeLocation,
                                                    QString(),
                                                    QStandardPaths::LocateDirectory);
 

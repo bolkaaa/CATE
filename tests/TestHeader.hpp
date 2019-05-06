@@ -12,6 +12,7 @@
 #include "src/Corpus/PathTree.hpp"
 #include "src/Corpus/PointCloud.hpp"
 #include "src/Corpus/Corpus.hpp"
+#include "src/Synthesis/Rand.hpp"
 
 using namespace CATE;
 
