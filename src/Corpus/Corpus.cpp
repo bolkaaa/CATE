@@ -104,7 +104,6 @@ void Corpus::sliding_window_analysis()
         {
             data[file_path][f.first] = f.second;
         }
-
     }
 }
 
@@ -140,6 +139,5 @@ bool Corpus::has_data()
 {
     return !data.empty();
 }
-
 
 } // CATE

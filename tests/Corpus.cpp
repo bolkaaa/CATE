@@ -12,8 +12,8 @@ bool feature_map_working()
 bool corpus_working()
 {
     auto audio_settings = new AudioSettings;
-    auto point_cloud = new PointCloud;
-    Corpus corpus(audio_settings, point_cloud);
+
+    Corpus corpus(audio_settings);
 
     corpus.read_file("/Users/lrwz/CATE/analysis_data/piano_loops.json");
     corpus.load_audio_from_db();
