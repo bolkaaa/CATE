@@ -43,18 +43,28 @@ Scheduler::Scheduler(AudioSettings *audio_settings, Param<float> *grain_attack, 
 
 void Scheduler::fill_buffer(int size, int marker, const string &file_name)
 {
-    for (int i = 0; i < size; ++i)
-    {
-        int file_pos = i + marker;
+    auto end_of_file = files[file_name].data.size();
+    auto amp = 0.0f;
+    auto amp_incr = 0.0f;
 
-        if (file_pos < files[file_name].data.size())
+    for (auto i = 0; i < size; ++i)
+    {
+        auto position = (i + marker);
+
+        if (i < (size / 2))
         {
-            buffer[i] = files[file_name].data[file_pos];
+            amp_incr = 1.0f / size / 2;
         }
-        else
+        else if (i > (size / 2))
         {
-            buffer[i] = 0.0f;
+            amp_incr = -(1.0f / size / 2);
         }
+
+        amp += amp_incr;
+
+        auto output = (position < end_of_file) ? amp * files[file_name].data[position] : 0.0f;
+
+        buffer[i] = output;
     }
 }
 
