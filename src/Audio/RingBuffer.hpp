@@ -28,6 +28,7 @@ namespace CATE {
 
 /* Based on lock-free ring buffer implementation in "Audio Anecdotes Volume 2
  * (Greenebaum, Barzel)". */
+template <class T>
 class RingBuffer
 {
 public:
@@ -35,10 +36,10 @@ public:
     explicit RingBuffer(int size);
 
     /* Insert element at head. */
-    void push(float elem);
+    void push(T elem);
 
     /* Get tail element. */
-    void pop(float &output);
+    void pop(T &output);
 
     /* Calculate samples available in buffer. */
     int samples_available();
@@ -47,11 +48,56 @@ public:
     int space_available();
 
 private:
-    AudioBuffer data;
+    vector<T> data;
     int head;
     int tail;
     int high_water_mark;
 };
+
+template <class T>
+RingBuffer<T>::RingBuffer(int size)
+        : data(size),
+          head(0), tail(0),
+          high_water_mark(static_cast<int>(data.size() / 4))
+{
+    high_water_mark = static_cast<int>((high_water_mark > data.size()) ? data.size() : high_water_mark);
+}
+
+template <class T>
+void RingBuffer<T>::push(T elem)
+{
+    if (space_available())
+    {
+        data[tail] = elem;
+        tail = static_cast<int>((tail + 1) % data.size());
+    }
+}
+
+template <class T>
+void RingBuffer<T>::pop(T &ref)
+{
+    if (samples_available())
+    {
+        ref = data[head];
+        head = static_cast<int>((head + 1) % data.size());
+    }
+}
+
+template <class T>
+int RingBuffer<T>::samples_available()
+{
+    auto samples = static_cast<int>((tail - head + data.size()) % data.size());
+    return samples;
+}
+
+template <class T>
+int RingBuffer<T>::space_available()
+{
+    auto free = static_cast<int>((head - tail + data.size() - 1) % data.size());
+    auto undermark = high_water_mark - samples_available();
+    auto space = std::min(undermark, free);
+    return space;
+}
 
 } // CATE
 

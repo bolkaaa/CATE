@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     auto audio_process = new CATE::AudioProcess(audio_settings, corpus);
 
     /* Instantiate and load GUI. */
-    CATE::MainWindow main_window(audio_process, audio_settings);
+    CATE::MainWindow main_window(audio_process, audio_settings, corpus);
 
     main_window.show();
 

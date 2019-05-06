@@ -22,18 +22,14 @@
 
 namespace CATE {
 
-AnalysisWorker::AnalysisWorker(AudioSettings *audio_settings)
+AnalysisWorker::AnalysisWorker(AudioSettings *audio_settings, Corpus *corpus)
         : audio_settings(audio_settings),
-          fft(audio_settings),
-          corpus(audio_settings)
+          corpus(corpus),
+          fft(audio_settings)
 {
-    auto test_path = "/Users/lrwz/CATE/analysis_data/piano_loops.json";
-    corpus.read_file(test_path);
-    corpus.rebuild_point_cloud();
-    corpus.rebuild_index();
 }
 
-void AnalysisWorker::input_data_received(RingBuffer *ring_buffer)
+void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
 {
     ring_buffer->pop(buffer[counter]);
 
@@ -49,7 +45,15 @@ void AnalysisWorker::input_data_received(RingBuffer *ring_buffer)
 
         const float query[3] = {centroid, flatness, rolloff};
 
-        corpus.search(query);
+        corpus->search(query);
+
+        for (auto i = 0; i < num_search_results; ++i)
+        {
+            auto result = corpus->get_search_result(i);
+            search_results->push(result);
+        }
+
+        emit send_search_results(search_results);
 
         counter -= buffer_size;
     }

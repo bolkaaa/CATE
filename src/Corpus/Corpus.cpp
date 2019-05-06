@@ -44,6 +44,7 @@ Corpus::Corpus(AudioSettings *audio_settings)
           point_cloud(new PointCloud()),
           out_distances(num_search_results),
           out_indices(num_search_results),
+          search_results(num_search_results),
           kd_tree(num_features, *point_cloud, KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf)),
           feature_map(audio_settings),
           feature_names(feature_map.get_feature_names())
@@ -141,6 +142,13 @@ void Corpus::rebuild_point_cloud()
 void Corpus::search(const float *query)
 {
     kd_tree.knnSearch(query, num_search_results, &out_indices[0], &out_distances[0]);
+
+    for (auto i = 0; i < num_search_results; ++i)
+    {
+        auto point_index = out_indices[i];
+        auto point = point_cloud->get_point(point_index);
+        search_results[i] = point;
+    }
 }
 
 } // CATE

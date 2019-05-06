@@ -34,22 +34,28 @@ class AnalysisWorker : public QObject
 {
 Q_OBJECT
 public:
-    AnalysisWorker(AudioSettings *audio_settings);
-
-public slots:
-    void input_data_received(RingBuffer *ring_buffer);
+    AnalysisWorker(AudioSettings *audio_settings, Corpus *corpus);
 
 private:
     /* Calculate magnitude spectrum of input from ring buffer. */
     void do_fft();
 
     AudioSettings *audio_settings;
-    Corpus corpus;
+    Corpus *corpus;
     const int buffer_size = 512;
+    const int num_search_results = 32;
     int counter;
     AudioBuffer buffer = AudioBuffer(buffer_size);
     Magspec magspec = Magspec(buffer_size);
+    RingBuffer<Point> *search_results = new RingBuffer<Point>(buffer_size);
     FFT fft;
+
+public slots:
+    void input_data_received(RingBuffer<float> *ring_buffer);
+
+signals:
+    /* Emit search results buffer as signal. */
+    void send_search_results(RingBuffer<Point> *search_results);
 };
 
 } // CATE

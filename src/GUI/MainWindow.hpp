@@ -55,7 +55,7 @@ class MainWindow : public QMainWindow
 Q_OBJECT
 
 public:
-    MainWindow(AudioProcess *audio_process, AudioSettings *audio_settings);
+    MainWindow(AudioProcess *audio_process, AudioSettings *audio_settings, Corpus *corpus);
 
 private:
     /* Prompt user to select a directory. */
@@ -90,6 +90,7 @@ private:
     AudioSettingsWindow audio_settings_window;
     AudioProcess *audio_process;
     AudioSettings *audio_settings;
+    Corpus *corpus;
     QThread *record_thread;
     QThread *analysis_thread;
     RecordWorker *record_worker;

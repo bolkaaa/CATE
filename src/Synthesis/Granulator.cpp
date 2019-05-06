@@ -29,16 +29,17 @@ Granulator::Granulator(AudioSettings *audio_settings)
           grain_sustain(new Param<float>(0.5f, 0.0f, 0.95f)),
           grain_release(new Param<float>(0.5f, 0.05f, 0.95f)),
           grain_density(new Param<float>(100.0f, 50.0f, 150.0f)),
-          grain_size(new Param<int>(1024, 1024, 4096)),
+          grain_size(new Param<int>(8192, 1024, 8192)),
           max_grains(new FixedParam<int>({8, 12, 16, 24, 32, 48, 64}, 2)),
+          unit_queue(32),
           scheduler(audio_settings, grain_attack, grain_sustain, grain_release, grain_density, grain_size, max_grains),
           has_files(false)
 {
 }
 
-float Granulator::synthesize(Unit unit)
+float Granulator::synthesize()
 {
-    float output = scheduler.schedule(unit.marker, unit.file_path);
+    float output = scheduler.schedule(unit_queue[queue_position].marker, unit_queue[queue_position].file_path);
     return output;
 }
 

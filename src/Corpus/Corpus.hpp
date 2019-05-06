@@ -42,7 +42,15 @@ using Json = nlohmann::json;
 
 namespace CATE {
 
-/* The Corpus class handles functionality for persistently storing a
+/* Representation of single position in file in corpus. */
+class Unit
+{
+public:
+    string file_path;
+    int marker;
+};
+
+/* Handles functionality for persistently storing a
  * collection of audio file paths and associated segmentation markers and
  * analysis data, forming the basis for the corpus of the concatenative
  * synthesis system. */
@@ -56,6 +64,9 @@ public:
 
     /* Search for nearest neighbours. */
     void search(const float *query);
+
+    /* Get unit from search results. */
+    inline Point get_search_result(const int i) const { return search_results[i]; };
 
     /* Read analysis data file into memory. */
     void read_file(const string &file_path);
@@ -104,10 +115,12 @@ private:
     const int num_features = 3;
     const size_t num_search_results = 32;
     vector<size_t> out_indices;
+    vector<Point> search_results;
     vector<float> out_distances;
     KdTree kd_tree;
     map<string, AudioFile> files;
 };
+
 
 } // CATE
 

@@ -24,17 +24,10 @@
 
 #include "src/Audio/AudioFile.hpp"
 #include "src/Corpus/Corpus.hpp"
+#include "src/Audio/RingBuffer.hpp"
 #include "Scheduler.hpp"
 
 namespace CATE {
-
-/* Representation of position in audio file. */
-class Unit
-{
-public:
-    string file_path;
-    int marker;
-};
 
 /* Granulator is the high-level interface that contains all the functionality for the granular synthesis process. */
 class Granulator
@@ -48,8 +41,16 @@ public:
     /* Load files from corpus into files variable. */
     void load_files(Corpus *corpus);
 
+    void enqueue(const Point &point)
+    {
+        unit_queue[queue_position] = point;
+
+        queue_position = (queue_position < max_units) ? (queue_position + 1) : (queue_position -=
+                max_units);
+    }
+
     /* Get the next sample value from the granulator. */
-    float synthesize(Unit unit);
+    float synthesize();
 
     /* Return status of whether granulator has loaded files. */
     bool is_ready() { return has_files; }
@@ -79,6 +80,9 @@ private:
     FixedParam<int> *max_grains;
     AudioSettings *audio_settings;
     Scheduler scheduler;
+    int max_units = 32;
+    int queue_position = 0;
+    vector<Point> unit_queue = vector<Point>(max_units);
     bool has_files;
 };
 

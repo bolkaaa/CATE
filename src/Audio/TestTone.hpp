@@ -17,28 +17,33 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <iostream>
+#ifndef TESTTONE_HPP
+#define TESTTONE_HPP
 
-#include "RecordWorker.hpp"
-#include "AudioFile.hpp"
+#include <cmath>
 
 namespace CATE {
 
-void RecordWorker::output_data_received(RingBuffer<float> *ring_buffer)
+class TestTone
 {
-    auto sample = 0.0f;
-
-    if (ring_buffer->samples_available())
+public:
+    TestTone()
+            : amp(0.5f), freq(440.0f), sr(44100.0f)
     {
-        ring_buffer->pop(sample);
-        record_data.data.emplace_back(sample);
     }
-}
 
-void RecordWorker::save_recording(const std::string &output_path, float sample_rate, int channels)
-{
-    record_data.write(channels, sample_rate, output_path);
-    record_data.data.clear();
-}
+    float synthesize(const int i)
+    {
+        auto output = std::sin(2 * M_PI * freq * (i / sr));
+        return output;
+    }
+
+private:
+    float amp;
+    float freq;
+    float sr;
+};
 
 } // CATE
+
+#endif

@@ -64,7 +64,7 @@ set(TEST_FILES
         tests/FileInputOutput.cpp
         tests/TestHeader.hpp
         tests/Corpus.cpp
-        tests/Audio.cpp)
+        tests/Audio.cpp src/Audio/TestTone.cpp src/Audio/TestTone.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

@@ -35,11 +35,13 @@ using std::make_unique;
 
 namespace CATE {
 
-MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_settings)
+MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_settings, Corpus *corpus)
         : ui(new Ui::MainWindow),
           audio_process(audio_process),
+          audio_settings(audio_settings),
+          corpus(corpus),
           record_worker(new RecordWorker),
-          analysis_worker(new AnalysisWorker(audio_settings)),
+          analysis_worker(new AnalysisWorker(audio_settings, corpus)),
           record_thread(new QThread),
           analysis_thread(new QThread),
           audio_settings_window(audio_process)
@@ -57,14 +59,19 @@ MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_setting
 
     /* Connect signals and slots. */
     connect(audio_process,
-            SIGNAL(send_input_data(RingBuffer * )),
+            SIGNAL(send_input_data(RingBuffer<float>*)),
             analysis_worker,
-            SLOT(input_data_received(RingBuffer * )));
+            SLOT(input_data_received(RingBuffer<float>*)));
 
     connect(audio_process,
-            SIGNAL(send_output_data(RingBuffer * )),
+            SIGNAL(send_output_data(RingBuffer<float>*)),
             record_worker,
-            SLOT(output_data_received(RingBuffer * )));
+            SLOT(output_data_received(RingBuffer<float>*)));
+
+    connect(analysis_worker,
+            SIGNAL(send_search_results(RingBuffer<Point>*)),
+            audio_process,
+            SLOT(search_results_received(RingBuffer<Point>*)));
 
     connect(ui->start_playback, SIGNAL(clicked()), this, SLOT(start_playback_button_pressed()));
     connect(ui->stop_playback, SIGNAL(clicked()), this, SLOT(stop_playback_button_pressed()));
@@ -83,27 +90,14 @@ MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_setting
 
 void MainWindow::start_playback_button_pressed()
 {
-    auto error_code = 0;
+    analysis_thread->start();
 
-    // if (audio_process->granulator_has_files())
-    // {
-
-    error_code = audio_process->start_stream();
+    auto error_code = audio_process->start_stream();
 
     if (!error_code)
     {
         std::cerr << audio_process->report_error(error_code) << "\n";
     }
-
-    analysis_thread->start();
-
-    //}
-//    else
-//    {
-//        QMessageBox msg;
-//        msg.setText("No files loaded.");
-//        msg.exec();
-//    }
 }
 
 void MainWindow::stop_playback_button_pressed()

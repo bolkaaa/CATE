@@ -39,7 +39,7 @@ public:
 
 public slots:
     /* Pop available sample from ring buffer and write to record_buffer. */
-    void output_data_received(RingBuffer *ring_buffer);
+    void output_data_received(RingBuffer<float> *ring_buffer);
 
 private:
     AudioFile record_data;

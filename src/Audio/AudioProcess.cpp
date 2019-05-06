@@ -32,10 +32,17 @@ AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus)
           AudioEngine(audio_settings),
           corpus(corpus),
           granulator(audio_settings),
-          input_ring_buffer(new RingBuffer(ring_buffer_size)),
-          output_ring_buffer(new RingBuffer(ring_buffer_size)),
+          input_ring_buffer(new RingBuffer<float>(ring_buffer_size)),
+          output_ring_buffer(new RingBuffer<float>(ring_buffer_size)),
+          unit_queue(ring_buffer_size),
           recording(false)
 {
+}
+
+AudioProcess::~AudioProcess()
+{
+    delete output_ring_buffer;
+    delete input_ring_buffer;
 }
 
 int AudioProcess::processing_callback(const void *input_buffer,
@@ -54,12 +61,18 @@ int AudioProcess::processing_callback(const void *input_buffer,
     {
         const auto in = *input++;
 
+        /* Send input to ring buffer. */
         input_ring_buffer->push(in);
-
         emit send_input_data(input_ring_buffer);
 
-        // const auto out = granulator.synthesize(unit);
-        const auto out = 0.0f;
+        while (unit_queue.samples_available())
+        {
+            auto next_point = Point();
+            unit_queue.pop(next_point);
+            granulator.enqueue(next_point);
+        }
+
+        auto out = granulator.synthesize();
 
         *output++ = out; // L
         *output++ = out; // R
@@ -77,8 +90,6 @@ int AudioProcess::processing_callback(const void *input_buffer,
 
 void AudioProcess::reload_granulator()
 {
-    granulator.load_files(corpus);
-    granulator.rebuild_grain_pool();
 }
 
 void AudioProcess::analyse_directory(const Path &directory_path)
@@ -89,8 +100,6 @@ void AudioProcess::analyse_directory(const Path &directory_path)
 
 void AudioProcess::rebuild_data_points()
 {
-    corpus->rebuild_point_cloud();
-    corpus->rebuild_index();
     reload_granulator();
 }
 
@@ -98,8 +107,17 @@ void AudioProcess::load_corpus(const Path &corpus_path)
 {
     corpus->read_file(corpus_path);
     corpus->load_audio_from_db();
+    corpus->rebuild_point_cloud();
+    corpus->rebuild_index();
     granulator.load_files(corpus);
-    rebuild_data_points();
+    granulator.rebuild_grain_pool();
+}
+
+void AudioProcess::search_results_received(RingBuffer<Point> *search_results)
+{
+    auto result = Point();
+    search_results->pop(result);
+    unit_queue.push(result);
 }
 
 } // CATE

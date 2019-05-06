@@ -28,6 +28,7 @@
 #include "AudioEngine.hpp"
 #include "AudioBuffer.hpp"
 #include "AudioSettings.hpp"
+#include "TestTone.hpp"
 #include "RingBuffer.hpp"
 #include "src/Corpus/Corpus.hpp"
 #include "src/Synthesis/Granulator.hpp"
@@ -43,6 +44,8 @@ Q_OBJECT
 
 public:
     AudioProcess(AudioSettings *audio_settings, Corpus *corpus);
+
+    ~AudioProcess();
 
     /* Reload granulator when corpus has changed. */
     void reload_granulator();
@@ -91,16 +94,21 @@ private:
     Corpus *corpus;
     Granulator granulator;
     const int ring_buffer_size = 512;
-    RingBuffer *input_ring_buffer;
-    RingBuffer *output_ring_buffer;
+    RingBuffer<float> *input_ring_buffer;
+    RingBuffer<float> *output_ring_buffer;
+    RingBuffer<Point> unit_queue;
+    TestTone tone;
     bool recording;
+
+public slots:
+    void search_results_received(RingBuffer<Point> *search_results);
 
 signals:
     /* Emit input ring buffer as signal. */
-    void send_input_data(RingBuffer *input_ring_buffer);
+    void send_input_data(RingBuffer<float> *input_ring_buffer);
 
     /* Emit output ring buffer as signal. */
-    void send_output_data(RingBuffer *output_ring_buffer);
+    void send_output_data(RingBuffer<float> *output_ring_buffer);
 
 protected:
     int processing_callback(const void *input_buffer,
