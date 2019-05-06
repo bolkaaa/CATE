@@ -34,18 +34,10 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    /* Instantiate point cloud and k-d tree data structures. */
-    auto point_cloud = new CATE::PointCloud;
-    KDTreeSingleIndexAdaptorParams adaptor_params(KdTreeParams::max_leaf);
-    const auto num_features = CATE::FeatureMap::num_features;
-    CATE::KdTree kd_tree(num_features,
-                         *point_cloud,
-                         adaptor_params);
-
-    /* Instantiate audio objects. */
+    /* Instantiate objects. */
     auto audio_settings = new CATE::AudioSettings;
-    auto corpus = new CATE::Corpus(audio_settings, point_cloud);
-    auto audio_process = new CATE::AudioProcess(audio_settings, corpus, point_cloud, kd_tree);
+    auto corpus = new CATE::Corpus(audio_settings);
+    auto audio_process = new CATE::AudioProcess(audio_settings, corpus);
 
     /* Instantiate and load GUI. */
     CATE::MainWindow main_window(audio_process, audio_settings);

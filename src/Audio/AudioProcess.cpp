@@ -27,19 +27,13 @@
 
 namespace CATE {
 
-AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus,
-                           PointCloud *point_cloud, KdTree *kd_tree)
+AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus)
         : audio_settings(audio_settings),
           AudioEngine(audio_settings),
           corpus(corpus),
-          point_cloud(point_cloud),
-          kd_tree(kd_tree),
-          fft(audio_settings),
           granulator(audio_settings),
           input_ring_buffer(new RingBuffer(ring_buffer_size)),
           output_ring_buffer(new RingBuffer(ring_buffer_size)),
-          return_indices(num_search_results),
-          distances(num_search_results),
           recording(false)
 {
 }
@@ -54,8 +48,6 @@ int AudioProcess::processing_callback(const void *input_buffer,
     static_cast<void>(time_info);
     const auto *input = static_cast<const float *>(input_buffer);
     auto *output = static_cast<float *>(output_buffer);
-
-//    auto unit = select_unit(input, buffer_size);
 
     /* Main audio output block. */
     for (unsigned long i = 0; i < buffer_size; ++i)
@@ -89,30 +81,6 @@ void AudioProcess::reload_granulator()
     granulator.rebuild_grain_pool();
 }
 
-Unit AudioProcess::select_unit(const float *input, int n)
-{
-    auto unit = Unit();
-
-    // compute_magspec(input, n);
-
-    const float search_points[FeatureMap::num_features] = {
-            spectral_centroid(magspec),
-            spectral_rolloff(magspec),
-            spectral_flatness(magspec),
-    };
-
-    kd_tree->knnSearch(&search_points[0],
-                      num_search_results,
-                      &return_indices[0],
-                      &distances[0]);
-
-    auto point_cloud_index = return_indices[0];
-    unit.marker = point_cloud->get_marker(point_cloud_index);
-    unit.file_path = point_cloud->get_file_path(point_cloud_index);
-
-    return unit;
-}
-
 void AudioProcess::analyse_directory(const Path &directory_path)
 {
     corpus->add_directory(directory_path);
@@ -122,7 +90,7 @@ void AudioProcess::analyse_directory(const Path &directory_path)
 void AudioProcess::rebuild_data_points()
 {
     corpus->rebuild_point_cloud();
-    kd_tree->buildIndex();
+    corpus->rebuild_index();
     reload_granulator();
 }
 

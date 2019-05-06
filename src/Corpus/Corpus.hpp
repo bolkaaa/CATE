@@ -26,6 +26,7 @@
 #include <nlohmann/json.hpp>
 #include "include/nanoflann.hpp"
 
+#include "KdTree.hpp"
 #include "PointCloud.hpp"
 #include "PathTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
@@ -48,7 +49,10 @@ namespace CATE {
 class Corpus : NonCopyable
 {
 public:
-    Corpus(AudioSettings *audio_settings, PointCloud *point_cloud);
+    Corpus(AudioSettings *audio_settings);
+
+    /* Rebuild k-d tree index. */
+    void rebuild_index();
 
     /* Read analysis data file into memory. */
     void read_file(const string &file_path);
@@ -94,7 +98,12 @@ private:
     FeatureMap feature_map;
     AudioSettings *audio_settings;
     FeatureNameVector feature_names;
-    PointCloud *point_cloud;
+    PointCloud point_cloud;
+    const int num_features = 3;
+    const size_t num_search_results = 1;
+    vector<size_t> return_indices;
+    vector<float> distances;
+    KdTree *kd_tree;
     map<string, AudioFile> files;
 };
 

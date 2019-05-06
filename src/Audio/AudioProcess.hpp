@@ -29,10 +29,7 @@
 #include "AudioBuffer.hpp"
 #include "AudioSettings.hpp"
 #include "RingBuffer.hpp"
-#include "src/Analysis/FFT.hpp"
-#include "src/Analysis/Feature.hpp"
 #include "src/Corpus/Corpus.hpp"
-#include "src/Corpus/KdTree.hpp"
 #include "src/Synthesis/Granulator.hpp"
 
 namespace CATE {
@@ -45,7 +42,7 @@ class AudioProcess : public QObject, public AudioEngine
 Q_OBJECT
 
 public:
-    AudioProcess(AudioSettings *audio_settings, Corpus *corpus, PointCloud *point_cloud, KdTree *kd_tree);
+    AudioProcess(AudioSettings *audio_settings, Corpus *corpus);
 
     /* Reload granulator when corpus has changed. */
     void reload_granulator();
@@ -90,22 +87,9 @@ public:
     const Param<int> get_grain_size() { return granulator.get_grain_size(); }
 
 private:
-    /* Determine the next segment from the corpus to access via KNN search. */
-    Unit select_unit(const float *input, int n);
-
-    /* Compute magnitude spectrum of input frame. */
-    void compute_magspec(const float *input, int n);
-
     AudioSettings *audio_settings;
     Corpus *corpus;
-    PointCloud *point_cloud;
-    KdTree *kd_tree;
     Granulator granulator;
-    FFT fft;
-    Magspec magspec;
-    const size_t num_search_results = 1;
-    vector<size_t> return_indices;
-    vector<float> distances;
     const int ring_buffer_size = 512;
     RingBuffer *input_ring_buffer;
     RingBuffer *output_ring_buffer;

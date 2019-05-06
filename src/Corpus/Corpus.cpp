@@ -39,12 +39,17 @@ using std::ofstream;
 
 namespace CATE {
 
-Corpus::Corpus(AudioSettings *audio_settings, PointCloud *point_cloud)
+Corpus::Corpus(AudioSettings *audio_settings)
         : audio_settings(audio_settings),
-          point_cloud(point_cloud),
-          feature_map(audio_settings)
+          kd_tree(new KdTree(num_features, point_cloud, KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf))),
+          feature_map(audio_settings),
+          feature_names(feature_map.get_feature_names())
 {
-    feature_names = feature_map.get_feature_names();
+}
+
+void Corpus::rebuild_index()
+{
+    kd_tree->buildIndex();
 }
 
 void Corpus::add_directory(const Path &directory_path)
@@ -105,7 +110,7 @@ void Corpus::sliding_window_analysis()
 
 void Corpus::rebuild_point_cloud()
 {
-    point_cloud->clear();
+    point_cloud.clear();
 
     for (auto &segment : data.items())
     {
@@ -126,7 +131,7 @@ void Corpus::rebuild_point_cloud()
                 point.features.emplace_back(value);
             }
 
-            point_cloud->add(point);
+            point_cloud.add(point);
         }
     }
 }
@@ -135,5 +140,6 @@ bool Corpus::has_data()
 {
     return !data.empty();
 }
+
 
 } // CATE
