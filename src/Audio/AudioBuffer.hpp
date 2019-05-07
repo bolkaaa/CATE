@@ -37,12 +37,7 @@ namespace CATE {
  * libraries used in CATE, it uses floats and isn't templated. */
 typedef std::vector<float> AudioBuffer;
 
-/* Alias for individual frame of audio, where the key is a positional marker and the value is audio data. */
-typedef pair<int, AudioBuffer> AudioFrame;
-
-/* Alias for std::map where the key is frame position in samples and the value is the audio data. */
-typedef map<int, AudioBuffer> AudioFramePool;
-
+typedef map<Path, AudioBuffer> audio_buffer_map;
 
 /* Get an AudioBuffer from an input audio file. */
 AudioBuffer read_audio_file(const Path &input_path);

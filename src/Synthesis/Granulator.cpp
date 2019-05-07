@@ -48,7 +48,8 @@ Granulator::~Granulator()
 
 float Granulator::synthesize()
 {
-    float output = scheduler.schedule();
+    auto output = scheduler.schedule();
+
     return output;
 }
 

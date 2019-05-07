@@ -84,7 +84,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
 void AudioProcess::analyse_directory(const Path &directory_path)
 {
     corpus->add_directory(directory_path);
-    corpus->sliding_window_analysis(audio_settings->get_bin_size().value);
+    corpus->sliding_window_analysis(audio_settings->get_bin_size());
     corpus->rebuild_index();
 }
 

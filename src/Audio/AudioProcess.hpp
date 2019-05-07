@@ -69,12 +69,11 @@ public:
     void set_grain_density(float density) { granulator.set_grain_density(density); }
     void set_sample_rate(int selection_index) { audio_settings->set_sample_rate(selection_index); }
     void set_buffer_size(int selection_index) { audio_settings->set_buffer_size(selection_index); }
-    void set_bin_size(int selection_index) { audio_settings->set_bin_size(selection_index); }
     void set_max_grains(int selection_index) { granulator.set_max_grains(selection_index); }
 
     const FixedParam<float> get_sample_rate() { return audio_settings->get_sample_rate(); }
     const FixedParam<unsigned long> get_buffer_size() { return audio_settings->get_buffer_size(); }
-    const FixedParam<int> get_bin_size() { return audio_settings->get_bin_size(); }
+    const int get_bin_size() { return audio_settings->get_bin_size(); }
     const FixedParam<int> get_max_grains() { return granulator.get_max_grains(); }
     const Param<float> get_grain_attack() { return granulator.get_grain_attack(); }
     const Param<float> get_grain_sustain() { return granulator.get_grain_sustain(); }

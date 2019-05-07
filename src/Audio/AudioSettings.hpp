@@ -31,7 +31,6 @@ namespace CATE {
 
 typedef vector<float> SampleRateVector;
 typedef vector<unsigned long> BufferSizeVector;
-typedef vector<int> BinSizeVector;
 
 /* Functionality for storing audio settings used throughout the program, with possible settings for each
  * parameter stored as a fixed number of options.  */
@@ -43,17 +42,16 @@ public:
     /* Get parameter objects. */
     inline const FixedParam<float> get_sample_rate() const { return sample_rate; }
     inline const FixedParam<unsigned long> get_buffer_size() const { return buffer_size; }
-    inline const FixedParam<int> get_bin_size() const { return bin_size; }
+    inline const int get_bin_size() const { return bin_size; }
 
     /* Set parameter values. */
     void set_sample_rate(int selection_index) { sample_rate.set(selection_index); }
     void set_buffer_size(int selection_index) { buffer_size.set(selection_index); }
-    void set_bin_size(int selection_index) { bin_size.set(selection_index); }
 
 private:
     FixedParam<float> sample_rate;
     FixedParam<unsigned long> buffer_size;
-    FixedParam<int> bin_size;
+    const int bin_size = 8192;
 };
 
 } // CATE

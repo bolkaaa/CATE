@@ -71,11 +71,12 @@ FeatureVector Corpus::calculate_feature_vector(const AudioBuffer &buffer, int fr
     auto feature_vector = FeatureVector();
     auto remaining_space = buffer.size() % frame_size;
     auto marker = 0;
+    auto magspec = Magspec();
 
     for (auto it = buffer.begin(); it != (buffer.end() - remaining_space); it += frame_size)
     {
         AudioBuffer data(it, it + frame_size);
-        Magspec magspec = compute_magnitude_spectrum(data);
+        magspec = compute_magnitude_spectrum(data);
         feature_vector.compute_all(magspec);
         feature_vector.add_marker(marker);
         marker += frame_size;

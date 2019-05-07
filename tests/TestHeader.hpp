@@ -6,7 +6,6 @@
 #include <memory>
 #include <QApplication>
 
-#include "src/Analysis/FeatureMap.hpp"
 #include "src/Audio/AudioSettings.hpp"
 #include "src/Audio/AudioProcess.hpp"
 #include "src/Audio/AudioFile.hpp"

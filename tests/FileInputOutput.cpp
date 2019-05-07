@@ -24,10 +24,15 @@ bool all_audio_data_loads_correctly(const PathList &paths)
 bool audio_data_writes_correctly(const Path &path)
 {
     auto input_file = read_audio_file(path);
-    write_audio_file(input_file, "./test.wav", 2, 44100.0f);
-    auto output_file = read_audio_file("./test.wav");
 
-    return (input_file == output_file);
+    auto num_channels = 2;
+    auto sr = 44100.0f;
+    write_audio_file(input_file, "./test.wav", num_channels, sr);
+
+    auto output_file = read_audio_file("./test.wav");
+    bool same_buffer_size = (input_file.size() == output_file.size());
+
+    return same_buffer_size;
 }
 
 bool all_audio_data_writes_correctly(const PathList &path_list)
@@ -50,17 +55,6 @@ bool read_from_invalid_path()
     return true;
 }
 
-bool segmentation_works()
-{
-    auto path_list = audio_test_file_list;
-    auto buffer = read_audio_file(audio_test_file_list[0]);
-    auto frame_size = 256;
-    auto hop_size = 128;
-    auto frames = segment_frames(buffer, 8192, 8192);
-
-    return (!frames.empty());
-}
-
 /*********************************************************************************************************************/
 
 TEST_CASE("Audio file data loads correctly.", "[single_file]")
@@ -80,12 +74,4 @@ TEST_CASE("Audio file reader works with invalid inputs.", "[single_file]")
     bool test_case = read_from_invalid_path();
     REQUIRE(test_case);
 }
-
-TEST_CASE("Segmentation Works.", "[single_file]")
-{
-    bool test_case = segmentation_works();
-    REQUIRE(test_case);
-}
-
-
 

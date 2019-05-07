@@ -52,9 +52,6 @@ public slots:
     /* Action to take when sample rate value selected from dropdown box. */
     void sample_rate_changed(int selection_index);
 
-    /* Action to take when bin size value selected from dropdown box. */
-    void bin_size_changed(int selection_index);
-
     /* Action to take when buffer size value selected from dropdown box. */
     void buffer_size_changed(int selection_index);
 

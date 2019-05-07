@@ -1,32 +1,27 @@
 #include "TestHeader.hpp"
 
-bool feature_map_working()
-{
-    auto audioSettings = new AudioSettings;
-    FeatureMap feature_map(audioSettings);
-    auto feature_name_vector = feature_map.get_feature_names();
-    bool not_empty = !feature_name_vector.empty();
-
-    return not_empty;
-}
-
 bool corpus_load_files_working()
 {
     auto audio_settings = new AudioSettings;
     Corpus corpus(audio_settings);
     corpus.read_file("/Users/lrwz/CATE/analysis_data/piano_loops.json");
     corpus.rebuild_point_cloud();
+    bool has_data_points = corpus.size() > 0;
 
-    return corpus.size() > 0;
+    return has_data_points;
 }
 
 bool corpus_analysis_working()
 {
     auto audio_settings = new AudioSettings;
     Corpus corpus(audio_settings);
-    corpus.add_directory("/Users/lrwz/CATE/audio_files/violin");
-    corpus.sliding_window_analysis();
-    corpus.write_file("/Users/lrwz/CATE/analysis_data/violin.json");
+    const auto frame_size = 8192;
+    const auto input_directory = "/Users/lrwz/CATE/audio_files/piano_loops";
+    const auto output_file  = "/Users/lrwz/CATE/analysis_data/piano_loops.json";
+
+    corpus.add_directory(input_directory);
+    corpus.sliding_window_analysis(frame_size);
+    corpus.write_file(output_file);
 
     return true;
 }
@@ -81,11 +76,6 @@ bool files_load_correctly()
     bool files_loaded = corpus.get_num_files() > 0;
 
     return files_loaded;
-}
-
-TEST_CASE("Ensure that feature map is working.", "[single_file]")
-{
-    REQUIRE(feature_map_working());
 }
 
 TEST_CASE("Ensure that corpus is working.", "[single_file]")
