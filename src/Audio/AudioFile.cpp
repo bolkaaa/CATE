@@ -35,30 +35,17 @@ using Path = boost::filesystem::path;
 namespace CATE {
 
 AudioFile::AudioFile(const string &path)
-        : sample_rate(0),
-          channels(0),
-          path(path)
+        : path(path)
 {
-    read();
+    read(path);
 }
 
-void AudioFile::read()
+void AudioFile::read(const string &path)
 {
-    SndfileHandle file(path);
-    auto size = file.frames() * file.channels();
-    AudioBuffer buffer(size);
-    file.read(&buffer[0], size);
-
-    data = buffer;
-    sample_rate = file.samplerate();
-    channels = file.channels();
 }
 
 void AudioFile::write(int channels, float sample_rate, const string &path)
 {
-    int format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
-    SndfileHandle file(path, SFM_WRITE, format, channels, static_cast<int>(sample_rate));
-    file.write(&data[0], static_cast<sf_count_t>(data.size()));
 }
 
 } // CATE

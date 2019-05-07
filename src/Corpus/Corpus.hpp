@@ -31,9 +31,10 @@
 #include "PathTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
 #include "src/Audio/AudioFile.hpp"
-#include "src/Analysis/FeatureMap.hpp"
+#include "src/Analysis/Feature.hpp"
 #include "src/Util/NonCopyable.hpp"
 
+using std::unordered_map;
 using std::vector;
 using std::string;
 using std::pair;
@@ -42,13 +43,7 @@ using Json = nlohmann::json;
 
 namespace CATE {
 
-/* Representation of single position in file in corpus. */
-class Unit
-{
-public:
-    string file_path;
-    int marker;
-};
+typedef unordered_map<Path, AudioBuffer> AudioBufferMap;
 
 /* Handles functionality for persistently storing a
  * collection of audio file paths and associated segmentation markers and
@@ -59,68 +54,59 @@ class Corpus : NonCopyable
 public:
     Corpus(AudioSettings *audio_settings);
 
-    /* Rebuild k-d tree index. */
-    void rebuild_index();
+    /* For each audio file in the corpus, compute audio features for a sliding
+     * window of <frames_per_buffer> samples, and store in file. */
+    void sliding_window_analysis(int frame_size);
 
     /* Search for nearest neighbours. */
     void search(const float *query);
+
+    /* Rebuild k-d tree index. */
+    void rebuild_index();
 
     /* Get unit from search results. */
     inline Point get_search_result(const int i) const { return search_results[i]; };
 
     /* Read analysis data file into memory. */
-    void read_file(const string &file_path);
+    void read_file(const Path &file_path);
 
     /* Save the analysis data to file, with pretty printing. */
-    void write_file(const string &file_path);
+    void write_file(const Path &file_path);
 
     /* Add all files deeper than specified directory to the database. */
-    void add_directory(const string &directory_path);
+    void add_directory(const Path &directory_path);
 
     /* Iterate over paths in db object and load audio files into map. */
-    void load_audio_from_db();
-
-    /* For each audio file in database, compute audio features for a sliding
-     * window of <frames_per_buffer> samples, and store in file. */
-    void sliding_window_analysis();
+    void load_audio_from_corpus();
 
     /* From features in database, create point cloud to be used by KNN search. */
     void rebuild_point_cloud();
 
     inline int size() const { return point_cloud->kdtree_get_point_count(); }
 
-    inline int get_num_files() const { return files.size(); }
+    inline int get_num_files() const { return audio_buffer_map.size(); }
 
     /* Get access to audio files. */
-    inline map<string, AudioFile> get_files() const { return files; };
+    inline AudioBufferMap get_audio_buffer_map() const { return audio_buffer_map; }
 
 private:
-    /* Given a std::map, get a std::vector of its keys. */
-    template <class A, class B>
-    static inline vector<A> get_keys(map<A, B> m)
-    {
-        vector<A> keys;
 
-        for (auto &elem : m)
-        {
-            keys.emplace_back(elem.first);
-        }
+    /* Compute magnitude spectrum for given audio buffer. */
+    Magspec compute_magnitude_spectrum(const AudioBuffer &buffer);
 
-        return keys;
-    }
+    /* Given an audio buffer and frame size, calculate markers and features. */
+    FeatureVector calculate_feature_vector(const AudioBuffer &buffer, int frame_size);
 
     Json data;
-    FeatureMap feature_map;
     AudioSettings *audio_settings;
-    FeatureNameVector feature_names;
     PointCloud *point_cloud;
-    const int num_features = 3;
     const size_t num_search_results = 32;
     vector<size_t> out_indices;
     vector<Point> search_results;
     vector<float> out_distances;
     KdTree kd_tree;
-    map<string, AudioFile> files;
+    AudioBufferMap audio_buffer_map;
+    FeatureVector feature_vector;
 };
 
 

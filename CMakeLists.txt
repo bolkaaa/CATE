@@ -24,8 +24,6 @@ set(SOURCE_FILES
         src/Analysis/FFT.cpp
         src/Analysis/Feature.cpp
         src/Analysis/Feature.hpp
-        src/Analysis/FeatureMap.cpp
-        src/Analysis/FeatureMap.hpp
         src/Corpus/PathTree.hpp
         src/Corpus/PathTree.cpp
         src/Corpus/Corpus.hpp
@@ -64,7 +62,7 @@ set(TEST_FILES
         tests/FileInputOutput.cpp
         tests/Corpus.cpp
         tests/Audio.cpp
-        tests/Synthesis.cpp)
+        tests/Synthesis.cpp src/Util/Util.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

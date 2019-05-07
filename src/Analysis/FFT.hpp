@@ -50,7 +50,7 @@ public:
     ~FFT();
 
     /* Fill input data array. */
-    void fill(AudioBuffer input);
+    void fill(const AudioBuffer &input);
 
     /* Compute complex spectrum of input data. */
     void compute_spectrum();
@@ -64,18 +64,16 @@ public:
     /* Return magnitude spectrum value at specified bin. */
     float get_magspec_bin(int i) { return magspec[i]; }
 
+    /* Get magspec object directly. */
+    inline Magspec get_magspec() const { return magspec; }
+
     /* Copy values from internal magspec object to external reference object. */
-    void get_magspec(Magspec &output)
+    inline void get_magspec(Magspec &output)
     {
         for (auto i = 0; i < output_size; ++i)
         {
             output[i] = magspec[i];
         }
-    }
-
-    Magspec get_magspec() const
-    {
-        return magspec;
     }
 
 private:

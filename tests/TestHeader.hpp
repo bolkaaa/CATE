@@ -18,11 +18,13 @@
 
 using namespace CATE;
 
+/* Constants used in unit tests. */
 namespace TestConstants {
 
 const AudioSettings audio_settings;
 const Path audio_test_file_path_root = "/Users/lrwz/CATE/audio_files";
 const PathList audio_test_file_list = PathTree::get_paths(audio_test_file_path_root);
+
 
 } // TestConstants
 

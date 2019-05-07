@@ -47,7 +47,7 @@ public:
     explicit AudioFile(const string &path);
 
     /* Read audio file from path. */
-    void read();
+    void read(const string &path);
 
     /* Write data to output WAV file. */
     void write(int channels, float sample_rate, const string &path);

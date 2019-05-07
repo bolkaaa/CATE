@@ -32,7 +32,7 @@ Granulator::Granulator(AudioSettings *audio_settings)
           grain_size(new Param<int>(4096, 1024, 8192)),
           max_grains(new FixedParam<int>({8, 12, 16, 24, 32, 48, 64}, 2)),
           scheduler(audio_settings, grain_attack, grain_sustain, grain_release, grain_density, grain_size, max_grains),
-          has_files(false)
+          has_buffers(false)
 {
 }
 
@@ -52,10 +52,10 @@ float Granulator::synthesize()
     return output;
 }
 
-void Granulator::load_files(const map<string, AudioFile>& files)
+void Granulator::load_buffers(const AudioBufferMap &audio_buffer_map)
 {
-    scheduler.load_files(files);
-    has_files = true;
+    scheduler.load_files(audio_buffer_map);
+    has_buffers = true;
 }
 
 void Granulator::rebuild_grain_pool()

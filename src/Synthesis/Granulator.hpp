@@ -40,8 +40,8 @@ public:
     /* Reallocate memory for grain objects according to size changes. */
     void rebuild_grain_pool();
 
-    /* Load files from corpus into files variable. */
-    void load_files(const map<string, AudioFile>& files);
+    /* Load audio buffers mapfrom corpus. */
+    void load_buffers(const AudioBufferMap& audio_buffer_map);
 
     void enable() { ready = true; }
 
@@ -79,7 +79,6 @@ public:
     const FixedParam<int> get_max_grains() { return *(max_grains); }
 
 private:
-
     Param<float> *grain_attack;
     Param<float> *grain_sustain;
     Param<float> *grain_release;
@@ -91,7 +90,7 @@ private:
     int queue_position = 0;
     vector<Point> unit_queue = vector<Point>(max_units);
     Scheduler scheduler;
-    bool has_files;
+    bool has_buffers;
     bool ready = false;
 };
 

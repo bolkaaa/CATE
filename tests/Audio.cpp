@@ -44,6 +44,7 @@ bool stream_stops_correctly()
     return true;
 }
 
+
 TEST_CASE("PortAudio starts successfully.", "[single_file]")
 {
     bool test_case = stream_starts_correctly();

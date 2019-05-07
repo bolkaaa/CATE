@@ -10,7 +10,7 @@ bool feature_map_working()
     return not_empty;
 }
 
-bool corpus_working()
+bool corpus_load_files_working()
 {
     auto audio_settings = new AudioSettings;
     Corpus corpus(audio_settings);
@@ -18,6 +18,17 @@ bool corpus_working()
     corpus.rebuild_point_cloud();
 
     return corpus.size() > 0;
+}
+
+bool corpus_analysis_working()
+{
+    auto audio_settings = new AudioSettings;
+    Corpus corpus(audio_settings);
+    corpus.add_directory("/Users/lrwz/CATE/audio_files/violin");
+    corpus.sliding_window_analysis();
+    corpus.write_file("/Users/lrwz/CATE/analysis_data/violin.json");
+
+    return true;
 }
 
 void fill_point_cloud(PointCloud &point_cloud, int size, int dim)
@@ -65,7 +76,7 @@ bool files_load_correctly()
     auto audio_settings = new AudioSettings;
     Corpus corpus(audio_settings);
     corpus.read_file("/Users/lrwz/CATE/analysis_data/piano_loops.json");
-    corpus.load_audio_from_db();
+    corpus.load_audio_from_corpus();
 
     bool files_loaded = corpus.get_num_files() > 0;
 
@@ -79,7 +90,7 @@ TEST_CASE("Ensure that feature map is working.", "[single_file]")
 
 TEST_CASE("Ensure that corpus is working.", "[single_file]")
 {
-    REQUIRE(corpus_working());
+    REQUIRE(corpus_load_files_working());
 }
 
 TEST_CASE("Ensure that the nearest neighbours corpus search is working.", "[single_file]")
@@ -90,4 +101,9 @@ TEST_CASE("Ensure that the nearest neighbours corpus search is working.", "[sing
 TEST_CASE("Ensure that files load from corpus correctly.", "[single_file]")
 {
     REQUIRE(files_load_correctly());
+}
+
+TEST_CASE("Corpus analysis working.", "[single_file]")
+{
+    REQUIRE(corpus_analysis_working());
 }

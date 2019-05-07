@@ -23,7 +23,7 @@
 #include "include/nanoflann.hpp"
 
 #include "src/Corpus/PointCloud.hpp"
-#include "src/Analysis/FeatureMap.hpp"
+#include "src/Analysis/Feature.hpp"
 
 using CATE::PointCloud;
 using nanoflann::KDTreeSingleIndexAdaptor;
@@ -42,7 +42,7 @@ public:
 
 typedef KDTreeSingleIndexAdaptor<L2_Simple_Adaptor<float, PointCloud>,
         PointCloud,
-        FeatureMap::num_features> KdTree;
+        Feature::num_features> KdTree;
 
 } // CATE
 

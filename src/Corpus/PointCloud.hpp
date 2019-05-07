@@ -25,7 +25,6 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "src/Analysis/FeatureMap.hpp"
 #include "src/Util/NonCopyable.hpp"
 
 using std::vector;

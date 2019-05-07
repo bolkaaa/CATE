@@ -28,7 +28,6 @@
 #include "AudioEngine.hpp"
 #include "AudioBuffer.hpp"
 #include "AudioSettings.hpp"
-#include "TestTone.hpp"
 #include "RingBuffer.hpp"
 #include "src/Corpus/Corpus.hpp"
 #include "src/Synthesis/Granulator.hpp"
@@ -47,9 +46,6 @@ public:
 
     ~AudioProcess();
 
-    /* Reload granulator when corpus has changed. */
-    void reload_granulator();
-
     /* Start recording audio output. */
     inline void start_recording() { recording = true; };
 
@@ -58,9 +54,6 @@ public:
 
     /* Analyse the audio from a particular directory. */
     void analyse_directory(const Path &directory_path);
-
-    /* Rebuild k-d tree index, point cloud and granulator files. */
-    void rebuild_data_points();
 
     /* Load new corpus. */
     void load_corpus(const Path &corpus_path);
@@ -97,7 +90,6 @@ private:
     RingBuffer<float> *input_ring_buffer;
     RingBuffer<float> *output_ring_buffer;
     RingBuffer<Point> unit_queue;
-    TestTone tone;
     bool recording;
 
 public slots:

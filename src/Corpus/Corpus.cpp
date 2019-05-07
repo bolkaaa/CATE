@@ -45,9 +45,7 @@ Corpus::Corpus(AudioSettings *audio_settings)
           out_distances(num_search_results),
           out_indices(num_search_results),
           search_results(num_search_results),
-          kd_tree(num_features, *point_cloud, KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf)),
-          feature_map(audio_settings),
-          feature_names(feature_map.get_feature_names())
+          kd_tree(Feature::num_features, *point_cloud, KDTreeSingleIndexAdaptorParams(KdTreeParams::max_leaf))
 {
 }
 
@@ -56,13 +54,43 @@ void Corpus::rebuild_index()
     kd_tree.buildIndex();
 }
 
+Magspec Corpus::compute_magnitude_spectrum(const AudioBuffer &buffer)
+{
+    FFT fft(audio_settings);
+
+    fft.fill(buffer);
+    fft.compute_spectrum();
+    fft.compute_magspec();
+    Magspec magspec = fft.get_magspec();
+
+    return magspec;
+}
+
+FeatureVector Corpus::calculate_feature_vector(const AudioBuffer &buffer, int frame_size)
+{
+    auto feature_vector = FeatureVector();
+    auto remaining_space = buffer.size() % frame_size;
+    auto marker = 0;
+
+    for (auto it = buffer.begin(); it != (buffer.end() - remaining_space); it += frame_size)
+    {
+        AudioBuffer data(it, it + frame_size);
+        Magspec magspec = compute_magnitude_spectrum(data);
+        feature_vector.compute_all(magspec);
+        feature_vector.add_marker(marker);
+        marker += frame_size;
+    }
+
+    return feature_vector;
+}
+
 void Corpus::add_directory(const Path &directory_path)
 {
     auto file_paths = PathTree::get_paths(directory_path);
 
     for (const auto &path : file_paths)
     {
-        files[path] = AudioFile(path);
+        audio_buffer_map[path] = read_audio_file(path);
     }
 }
 
@@ -78,35 +106,34 @@ void Corpus::read_file(const Path &file_path)
     file >> data;
 }
 
-void Corpus::load_audio_from_db()
+void Corpus::load_audio_from_corpus()
 {
     for (const auto &entry : data.items())
     {
         const auto &path = entry.key();
-        files[path] = AudioFile(path);
+        audio_buffer_map[path] = read_audio_file(path);
     }
 }
 
-void Corpus::sliding_window_analysis()
+void Corpus::sliding_window_analysis(int frame_size)
 {
-    auto frame_size = audio_settings->get_bin_size().value;
-    const auto hop_size = frame_size / 2;
-
-    for (auto &file : files)
+    for (auto &buffer : audio_buffer_map)
     {
-        AudioFramePool audio_frame_pool = segment_frames(file.second.data, frame_size, hop_size);
+        /* Calculate features for current buffer. */
+        auto file_path = buffer.first;
 
-        auto features = feature_map.compute_vectors(audio_frame_pool);
-        auto markers = get_keys<int, AudioBuffer>(audio_frame_pool);
-        auto file_path = file.first;
+        /* Extract markers and features vectors from audio buffer */
+        auto features = calculate_feature_vector(buffer.second, frame_size);
 
         /* Insert markers vector into JSON object. */
-        data[file.first]["marker"] = markers;
+        data[buffer.first]["marker"] = features.get_markers();
 
         /* Insert features vectors into JSON object for each dimension. */
-        for (const auto &f : features)
+        auto feature_map = features.get_features();
+
+        for (const auto &feature : feature_map)
         {
-            data[file_path][f.first] = f.second;
+            data[file_path][feature.first] = feature.second;
         }
     }
 }
@@ -128,9 +155,11 @@ void Corpus::rebuild_point_cloud()
             point.marker = segment.value()["marker"][i];
 
             /* Add each feature dimension to point. */
-            for (const auto &f : feature_names)
+
+            auto extractor_names = feature_vector.get_extractor_names();
+            for (const auto &name : extractor_names)
             {
-                auto value = segment.value()[f][i];
+                auto value = segment.value()[name][i];
                 point.features.emplace_back(value);
             }
 
@@ -150,5 +179,7 @@ void Corpus::search(const float *query)
         search_results[i] = point;
     }
 }
+
+
 
 } // CATE

@@ -23,22 +23,20 @@
 
 namespace CATE {
 
-AudioFramePool segment_frames(const AudioBuffer &source, int frame_size, int hop_size)
+AudioBuffer read_audio_file(const Path &input_path)
 {
-    AudioFramePool frames;
-    auto n = source.size();
-    auto remaining_space = n % frame_size;
-    auto frame_counter = 0;
+    SndfileHandle file(input_path);
+    auto size = file.frames() * file.channels();
+    AudioBuffer buffer(size);
+    file.read(&buffer[0], size);
 
-    for (auto it = source.begin(); it != (source.end() - remaining_space); it += hop_size)
-    {
-        AudioBuffer data(it, it + frame_size);
-        AudioFrame frame = {frame_counter, data};
-        frames.insert(frame);
-        frame_counter += hop_size;
-    }
-
-    return frames;
+    return buffer;
 }
 
+void write_audio_file(const AudioBuffer &buffer, const Path &output_path, int channels, float sample_rate)
+{
+    auto format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
+    SndfileHandle file(output_path, SFM_WRITE, format, channels, static_cast<int>(sample_rate));
+    file.write(&buffer[0], static_cast<sf_count_t>(buffer.size()));
+}
 } // CATE

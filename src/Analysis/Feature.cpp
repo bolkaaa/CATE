@@ -21,6 +21,7 @@
 #include "Math.hpp"
 
 namespace CATE {
+namespace Feature {
 
 float spectral_centroid(const Magspec &magspec)
 {
@@ -84,4 +85,5 @@ float spectral_rolloff(const Magspec &magspec)
     return rolloff;
 }
 
+} // Feature
 } // CATE

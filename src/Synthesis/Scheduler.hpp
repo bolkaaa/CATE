@@ -47,7 +47,7 @@ public:
               FixedParam<int> *max_grains);
 
     /* Load audio file map into scheduler. */
-    void load_files(const map<string, AudioFile> &files);
+    void load_files(const AudioBufferMap &buffers);
 
     /* Calculate grain activations. */
     float schedule();
@@ -65,7 +65,6 @@ private:
     /* Stochastically generate next inter-onset value. */
     int get_next_inter_onset();
 
-    string file = "/Users/lrwz/CATE/audio_files/piano_loops/29698__herbertboland__pianomood10.wav";
     AudioSettings *audio_settings;
     Param<float> *grain_attack;
     Param<float> *grain_sustain;

@@ -23,6 +23,10 @@
 #include <vector>
 #include <map>
 
+#include <sndfile.hh>
+
+#include "src/Corpus/PathTree.hpp"
+
 using std::vector;
 using std::map;
 using std::pair;
@@ -39,8 +43,12 @@ typedef pair<int, AudioBuffer> AudioFrame;
 /* Alias for std::map where the key is frame position in samples and the value is the audio data. */
 typedef map<int, AudioBuffer> AudioFramePool;
 
-/* Given an AudioBuffer, segment into an AudioFrameSet. */
-AudioFramePool segment_frames(const AudioBuffer &source, int frame_size, int hop_size);
+
+/* Get an AudioBuffer from an input audio file. */
+AudioBuffer read_audio_file(const Path &input_path);
+
+/* Write AudioBuffer to file output. */
+void write_audio_file(const AudioBuffer &buffer, const Path &output_path, int channels, float sample_rate);
 
 } // CATE
 

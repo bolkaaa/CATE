@@ -135,7 +135,6 @@ void AudioSettingsWindow::max_grains_changed(int selection_index)
 {
     audio_process->stop_stream();
     audio_process->set_max_grains(selection_index);
-    audio_process->reload_granulator();
 
     if (audio_process->granulator_has_files())
     {

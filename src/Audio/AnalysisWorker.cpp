@@ -39,9 +39,9 @@ void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
     {
         do_fft();
 
-        auto centroid = spectral_centroid(magspec);
-        auto flatness = spectral_flatness(magspec);
-        auto rolloff = spectral_rolloff(magspec);
+        auto centroid = Feature::spectral_centroid(magspec);
+        auto flatness = Feature::spectral_flatness(magspec);
+        auto rolloff = Feature::spectral_rolloff(magspec);
 
         std::cout << centroid << "    " << flatness << "    "  << rolloff << "\n";
 

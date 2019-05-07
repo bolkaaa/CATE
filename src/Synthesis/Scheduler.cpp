@@ -19,8 +19,9 @@
 
 #include <random>
 #include <cmath>
-#include <src/Corpus/PathTree.hpp>
 
+#include "src/Corpus/PathTree.hpp"
+#include "src/Corpus/Corpus.hpp"
 #include "Scheduler.hpp"
 
 namespace CATE {
@@ -93,13 +94,13 @@ int Scheduler::get_next_inter_onset()
     return inter_onset;
 }
 
-void Scheduler::load_files(const map<string, AudioFile> &new_files)
+void Scheduler::load_files(const AudioBufferMap &new_buffers)
 {
     for (auto &grain : grain_pool)
     {
         for (auto i = 0; i < grain_size->max; ++i)
         {
-            auto value = files[file].data[i];
+            auto value = 0.0f; // set to audio file data.
             grain.fill(value, i);
         }
     }

@@ -84,18 +84,18 @@ int AudioProcess::processing_callback(const void *input_buffer,
 void AudioProcess::analyse_directory(const Path &directory_path)
 {
     corpus->add_directory(directory_path);
-    corpus->sliding_window_analysis();
+    corpus->sliding_window_analysis(audio_settings->get_bin_size().value);
     corpus->rebuild_index();
 }
 
 void AudioProcess::load_corpus(const Path &corpus_path)
 {
     corpus->read_file(corpus_path);
-    corpus->load_audio_from_db();
+    corpus->load_audio_from_corpus();
     corpus->rebuild_point_cloud();
     corpus->rebuild_index();
-    map<string, AudioFile> files = corpus->get_files();
-    granulator.load_files(files);
+    auto audio_buffer_map = corpus->get_audio_buffer_map();
+    granulator.load_buffers(audio_buffer_map);
 }
 
 void AudioProcess::search_results_received(RingBuffer<Point> *search_results)

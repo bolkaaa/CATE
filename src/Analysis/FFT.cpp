@@ -54,7 +54,7 @@ float FFT::window(int i, int n)
     return hanning;
 }
 
-void FFT::fill(AudioBuffer input)
+void FFT::fill(const AudioBuffer &input)
 {
     auto n = input.size();
 
