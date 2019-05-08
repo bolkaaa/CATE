@@ -29,7 +29,6 @@ Envelope::Envelope()
           amp(0.0f),
           amp_incr(0.0f)
 {
-    reset();
 }
 
 void Envelope::reset()
@@ -44,17 +43,17 @@ float Envelope::synthesize(int size, float attack, float sustain, float release)
     auto attack_samples = static_cast<int>(size * attack);
     auto release_samples = static_cast<int>(size * release);
 
-    if (index <= attack_samples) // attack
+    if (index < attack_samples) // attack
     {
         amp_incr = sustain / attack_samples;
     }
-    else if (attack_samples < index && index <= release_samples) // sustain
-    {
-        amp_incr = 0.0f;
-    }
-    else // release
+    else if (index > release_samples) // release
     {
         amp_incr = -(sustain / release_samples);
+    }
+    else // sustain
+    {
+        amp_incr = 0.0f;
     }
 
     amp += amp_incr;

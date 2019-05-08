@@ -20,9 +20,11 @@
 #include <vector>
 #include <unordered_map>
 #include <iomanip>
+#include <numeric>
 
 #include "sndfile.hh"
 #include "include/nanoflann.hpp"
+#include "boost/functional/hash.hpp"
 
 #include "Corpus.hpp"
 #include "PathTree.hpp"
@@ -32,6 +34,9 @@
 
 using std::vector;
 using std::unordered_map;
+using std::make_pair;
+using std::back_inserter;
+using std::copy;
 using std::pair;
 using std::string;
 using std::ifstream;
@@ -181,6 +186,37 @@ void Corpus::search(const float *query)
     }
 }
 
+int Corpus::get_num_segments()
+{
+    return 0;
+}
 
+AudioFrameMap Corpus::create_audio_frame_map()
+{
+    auto audio_frame_map = AudioFrameMap();
+    AudioBuffer segment(audio_settings->get_bin_size());
+
+    for (auto &item : data.items())
+    {
+        auto path = item.key();
+        auto buffer = read_audio_file(path);
+
+        /* Iterate over markers, creating AudioBuffer segments and add each segment to the AudioFrameMap hash table. */
+        for (auto marker : item.value()["marker"])
+        {
+            auto frame = make_pair(marker, path);
+            auto position = static_cast<int>(marker);
+
+            for (auto i = 0; i < audio_settings->get_bin_size(); ++i)
+            {
+                segment[i] = buffer[i + position];
+            }
+
+            audio_frame_map[frame] = segment;
+        }
+    }
+
+    return audio_frame_map;
+}
 
 } // CATE

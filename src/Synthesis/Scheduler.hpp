@@ -34,10 +34,10 @@ using std::array;
 
 namespace CATE {
 
+typedef vector<Grain> GrainPool;
+
 /* Handles activation of grains, based upon onset times. It handles grain allocation and mixing of grains to form a
  * single output. */
-
-typedef vector<Grain> GrainPool;
 
 class Scheduler
 {
@@ -46,14 +46,11 @@ public:
               Param<float> *grain_release, Param<float> *grain_density, Param<int> *grain_size,
               FixedParam<int> *max_grains);
 
-    /* Load audio file map into scheduler. */
-    void load_files(const AudioBufferMap &buffers);
-
     /* Calculate grain activations. */
     float schedule();
 
     /* Rebuild grain pool according to size changes. */
-    void rebuild_grain_pool();
+    void rebuild_grain_pool(GrainPool grain_pool);
 
 private:
     /* Mix all currently active grains to a single output. */
@@ -72,7 +69,10 @@ private:
     Param<float> *grain_density;
     Param<int> *grain_size;
     FixedParam<int> *max_grains;
+    int grain_index = 0;
+    int grain_max = 32;
     AudioBuffer buffer = AudioBuffer(grain_size->max);
+    vector<int> indices;
     GrainPool grain_pool;
     map<string, AudioFile> files;
     int next_onset;

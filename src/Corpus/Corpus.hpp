@@ -43,7 +43,6 @@ using Json = nlohmann::json;
 
 namespace CATE {
 
-typedef unordered_map<Path, AudioBuffer> AudioBufferMap;
 
 /* Handles functionality for persistently storing a
  * collection of audio file paths and associated segmentation markers and
@@ -58,14 +57,21 @@ public:
      * window of <frames_per_buffer> samples, and store in file. */
     void sliding_window_analysis(int frame_size);
 
+    /* Create hash table data structure where keys are pairs of audio file path and file positions. */
+    AudioFrameMap create_audio_frame_map();
+
+    /* Get number of audio file segments from corpus. */
+    int get_num_segments();
+
     /* Search for nearest neighbours. */
     void search(const float *query);
 
     /* Rebuild k-d tree index. */
     void rebuild_index();
 
-    /* Get unit from search results. */
-    inline Point get_search_result(const int i) const { return search_results[i]; };
+    /* Get marker/path pair from search results. */
+    inline pair<int, string> get_search_result(const int i) const { return make_pair(search_results[i].marker,
+            search_results[i].file_path); }
 
     /* Read analysis data file into memory. */
     void read_file(const Path &file_path);
@@ -86,11 +92,7 @@ public:
 
     inline int get_num_files() const { return audio_buffer_map.size(); }
 
-    /* Get access to audio files. */
-    inline AudioBufferMap get_audio_buffer_map() const { return audio_buffer_map; }
-
 private:
-
     /* Compute magnitude spectrum for given audio buffer. */
     Magspec compute_magnitude_spectrum(const AudioBuffer &buffer);
 

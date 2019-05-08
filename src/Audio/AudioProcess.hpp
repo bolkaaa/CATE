@@ -24,6 +24,7 @@
 #include <vector>
 
 #include <QObject>
+#include <boost/functional/hash.hpp>
 
 #include "AudioEngine.hpp"
 #include "AudioBuffer.hpp"
@@ -31,6 +32,7 @@
 #include "RingBuffer.hpp"
 #include "src/Corpus/Corpus.hpp"
 #include "src/Synthesis/Granulator.hpp"
+#include "AnalysisWorker.hpp"
 
 namespace CATE {
 
@@ -52,11 +54,15 @@ public:
     /* Stop recording audio output. */
     inline void stop_recording() { recording = false; };
 
+
     /* Analyse the audio from a particular directory. */
     void analyse_directory(const Path &directory_path);
 
     /* Load new corpus. */
     void load_corpus(const Path &corpus_path);
+
+    /* Fill granulator with audio segments from corpus. */
+    void fill_grain_buffers();
 
     /* Return status of whether granulator is ready to used. */
     bool granulator_has_files() { return granulator.is_ready(); }
@@ -88,11 +94,13 @@ private:
     const int ring_buffer_size = 512;
     RingBuffer<float> *input_ring_buffer;
     RingBuffer<float> *output_ring_buffer;
-    RingBuffer<Point> unit_queue;
+    RingBuffer<AudioIndex> *audio_index_queue;
+    AudioFrameMap audio_frame_map;
     bool recording;
 
 public slots:
-    void search_results_received(RingBuffer<Point> *search_results);
+    /* Action to take when signal received from AnalysisWorker. */
+    void search_results_received(RingBuffer<AudioIndex> *search_results);
 
 signals:
     /* Emit input ring buffer as signal. */

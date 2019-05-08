@@ -28,11 +28,10 @@ Granulator::Granulator(AudioSettings *audio_settings)
           grain_attack(new Param<float>(0.5f, 0.05f, 0.95f)),
           grain_sustain(new Param<float>(0.5f, 0.0f, 0.95f)),
           grain_release(new Param<float>(0.5f, 0.05f, 0.95f)),
-          grain_density(new Param<float>(32.0f, 1.0f, 5000.0f)),
-          grain_size(new Param<int>(4096, 1024, 8192)),
-          max_grains(new FixedParam<int>({8, 12, 16, 24, 32, 48, 64}, 2)),
-          scheduler(audio_settings, grain_attack, grain_sustain, grain_release, grain_density, grain_size, max_grains),
-          has_buffers(false)
+          grain_density(new Param<float>(1.0f, 1.0f, 1024.0f)),
+          grain_size(new Param<int>(8192, 128, 8192)),
+          max_grains(new FixedParam<int>({8, 12, 16, 24, 32, 48, 64}, 6)),
+          scheduler(audio_settings, grain_attack, grain_sustain, grain_release, grain_density, grain_size, max_grains)
 {
 }
 
@@ -46,22 +45,29 @@ Granulator::~Granulator()
     delete grain_attack;
 }
 
+void Granulator::calculate_grain_pool(const AudioFrameMap &audio_frame_map)
+{
+    auto index = 0;
+
+    /* For each frame in the audio frame map, create a Grain from the data, and store the key (marker+path pair)
+     * along with an integer in the GrainIndex map. This will be used as a lookup for the GrainPool vector. */
+    for (const auto &frame : audio_frame_map)
+    {
+        auto frame_info = frame.first;
+        auto frame_data = frame.second;
+        grain_pool.emplace_back(Grain(frame_data));
+        grain_index[frame_info] = index;
+        index += 1;
+    }
+
+    scheduler.rebuild_grain_pool(grain_pool);
+}
+
 float Granulator::synthesize()
 {
     auto output = scheduler.schedule();
 
     return output;
-}
-
-void Granulator::load_buffers(const AudioBufferMap &audio_buffer_map)
-{
-    scheduler.load_files(audio_buffer_map);
-    has_buffers = true;
-}
-
-void Granulator::rebuild_grain_pool()
-{
-    scheduler.rebuild_grain_pool();
 }
 
 } // CATE

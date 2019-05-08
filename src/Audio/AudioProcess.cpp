@@ -21,9 +21,11 @@
 #include <cmath>
 #include <iostream>
 
+
 #include "AudioProcess.hpp"
 #include "src/Analysis/FFT.hpp"
 #include "src/Synthesis/Scheduler.hpp"
+#include "src/Corpus/Corpus.hpp"
 
 namespace CATE {
 
@@ -34,13 +36,14 @@ AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus)
           granulator(audio_settings),
           input_ring_buffer(new RingBuffer<float>(ring_buffer_size)),
           output_ring_buffer(new RingBuffer<float>(ring_buffer_size)),
-          unit_queue(ring_buffer_size),
+          audio_index_queue(new RingBuffer<AudioIndex>(ring_buffer_size)),
           recording(false)
 {
 }
 
 AudioProcess::~AudioProcess()
 {
+    delete audio_index_queue;
     delete output_ring_buffer;
     delete input_ring_buffer;
 }
@@ -64,6 +67,9 @@ int AudioProcess::processing_callback(const void *input_buffer,
         /* Send input to ring buffer. */
         input_ring_buffer->push(in);
         emit send_input_data(input_ring_buffer);
+
+        /* Get next analysis result. */
+        search_results_received(audio_index_queue);
 
         auto out = granulator.synthesize();
 
@@ -91,22 +97,16 @@ void AudioProcess::analyse_directory(const Path &directory_path)
 void AudioProcess::load_corpus(const Path &corpus_path)
 {
     corpus->read_file(corpus_path);
-    corpus->load_audio_from_corpus();
     corpus->rebuild_point_cloud();
     corpus->rebuild_index();
-    auto audio_buffer_map = corpus->get_audio_buffer_map();
-    granulator.load_buffers(audio_buffer_map);
+    audio_frame_map = corpus->create_audio_frame_map();
+    granulator.calculate_grain_pool(audio_frame_map);
 }
 
-void AudioProcess::search_results_received(RingBuffer<Point> *search_results)
+void AudioProcess::search_results_received(RingBuffer<AudioIndex> *search_results)
 {
-    while (search_results->samples_available())
-    {
-        auto result = Point();
-        std::cout << result.file_path << "\n";
-        search_results->pop(result);
-        unit_queue.push(result);
-    }
+    AudioIndex index;
+    search_results->pop(index);
 }
 
 } // CATE

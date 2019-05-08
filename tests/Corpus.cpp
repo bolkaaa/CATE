@@ -15,7 +15,7 @@ bool corpus_analysis_working()
 {
     auto audio_settings = new AudioSettings;
     Corpus corpus(audio_settings);
-    const auto frame_size = 8192;
+    const auto frame_size = audio_settings->get_bin_size();
     const auto input_directory = "/Users/lrwz/CATE/audio_files/piano_loops";
     const auto output_file  = "/Users/lrwz/CATE/analysis_data/piano_loops.json";
 
@@ -78,6 +78,18 @@ bool files_load_correctly()
     return files_loaded;
 }
 
+bool audio_frame_map_creation_works()
+{
+    auto audio_settings = new AudioSettings;
+    Corpus corpus(audio_settings);
+    auto path = "/Users/lrwz/CATE/analysis_data/violin.json";
+
+    corpus.read_file(path);
+    corpus.create_audio_frame_map();
+
+    return true;
+}
+
 TEST_CASE("Ensure that corpus is working.", "[single_file]")
 {
     REQUIRE(corpus_load_files_working());
@@ -93,7 +105,9 @@ TEST_CASE("Ensure that files load from corpus correctly.", "[single_file]")
     REQUIRE(files_load_correctly());
 }
 
-TEST_CASE("Corpus analysis working.", "[single_file]")
+TEST_CASE("Audio frame map creation working.", "[single_file]")
 {
-    REQUIRE(corpus_analysis_working());
+    REQUIRE(audio_frame_map_creation_works());
 }
+
+

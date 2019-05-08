@@ -25,8 +25,15 @@ namespace CATE {
 AnalysisWorker::AnalysisWorker(AudioSettings *audio_settings, Corpus *corpus)
         : audio_settings(audio_settings),
           corpus(corpus),
-          fft(audio_settings)
+          fft(audio_settings),
+          buffer_size(audio_settings->get_bin_size()),
+          search_results(new RingBuffer<AudioIndex>(buffer_size))
 {
+}
+
+AnalysisWorker::~AnalysisWorker()
+{
+    delete search_results;
 }
 
 void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
@@ -43,8 +50,6 @@ void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
         auto flatness = Feature::spectral_flatness(magspec);
         auto rolloff = Feature::spectral_rolloff(magspec);
 
-        std::cout << centroid << "    " << flatness << "    "  << rolloff << "\n";
-
         const float query[3] = {centroid, flatness, rolloff};
 
         corpus->search(query);
@@ -55,10 +60,10 @@ void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
             search_results->push(result);
         }
 
-        emit send_search_results(search_results);
-
         counter -= buffer_size;
     }
+
+    emit send_search_results(search_results);
 }
 
 
@@ -69,5 +74,6 @@ void AnalysisWorker::do_fft()
     fft.compute_magspec();
     fft.get_magspec(magspec);
 }
+
 
 } // CATE

@@ -23,15 +23,10 @@
 
 namespace CATE {
 
-Source::Source()
-        : index(0),
-          buffer(max_grain_size)
+Source::Source(const AudioBuffer &data)
+    : index(0)
 {
-}
-
-void Source::fill(float value, int i)
-{
-    buffer[i] = value;
+    buffer = data;
 }
 
 float Source::synthesize()
@@ -40,6 +35,7 @@ float Source::synthesize()
     ++index;
     return sample;
 }
+
 
 
 } // CATE

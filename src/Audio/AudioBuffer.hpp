@@ -22,13 +22,16 @@
 
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 #include <sndfile.hh>
+#include <boost/functional/hash.hpp>
 
 #include "src/Corpus/PathTree.hpp"
 
 using std::vector;
 using std::map;
+using std::unordered_map;
 using std::pair;
 
 namespace CATE {
@@ -36,8 +39,8 @@ namespace CATE {
 /* AudioBuffer is a typedef that aliases a vector of real values. For simplicity's sake and compatibility with C
  * libraries used in CATE, it uses floats and isn't templated. */
 typedef std::vector<float> AudioBuffer;
-
-typedef map<Path, AudioBuffer> audio_buffer_map;
+typedef unordered_map<Path, AudioBuffer> AudioBufferMap;
+typedef unordered_map<pair<int, string>, AudioBuffer, boost::hash<pair<int, string>>> AudioFrameMap;
 
 /* Get an AudioBuffer from an input audio file. */
 AudioBuffer read_audio_file(const Path &input_path);

@@ -21,6 +21,9 @@
 #define GRANULATOR_HPP
 
 #include <map>
+#include <unordered_map>
+
+#include <boost/functional/hash.hpp>
 
 #include "src/Audio/AudioFile.hpp"
 #include "src/Corpus/Corpus.hpp"
@@ -28,6 +31,9 @@
 #include "Scheduler.hpp"
 
 namespace CATE {
+
+typedef unordered_map<pair<int, string>, int, boost::hash<pair<int, string>>> GrainIndex;
+typedef vector<Grain> GrainPool;
 
 /* Granulator is the high-level interface that contains all the functionality for the granular synthesis process. */
 class Granulator
@@ -37,30 +43,17 @@ public:
 
     ~Granulator();
 
-    /* Reallocate memory for grain objects according to size changes. */
-    void rebuild_grain_pool();
-
-    /* Load audio buffers mapfrom corpus. */
-    void load_buffers(const AudioBufferMap& audio_buffer_map);
-
-    void enable() { ready = true; }
-
-    bool is_ready() { return ready; }
-
-    void enqueue(const Point &point)
-    {
-        unit_queue[queue_position] = point;
-
-        ++queue_position;
-
-        if (queue_position > max_units)
-        {
-            queue_position -= max_units;
-        }
-    }
+    /* Calculate grain pool from audio file segments. */
+    void calculate_grain_pool(const AudioFrameMap &audio_frame_map);
 
     /* Get the next sample value from the granulator. */
     float synthesize();
+
+    /* Toggle "ready" flag. */
+    void enable() { ready = true; }
+
+    /* Check if granulator ready. */
+    bool is_ready() { return ready; }
 
     /* Set parameters. */
     void set_grain_attack(float value) { grain_attack->value = value; }
@@ -86,11 +79,9 @@ private:
     Param<int> *grain_size;
     FixedParam<int> *max_grains;
     AudioSettings *audio_settings;
-    const int max_units = 32;
-    int queue_position = 0;
-    vector<Point> unit_queue = vector<Point>(max_units);
+    GrainPool grain_pool;
+    GrainIndex grain_index;
     Scheduler scheduler;
-    bool has_buffers;
     bool ready = false;
 };
 

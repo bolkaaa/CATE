@@ -26,6 +26,8 @@
 #include "src/Audio/AudioSettings.hpp"
 #include "src/Audio/AudioFile.hpp"
 
+typedef pair<int, string> AudioIndex;
+
 #include <QObject>
 
 namespace CATE {
@@ -36,18 +38,20 @@ Q_OBJECT
 public:
     AnalysisWorker(AudioSettings *audio_settings, Corpus *corpus);
 
+    ~AnalysisWorker();
+
 private:
     /* Calculate magnitude spectrum of input from ring buffer. */
     void do_fft();
 
     AudioSettings *audio_settings;
     Corpus *corpus;
-    const int buffer_size = 512;
-    const int num_search_results = 32;
+    const int buffer_size;
+    const int num_search_results = 1;
     int counter;
     AudioBuffer buffer = AudioBuffer(buffer_size);
     Magspec magspec = Magspec(buffer_size);
-    RingBuffer<Point> *search_results = new RingBuffer<Point>(buffer_size);
+    RingBuffer<AudioIndex> *search_results;
     FFT fft;
 
 public slots:
@@ -55,7 +59,7 @@ public slots:
 
 signals:
     /* Emit search results buffer as signal. */
-    void send_search_results(RingBuffer<Point> *search_results);
+    void send_search_results(RingBuffer<AudioIndex> *search_results);
 };
 
 } // CATE

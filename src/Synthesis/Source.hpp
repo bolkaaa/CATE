@@ -29,17 +29,14 @@ namespace CATE {
 class Source
 {
 public:
-    Source();
+    Source(const AudioBuffer &data);
 
     inline void reset() { index = 0; }
-
-    void fill(float value, int size);
 
     /* Get next sample value from source. */
     float synthesize();
 
 private:
-    static const int max_grain_size = 8192;
     AudioBuffer buffer;
     int index;
 };

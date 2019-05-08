@@ -24,13 +24,15 @@
 namespace CATE {
 
 Grain::Grain()
-        :  remaining_samples(0)
+        : src(AudioBuffer()),
+          remaining_samples(0)
 {
 }
 
-void Grain::fill(float value, int i)
+Grain::Grain(const AudioBuffer &data)
+        : src(Source(data)),
+          remaining_samples(0)
 {
-    src.fill(value, i);
 }
 
 void Grain::activate(int size)
@@ -54,5 +56,6 @@ bool Grain::is_active() const
 {
     return (remaining_samples > 0);
 }
+
 
 } // CATE
