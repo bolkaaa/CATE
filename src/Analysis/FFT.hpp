@@ -39,8 +39,8 @@ using std::complex;
 
 namespace CATE {
 
-typedef vector<complex<double> > Spectrum;
-typedef vector<float> Magspec;
+typedef std::vector<std::complex<double> > Spectrum;
+typedef std::vector<float> Magspec;
 
 class FFT
 {

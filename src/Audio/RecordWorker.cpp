@@ -42,5 +42,4 @@ void RecordWorker::save_recording(const Path &output_path)
     recording_data.clear();
 }
 
-
 } // CATE
