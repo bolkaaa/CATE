@@ -26,6 +26,12 @@ namespace CATE {
 AudioBuffer read_audio_file(const Path &input_path)
 {
     SndfileHandle file(input_path);
+
+    if (file.error())
+    {
+        throw std::invalid_argument("Invalid audio file.\n");
+    }
+
     auto size = file.frames() * file.channels();
     AudioBuffer buffer(size);
     file.read(&buffer[0], size);
@@ -35,8 +41,14 @@ AudioBuffer read_audio_file(const Path &input_path)
 
 void write_audio_file(const AudioBuffer &buffer, const Path &output_path, int channels, float sample_rate)
 {
-    auto format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
+    const auto format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
     SndfileHandle file(output_path, SFM_WRITE, format, channels, static_cast<int>(sample_rate));
+
+    if (file.error())
+    {
+        throw std::invalid_argument("Invalid audio file.\n");
+    }
+
     file.write(&buffer[0], static_cast<sf_count_t>(buffer.size() / channels));
 }
 

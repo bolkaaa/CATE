@@ -42,10 +42,10 @@ typedef std::vector<float> AudioBuffer;
 typedef unordered_map<Path, AudioBuffer> AudioBufferMap;
 typedef unordered_map<pair<int, string>, AudioBuffer, boost::hash<pair<int, string>>> AudioFrameMap;
 
-/* Get an AudioBuffer from an input audio file. */
+/* Given an audio file path, return an AudioBuffer containing its contents. */
 AudioBuffer read_audio_file(const Path &input_path);
 
-/* Write AudioBuffer to file output. */
+/* Write AudioBuffer to a WAV file at the specified path. */
 void write_audio_file(const AudioBuffer &buffer, const Path &output_path, int channels, float sample_rate);
 
 } // CATE
