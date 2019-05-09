@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-04-30T12:18:01+01:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Overall Improvements to Program</title><link href="/2019/04/28/overall-improvements-to-program.html" rel="alternate" type="text/html" title="Overall Improvements to Program" /><published>2019-04-28T00:00:00+01:00</published><updated>2019-04-28T00:00:00+01:00</updated><id>/2019/04/28/overall-improvements-to-program</id><content type="html" xml:base="/2019/04/28/overall-improvements-to-program.html">&lt;p&gt;Compared to last week, there were many improvements to the program this week, to
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-05-09T08:08:34+01:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Overall Improvements to Program</title><link href="/2019/04/28/overall-improvements-to-program.html" rel="alternate" type="text/html" title="Overall Improvements to Program" /><published>2019-04-28T00:00:00+01:00</published><updated>2019-04-28T00:00:00+01:00</updated><id>/2019/04/28/overall-improvements-to-program</id><content type="html" xml:base="/2019/04/28/overall-improvements-to-program.html">&lt;p&gt;Compared to last week, there were many improvements to the program this week, to
 its features as well as the quality of the code through refactoring. While I am
 trying to avoid adding significant new features, I am highly focused on
 improving the existing ones. I will break down the improvements to the program I
@@ -61,7 +61,138 @@ normalisation stage to the feature extractors.&lt;/p&gt;
 &lt;p&gt;I am aiming to get the writing and documentation finished within the next week
 or so, while also doing a bit more work and unit test writing for the program.
 Then, the final week will be dedicated to improving the program, finalising the
-CMake build/executables and tying up other loose ends.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Compared to last week, there were many improvements to the program this week, to its features as well as the quality of the code through refactoring. While I am trying to avoid adding significant new features, I am highly focused on improving the existing ones. I will break down the improvements to the program I have made this week.</summary></entry><entry><title type="html">Lots of Writing and Not Much Progress</title><link href="/2019/04/21/lots-of-writing-and-not-much-progress.html" rel="alternate" type="text/html" title="Lots of Writing and Not Much Progress" /><published>2019-04-21T00:00:00+01:00</published><updated>2019-04-21T00:00:00+01:00</updated><id>/2019/04/21/lots-of-writing-and-not-much-progress</id><content type="html" xml:base="/2019/04/21/lots-of-writing-and-not-much-progress.html">&lt;p&gt;This week there were less changes made in the program as development has started slowing down due to the program mostly being complete, and the fact that I need to work on the project writeup. Most of the changes were minor code cleanups and some interface improvements. Notably, I also improved aspects of the program’s design through separating some functionality into dedicated classes, in the case of AudioRecorder. Next week’s post will be much lengthier as I return to working on the program more intensely, as the writing gets closer to the completion and I try to make the program as good as it can be.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This week there were less changes made in the program as development has started slowing down due to the program mostly being complete, and the fact that I need to work on the project writeup. Most of the changes were minor code cleanups and some interface improvements. Notably, I also improved aspects of the program’s design through separating some functionality into dedicated classes, in the case of AudioRecorder. Next week’s post will be much lengthier as I return to working on the program more intensely, as the writing gets closer to the completion and I try to make the program as good as it can be.</summary></entry><entry><title type="html">Finalising Some Features and Starting Unit Testing</title><link href="/2019/04/14/finalising-some-features-and-starting-unit-testing.html" rel="alternate" type="text/html" title="Finalising Some Features and Starting Unit Testing" /><published>2019-04-14T00:00:00+01:00</published><updated>2019-04-14T00:00:00+01:00</updated><id>/2019/04/14/finalising-some-features-and-starting-unit-testing</id><content type="html" xml:base="/2019/04/14/finalising-some-features-and-starting-unit-testing.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+CMake build/executables and tying up other loose ends.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Compared to last week, there were many improvements to the program this week, to its features as well as the quality of the code through refactoring. While I am trying to avoid adding significant new features, I am highly focused on improving the existing ones. I will break down the improvements to the program I have made this week.</summary></entry><entry><title type="html">Many Improvements and More Testing</title><link href="/2019/04/28/many-improvements-and-more-testing.html" rel="alternate" type="text/html" title="Many Improvements and More Testing" /><published>2019-04-28T00:00:00+01:00</published><updated>2019-04-28T00:00:00+01:00</updated><id>/2019/04/28/many-improvements-and-more-testing</id><content type="html" xml:base="/2019/04/28/many-improvements-and-more-testing.html">&lt;p&gt;This was the busiest week yet of working on the program, as I wanted to improve
+it as much as possible before the completion date. Due to the writing being more
+or less finished by this point, I had a lot of time to do this. I tried to focus
+on improving existing features rather than adding new ones. This included the
+following alterations:&lt;/p&gt;
+
+&lt;h3 id=&quot;structural-improvements&quot;&gt;Structural Improvements&lt;/h3&gt;
+&lt;p&gt;In the past week, I have greatly simplified the class hierarchy of the program,
+making it more readable and logical. Previously, I was instantiated the KdTree
+object in main(), and passing it around the program as a reference. This was due
+to my lack of understanding of an alternative way of instantiating it, which I
+have now corrected. I have now moved it to the Corpus class, where it is stored
+as a pointer. As its functionality is integral to the Corpus class and it can
+now simply be accessed through that, I feel this is a much better way of doing
+things. Likewise, I moved the PointCloud object to Corpus. I also made these
+classes non-copyable, as I wanted to design the program such that only one
+instance of objects created from these classes should exist. I created a base
+class, &lt;em&gt;NonCopyable&lt;/em&gt;, which other classes can inherit from. This is a class
+where the assignment operator and copy constructor are deleted, meaning copies
+cannot be created as those functions are normally used for.&lt;/p&gt;
+
+&lt;h3 id=&quot;multithreading&quot;&gt;Multithreading&lt;/h3&gt;
+&lt;p&gt;There were several parts of the program that I was unhappy with, in terms of
+efficiency. My main concern was that all operations were taking place
+sequentially on the same thread. This placed limitations on how the analysis and
+synthesis code could interact. It also meant that my naive recording solution
+was very memory-inefficient and unacceptable as a long term solution. Due to
+this, I looked into the possiblity of moving these pieces of functionality to
+dedicated threads, and having them operate independently of the synthesis code.
+To achieve this, I used the QThread class from the Qt library, which worked well
+with the rest of the Qt code in the program. I brought back the RingBuffer class
+to the project, and used it extensively as a container for the data being passed
+between the threads. Its usefulness for this comes from the fact that by design
+it has protection against the possibility of operations from two threads
+modifying the same access point at once.&lt;/p&gt;
+
+&lt;p&gt;Within the audio callback function, input (microphone) data is pushed into one
+ring buffer, and otuput (synthesized) data is pushed into another. These are
+emitted as a signal to the &lt;em&gt;AnalysisWorker&lt;/em&gt; and &lt;em&gt;RecordWorker&lt;/em&gt; objects
+respectively, each of which occupy separate threads. In AnalysisWorker, the
+spectral features are extracted and a KNN search finds the k-nearest data points
+in the point cloud. In RecordWorker, the output data is pushed to a linked list,
+which has the benefit for this use case of faster insertion time compared to a
+dynamic array. The recording functionality is now working quite well, though it
+still seems to drop samples at times, so it may need to be optimised further.&lt;/p&gt;
+
+&lt;h3 id=&quot;reworked-feature-extraction-system&quot;&gt;Reworked Feature Extraction System&lt;/h3&gt;
+&lt;p&gt;I wanted to create a more flexible feature extraction system that wasn’t as
+dependent upon manually referring to the defined functions. The &lt;em&gt;FeatureVector&lt;/em&gt;
+class contains the following members:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;A vector of FeatureExtractors, which is a simple object comprised of a string to identify the extractor, and a function pointer to the corresponding function.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;An unordered/hash map of &amp;lt;string, vector&lt;float&gt;&amp;gt; pairs. This allows the lookup of a vector of extracted values via the name of the feature.&lt;/float&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;A vector of markers (file positions)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Given a magnitude spectrum as input, the class can compute each feature value
+and store it in the map. This class is now used within &lt;em&gt;Corpus&lt;/em&gt; as part of the
+sliding window analysis process.&lt;/p&gt;
+
+&lt;h3 id=&quot;improving-feature-extraction-functions&quot;&gt;Improving Feature Extraction Functions&lt;/h3&gt;
+&lt;p&gt;As I only had two features implemented (spectral centroid and spectral
+flatness), and I wasn’t happy with their implementations, I improved upon them.
+Particularly for the spectral flatness function, I separate the calculations
+into different functions, for calculating arithmetic and geometric mean. This
+made the actual function much easier to break down and understand.&lt;/p&gt;
+
+&lt;p&gt;I also added a new feature, spectral rolloff. This is defined as the point of
+the spectrum at which a particular percentage of the overall spectrum’s energy,
+often defined as 85%, is located within this point and below.&lt;/p&gt;
+
+&lt;h3 id=&quot;large-improvements-to-synthesis-code&quot;&gt;Large Improvements to Synthesis Code&lt;/h3&gt;
+&lt;p&gt;After struggling with the synthesis implementation earlier in the program’s
+development and being unsatisfied with its sonic results, I had to move on to
+other parts of the program and accept how it turned out. Now that I have time to
+improve things, I have come back to it and reworked it entirely. The main change
+is that the grains for the current audio file corpus are now computed when it’s
+loaded. This means that I could remove the inefficient buffer-filling loops that
+were slowing down the execution. Due to the fact that the audio files had to be
+loaded into memory at all times with the previous method regardless, there is no
+disadvantage to doing this. One issue is that I now have to find a strategy for
+determining which grains to play back. As the actual number of available grains
+created from the corpus will be very high, there needs to be a way of cycling
+through a fixed set of them, as well as being able to update that set. Improving
+this system will be my main priority from this point.&lt;/p&gt;
+
+&lt;h3 id=&quot;moving-towards-a-better-input-analysis--synthesis-system&quot;&gt;Moving Towards a Better Input Analysis + Synthesis System&lt;/h3&gt;
+&lt;p&gt;Moving on from the last point, I had the plan to improve how grains in the
+corpus would be selected, based upon the results of the KNN search. My plan is
+to have a hash table (std::unordered_map in C++) comprised of a particular
+key/value pair. The key will be a integer/string pair where the integer is a
+file position and the string is a file path. The value will be an integer that
+corresponds to the index of the aforementioned grain container. In ideal
+conditions, this will allow for an O(1) lookup of the corresponding corpus
+grain, given positional file information. My priority now is to focus on taking
+the marker/path pairs generated by the AnalysisWorker thread, and transporting
+them to the Granulator object to calculate new indices in an effective manner.&lt;/p&gt;
+
+&lt;h3 id=&quot;gui-improvements&quot;&gt;GUI Improvements&lt;/h3&gt;
+&lt;p&gt;The sliders in the GUI now initialise to the same values as the actual
+parameters, which was a much-needed improvement. Also, due to reworking the
+synthesis code, the changes in audio from manipulating the sliders is now
+smoother as well. I plan to improve the GUI a bit more before the completion
+date, as I want to display some more information now that I have more threads to
+work with.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-unit-tests&quot;&gt;The Unit Tests&lt;/h3&gt;
+&lt;p&gt;The unit testing has also been well underway in the past week. It has made me
+regret not writing them sooner and taking a more test-driven development focused
+approach, as I have already improved my code a lot due to issues discovered from
+the tests I’ve written. My tests have been separated into the following categories, so far:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Audio&lt;/em&gt;: The PortAudio backend and ensuring it starts and stops properly.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Analysis&lt;/em&gt;: The creation of magnitude spectrum arrays
+from audio file segments. It will also test the various feature extractors used in the program.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Corpus&lt;/em&gt;: The operations contained within the Corpus class, such as reading and writing the JSON files correctly.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;FileInputOutput&lt;/em&gt;: The reading and writing of audio files.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Synthesis&lt;/em&gt;: The synthesis processes used in the program.&lt;/p&gt;
+
+&lt;p&gt;I plan to write a lot more tests over the next week as I finalise the program
+and make sure that it’s as good and bug-free as it can be.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This was the busiest week yet of working on the program, as I wanted to improve it as much as possible before the completion date. Due to the writing being more or less finished by this point, I had a lot of time to do this. I tried to focus on improving existing features rather than adding new ones. This included the following alterations:</summary></entry><entry><title type="html">Lots of Writing and Not Much Progress</title><link href="/2019/04/21/lots-of-writing-and-not-much-progress.html" rel="alternate" type="text/html" title="Lots of Writing and Not Much Progress" /><published>2019-04-21T00:00:00+01:00</published><updated>2019-04-21T00:00:00+01:00</updated><id>/2019/04/21/lots-of-writing-and-not-much-progress</id><content type="html" xml:base="/2019/04/21/lots-of-writing-and-not-much-progress.html">&lt;p&gt;This week there were less changes made in the program as development has started slowing down due to the program mostly being complete, and the fact that I need to work on the project writeup. Most of the changes were minor code cleanups and some interface improvements. Notably, I also improved aspects of the program’s design through separating some functionality into dedicated classes, in the case of AudioRecorder. Next week’s post will be much lengthier as I return to working on the program more intensely, as the writing gets closer to the completion and I try to make the program as good as it can be.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This week there were less changes made in the program as development has started slowing down due to the program mostly being complete, and the fact that I need to work on the project writeup. Most of the changes were minor code cleanups and some interface improvements. Notably, I also improved aspects of the program’s design through separating some functionality into dedicated classes, in the case of AudioRecorder. Next week’s post will be much lengthier as I return to working on the program more intensely, as the writing gets closer to the completion and I try to make the program as good as it can be.</summary></entry><entry><title type="html">Finalising Some Features and Starting Unit Testing</title><link href="/2019/04/14/finalising-some-features-and-starting-unit-testing.html" rel="alternate" type="text/html" title="Finalising Some Features and Starting Unit Testing" /><published>2019-04-14T00:00:00+01:00</published><updated>2019-04-14T00:00:00+01:00</updated><id>/2019/04/14/finalising-some-features-and-starting-unit-testing</id><content type="html" xml:base="/2019/04/14/finalising-some-features-and-starting-unit-testing.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;While continuing to work on the report, I have also added some final features in
 the software. These included adding amplitude following of the microphone input
 for the synthesis output, and adding the functionality for recording output to a
@@ -590,161 +721,4 @@ much larger quantities than my program will be using.&lt;/p&gt;
   &lt;li&gt;
     &lt;p&gt;Adding some more audio features, particularly spectral ones&lt;/p&gt;
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress I have been implementing functionality for audio analysis and storage for the program. I am on schedule with this and will continue working on it next week as well.</summary></entry><entry><title type="html">Discrete Fourier Transforms and Starting on Qt GUI</title><link href="/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui.html" rel="alternate" type="text/html" title="Discrete Fourier Transforms and Starting on Qt GUI" /><published>2019-02-24T00:00:00+00:00</published><updated>2019-02-24T00:00:00+00:00</updated><id>/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui</id><content type="html" xml:base="/2019/02/24/discrete-fourier-transforms-and-starting-qt-gui.html">&lt;h3 id=&quot;this-week&quot;&gt;This Week&lt;/h3&gt;
-&lt;p&gt;This week, I’ve been working on the following parts of my program:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;em&gt;Discrete Fourier Transforms&lt;/em&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;em&gt;Starting on the Qt GUI&lt;/em&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;em&gt;More Work on Python Utilities&lt;/em&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;em&gt;Creating a More Generalised Audio Buffer Class&lt;/em&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;implementing-discrete-fourier-transforms&quot;&gt;Implementing Discrete Fourier Transforms&lt;/h3&gt;
-&lt;p&gt;For spectral audio analysis and visualisation, having some way of converting my
-audio sample data to the frequency domain will be essential.&lt;/p&gt;
-
-&lt;p&gt;My requirements for a FFT library were that it should be a well-established,
-standard library used by high-profile open source programs, and that it should
-only offer functionality for doing discrete fourier transforms and not other
-unnecessary DSP functions that I was already implementing myself. The only
-library that really met this criteria was &lt;a href=&quot;http://www.fftw.org/&quot;&gt;fftw&lt;/a&gt;. This is
-a very significant library within open source/free-as-in-freedom software,
-having been used by a lot of audio and signal processing applications in
-general. I felt that it was a good opportunity for me to learn how to use it.
-The only downside was that it’s natively a C library rather than a C++ library,
-but I could not find any natively C++ alternatives.&lt;/p&gt;
-
-&lt;p&gt;The library can be quite unforgiving to use, with lots of potential for
-segmentation faults and other issues with array access due to how memory works
-in C. After some experimentation, I eventually got a good system working. The
-fftw library works in the following way:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Allocate memory for input and output arrays&lt;/li&gt;
-  &lt;li&gt;Create a “plan” that defines the operations carried out, e.g
-&lt;em&gt;complex-to-complex&lt;/em&gt; or &lt;em&gt;real-to-complex&lt;/em&gt;, as well as specifying the arrays
-created in the last step.&lt;/li&gt;
-  &lt;li&gt;Call the fftw_execute function to get the output spectrum array, which can be
-called as many times as needed (e.g, in a real-time loop).&lt;/li&gt;
-  &lt;li&gt;Deallocate memory and call fftw_destroy_plan when done (e.g, when audio stream is finished).&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;I used the &lt;a href=&quot;http://www.fftw.org/fftw3_doc/One_002dDimensional-DFTs-of-Real-Data.html&quot;&gt;one-dimensional
-real-to-complex&lt;/a&gt;
-plan, which converts a one-dimensional input of floating point numbers to an
-output array of complex numbers. The specified input array is &lt;em&gt;n&lt;/em&gt; real numbers,
-and the output is &lt;em&gt;n/2+1&lt;/em&gt; complex numbers, which means the input array needs to
-be filled with &lt;em&gt;N/2+1&lt;/em&gt; elements and then padded with zeros. Additionally, the
-array of data should be windowed, to avoid discontinuities at the starts and
-ends. I just included an application of the Hann function within the function
-that fills the data buffer, which is defined as:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;w(n) = \frac{1} {2} \left(1 - cos\left(\frac {2\pi n} {N - 1}\right)\right)&lt;/script&gt;
-
-&lt;p&gt;where &lt;em&gt;n&lt;/em&gt; is the sample index and &lt;em&gt;N&lt;/em&gt; is the total number of samples.&lt;/p&gt;
-
-&lt;p&gt;Generally when using DFT data, the magnitude of the resultant complex output is taken. This can be calculated as follows:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\sqrt{r^2 + i^2}&lt;/script&gt;
-
-&lt;p&gt;where &lt;em&gt;r&lt;/em&gt; and &lt;em&gt;i&lt;/em&gt; are the real and imaginary parts of a complex number
-respectively. When using std::complex in C++, you can just use the std::abs
-function from the standard library to get the magnitude, making for a more
-elegant implementation.&lt;/p&gt;
-
-&lt;p&gt;To use my spectrum array in a meaningful way, I will need to convert the
-indices to their respective frequencies. The following formula can be used for
-converting bin index to frequency:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\frac{n  \frac{Fs} {2}} {N}&lt;/script&gt;
-
-&lt;p&gt;where &lt;em&gt;n&lt;/em&gt; is the bin index, &lt;em&gt;Fs&lt;/em&gt; is the sampling rate and &lt;em&gt;N&lt;/em&gt; is the total number
-of bins. Hence, the 512th bin represents the magnitude of the frequency 11025Hz,
-given a bin size of 1024 and a sample rate of 44100.&lt;/p&gt;
-
-&lt;h3 id=&quot;starting-on-the-qt-gui&quot;&gt;Starting on the Qt GUI&lt;/h3&gt;
-&lt;p&gt;I decided to commit to using Qt in my project and start working on it ahead of
-schedule. This is mostly because I’ve realised that the backend of the code will
-need to be redesigned quite a lot around the general practises of Qt
-applications, such as the idea of QObjects. My reasons for using Qt are mostly
-that it’s a well-established GUI library/framework that has been used by a lot
-of applications, including notable audio software like
-&lt;a href=&quot;https://supercollider.github.io&quot;&gt;SuperCollider&lt;/a&gt; and
-&lt;a href=&quot;https://www.sonicvisualiser.org/&quot;&gt;SonicVisualiser&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;I had to alter my CMake configuration to get Qt working, using the &lt;a href=&quot;https://github.com/euler0/mini-cmake-qt&quot;&gt;following
-github repo&lt;/a&gt; as a guideline.&lt;/p&gt;
-
-&lt;p&gt;I then aimed to get a program working where my audio process is running in a
-background with a Qt window interface in the foreground. I started with
-&lt;a href=&quot;https://github.com/fabienpn/simple-qt-thread-example&quot;&gt;the following example from a github
-repo&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;I also found &lt;a href=&quot;http://www.martin-kumm.de/wiki/doku.php?id=05Misc:A_Template_for_Audio_DSP_Applications&quot;&gt;this
-example&lt;/a&gt;
-of combining PortAudio, Qt and FFTW which was perfect for what I’m trying to do.&lt;/p&gt;
-
-&lt;p&gt;Learning from those examples, I now have the Qt graphics framework implemented
-in my program. The program now launches as a window with buttons for starting
-and stopping the audio engine. The downside of this, is that I was forced to
-revert my audio code to use the C API of PortAudio rather than the C++ version.
-Integrating the C++ PortAudio code with Qt was proving troublesome, and it was
-considerably easier to wrap the low-level C code instead. I did want to avoid
-this, but after reading some discussions in the PortAudio mailing list, this
-seems to be what is generally done by people working with PortAudio in C++
-anyway.&lt;/p&gt;
-
-&lt;p&gt;As for Qt, I will leave the actual bulk of the GUI design until much later, but
-I want to get Qt integrated into my program as soon as possible. Hopefully
-within the next month or so I will have a working prototype of the final system.
-Then, I can improve upon it while working on the GUI. The final GUI will likely
-be fairly simple, as I am new to Qt and it could be very time consuming to
-create something complex in it. Additionally, the idea for my program is that it
-should have a minimal interface and not require a lot of user input anyway!&lt;/p&gt;
-
-&lt;h3 id=&quot;creating-a-more-generalised-audio-buffer-class&quot;&gt;Creating a More Generalised Audio Buffer Class&lt;/h3&gt;
-&lt;p&gt;I have also been thinking about the overall design of my program and its data
-flow. As I’ve mostly been working on audio input, ring buffer and FFT code
-recently, the earlier code I had written to read and write data from sound files
-has become somewhat incompatible with the new code. My idea now is to have
-interoperability between my classes that work with sample data. RingBuffer, FFT,
-and AudioBuffer objects filled with data from audio files should be able to
-communicate and share data easily. Therefore, I have looked into making my
-AudioBuffer class a base class for the others and using inheritance to achieve
-this.&lt;/p&gt;
-
-&lt;h3 id=&quot;more-python-utilities&quot;&gt;More Python Utilities&lt;/h3&gt;
-&lt;p&gt;I also did a bit more work on the simple Python programs in the scripts
-directory. I plan to compare the results of my C++ program’s outputs for things
-like magnitude spectrum and analysis data. With libraries like
-&lt;a href=&quot;https://librosa.github.io/librosa/&quot;&gt;librosa&lt;/a&gt;, I can check what the output
-should look like for these processes very quickly and easily. My other
-motivation for doing this, is related to the overall ethos I have with this in
-project in thinking in the long-term as well as about the project itself. I
-think that improving my proficiency at using libraries with librosa and Python
-prototyping in general will be a useful skill for me in the future.&lt;/p&gt;
-
-&lt;h3 id=&quot;moving-onwards&quot;&gt;Moving Onwards&lt;/h3&gt;
-&lt;p&gt;My plan for the next week is to experiment with creating my own audio analysis
-system with fftw and other low-level libraries. As a fallback option, I have
-installed the Essentia library on my system and I will use it if this becomes
-too much work. I am also thinking ahead to some of the next steps I will need to
-take, such as the nearest-neighbours search of the parameter-space once I have
-my analysis functionality sorted out. I have covered the K-Nearest neighbours
-algorithm in other classes, where I learned that the K-d tree data structure
-allows for a more efficient implementation of the algorithm, which will likely
-be necessary so I can perform the comparisons efficiently in the audio loop.&lt;/p&gt;
-
-&lt;p&gt;Additionally, I want to implement better error handling with my PortAudio code
-and clean it up in general. I will refrain from doing a lot of GUI work right
-now, although I might add some kind of text output in the main window for
-debugging pourposes.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This Week This week, I’ve been working on the following parts of my program:</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress I have been implementing functionality for audio analysis and storage for the program. I am on schedule with this and will continue working on it next week as well.</summary></entry></feed>
