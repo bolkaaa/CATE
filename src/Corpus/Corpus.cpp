@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include <iomanip>
 #include <numeric>
+#include <fstream>
 
 #include "sndfile.hh"
 #include "include/nanoflann.hpp"
@@ -29,7 +30,6 @@
 #include "Corpus.hpp"
 #include "PathTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
-#include "src/Audio/AudioFile.hpp"
 #include "KdTree.hpp"
 
 using std::vector;
@@ -39,8 +39,8 @@ using std::back_inserter;
 using std::copy;
 using std::pair;
 using std::string;
-using std::ifstream;
 using std::ofstream;
+using std::ifstream;
 
 namespace CATE {
 
@@ -102,13 +102,13 @@ void Corpus::add_directory(const Path &directory_path)
 
 void Corpus::write_file(const Path &file_path)
 {
-    auto file = ofstream(file_path);
+    ofstream file("mocc.json");
     file << std::setw(4) << data;
 }
 
 void Corpus::read_file(const Path &file_path)
 {
-    auto file = ifstream(file_path);
+    ifstream file(file_path);
     file >> data;
 }
 

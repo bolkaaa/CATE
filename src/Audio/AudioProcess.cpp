@@ -75,8 +75,9 @@ int AudioProcess::processing_callback(const void *input_buffer,
         /* Synthesize output from granulation engine. */
         auto out = granulator.synthesize(current_index);
 
-        *output++ = out; // L
-        *output++ = out; // R
+        output[i] = out;
+        output[i+1] = out;
+        output++;
 
         /* While recording, current output sample is continuously written to ring buffer. */
         if (recording)

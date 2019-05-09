@@ -20,9 +20,13 @@
 #include <iostream>
 
 #include "RecordWorker.hpp"
-#include "AudioFile.hpp"
 
 namespace CATE {
+
+RecordWorker::RecordWorker(AudioSettings *audio_settings)
+        : audio_settings(audio_settings)
+{
+}
 
 void RecordWorker::output_data_received(RingBuffer<float> *ring_buffer)
 {
@@ -31,11 +35,12 @@ void RecordWorker::output_data_received(RingBuffer<float> *ring_buffer)
     recording_data.push_front(data);
 }
 
-void RecordWorker::save_recording(const std::string &output_path, float sample_rate, int channels)
+void RecordWorker::save_recording(const Path &output_path)
 {
     AudioBuffer output_buffer(recording_data.begin(), recording_data.end());
-    write_audio_file(output_buffer, output_path, channels, sample_rate / channels);
+    write_audio_file(output_buffer, output_path, audio_settings->get_sample_rate().value);
     recording_data.clear();
 }
+
 
 } // CATE

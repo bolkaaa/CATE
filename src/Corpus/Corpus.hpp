@@ -30,7 +30,6 @@
 #include "PointCloud.hpp"
 #include "PathTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
-#include "src/Audio/AudioFile.hpp"
 #include "src/Analysis/Feature.hpp"
 #include "src/Util/NonCopyable.hpp"
 

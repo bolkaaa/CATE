@@ -24,7 +24,6 @@
 #include "src/Corpus/Corpus.hpp"
 #include "src/Audio/RingBuffer.hpp"
 #include "src/Audio/AudioSettings.hpp"
-#include "src/Audio/AudioFile.hpp"
 
 typedef pair<int, string> AudioIndex;
 

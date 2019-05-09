@@ -20,7 +20,6 @@
 #ifndef GRAIN_HPP
 #define GRAIN_HPP
 
-#include "src/Audio/AudioFile.hpp"
 #include "Source.hpp"
 #include "Envelope.hpp"
 

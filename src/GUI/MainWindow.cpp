@@ -40,7 +40,7 @@ MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_setting
           audio_process(audio_process),
           audio_settings(audio_settings),
           corpus(corpus),
-          record_worker(new RecordWorker),
+          record_worker(new RecordWorker(audio_settings)),
           analysis_worker(new AnalysisWorker(audio_settings, corpus)),
           record_thread(new QThread),
           analysis_thread(new QThread),
@@ -151,9 +151,7 @@ void MainWindow::stop_recording_button_pressed()
         return;
     }
 
-    record_worker->save_recording(output_path,
-                                  audio_process->get_sample_rate().value,
-                                  audio_process->get_num_output_channels());
+    record_worker->save_recording(output_path);
 
     audio_process->start_stream();
 }

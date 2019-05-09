@@ -33,15 +33,17 @@ AudioBuffer read_audio_file(const Path &input_path)
     }
 
     auto size = file.frames() * file.channels();
-    AudioBuffer buffer(size);
+    auto buffer = AudioBuffer(static_cast<unsigned long>(size));
     file.read(&buffer[0], size);
 
     return buffer;
 }
 
-void write_audio_file(const AudioBuffer &buffer, const Path &output_path, int channels, float sample_rate)
+void write_audio_file(const AudioBuffer &buffer, const Path &output_path, float sample_rate)
 {
     const auto format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
+    const auto channels = 1;
+
     SndfileHandle file(output_path, SFM_WRITE, format, channels, static_cast<int>(sample_rate));
 
     if (file.error())

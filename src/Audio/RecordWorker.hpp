@@ -25,29 +25,27 @@
 #include <QObject>
 
 #include "src/Audio/AudioSettings.hpp"
-#include "src/Audio/AudioFile.hpp"
 #include "src/Audio/RingBuffer.hpp"
-
-using std::string;
-using std::list;
 
 namespace CATE {
 
-typedef list<float> AudioLinkedList;
+typedef std::list<float> AudioLinkedList;
 
 class RecordWorker : public QObject
 {
 Q_OBJECT
 public:
+    RecordWorker(AudioSettings *audio_settings);
+
     /* Write record_buffer to output file. */
-    void save_recording(const std::string &output_path, float sample_rate, int channels);
+    void save_recording(const Path &output_path);
 
 public slots:
     /* Pop available sample from ring buffer and write to record_buffer. */
     void output_data_received(RingBuffer<float> *ring_buffer);
 
 private:
-    float current_sample = 0.0f;
+    AudioSettings *audio_settings;
     AudioLinkedList recording_data;
 };
 

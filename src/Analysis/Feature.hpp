@@ -23,10 +23,11 @@
 #include "src/Util/Util.hpp"
 
 using std::unordered_map;
+using std::string;
 
 namespace CATE {
 
-/* Typedef to feature extraction function. */
+/* Function pointer to feature extraction function. */
 typedef float (*feature_func)(const Magspec &);
 
 namespace Feature {

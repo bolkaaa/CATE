@@ -25,7 +25,6 @@
 
 #include <boost/functional/hash.hpp>
 
-#include "src/Audio/AudioFile.hpp"
 #include "src/Corpus/Corpus.hpp"
 #include "src/Audio/RingBuffer.hpp"
 #include "src/Audio/AnalysisWorker.hpp"
@@ -33,8 +32,10 @@
 
 namespace CATE {
 
-typedef unordered_map<pair<int, string>, int, boost::hash<pair<int, string>>> GrainIndex;
-typedef vector<Grain> GrainPool;
+/* Key-value pair structure where key is pair of file position and file path, and value is a grain array index. */
+typedef std::unordered_map<std::pair<int, Path>, int, boost::hash<pair<int, Path>>> GrainIndex;
+
+typedef std::vector<Grain> GrainPool;
 
 /* Granulator is the high-level interface that contains all the functionality for the granular synthesis process. */
 class Granulator

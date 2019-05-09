@@ -16,8 +16,6 @@ set(SOURCE_FILES
         src/Audio/AudioProcess.cpp
         src/Audio/AudioBuffer.hpp
         src/Audio/AudioBuffer.cpp
-        src/Audio/AudioFile.hpp
-        src/Audio/AudioFile.cpp
         src/Audio/AudioSettings.cpp
         src/Audio/AudioSettings.hpp
         src/Analysis/FFT.hpp

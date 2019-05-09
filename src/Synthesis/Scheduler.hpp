@@ -24,7 +24,6 @@
 #include <queue>
 
 #include "src/Audio/AudioSettings.hpp"
-#include "src/Audio/AudioFile.hpp"
 #include "src/Audio/AnalysisWorker.hpp"
 #include "Grain.hpp"
 #include "Rand.hpp"
@@ -65,10 +64,8 @@ private:
     Param<float> *grain_density;
     Param<float> *grain_size;
     FixedParam<int> *max_grains;
-    AudioBuffer buffer = AudioBuffer(grain_size->max);
     vector<int> indices;
     GrainPool grain_pool;
-    map<string, AudioFile> files;
     int next_onset;
     Rand<float> rand;
 };

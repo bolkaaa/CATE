@@ -29,24 +29,21 @@
 
 #include "src/Corpus/PathTree.hpp"
 
-using std::vector;
-using std::map;
-using std::unordered_map;
-using std::pair;
-
 namespace CATE {
 
-/* AudioBuffer is a typedef that aliases a vector of real values. For simplicity's sake and compatibility with C
- * libraries used in CATE, it uses floats and isn't templated. */
+/* Typedef that aliases a std::vector of real values. For simplicity's sake and compatibility with C
+ * libraries used in CATE, it just uses floats and isn't templated. */
 typedef std::vector<float> AudioBuffer;
-typedef unordered_map<Path, AudioBuffer> AudioBufferMap;
-typedef unordered_map<pair<int, string>, AudioBuffer, boost::hash<pair<int, string>>> AudioFrameMap;
+/* Path to audio file and associated audio data. */
+typedef std::unordered_map<Path, AudioBuffer> AudioBufferMap;
+/* Key of file position index and audio file path, and value of associated audio data. */
+typedef std::unordered_map<std::pair<int, Path>, AudioBuffer, boost::hash<std::pair<int, Path>>> AudioFrameMap;
 
 /* Given an audio file path, return an AudioBuffer containing its contents. */
 AudioBuffer read_audio_file(const Path &input_path);
 
 /* Write AudioBuffer to a WAV file at the specified path. */
-void write_audio_file(const AudioBuffer &buffer, const Path &output_path, int channels, float sample_rate);
+void write_audio_file(const AudioBuffer &buffer, const Path &output_path, float sample_rate);
 
 } // CATE
 

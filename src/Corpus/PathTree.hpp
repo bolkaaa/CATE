@@ -23,13 +23,10 @@
 #include <vector>
 #include <string>
 
-using std::vector;
-using std::string;
-
 namespace CATE {
 
-typedef vector<string> PathList;
-typedef string Path;
+typedef std::vector<std::string> PathList;
+typedef std::string Path;
 
 /* Functionality for obtaining lists of paths from a root directory path. */
 class PathTree
