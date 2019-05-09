@@ -39,16 +39,21 @@ AnalysisWorker::~AnalysisWorker()
 void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
 {
     ring_buffer->pop(buffer[counter]);
-
     ++counter;
 
+    /* When ring buffer is full, extract features and do a nearest-neighbours search of the corpus. */
     if (counter > buffer_size)
     {
         do_fft();
 
         auto centroid = Feature::spectral_centroid(magspec);
+        emit send_centroid(&centroid);
+
         auto flatness = Feature::spectral_flatness(magspec);
+        emit send_flatness(&flatness);
+
         auto rolloff = Feature::spectral_rolloff(magspec);
+        emit send_rolloff(&rolloff);
 
         const float query[3] = {centroid, flatness, rolloff};
 
@@ -60,10 +65,10 @@ void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
             search_results->push(result);
         }
 
+        emit send_search_results(search_results);
+
         counter -= buffer_size;
     }
-
-    emit send_search_results(search_results);
 }
 
 

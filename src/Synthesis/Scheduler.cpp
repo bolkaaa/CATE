@@ -27,7 +27,7 @@
 namespace CATE {
 
 Scheduler::Scheduler(AudioSettings *audio_settings, Param<float> *grain_attack, Param<float> *grain_sustain,
-                     Param<float> *grain_release, Param<float> *grain_density, Param<int> *grain_size,
+                     Param<float> *grain_release, Param<float> *grain_density, Param<float> *grain_size,
                      FixedParam<int> *max_grains)
         : audio_settings(audio_settings),
           grain_attack(grain_attack),
@@ -47,13 +47,18 @@ void Scheduler::activate_next_grain()
     {
         if (!grain_pool[i].is_active())
         {
-            grain_pool[i].activate(grain_size->value);
+            auto grain_size_samples = static_cast<int>((grain_size->value * audio_settings->get_sample_rate().value) / 1000.0f);
+            grain_pool[i].activate(grain_size_samples,
+                                   grain_attack->value,
+                                   grain_sustain->value,
+                                   grain_release->value);
+
             return;
         }
     }
 }
 
-float Scheduler::schedule()
+float Scheduler::schedule(int new_grain_index)
 {
     if (next_onset == 0)
     {
@@ -76,10 +81,7 @@ float Scheduler::synthesize_grains()
     {
         if (grain_pool[i].is_active())
         {
-            out += grain_pool[i].synthesize(grain_size->value,
-                                            grain_attack->value,
-                                            grain_sustain->value,
-                                            grain_release->value);
+            out += grain_pool[i].synthesize();
         }
     }
 
@@ -98,6 +100,7 @@ void Scheduler::rebuild_grain_pool(GrainPool grain_pool)
 {
     Scheduler::grain_pool = grain_pool;
 
+    /* Initialise grains to random indices. */
     for (auto i = 0; i < max_grains->value; ++i)
     {
         auto r = rand.get();

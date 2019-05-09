@@ -36,10 +36,10 @@ public:
     Grain(const AudioBuffer &data);
 
     /* Activate grain, setting remaining samples to a particular value. */
-    void activate(int size);
+    void activate(int size, float ttack, float sustain, float release);
 
     /* Synthesize next sample from audio source and envelope. */
-    float synthesize(int size, float attack, float sustain, float release);
+    float synthesize();
 
     /* Return active status. */
     bool is_active() const;
@@ -47,6 +47,10 @@ public:
 private:
     int remaining_samples;
     Source src;
+    int size;
+    float attack;
+    float sustain;
+    float release;
     Envelope env;
 };
 

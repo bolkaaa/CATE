@@ -95,10 +95,16 @@ TEST_CASE("Ensure that corpus is working.", "[single_file]")
     REQUIRE(corpus_load_files_working());
 }
 
+TEST_CASE("Ensure that the analysis process is working.", "[single_file]")
+{
+    REQUIRE(corpus_analysis_working());
+}
+
 TEST_CASE("Ensure that the nearest neighbours corpus search is working.", "[single_file]")
 {
     REQUIRE(knn_working());
 }
+
 
 TEST_CASE("Ensure that files load from corpus correctly.", "[single_file]")
 {

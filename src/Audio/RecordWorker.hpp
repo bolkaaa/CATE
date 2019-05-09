@@ -20,6 +20,8 @@
 #ifndef RECORDWORKER_HPP
 #define RECORDWORKER_HPP
 
+#include <list>
+
 #include <QObject>
 
 #include "src/Audio/AudioSettings.hpp"
@@ -27,8 +29,11 @@
 #include "src/Audio/RingBuffer.hpp"
 
 using std::string;
+using std::list;
 
 namespace CATE {
+
+typedef list<float> AudioLinkedList;
 
 class RecordWorker : public QObject
 {
@@ -42,7 +47,8 @@ public slots:
     void output_data_received(RingBuffer<float> *ring_buffer);
 
 private:
-    AudioFile record_data;
+    float current_sample = 0.0f;
+    AudioLinkedList recording_data;
 };
 
 } // CATE

@@ -64,6 +64,7 @@ int AudioProcess::processing_callback(const void *input_buffer,
     {
         const auto in = *input++;
 
+        /* TODO: optimise analysis code. */
         /* Send input to ring buffer. */
         input_ring_buffer->push(in);
         emit send_input_data(input_ring_buffer);
@@ -71,7 +72,8 @@ int AudioProcess::processing_callback(const void *input_buffer,
         /* Get next analysis result. */
         search_results_received(audio_index_queue);
 
-        auto out = granulator.synthesize();
+        /* Synthesize output from granulation engine. */
+        auto out = granulator.synthesize(current_index);
 
         *output++ = out; // L
         *output++ = out; // R
@@ -103,10 +105,8 @@ void AudioProcess::load_corpus(const Path &corpus_path)
     granulator.calculate_grain_pool(audio_frame_map);
 }
 
-void AudioProcess::search_results_received(RingBuffer<AudioIndex> *search_results)
+void AudioProcess::search_results_received(RingBuffer<AudioIndex> *audio_index_queue)
 {
-    AudioIndex index;
-    search_results->pop(index);
 }
 
 } // CATE

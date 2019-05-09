@@ -47,7 +47,7 @@ private:
     AudioSettings *audio_settings;
     Corpus *corpus;
     const int buffer_size;
-    const int num_search_results = 1;
+    const int num_search_results = 32;
     int counter;
     AudioBuffer buffer = AudioBuffer(buffer_size);
     Magspec magspec = Magspec(buffer_size);
@@ -60,6 +60,12 @@ public slots:
 signals:
     /* Emit search results buffer as signal. */
     void send_search_results(RingBuffer<AudioIndex> *search_results);
+
+    /* Emit analysis values as signals. */
+    void send_marker(int *marker);
+    void send_centroid(float *centroid);
+    void send_flatness(float *flatness);
+    void send_rolloff(float *rolloff);
 };
 
 } // CATE

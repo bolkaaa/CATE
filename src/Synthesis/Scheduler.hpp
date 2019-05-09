@@ -17,37 +17,33 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-
 #ifndef SCHEDULER_HPP
 #define SCHEDULER_HPP
 
 #include <vector>
-#include <array>
+#include <queue>
 
 #include "src/Audio/AudioSettings.hpp"
 #include "src/Audio/AudioFile.hpp"
+#include "src/Audio/AnalysisWorker.hpp"
 #include "Grain.hpp"
 #include "Rand.hpp"
-
-using std::vector;
-using std::array;
 
 namespace CATE {
 
 typedef vector<Grain> GrainPool;
 
-/* Handles activation of grains, based upon onset times. It handles grain allocation and mixing of grains to form a
+/* Handles activation of grains, based upon onset times, as well as mixing of grains to form a
  * single output. */
-
 class Scheduler
 {
 public:
     Scheduler(AudioSettings *audio_settings, Param<float> *grain_attack, Param<float> *grain_sustain,
-              Param<float> *grain_release, Param<float> *grain_density, Param<int> *grain_size,
+              Param<float> *grain_release, Param<float> *grain_density, Param<float> *grain_size,
               FixedParam<int> *max_grains);
 
     /* Calculate grain activations. */
-    float schedule();
+    float schedule(int new_grain_index);
 
     /* Rebuild grain pool according to size changes. */
     void rebuild_grain_pool(GrainPool grain_pool);
@@ -56,10 +52,10 @@ private:
     /* Mix all currently active grains to a single output. */
     float synthesize_grains();
 
-    /* Create a new grain object at next index of grain pool. */
+    /* Iterate over grain indices; if inactive grain is found, activate it and exit the function. */
     void activate_next_grain();
 
-    /* Stochastically generate next inter-onset value. */
+    /* Stochastically generate next inter-onset value according to grain density parameter. */
     int get_next_inter_onset();
 
     AudioSettings *audio_settings;
@@ -67,10 +63,8 @@ private:
     Param<float> *grain_sustain;
     Param<float> *grain_release;
     Param<float> *grain_density;
-    Param<int> *grain_size;
+    Param<float> *grain_size;
     FixedParam<int> *max_grains;
-    int grain_index = 0;
-    int grain_max = 32;
     AudioBuffer buffer = AudioBuffer(grain_size->max);
     vector<int> indices;
     GrainPool grain_pool;

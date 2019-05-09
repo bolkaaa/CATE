@@ -26,19 +26,16 @@ namespace CATE {
 
 void RecordWorker::output_data_received(RingBuffer<float> *ring_buffer)
 {
-    auto sample = 0.0f;
-
-    if (ring_buffer->samples_available())
-    {
-        ring_buffer->pop(sample);
-        record_data.data.emplace_back(sample);
-    }
+    auto data = 0.0f;
+    ring_buffer->pop(data);
+    recording_data.push_front(data);
 }
 
 void RecordWorker::save_recording(const std::string &output_path, float sample_rate, int channels)
 {
-    record_data.write(channels, sample_rate, output_path);
-    record_data.data.clear();
+    AudioBuffer output_buffer(recording_data.begin(), recording_data.end());
+    write_audio_file(output_buffer, output_path, channels, sample_rate / channels);
+    recording_data.clear();
 }
 
 } // CATE

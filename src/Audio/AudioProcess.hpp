@@ -54,7 +54,6 @@ public:
     /* Stop recording audio output. */
     inline void stop_recording() { recording = false; };
 
-
     /* Analyse the audio from a particular directory. */
     void analyse_directory(const Path &directory_path);
 
@@ -85,16 +84,17 @@ public:
     const Param<float> get_grain_sustain() { return granulator.get_grain_sustain(); }
     const Param<float> get_grain_release() { return granulator.get_grain_release(); }
     const Param<float> get_grain_density() { return granulator.get_grain_density(); }
-    const Param<int> get_grain_size() { return granulator.get_grain_size(); }
+    const Param<float> get_grain_size() { return granulator.get_grain_size(); }
 
 private:
     AudioSettings *audio_settings;
     Corpus *corpus;
     Granulator granulator;
-    const int ring_buffer_size = 512;
+    const int ring_buffer_size = 1024;
     RingBuffer<float> *input_ring_buffer;
     RingBuffer<float> *output_ring_buffer;
     RingBuffer<AudioIndex> *audio_index_queue;
+    AudioIndex current_index;
     AudioFrameMap audio_frame_map;
     bool recording;
 

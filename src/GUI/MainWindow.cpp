@@ -44,12 +44,14 @@ MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_setting
           analysis_worker(new AnalysisWorker(audio_settings, corpus)),
           record_thread(new QThread),
           analysis_thread(new QThread),
+          audio_thread(new QThread),
           audio_settings_window(audio_process)
 {
     ui->setupUi(this);
 
     record_worker->moveToThread(record_thread);
     analysis_worker->moveToThread(analysis_thread);
+    audio_process->moveToThread(audio_thread);
 
     init_slider(audio_process->get_grain_attack(), ui->grain_attack_slider, ui->grain_attack_value);
     init_slider(audio_process->get_grain_sustain(), ui->grain_sustain_slider, ui->grain_sustain_value);
@@ -59,19 +61,34 @@ MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_setting
 
     /* Connect signals and slots. */
     connect(audio_process,
-            SIGNAL(send_input_data(RingBuffer<float>*)),
+            SIGNAL(send_input_data(RingBuffer<float> * )),
             analysis_worker,
-            SLOT(input_data_received(RingBuffer<float>*)));
+            SLOT(input_data_received(RingBuffer<float> * )));
 
     connect(audio_process,
-            SIGNAL(send_output_data(RingBuffer<float>*)),
+            SIGNAL(send_output_data(RingBuffer<float> * )),
             record_worker,
-            SLOT(output_data_received(RingBuffer<float>*)));
+            SLOT(output_data_received(RingBuffer<float> * )));
 
     connect(analysis_worker,
-            SIGNAL(send_search_results(RingBuffer<Point>*)),
+            SIGNAL(send_search_results(RingBuffer<AudioIndex> * )),
             audio_process,
-            SLOT(search_results_received(RingBuffer<Point>*)));
+            SLOT(search_results_received(RingBuffer<AudioIndex> * )));
+
+    connect(analysis_worker,
+            SIGNAL(send_centroid(float * )),
+            this,
+            SLOT(set_centroid_label(float * )));
+
+    connect(analysis_worker,
+            SIGNAL(send_flatness(float * )),
+            this,
+            SLOT(set_flatness_label(float * )));
+
+    connect(analysis_worker,
+            SIGNAL(send_rolloff(float * )),
+            this,
+            SLOT(set_rolloff_label(float * )));
 
     connect(ui->start_playback, SIGNAL(clicked()), this, SLOT(start_playback_button_pressed()));
     connect(ui->stop_playback, SIGNAL(clicked()), this, SLOT(stop_playback_button_pressed()));
@@ -90,6 +107,7 @@ MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_setting
 
 void MainWindow::start_playback_button_pressed()
 {
+    audio_thread->start();
     analysis_thread->start();
 
     auto error_code = audio_process->start_stream();
@@ -107,8 +125,8 @@ void MainWindow::stop_playback_button_pressed()
 
 void MainWindow::start_recording_button_pressed()
 {
-    audio_process->start_recording();
     record_thread->start();
+    audio_process->start_recording();
 }
 
 void MainWindow::stop_recording_button_pressed()
@@ -198,9 +216,9 @@ string MainWindow::directory_dialog()
 string MainWindow::save_file_dialog(const string &file_types)
 {
     auto file_path = qstring_to_string(QFileDialog::getSaveFileName(this,
-                                                                      tr("File Destination"),
-                                                                      get_home_dir_path(),
-                                                                      tr(file_types.c_str())));
+                                                                    tr("File Destination"),
+                                                                    get_home_dir_path(),
+                                                                    tr(file_types.c_str())));
 
     if (file_path.empty())
     {
@@ -213,9 +231,9 @@ string MainWindow::save_file_dialog(const string &file_types)
 string MainWindow::open_file_dialog(const string &file_types)
 {
     auto file_path = qstring_to_string(QFileDialog::getOpenFileName(this,
-                                                                      tr("Select File"),
-                                                                      get_home_dir_path(),
-                                                                      tr(file_types.c_str())));
+                                                                    tr("Select File"),
+                                                                    get_home_dir_path(),
+                                                                    tr(file_types.c_str())));
 
     if (file_path.empty())
     {
@@ -260,7 +278,7 @@ void MainWindow::set_grain_density(int new_value)
 void MainWindow::set_grain_size(int new_value)
 {
     auto grain_size = audio_process->get_grain_size();
-    auto value = static_cast<int>(scale(new_value, 0, slider_max, grain_size.min, grain_size.max));
+    auto value = scale(new_value, 0, slider_max, grain_size.min, grain_size.max);
     audio_process->set_grain_size(value);
     update_number_label(ui->grain_size_value, value);
 }
@@ -274,8 +292,8 @@ float MainWindow::scale(float input, float input_min, float input_max, float out
 QString MainWindow::get_home_dir_path()
 {
     auto home_dir_path = QStandardPaths::locate(QStandardPaths::HomeLocation,
-                                                   QString(),
-                                                   QStandardPaths::LocateDirectory);
+                                                QString(),
+                                                QStandardPaths::LocateDirectory);
 
     return home_dir_path;
 }
@@ -288,6 +306,21 @@ void MainWindow::audio_settings_button_pressed()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     audio_process->stop_stream();
+}
+
+void MainWindow::set_centroid_label(float *new_value)
+{
+    update_number_label(ui->centroid_value, *new_value);
+}
+
+void MainWindow::set_flatness_label(float *new_value)
+{
+    update_number_label(ui->flatness_value, *new_value);
+}
+
+void MainWindow::set_rolloff_label(float *new_value)
+{
+    update_number_label(ui->rolloff_value, *new_value);
 }
 
 } // CATE

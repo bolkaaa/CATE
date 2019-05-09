@@ -37,6 +37,7 @@ void write_audio_file(const AudioBuffer &buffer, const Path &output_path, int ch
 {
     auto format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
     SndfileHandle file(output_path, SFM_WRITE, format, channels, static_cast<int>(sample_rate));
-    file.write(&buffer[0], static_cast<sf_count_t>(buffer.size()));
+    file.write(&buffer[0], static_cast<sf_count_t>(buffer.size() / channels));
 }
+
 } // CATE

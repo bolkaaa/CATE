@@ -93,6 +93,7 @@ private:
     Corpus *corpus;
     QThread *record_thread;
     QThread *analysis_thread;
+    QThread *audio_thread;
     RecordWorker *record_worker;
     AnalysisWorker *analysis_worker;
     const int slider_max = 127;
@@ -119,20 +120,17 @@ public slots:
     /* When audio settings button in UI is pressed, dialog box allows setting audio parameters. */
     void audio_settings_button_pressed();
 
-    /* Set grain attack time through slider. */
+    /* Set parameter values from slider signals. */
     void set_grain_attack(int new_value);
-
-    /* Set grain release time through slider. */
     void set_grain_release(int new_value);
-
-    /* Set grain density through slider. */
     void set_grain_density(int new_value);
-
-    /* Set grain amplitude value through slider. */
     void set_grain_sustain(int new_value);
-
-    /* Set grain size value through slider. */
     void set_grain_size(int new_value);
+
+    /* Update display labels from analysis signals. */
+    void set_centroid_label(float *new_value);
+    void set_flatness_label(float *new_value);
+    void set_rolloff_label(float *new_value);
 };
 
 } // CATE

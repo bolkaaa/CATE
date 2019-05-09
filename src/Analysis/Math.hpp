@@ -42,7 +42,9 @@ inline A geometric_mean(const vector<B> &v)
         log_sum += log(x);
     }
 
-    return exp(log_sum / v.size());
+    auto mean = exp(log_sum / v.size());
+
+    return mean;
 }
 
 /* Return arithmetic mean (sum of N values divided by n) of vector. */
@@ -56,7 +58,9 @@ inline A arithmetic_mean(const vector<B> &v)
         sum += x;
     }
 
-    return sum / v.size();
+    auto mean = sum / v.size();
+
+    return mean;
 }
 
 } // Math

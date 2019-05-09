@@ -28,6 +28,7 @@
 #include "src/Audio/AudioFile.hpp"
 #include "src/Corpus/Corpus.hpp"
 #include "src/Audio/RingBuffer.hpp"
+#include "src/Audio/AnalysisWorker.hpp"
 #include "Scheduler.hpp"
 
 namespace CATE {
@@ -47,7 +48,7 @@ public:
     void calculate_grain_pool(const AudioFrameMap &audio_frame_map);
 
     /* Get the next sample value from the granulator. */
-    float synthesize();
+    float synthesize(AudioIndex audio_index);
 
     /* Toggle "ready" flag. */
     void enable() { ready = true; }
@@ -56,7 +57,7 @@ public:
     bool is_ready() { return ready; }
 
     /* Set parameters. */
-    void set_grain_attack(float value) { grain_attack->value = value; }
+    void set_grain_attack(float value);
     void set_grain_sustain(float value) { grain_sustain->value = value; }
     void set_grain_release(float value) { grain_release->value = value; }
     void set_grain_size(int value) { grain_size->value = value; }
@@ -67,7 +68,7 @@ public:
     const Param<float> get_grain_attack() { return *(grain_attack); }
     const Param<float> get_grain_sustain() { return *(grain_sustain); }
     const Param<float> get_grain_release() { return *(grain_release); }
-    const Param<int> get_grain_size() { return *(grain_size); }
+    const Param<float> get_grain_size() { return *(grain_size); }
     const Param<float> get_grain_density() { return *(grain_density); }
     const FixedParam<int> get_max_grains() { return *(max_grains); }
 
@@ -76,7 +77,7 @@ private:
     Param<float> *grain_sustain;
     Param<float> *grain_release;
     Param<float> *grain_density;
-    Param<int> *grain_size;
+    Param<float> *grain_size;
     FixedParam<int> *max_grains;
     AudioSettings *audio_settings;
     GrainPool grain_pool;

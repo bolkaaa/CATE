@@ -35,14 +35,20 @@ Grain::Grain(const AudioBuffer &data)
 {
 }
 
-void Grain::activate(int size)
+void Grain::activate(int size, float attack, float sustain, float release)
 {
     src.reset();
     env.reset();
+
+    Grain::size = size;
+    Grain::attack = attack;
+    Grain::sustain = sustain;
+    Grain::release = release;
+
     remaining_samples = size;
 }
 
-float Grain::synthesize(int size, float attack, float sustain, float release)
+float Grain::synthesize()
 {
     auto source_output = src.synthesize();
     auto env_output = env.synthesize(size, attack, sustain, release);

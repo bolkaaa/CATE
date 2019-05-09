@@ -26,15 +26,12 @@
 using std::vector;
 using std::string;
 
-/* These are some simple functions that together provide functionality for
- * getting a list of all paths deeper than a specified root path. The filesystem
- * part of the Boost library is used to achieve this. */
-
 namespace CATE {
 
 typedef vector<string> PathList;
 typedef string Path;
 
+/* Functionality for obtaining lists of paths from a root directory path. */
 class PathTree
 {
 public:
