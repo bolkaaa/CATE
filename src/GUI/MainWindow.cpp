@@ -309,7 +309,7 @@ void MainWindow::initialise_sliders()
     init_slider(audio_process->get_grain_release(), ui->grain_release_slider, ui->grain_release_value);
     init_slider(audio_process->get_grain_density(), ui->grain_density_slider, ui->grain_density_value);
     init_slider(audio_process->get_grain_size(), ui->grain_size_slider, ui->grain_size_value);
-    init_slider(audio_process->get_grain_pitch(), ui->grain_size_slider, ui->grain_size_value);
+    init_slider(audio_process->get_grain_pitch(), ui->grain_pitch_slider, ui->grain_pitch_value);
 }
 
 void MainWindow::connect_thread_signals()
