@@ -8,7 +8,6 @@
 
 #include "src/Audio/AudioSettings.hpp"
 #include "src/Audio/AudioProcess.hpp"
-#include "src/Audio/AudioFile.hpp"
 #include "src/Corpus/PathTree.hpp"
 #include "src/Corpus/PointCloud.hpp"
 #include "src/Corpus/Corpus.hpp"
@@ -20,10 +19,17 @@ using namespace CATE;
 /* Constants used in unit tests. */
 namespace TestConstants {
 
-const AudioSettings audio_settings;
-const Path audio_test_file_path_root = "/Users/lrwz/CATE/audio_files";
-const PathList audio_test_file_list = PathTree::get_paths(audio_test_file_path_root);
+const Path audio_directory_base = "/Users/lrwz/CATE/tests/audio_files";
+const PathList audio_directory_paths  = {
+        audio_directory_base + "/violin",
+        audio_directory_base + "/piano_loops",
+};
 
+const Path analysis_test_base = "/Users/lrwz/CATE/tests/analysis_data";
+const PathList analysis_file_paths  = {
+        analysis_test_base + "/violin.json",
+        analysis_test_base + "/piano_loops.json",
+};
 
 } // TestConstants
 

@@ -60,7 +60,8 @@ set(TEST_FILES
         tests/FileInputOutput.cpp
         tests/Corpus.cpp
         tests/Audio.cpp
-        tests/Synthesis.cpp src/Util/Util.hpp tests/Analysis.cpp)
+        tests/Synthesis.cpp
+        tests/Analysis.cpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)

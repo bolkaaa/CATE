@@ -174,7 +174,15 @@ void MainWindow::analyse_directory_button_pressed()
         return;
     }
 
-    audio_process->analyse_directory(audio_dir_path);
+    corpus->add_directory(audio_dir_path);
+    corpus->sliding_window_analysis(audio_settings->get_bin_size());
+    corpus->write_file(corpus_path);
+
+    corpus->rebuild_point_cloud();
+    corpus->rebuild_kdtree();
+    auto audio_frame_map = corpus->create_audio_frame_map();
+
+    audio_process->load_audio(audio_frame_map);
 }
 
 void MainWindow::load_corpus_button_pressed()
@@ -191,7 +199,12 @@ void MainWindow::load_corpus_button_pressed()
         return;
     }
 
-    audio_process->load_corpus(corpus_path);
+    corpus->read_file(corpus_path);
+    corpus->rebuild_point_cloud();
+    corpus->rebuild_kdtree();
+    auto audio_frame_map = corpus->create_audio_frame_map();
+
+    audio_process->load_audio(audio_frame_map);
 }
 
 

@@ -54,7 +54,7 @@ Corpus::Corpus(AudioSettings *audio_settings)
 {
 }
 
-void Corpus::rebuild_index()
+void Corpus::rebuild_kdtree()
 {
     kd_tree.buildIndex();
 }
@@ -102,17 +102,25 @@ void Corpus::add_directory(const Path &directory_path)
 
 void Corpus::write_file(const Path &file_path)
 {
-    ofstream file("mocc.json");
+    ofstream file(file_path);
     file << std::setw(4) << data;
 }
 
 void Corpus::read_file(const Path &file_path)
 {
+    if (!data.empty())
+    {
+        data.clear();
+    }
+
     ifstream file(file_path);
+
     file >> data;
+
+    load_audio_data();
 }
 
-void Corpus::load_audio_from_corpus()
+void Corpus::load_audio_data()
 {
     for (const auto &entry : data.items())
     {
@@ -184,11 +192,6 @@ void Corpus::search(const float *query)
         auto point = point_cloud->get_point(point_index);
         search_results[i] = point;
     }
-}
-
-int Corpus::get_num_segments()
-{
-    return 0;
 }
 
 AudioFrameMap Corpus::create_audio_frame_map()

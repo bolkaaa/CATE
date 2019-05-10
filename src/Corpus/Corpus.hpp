@@ -41,8 +41,6 @@ using std::unique_ptr;
 using Json = nlohmann::json;
 
 namespace CATE {
-
-
 /* Handles functionality for persistently storing a
  * collection of audio file paths and associated segmentation markers and
  * analysis data, forming the basis for the corpus of the concatenative
@@ -56,40 +54,40 @@ public:
      * window of <frames_per_buffer> samples, and store in file. */
     void sliding_window_analysis(int frame_size);
 
-    /* Create hash table data structure where keys are pairs of audio file path and file positions. */
+    /* Create hash table data structure where keys are pairs of audio file path and file positions, and values are
+     * audio data. */
     AudioFrameMap create_audio_frame_map();
 
-    /* Get number of audio file segments from corpus. */
-    int get_num_segments();
-
-    /* Search for nearest neighbours. */
+    /* Search for nearest neighbours, results are stored in search_results. */
     void search(const float *query);
 
+    /* Load audio data from analysis file. */
+    void load_audio_data();
+
     /* Rebuild k-d tree index. */
-    void rebuild_index();
+    void rebuild_kdtree();
 
     /* Get marker/path pair from search results. */
     inline pair<int, string> get_search_result(const int i) const { return make_pair(search_results[i].marker,
             search_results[i].file_path); }
 
-    /* Read analysis data file into memory. */
-    void read_file(const Path &file_path);
-
-    /* Save the analysis data to file, with pretty printing. */
-    void write_file(const Path &file_path);
-
-    /* Add all files deeper than specified directory to the database. */
+    /* Add all files deeper than specified directory to the corpus. */
     void add_directory(const Path &directory_path);
 
-    /* Iterate over paths in db object and load audio files into map. */
-    void load_audio_from_corpus();
+    /* Read analysis data file into memory, and load the associated audio files. */
+    void read_file(const Path &file_path);
+
+    /* Save the analysis data to file. */
+    void write_file(const Path &file_path);
 
     /* From features in database, create point cloud to be used by KNN search. */
     void rebuild_point_cloud();
 
+    /* Get size of corpus (number of points in point cloud). */
     inline int size() const { return point_cloud->kdtree_get_point_count(); }
 
-    inline int get_num_files() const { return audio_buffer_map.size(); }
+    /* Check if data member is same for other corpus (used only in tests). */
+    bool operator==(const Corpus &other) { return data==other.data; }
 
 private:
     /* Compute magnitude spectrum for given audio buffer. */
@@ -106,8 +104,8 @@ private:
     vector<Point> search_results;
     vector<float> out_distances;
     KdTree kd_tree;
-    AudioBufferMap audio_buffer_map;
     FeatureVector feature_vector;
+    AudioBufferMap audio_buffer_map;
 };
 
 

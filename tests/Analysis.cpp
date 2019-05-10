@@ -39,7 +39,7 @@ private:
 
 bool magspec_working()
 {
-    for (const auto &path : TestConstants::audio_test_file_list)
+    for (const auto &path : TestConstants::audio_directory_paths)
     {
         auto frame_size = 256;
         auto analysis_test = AnalysisTest(path, frame_size);

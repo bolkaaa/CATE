@@ -20,11 +20,7 @@
 #ifndef AUDIO_PROCESS_HPP
 #define AUDIO_PROCESS_HPP
 
-#include <memory>
-#include <vector>
-
 #include <QObject>
-#include <boost/functional/hash.hpp>
 
 #include "AudioEngine.hpp"
 #include "AudioBuffer.hpp"
@@ -54,14 +50,8 @@ public:
     /* Stop recording audio output. */
     inline void stop_recording() { recording = false; };
 
-    /* Analyse the audio from a particular directory. */
-    void analyse_directory(const Path &directory_path);
-
-    /* Load new corpus. */
-    void load_corpus(const Path &corpus_path);
-
-    /* Fill granulator with audio segments from corpus. */
-    void fill_grain_buffers();
+    /* Load audio from AudioFrameMap into Granulator object to calculate grains. */
+    void load_audio(const AudioFrameMap &audio_frame_map);
 
     /* Return status of whether granulator is ready to used. */
     bool granulator_has_files() { return granulator.is_ready(); }
@@ -95,7 +85,6 @@ private:
     RingBuffer<float> *output_ring_buffer;
     RingBuffer<AudioIndex> *audio_index_queue;
     AudioIndex current_index;
-    AudioFrameMap audio_frame_map;
     bool recording;
 
 public slots:
@@ -110,6 +99,7 @@ signals:
     void send_output_data(RingBuffer<float> *output_ring_buffer);
 
 protected:
+    /* Audio callback function. */
     int processing_callback(const void *input_buffer,
                             void *output_buffer,
                             unsigned long buffer_size,

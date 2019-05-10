@@ -89,19 +89,9 @@ int AudioProcess::processing_callback(const void *input_buffer,
     return paContinue;
 }
 
-void AudioProcess::analyse_directory(const Path &directory_path)
+void AudioProcess::load_audio(const AudioFrameMap &audio_frame_map)
 {
-    corpus->add_directory(directory_path);
-    corpus->sliding_window_analysis(audio_settings->get_bin_size());
-    corpus->rebuild_index();
-}
 
-void AudioProcess::load_corpus(const Path &corpus_path)
-{
-    corpus->read_file(corpus_path);
-    corpus->rebuild_point_cloud();
-    corpus->rebuild_index();
-    audio_frame_map = corpus->create_audio_frame_map();
     granulator.calculate_grain_pool(audio_frame_map);
 }
 

@@ -18,6 +18,7 @@
 */
 
 #include <vector>
+#include <iostream>
 
 #include <boost/filesystem.hpp>
 
@@ -25,17 +26,30 @@
 
 using std::vector;
 using std::string;
+using std::copy;
+using std::back_inserter;
+using boost::filesystem::directory_iterator;
+using boost::filesystem::is_directory;
+using boost::filesystem::directory_entry;
 
 namespace CATE {
 
 PathList PathTree::get_subpaths(const Path &root_path)
 {
-    auto entries = vector<boost::filesystem::directory_entry>();
-    PathList sub_paths;
+    auto entries = vector<directory_entry>();
+    auto sub_paths = PathList();
 
-    std::copy(boost::filesystem::directory_iterator(root_path),
-              boost::filesystem::directory_iterator(),
-              std::back_inserter(entries));
+    /* Try to copy all entries within root path to entries vector. */
+    try
+    {
+        auto begin = directory_iterator(root_path);
+        auto end = directory_iterator();
+        copy(begin, end, back_inserter(entries));
+    } catch (const boost::filesystem::filesystem_error& e)
+    {
+        std::cerr << e.what();
+        return PathList();
+    }
 
     for (const auto &entry : entries)
     {
@@ -52,7 +66,7 @@ void PathTree::get_nested_files(PathList &paths, const Path &root_path)
 
     for (const auto &path : sub_paths)
     {
-        if (boost::filesystem::is_directory(path))
+        if (is_directory(path))
         {
             get_nested_files(paths, path);
         }
