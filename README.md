@@ -1,13 +1,13 @@
 # CATE
 A corpus-based concatenative synthesis application written in C++ (work in progress). 
 
-![Window](https://files.catbox.moe/6tqcvf.png)
+![Window](https://files.catbox.moe/pbtni8.png)
 
 ### Build dependencies
 - portaudio
 - libsndfile
 - fftw3
-- boost/filesystem
+- boost
 - qt5
 
 ### Building with CMake

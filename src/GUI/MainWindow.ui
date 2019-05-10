@@ -496,6 +496,12 @@
      </property>
      <item row="2" column="0">
       <widget class="QLabel" name="centroid_name">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="text">
         <string>Centroid</string>
        </property>
@@ -557,6 +563,12 @@
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="rolloff_name">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="lineWidth">
         <number>1</number>
        </property>
@@ -570,10 +582,10 @@
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
        <property name="wordWrap">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="margin">
-        <number>2</number>
+        <number>0</number>
        </property>
        <property name="indent">
         <number>-1</number>
@@ -606,12 +618,54 @@
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="flatness_name">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="text">
         <string>Flatness</string>
        </property>
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>30</y>
+      <width>161</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>64</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>CATE</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>90</y>
+      <width>121</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Liam Wyllie © 2019</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
