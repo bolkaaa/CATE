@@ -82,6 +82,9 @@ private:
     /* Connect signals to slots for sliders in GUI. */
     void connect_slider_signals();
 
+    /* Connect signals to slots for misc. labels in GUI. */
+    void connect_label_signals();
+
     /* Convert value from an input range to an output range. */
     float scale(float input, float input_min, float input_max, float output_min, float output_max);
 

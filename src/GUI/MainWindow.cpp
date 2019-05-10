@@ -57,6 +57,7 @@ MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_setting
     connect_thread_signals();
     connect_button_signals();
     connect_slider_signals();
+    connect_label_signals();
 }
 
 void MainWindow::start_playback_button_pressed()
@@ -314,35 +315,24 @@ void MainWindow::initialise_sliders()
 
 void MainWindow::connect_thread_signals()
 {
+    /* Sending input from audio process to analysis worker. */
     connect(audio_process,
             SIGNAL(send_input_data(RingBuffer<float> * )),
             analysis_worker,
             SLOT(input_data_received(RingBuffer<float> * )));
 
+    /* Sending output from audio process to record worker. */
     connect(audio_process,
             SIGNAL(send_output_data(RingBuffer<float> * )),
             record_worker,
             SLOT(output_data_received(RingBuffer<float> * )));
 
+    /* Sending output from analysis worker to audio process. */
     connect(analysis_worker,
-            SIGNAL(send_search_results(RingBuffer<CorpusIndex> * )),
+            SIGNAL(send_search_results(RingBuffer<int> * )),
             audio_process,
-            SLOT(search_results_received(RingBuffer<CorpusIndex> * )));
+            SLOT(search_results_received(RingBuffer<int> * )));
 
-    connect(analysis_worker,
-            SIGNAL(send_centroid(float * )),
-            this,
-            SLOT(set_centroid_label(float * )));
-
-    connect(analysis_worker,
-            SIGNAL(send_flatness(float * )),
-            this,
-            SLOT(set_flatness_label(float * )));
-
-    connect(analysis_worker,
-            SIGNAL(send_rolloff(float * )),
-            this,
-            SLOT(set_rolloff_label(float * )));
 }
 
 void MainWindow::connect_button_signals()
@@ -364,6 +354,24 @@ void MainWindow::connect_slider_signals()
     connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
     connect(ui->grain_size_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_size(int)));
     connect(ui->grain_pitch_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_pitch(int)));
+}
+
+void MainWindow::connect_label_signals()
+{
+    connect(analysis_worker,
+            SIGNAL(send_centroid(float * )),
+            this,
+            SLOT(set_centroid_label(float * )));
+
+    connect(analysis_worker,
+            SIGNAL(send_flatness(float * )),
+            this,
+            SLOT(set_flatness_label(float * )));
+
+    connect(analysis_worker,
+            SIGNAL(send_rolloff(float * )),
+            this,
+            SLOT(set_rolloff_label(float * )));
 }
 
 } // CATE

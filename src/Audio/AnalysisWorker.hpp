@@ -51,7 +51,7 @@ private:
     int counter;
     AudioBuffer buffer = AudioBuffer(buffer_size);
     Magspec magspec = Magspec(buffer_size);
-    RingBuffer<CorpusIndex> *search_results;
+    RingBuffer<int> *search_results;
     FFT fft;
 
 public slots:
@@ -59,7 +59,7 @@ public slots:
 
 signals:
     /* Emit search results buffer as signal. */
-    void send_search_results(RingBuffer<CorpusIndex> *search_results);
+    void send_search_results(RingBuffer<int> *search_results);
 
     /* Emit analysis values as signals. */
     void send_marker(int *marker);

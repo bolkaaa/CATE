@@ -23,19 +23,12 @@
 #include <map>
 #include <unordered_map>
 
-#include <boost/functional/hash.hpp>
-
 #include "src/Corpus/Corpus.hpp"
 #include "src/Audio/RingBuffer.hpp"
 #include "src/Audio/AnalysisWorker.hpp"
 #include "Scheduler.hpp"
 
 namespace CATE {
-
-/* Key-value pair structure where key is pair of file position and file path, and value is a grain array index. */
-typedef std::unordered_map<std::pair<int, Path>, int, boost::hash<pair<int, Path>>> GrainIndex;
-
-typedef std::vector<Grain> GrainPool;
 
 /* Granulator is the high-level interface that contains all the functionality for the granular synthesis process. */
 class Granulator
@@ -49,7 +42,7 @@ public:
     void calculate_grain_pool(const AudioFrameMap &audio_frame_map);
 
     /* Get the next sample value from the granulator. */
-    float synthesize(RingBuffer<CorpusIndex> *audio_index_queue);
+    float synthesize(RingBuffer<int> *audio_index_queue);
 
     /* Set parameters. */
     inline void set_grain_attack(float value) { grain_attack->value = value; }
@@ -79,9 +72,7 @@ private:
     FixedParam<int> *max_grains;
     AudioSettings *audio_settings;
     GrainPool grain_pool;
-    GrainIndex grain_index;
     Scheduler scheduler;
-    bool grains_calculated;
 };
 
 } // CATE

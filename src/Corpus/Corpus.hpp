@@ -67,9 +67,8 @@ public:
     /* Rebuild k-d tree index. */
     void rebuild_kdtree();
 
-    /* Get marker/path pair from search results. */
-    inline pair<int, string> get_search_result(const int i) const { return make_pair(search_results[i].marker,
-            search_results[i].file_path); }
+    /* Get corpus index from search results. */
+    inline int get_search_result(const int i) const { return out_indices[i]; }
 
     /* Add all files deeper than specified directory to the corpus. */
     void add_directory(const Path &directory_path);

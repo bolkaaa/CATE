@@ -27,7 +27,7 @@ AnalysisWorker::AnalysisWorker(AudioSettings *audio_settings, Corpus *corpus)
           corpus(corpus),
           fft(audio_settings),
           buffer_size(audio_settings->get_bin_size()),
-          search_results(new RingBuffer<CorpusIndex>(buffer_size))
+          search_results(new RingBuffer<int>(buffer_size))
 {
 }
 

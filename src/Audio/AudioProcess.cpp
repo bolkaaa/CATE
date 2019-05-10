@@ -36,8 +36,8 @@ AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus)
           granulator(audio_settings),
           input_ring_buffer(new RingBuffer<float>(ring_buffer_size)),
           output_ring_buffer(new RingBuffer<float>(ring_buffer_size)),
-          corpus_index_input_queue(new RingBuffer<CorpusIndex>(ring_buffer_size)),
-          corpus_index_output_queue(new RingBuffer<CorpusIndex>(ring_buffer_size)),
+          corpus_index_input_queue(new RingBuffer<int>(ring_buffer_size)),
+          corpus_index_output_queue(new RingBuffer<int>(ring_buffer_size)),
           recording(false),
           audio_loaded(false)
 {
@@ -67,7 +67,6 @@ int AudioProcess::processing_callback(const void *input_buffer,
     {
         const auto in = *input++;
 
-        /* TODO: optimise analysis code. */
         /* Send input to ring buffer. */
         input_ring_buffer->push(in);
 
@@ -105,11 +104,11 @@ void AudioProcess::load_audio(const AudioFrameMap &audio_frame_map)
     granulator.calculate_grain_pool(audio_frame_map);
 }
 
-void AudioProcess::search_results_received(RingBuffer<CorpusIndex> *corpus_index_input_queue)
+void AudioProcess::search_results_received(RingBuffer<int> *corpus_index_input_queue)
 {
     if (corpus_index_input_queue->samples_available())
     {
-        auto index = CorpusIndex();
+        auto index = 0;
         corpus_index_input_queue->pop(index);
         corpus_index_output_queue->push(index);
     }

@@ -50,23 +50,17 @@ Granulator::~Granulator()
 
 void Granulator::calculate_grain_pool(const AudioFrameMap &audio_frame_map)
 {
-    auto index = 0;
-
-    /* For each frame in the audio frame map, create a Grain from the data, and store the key (marker+path pair)
-     * along with an integer in the GrainIndex map. This will be used as a lookup for the GrainPool vector. */
+    /* For each frame in the audio frame map, create a Grain from the data. */
     for (const auto &frame : audio_frame_map)
     {
-        auto frame_info = frame.first;
         auto frame_data = frame.second;
         grain_pool.emplace_back(Grain(frame_data, audio_settings));
-        grain_index[frame_info] = index;
-        index += 1;
     }
 
-    scheduler.rebuild_grain_pool(grain_pool, grain_index);
+    scheduler.rebuild_grain_pool(grain_pool);
 }
 
-float Granulator::synthesize(RingBuffer<CorpusIndex> *audio_index_queue)
+float Granulator::synthesize(RingBuffer<int> *audio_index_queue)
 {
     auto output = scheduler.schedule(audio_index_queue);
     return output;

@@ -20,14 +20,11 @@
 #include <random>
 #include <cmath>
 
-#include <boost/functional/hash.hpp>
-
 #include "src/Corpus/PathTree.hpp"
 #include "src/Corpus/Corpus.hpp"
 #include "Scheduler.hpp"
 
 namespace CATE {
-
 
 Scheduler::Scheduler(AudioSettings *audio_settings, Param<float> *grain_attack, Param<float> *grain_sustain,
                      Param<float> *grain_release, Param<float> *grain_density, Param<float> *grain_size,
@@ -41,7 +38,8 @@ Scheduler::Scheduler(AudioSettings *audio_settings, Param<float> *grain_attack, 
           grain_pitch(grain_pitch),
           max_grains(max_grains),
           next_onset(0),
-          rand(0.01f, 1.0f)
+          index_counter(0),
+          rand(0.001f, 1.0f)
 {
 }
 
@@ -62,22 +60,28 @@ void Scheduler::activate_next_grain()
     }
 }
 
-float Scheduler::schedule(RingBuffer<CorpusIndex> *audio_index_queue)
+void Scheduler::enqueue_grain(RingBuffer<int> *corpus_index_queue)
+{
+    if (corpus_index_queue->samples_available())
+    {
+        auto index = 0;
+        corpus_index_queue->pop(index);
+        indices[index_counter] = index;
+
+        ++index_counter;
+
+        if (index_counter > indices.size())
+        {
+            index_counter -= indices.size();
+        }
+    }
+}
+
+float Scheduler::schedule(RingBuffer<int> *corpus_index_queue)
 {
     if (next_onset == 0)
     {
-        if (audio_index_queue->samples_available())
-        {
-            auto index = CorpusIndex();
-            audio_index_queue->pop(index);
-            indices[index_counter] = grain_index[index];
-            ++index_counter;
-            if (index_counter > indices.size())
-            {
-                index_counter -= indices.size();
-            }
-        }
-
+        enqueue_grain(corpus_index_queue);
         activate_next_grain();
         next_onset += get_next_inter_onset();
     }
@@ -112,10 +116,9 @@ int Scheduler::get_next_inter_onset()
     return inter_onset;
 }
 
-void Scheduler::rebuild_grain_pool(const GrainPool &grain_pool, const GrainIndex &grain_index)
+void Scheduler::rebuild_grain_pool(const GrainPool &grain_pool)
 {
     Scheduler::grain_pool = grain_pool;
-    Scheduler::grain_index = grain_index;
 
     /* Initialise grains to random indices. */
     for (auto i = 0; i < max_grains->value; ++i)
