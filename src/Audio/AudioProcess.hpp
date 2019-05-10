@@ -53,14 +53,12 @@ public:
     /* Load audio from AudioFrameMap into Granulator object to calculate grains. */
     void load_audio(const AudioFrameMap &audio_frame_map);
 
-    /* Return status of whether granulator is ready to used. */
-    bool granulator_has_files() { return granulator.is_ready(); }
-
     /* Set parameters. */
     void set_grain_attack(float attack) { granulator.set_grain_attack(attack); }
     void set_grain_sustain(float sustain) { granulator.set_grain_sustain(sustain); }
     void set_grain_release(float release) { granulator.set_grain_release(release); }
-    void set_grain_size(int size) { granulator.set_grain_size(size); }
+    void set_grain_size(float size) { granulator.set_grain_size(size); }
+    void set_grain_pitch(float pitch) { granulator.set_grain_pitch(pitch); }
     void set_grain_density(float density) { granulator.set_grain_density(density); }
     void set_sample_rate(int selection_index) { audio_settings->set_sample_rate(selection_index); }
     void set_buffer_size(int selection_index) { audio_settings->set_buffer_size(selection_index); }
@@ -75,6 +73,7 @@ public:
     const Param<float> get_grain_release() { return granulator.get_grain_release(); }
     const Param<float> get_grain_density() { return granulator.get_grain_density(); }
     const Param<float> get_grain_size() { return granulator.get_grain_size(); }
+    const Param<float> get_grain_pitch() { return granulator.get_grain_pitch(); }
 
 private:
     AudioSettings *audio_settings;
@@ -86,6 +85,7 @@ private:
     RingBuffer<AudioIndex> *audio_index_queue;
     AudioIndex current_index;
     bool recording;
+    bool audio_loaded;
 
 public slots:
     /* Action to take when signal received from AnalysisWorker. */

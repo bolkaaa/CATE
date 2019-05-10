@@ -39,7 +39,7 @@ class Scheduler
 public:
     Scheduler(AudioSettings *audio_settings, Param<float> *grain_attack, Param<float> *grain_sustain,
               Param<float> *grain_release, Param<float> *grain_density, Param<float> *grain_size,
-              FixedParam<int> *max_grains);
+              Param<float> *grain_pitch, FixedParam<int> *max_grains);
 
     /* Calculate grain activations. */
     float schedule(int new_grain_index);
@@ -63,6 +63,7 @@ private:
     Param<float> *grain_release;
     Param<float> *grain_density;
     Param<float> *grain_size;
+    Param<float> *grain_pitch;
     FixedParam<int> *max_grains;
     vector<int> indices;
     GrainPool grain_pool;

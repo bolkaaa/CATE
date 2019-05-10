@@ -37,7 +37,8 @@ AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus)
           input_ring_buffer(new RingBuffer<float>(ring_buffer_size)),
           output_ring_buffer(new RingBuffer<float>(ring_buffer_size)),
           audio_index_queue(new RingBuffer<AudioIndex>(ring_buffer_size)),
-          recording(false)
+          recording(false),
+          audio_loaded(false)
 {
 }
 
@@ -67,7 +68,11 @@ int AudioProcess::processing_callback(const void *input_buffer,
         /* TODO: optimise analysis code. */
         /* Send input to ring buffer. */
         input_ring_buffer->push(in);
-        emit send_input_data(input_ring_buffer);
+
+        if (!input_ring_buffer->space_available())
+        {
+//            emit send_input_data(input_ring_buffer);
+        }
 
         /* Get next analysis result. */
         search_results_received(audio_index_queue);
@@ -82,7 +87,11 @@ int AudioProcess::processing_callback(const void *input_buffer,
         if (recording)
         {
             output_ring_buffer->push(out);
-            emit send_output_data(output_ring_buffer);
+
+            if (!output_ring_buffer->space_available())
+            {
+                emit send_output_data(output_ring_buffer);
+            }
         }
     }
 
@@ -91,7 +100,6 @@ int AudioProcess::processing_callback(const void *input_buffer,
 
 void AudioProcess::load_audio(const AudioFrameMap &audio_frame_map)
 {
-
     granulator.calculate_grain_pool(audio_frame_map);
 }
 

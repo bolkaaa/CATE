@@ -96,6 +96,7 @@ private:
     QThread *audio_thread;
     RecordWorker *record_worker;
     AnalysisWorker *analysis_worker;
+    bool audio_ready;
     const int slider_max = 127;
 
 public slots:
@@ -126,6 +127,7 @@ public slots:
     void set_grain_density(int new_value);
     void set_grain_sustain(int new_value);
     void set_grain_size(int new_value);
+    void set_grain_pitch(int new_value);
 
     /* Update display labels from analysis signals. */
     void set_centroid_label(float *new_value);

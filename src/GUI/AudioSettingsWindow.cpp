@@ -75,55 +75,35 @@ void AudioSettingsWindow::sample_rate_changed(int selection_index)
 {
     audio_process->stop_stream();
     audio_process->set_sample_rate(selection_index);
-
-    if (audio_process->granulator_has_files())
-    {
-        audio_process->start_stream();
-    }
+    audio_process->start_stream();
 }
 
 void AudioSettingsWindow::buffer_size_changed(int selection_index)
 {
     audio_process->stop_stream();
     audio_process->set_buffer_size(selection_index);
-
-    if (audio_process->granulator_has_files())
-    {
-        audio_process->start_stream();
-    }
+    audio_process->start_stream();
 }
 
 void AudioSettingsWindow::input_device_changed(int selection_index)
 {
     audio_process->stop_stream();
     audio_process->set_input_device(selection_index);
-
-    if (audio_process->granulator_has_files())
-    {
-        audio_process->start_stream();
-    }
+    audio_process->start_stream();
 }
 
 void AudioSettingsWindow::output_device_changed(int selection_index)
 {
     audio_process->stop_stream();
     audio_process->set_output_device(selection_index);
-
-    if (audio_process->granulator_has_files())
-    {
-        audio_process->start_stream();
-    }
+    audio_process->start_stream();
 }
 
 void AudioSettingsWindow::max_grains_changed(int selection_index)
 {
     audio_process->stop_stream();
     audio_process->set_max_grains(selection_index);
-
-    if (audio_process->granulator_has_files())
-    {
-        audio_process->start_stream();
-    }
+    audio_process->start_stream();
 }
 
 } // CATE

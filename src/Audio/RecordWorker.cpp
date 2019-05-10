@@ -30,9 +30,12 @@ RecordWorker::RecordWorker(AudioSettings *audio_settings)
 
 void RecordWorker::output_data_received(RingBuffer<float> *ring_buffer)
 {
-    auto data = 0.0f;
-    ring_buffer->pop(data);
-    recording_data.push_front(data);
+    while (ring_buffer->samples_available() > 0)
+    {
+        auto data = 0.0f;
+        ring_buffer->pop(data);
+        recording_data.push_front(data);
+    }
 }
 
 void RecordWorker::save_recording(const Path &output_path)

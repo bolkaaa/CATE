@@ -24,18 +24,16 @@
 namespace CATE {
 
 Source::Source(const AudioBuffer &data)
-    : index(0)
+        : index(0),
+          buffer(data)
 {
-    buffer = data;
 }
 
-float Source::synthesize()
+float Source::synthesize(int phase_incr)
 {
-    float sample = buffer[index];
-    ++index;
+    auto sample = buffer[index];
+    index += phase_incr;
     return sample;
 }
-
-
 
 } // CATE

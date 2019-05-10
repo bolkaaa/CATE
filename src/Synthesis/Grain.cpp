@@ -29,31 +29,40 @@ Grain::Grain()
 {
 }
 
-Grain::Grain(const AudioBuffer &data)
+Grain::Grain(const AudioBuffer &data, AudioSettings *audio_settings)
         : src(Source(data)),
-          remaining_samples(0)
+          remaining_samples(0),
+          phase(0.0f),
+          phase_incr(0.0f),
+          audio_settings(audio_settings)
 {
 }
 
-void Grain::activate(int size, float attack, float sustain, float release)
+void Grain::activate(float size, float pitch, float attack, float sustain, float release)
 {
     src.reset();
     env.reset();
+    phase = 0.0f;
 
     Grain::size = size;
     Grain::attack = attack;
     Grain::sustain = sustain;
     Grain::release = release;
+    Grain::pitch = pitch;
 
-    remaining_samples = size;
+    sample_size = static_cast<int>((size * audio_settings->get_sample_rate().value) / 1000.0f);
+    phase_incr = size * pitch * 1.0f/audio_settings->get_sample_rate().value;
+    remaining_samples = sample_size;
 }
 
 float Grain::synthesize()
 {
-    auto source_output = src.synthesize();
-    auto env_output = env.synthesize(size, attack, sustain, release);
+    auto source_output = src.synthesize(phase);
+    auto env_output = env.synthesize(sample_size, phase, attack, sustain, release);
 
-    --remaining_samples;
+    phase += phase_incr;
+
+    remaining_samples -= phase;
 
     return source_output * env_output;
 }

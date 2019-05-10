@@ -28,16 +28,19 @@ Granulator::Granulator(AudioSettings *audio_settings)
           grain_attack(new Param<float>(0.5f, 0.05f, 0.95f)),
           grain_sustain(new Param<float>(0.5f, 0.0f, 0.95f)),
           grain_release(new Param<float>(0.5f, 0.05f, 0.95f)),
-          grain_density(new Param<float>(1.0f, 1.0f, 1024.0f)),
-          grain_size(new Param<float>(50.0f, 20.0f, 100.0f)),
+          grain_density(new Param<float>(512.0f, 1.0f, 1024.0f)),
+          grain_size(new Param<float>(50.0f, 1.0f, 200.0f)),
+          grain_pitch(new Param<float>(1.0f, 0.5f, 2.0f)),
           max_grains(new FixedParam<int>({8, 12, 16, 24, 32, 48, 64}, 2)),
-          scheduler(audio_settings, grain_attack, grain_sustain, grain_release, grain_density, grain_size, max_grains)
+          scheduler(audio_settings, grain_attack, grain_sustain, grain_release, grain_density, grain_size, grain_pitch,
+          max_grains)
 {
 }
 
 Granulator::~Granulator()
 {
     delete max_grains;
+    delete grain_pitch;
     delete grain_size;
     delete grain_density;
     delete grain_release;
@@ -55,7 +58,7 @@ void Granulator::calculate_grain_pool(const AudioFrameMap &audio_frame_map)
     {
         auto frame_info = frame.first;
         auto frame_data = frame.second;
-        grain_pool.emplace_back(Grain(frame_data));
+        grain_pool.emplace_back(Grain(frame_data, audio_settings));
         grain_index[frame_info] = index;
         index += 1;
     }
@@ -68,11 +71,6 @@ float Granulator::synthesize(AudioIndex audio_index)
     auto index = grain_index[audio_index];
     auto output = scheduler.schedule(index);
     return output;
-}
-
-void Granulator::set_grain_attack(float value)
-{
-    grain_attack->value = value;
 }
 
 } // CATE

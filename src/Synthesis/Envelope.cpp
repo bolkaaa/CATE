@@ -38,7 +38,7 @@ void Envelope::reset()
     amp_incr = 0.0f;
 }
 
-float Envelope::synthesize(int size, float attack, float sustain, float release)
+float Envelope::synthesize(int size, int phase_incr, float attack, float sustain, float release)
 {
     auto attack_samples = static_cast<int>(size * attack);
     auto release_samples = static_cast<int>(size * release);
@@ -57,7 +57,7 @@ float Envelope::synthesize(int size, float attack, float sustain, float release)
     }
 
     amp += amp_incr;
-    ++index;
+    index += phase_incr;
 
     return amp;
 }

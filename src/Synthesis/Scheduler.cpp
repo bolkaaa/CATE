@@ -28,13 +28,14 @@ namespace CATE {
 
 Scheduler::Scheduler(AudioSettings *audio_settings, Param<float> *grain_attack, Param<float> *grain_sustain,
                      Param<float> *grain_release, Param<float> *grain_density, Param<float> *grain_size,
-                     FixedParam<int> *max_grains)
+                     Param<float> *grain_pitch, FixedParam<int> *max_grains)
         : audio_settings(audio_settings),
           grain_attack(grain_attack),
           grain_sustain(grain_sustain),
           grain_release(grain_release),
           grain_density(grain_density),
           grain_size(grain_size),
+          grain_pitch(grain_pitch),
           max_grains(max_grains),
           next_onset(0),
           rand(0.01f, 1.0f)
@@ -47,8 +48,8 @@ void Scheduler::activate_next_grain()
     {
         if (!grain_pool[i].is_active())
         {
-            auto grain_size_samples = static_cast<int>((grain_size->value * audio_settings->get_sample_rate().value) / 1000.0f);
-            grain_pool[i].activate(grain_size_samples,
+            grain_pool[i].activate(grain_size->value,
+                                   grain_pitch->value,
                                    grain_attack->value,
                                    grain_sustain->value,
                                    grain_release->value);

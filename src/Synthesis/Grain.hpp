@@ -20,6 +20,7 @@
 #ifndef GRAIN_HPP
 #define GRAIN_HPP
 
+#include "src/Audio/AudioSettings.hpp"
 #include "Source.hpp"
 #include "Envelope.hpp"
 
@@ -32,10 +33,10 @@ class Grain
 public:
     Grain();
 
-    Grain(const AudioBuffer &data);
+    Grain(const AudioBuffer &data, AudioSettings *audio_settings);
 
     /* Activate grain, setting remaining samples to a particular value. */
-    void activate(int size, float ttack, float sustain, float release);
+    void activate(float size, float pitch, float attack, float sustain, float release);
 
     /* Synthesize next sample from audio source and envelope. */
     float synthesize();
@@ -44,13 +45,18 @@ public:
     bool is_active() const;
 
 private:
+    int sample_size;
     int remaining_samples;
-    Source src;
-    int size;
+    float phase_incr;
+    float phase;
+    float pitch;
+    float size;
     float attack;
     float sustain;
     float release;
+    Source src;
     Envelope env;
+    AudioSettings *audio_settings;
 };
 
 } // CATE

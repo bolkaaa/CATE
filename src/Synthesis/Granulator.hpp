@@ -51,27 +51,23 @@ public:
     /* Get the next sample value from the granulator. */
     float synthesize(AudioIndex audio_index);
 
-    /* Toggle "ready" flag. */
-    void enable() { ready = true; }
-
-    /* Check if granulator ready. */
-    bool is_ready() { return ready; }
-
     /* Set parameters. */
-    void set_grain_attack(float value);
-    void set_grain_sustain(float value) { grain_sustain->value = value; }
-    void set_grain_release(float value) { grain_release->value = value; }
-    void set_grain_size(int value) { grain_size->value = value; }
-    void set_grain_density(float value) { grain_density->value = value; }
-    void set_max_grains(int selection_index) { max_grains->set(selection_index); }
+    inline void set_grain_attack(float value) { grain_attack->value = value; }
+    inline void set_grain_sustain(float value) { grain_sustain->value = value; }
+    inline void set_grain_release(float value) { grain_release->value = value; }
+    inline void set_grain_size(float value) { grain_size->value = value; }
+    inline void set_grain_pitch(float value) { grain_pitch->value = value; }
+    inline void set_grain_density(float value) { grain_density->value = value; }
+    inline void set_max_grains(int selection_index) { max_grains->set(selection_index); }
 
     /* Get parameters. */
-    const Param<float> get_grain_attack() { return *(grain_attack); }
-    const Param<float> get_grain_sustain() { return *(grain_sustain); }
-    const Param<float> get_grain_release() { return *(grain_release); }
-    const Param<float> get_grain_size() { return *(grain_size); }
-    const Param<float> get_grain_density() { return *(grain_density); }
-    const FixedParam<int> get_max_grains() { return *(max_grains); }
+    inline const Param<float> get_grain_attack() { return *(grain_attack); }
+    inline const Param<float> get_grain_sustain() { return *(grain_sustain); }
+    inline const Param<float> get_grain_release() { return *(grain_release); }
+    inline const Param<float> get_grain_size() { return *(grain_size); }
+    inline const Param<float> get_grain_pitch() { return *(grain_pitch); }
+    inline const Param<float> get_grain_density() { return *(grain_density); }
+    inline const FixedParam<int> get_max_grains() { return *(max_grains); }
 
 private:
     Param<float> *grain_attack;
@@ -79,12 +75,13 @@ private:
     Param<float> *grain_release;
     Param<float> *grain_density;
     Param<float> *grain_size;
+    Param<float> *grain_pitch;
     FixedParam<int> *max_grains;
     AudioSettings *audio_settings;
     GrainPool grain_pool;
     GrainIndex grain_index;
     Scheduler scheduler;
-    bool ready = false;
+    bool grains_calculated;
 };
 
 } // CATE

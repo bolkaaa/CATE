@@ -33,7 +33,7 @@ public:
     void reset();
 
     /* Synthesize the next sample value and return it. */
-    float synthesize(int size, float attack, float sustain, float release);
+    float synthesize(int size, int phase_incr, float attack, float sustain, float release);
 
 private:
     int index;

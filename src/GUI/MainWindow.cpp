@@ -45,7 +45,8 @@ MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_setting
           record_thread(new QThread),
           analysis_thread(new QThread),
           audio_thread(new QThread),
-          audio_settings_window(audio_process)
+          audio_settings_window(audio_process),
+          audio_ready(false)
 {
     ui->setupUi(this);
 
@@ -103,6 +104,7 @@ MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_setting
     connect(ui->grain_release_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
     connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
     connect(ui->grain_size_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_size(int)));
+    connect(ui->grain_pitch_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_pitch(int)));
 }
 
 void MainWindow::start_playback_button_pressed()
@@ -143,7 +145,7 @@ void MainWindow::stop_recording_button_pressed()
     {
         std::cerr << e.what() << "\n";
 
-        if (audio_process->granulator_has_files())
+        if (audio_ready)
         {
             audio_process->start_stream();
         }
@@ -177,12 +179,11 @@ void MainWindow::analyse_directory_button_pressed()
     corpus->add_directory(audio_dir_path);
     corpus->sliding_window_analysis(audio_settings->get_bin_size());
     corpus->write_file(corpus_path);
-
     corpus->rebuild_point_cloud();
     corpus->rebuild_kdtree();
     auto audio_frame_map = corpus->create_audio_frame_map();
-
     audio_process->load_audio(audio_frame_map);
+    audio_ready = true;
 }
 
 void MainWindow::load_corpus_button_pressed()
@@ -203,8 +204,8 @@ void MainWindow::load_corpus_button_pressed()
     corpus->rebuild_point_cloud();
     corpus->rebuild_kdtree();
     auto audio_frame_map = corpus->create_audio_frame_map();
-
     audio_process->load_audio(audio_frame_map);
+    audio_ready = true;
 }
 
 
@@ -294,6 +295,14 @@ void MainWindow::set_grain_size(int new_value)
     update_number_label(ui->grain_size_value, value);
 }
 
+void MainWindow::set_grain_pitch(int new_value)
+{
+    auto grain_pitch = audio_process->get_grain_pitch();
+    auto value = scale(new_value, 0, slider_max, grain_pitch.min, grain_pitch.max);
+    audio_process->set_grain_pitch(value);
+    update_number_label(ui->grain_pitch_value, value);
+}
+
 float MainWindow::scale(float input, float input_min, float input_max, float output_min, float output_max)
 {
     auto output = (((input - input_min) * (output_max - output_min)) / (input_max - input_min)) + output_min;
@@ -333,5 +342,6 @@ void MainWindow::set_rolloff_label(float *new_value)
 {
     update_number_label(ui->rolloff_value, *new_value);
 }
+
 
 } // CATE
