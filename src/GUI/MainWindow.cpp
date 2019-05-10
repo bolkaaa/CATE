@@ -325,9 +325,9 @@ void MainWindow::connect_thread_signals()
             SLOT(output_data_received(RingBuffer<float> * )));
 
     connect(analysis_worker,
-            SIGNAL(send_search_results(RingBuffer<AudioIndex> * )),
+            SIGNAL(send_search_results(RingBuffer<CorpusIndex> * )),
             audio_process,
-            SLOT(search_results_received(RingBuffer<AudioIndex> * )));
+            SLOT(search_results_received(RingBuffer<CorpusIndex> * )));
 
     connect(analysis_worker,
             SIGNAL(send_centroid(float * )),

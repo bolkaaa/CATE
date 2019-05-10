@@ -36,7 +36,8 @@ AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus)
           granulator(audio_settings),
           input_ring_buffer(new RingBuffer<float>(ring_buffer_size)),
           output_ring_buffer(new RingBuffer<float>(ring_buffer_size)),
-          audio_index_queue(new RingBuffer<AudioIndex>(ring_buffer_size)),
+          corpus_index_input_queue(new RingBuffer<CorpusIndex>(ring_buffer_size)),
+          corpus_index_output_queue(new RingBuffer<CorpusIndex>(ring_buffer_size)),
           recording(false),
           audio_loaded(false)
 {
@@ -44,7 +45,8 @@ AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus)
 
 AudioProcess::~AudioProcess()
 {
-    delete audio_index_queue;
+    delete corpus_index_output_queue;
+    delete corpus_index_input_queue;
     delete output_ring_buffer;
     delete input_ring_buffer;
 }
@@ -71,14 +73,14 @@ int AudioProcess::processing_callback(const void *input_buffer,
 
         if (!input_ring_buffer->space_available())
         {
-//            emit send_input_data(input_ring_buffer);
+            emit send_input_data(input_ring_buffer);
         }
 
         /* Get next analysis result. */
-        search_results_received(audio_index_queue);
+        search_results_received(corpus_index_input_queue);
 
         /* Synthesize output from granulation engine. */
-        auto out = granulator.synthesize(current_index);
+        auto out = granulator.synthesize(corpus_index_output_queue);
 
         *output++ = out; // Left Channel
         *output++ = out; // Right Channel
@@ -103,8 +105,14 @@ void AudioProcess::load_audio(const AudioFrameMap &audio_frame_map)
     granulator.calculate_grain_pool(audio_frame_map);
 }
 
-void AudioProcess::search_results_received(RingBuffer<AudioIndex> *audio_index_queue)
+void AudioProcess::search_results_received(RingBuffer<CorpusIndex> *corpus_index_input_queue)
 {
+    if (corpus_index_input_queue->samples_available())
+    {
+        auto index = CorpusIndex();
+        corpus_index_input_queue->pop(index);
+        corpus_index_output_queue->push(index);
+    }
 }
 
 } // CATE

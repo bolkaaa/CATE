@@ -49,7 +49,7 @@ public:
     void calculate_grain_pool(const AudioFrameMap &audio_frame_map);
 
     /* Get the next sample value from the granulator. */
-    float synthesize(AudioIndex audio_index);
+    float synthesize(RingBuffer<CorpusIndex> *audio_index_queue);
 
     /* Set parameters. */
     inline void set_grain_attack(float value) { grain_attack->value = value; }

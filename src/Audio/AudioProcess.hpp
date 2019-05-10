@@ -82,14 +82,14 @@ private:
     const int ring_buffer_size = 1024;
     RingBuffer<float> *input_ring_buffer;
     RingBuffer<float> *output_ring_buffer;
-    RingBuffer<AudioIndex> *audio_index_queue;
-    AudioIndex current_index;
+    RingBuffer<CorpusIndex> *corpus_index_input_queue;
+    RingBuffer<CorpusIndex> *corpus_index_output_queue;
     bool recording;
     bool audio_loaded;
 
 public slots:
     /* Action to take when signal received from AnalysisWorker. */
-    void search_results_received(RingBuffer<AudioIndex> *search_results);
+    void search_results_received(RingBuffer<CorpusIndex> *corpus_index_input_queue);
 
 signals:
     /* Emit input ring buffer as signal. */

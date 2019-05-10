@@ -25,11 +25,12 @@
 #include "src/Audio/RingBuffer.hpp"
 #include "src/Audio/AudioSettings.hpp"
 
-typedef pair<int, string> AudioIndex;
-
 #include <QObject>
 
 namespace CATE {
+
+/* A pair of file position in samples and file path. */
+typedef pair<int, Path> CorpusIndex;
 
 class AnalysisWorker : public QObject
 {
@@ -46,11 +47,11 @@ private:
     AudioSettings *audio_settings;
     Corpus *corpus;
     const int buffer_size;
-    const int num_search_results = 32;
+    const int num_search_results = 1;
     int counter;
     AudioBuffer buffer = AudioBuffer(buffer_size);
     Magspec magspec = Magspec(buffer_size);
-    RingBuffer<AudioIndex> *search_results;
+    RingBuffer<CorpusIndex> *search_results;
     FFT fft;
 
 public slots:
@@ -58,7 +59,7 @@ public slots:
 
 signals:
     /* Emit search results buffer as signal. */
-    void send_search_results(RingBuffer<AudioIndex> *search_results);
+    void send_search_results(RingBuffer<CorpusIndex> *search_results);
 
     /* Emit analysis values as signals. */
     void send_marker(int *marker);

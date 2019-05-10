@@ -27,7 +27,7 @@ AnalysisWorker::AnalysisWorker(AudioSettings *audio_settings, Corpus *corpus)
           corpus(corpus),
           fft(audio_settings),
           buffer_size(audio_settings->get_bin_size()),
-          search_results(new RingBuffer<AudioIndex>(buffer_size))
+          search_results(new RingBuffer<CorpusIndex>(buffer_size))
 {
 }
 
@@ -38,8 +38,11 @@ AnalysisWorker::~AnalysisWorker()
 
 void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
 {
-    ring_buffer->pop(buffer[counter]);
-    ++counter;
+    while (ring_buffer->samples_available())
+    {
+        ring_buffer->pop(buffer[counter]);
+        ++counter;
+    }
 
     /* When ring buffer is full, extract features and do a nearest-neighbours search of the corpus. */
     if (counter > buffer_size)

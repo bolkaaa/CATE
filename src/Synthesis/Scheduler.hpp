@@ -30,7 +30,11 @@
 
 namespace CATE {
 
+/* Container of audio grains. */
 typedef vector<Grain> GrainPool;
+
+/* Key-value structure where key is pair of file position and file path, and value is a grain array index. */
+typedef std::unordered_map<std::pair<int, Path>, int, boost::hash<pair<int, Path>>> GrainIndex;
 
 /* Handles activation of grains, based upon onset times, as well as mixing of grains to form a
  * single output. */
@@ -42,10 +46,10 @@ public:
               Param<float> *grain_pitch, FixedParam<int> *max_grains);
 
     /* Calculate grain activations. */
-    float schedule(int new_grain_index);
+    float schedule(RingBuffer<CorpusIndex> *audio_index_queue);
 
     /* Rebuild grain pool according to size changes. */
-    void rebuild_grain_pool(GrainPool grain_pool);
+    void rebuild_grain_pool(const GrainPool &grain_pool, const GrainIndex &grain_index);
 
 private:
     /* Mix all currently active grains to a single output. */
@@ -65,7 +69,9 @@ private:
     Param<float> *grain_size;
     Param<float> *grain_pitch;
     FixedParam<int> *max_grains;
+    int index_counter = 0;
     vector<int> indices;
+    GrainIndex grain_index;
     GrainPool grain_pool;
     int next_onset;
     Rand<float> rand;
