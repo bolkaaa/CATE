@@ -1,5 +1,5 @@
 # CATE
-A corpus-based concatenative synthesis application written in C++ (work in progress). 
+A corpus-based concatenative synthesis application written in C++ (work in progress). The user may load directories of audio files, which are segmented and analysed with various spectral analysis functions. The segments are stored in memory as grains of audio data, and the analysis data is written to a stored JSON file. During playback, the microphone input is analysed with same analysis functions. A nearest-neighbors search of the currently loaded audio corpus selects the grains that are played back through a granular synthesis process.
 
 ![Window](https://files.catbox.moe/x7mdsg.png)
 
