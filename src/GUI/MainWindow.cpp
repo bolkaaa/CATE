@@ -50,61 +50,13 @@ MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_setting
 {
     ui->setupUi(this);
 
-    record_worker->moveToThread(record_thread);
-    analysis_worker->moveToThread(analysis_thread);
-    audio_process->moveToThread(audio_thread);
+    setup_threads();
 
-    init_slider(audio_process->get_grain_attack(), ui->grain_attack_slider, ui->grain_attack_value);
-    init_slider(audio_process->get_grain_sustain(), ui->grain_sustain_slider, ui->grain_sustain_value);
-    init_slider(audio_process->get_grain_release(), ui->grain_release_slider, ui->grain_release_value);
-    init_slider(audio_process->get_grain_density(), ui->grain_density_slider, ui->grain_density_value);
-    init_slider(audio_process->get_grain_size(), ui->grain_size_slider, ui->grain_size_value);
+    initialise_sliders();
 
-    /* Connect signals and slots. */
-    connect(audio_process,
-            SIGNAL(send_input_data(RingBuffer<float> * )),
-            analysis_worker,
-            SLOT(input_data_received(RingBuffer<float> * )));
-
-    connect(audio_process,
-            SIGNAL(send_output_data(RingBuffer<float> * )),
-            record_worker,
-            SLOT(output_data_received(RingBuffer<float> * )));
-
-    connect(analysis_worker,
-            SIGNAL(send_search_results(RingBuffer<AudioIndex> * )),
-            audio_process,
-            SLOT(search_results_received(RingBuffer<AudioIndex> * )));
-
-    connect(analysis_worker,
-            SIGNAL(send_centroid(float * )),
-            this,
-            SLOT(set_centroid_label(float * )));
-
-    connect(analysis_worker,
-            SIGNAL(send_flatness(float * )),
-            this,
-            SLOT(set_flatness_label(float * )));
-
-    connect(analysis_worker,
-            SIGNAL(send_rolloff(float * )),
-            this,
-            SLOT(set_rolloff_label(float * )));
-
-    connect(ui->start_playback, SIGNAL(clicked()), this, SLOT(start_playback_button_pressed()));
-    connect(ui->stop_playback, SIGNAL(clicked()), this, SLOT(stop_playback_button_pressed()));
-    connect(ui->start_recording, SIGNAL(clicked()), this, SLOT(start_recording_button_pressed()));
-    connect(ui->stop_recording, SIGNAL(clicked()), this, SLOT(stop_recording_button_pressed()));
-    connect(ui->analyse_directory, SIGNAL(clicked()), this, SLOT(analyse_directory_button_pressed()));
-    connect(ui->load_corpus, SIGNAL(clicked()), this, SLOT(load_corpus_button_pressed()));
-    connect(ui->audio_settings, SIGNAL(clicked()), this, SLOT(audio_settings_button_pressed()));
-
-    connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
-    connect(ui->grain_sustain_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_sustain(int)));
-    connect(ui->grain_release_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
-    connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
-    connect(ui->grain_size_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_size(int)));
-    connect(ui->grain_pitch_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_pitch(int)));
+    connect_thread_signals();
+    connect_button_signals();
+    connect_slider_signals();
 }
 
 void MainWindow::start_playback_button_pressed()
@@ -343,5 +295,75 @@ void MainWindow::set_rolloff_label(float *new_value)
     update_number_label(ui->rolloff_value, *new_value);
 }
 
+void MainWindow::setup_threads()
+{
+    record_worker->moveToThread(record_thread);
+    analysis_worker->moveToThread(analysis_thread);
+    audio_process->moveToThread(audio_thread);
+}
+
+void MainWindow::initialise_sliders()
+{
+    init_slider(audio_process->get_grain_attack(), ui->grain_attack_slider, ui->grain_attack_value);
+    init_slider(audio_process->get_grain_sustain(), ui->grain_sustain_slider, ui->grain_sustain_value);
+    init_slider(audio_process->get_grain_release(), ui->grain_release_slider, ui->grain_release_value);
+    init_slider(audio_process->get_grain_density(), ui->grain_density_slider, ui->grain_density_value);
+    init_slider(audio_process->get_grain_size(), ui->grain_size_slider, ui->grain_size_value);
+    init_slider(audio_process->get_grain_pitch(), ui->grain_size_slider, ui->grain_size_value);
+}
+
+void MainWindow::connect_thread_signals()
+{
+    connect(audio_process,
+            SIGNAL(send_input_data(RingBuffer<float> * )),
+            analysis_worker,
+            SLOT(input_data_received(RingBuffer<float> * )));
+
+    connect(audio_process,
+            SIGNAL(send_output_data(RingBuffer<float> * )),
+            record_worker,
+            SLOT(output_data_received(RingBuffer<float> * )));
+
+    connect(analysis_worker,
+            SIGNAL(send_search_results(RingBuffer<AudioIndex> * )),
+            audio_process,
+            SLOT(search_results_received(RingBuffer<AudioIndex> * )));
+
+    connect(analysis_worker,
+            SIGNAL(send_centroid(float * )),
+            this,
+            SLOT(set_centroid_label(float * )));
+
+    connect(analysis_worker,
+            SIGNAL(send_flatness(float * )),
+            this,
+            SLOT(set_flatness_label(float * )));
+
+    connect(analysis_worker,
+            SIGNAL(send_rolloff(float * )),
+            this,
+            SLOT(set_rolloff_label(float * )));
+}
+
+void MainWindow::connect_button_signals()
+{
+    connect(ui->start_playback, SIGNAL(clicked()), this, SLOT(start_playback_button_pressed()));
+    connect(ui->stop_playback, SIGNAL(clicked()), this, SLOT(stop_playback_button_pressed()));
+    connect(ui->start_recording, SIGNAL(clicked()), this, SLOT(start_recording_button_pressed()));
+    connect(ui->stop_recording, SIGNAL(clicked()), this, SLOT(stop_recording_button_pressed()));
+    connect(ui->analyse_directory, SIGNAL(clicked()), this, SLOT(analyse_directory_button_pressed()));
+    connect(ui->load_corpus, SIGNAL(clicked()), this, SLOT(load_corpus_button_pressed()));
+    connect(ui->audio_settings, SIGNAL(clicked()), this, SLOT(audio_settings_button_pressed()));
+}
+
+void MainWindow::connect_slider_signals()
+{
+    connect(ui->grain_attack_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_attack(int)));
+    connect(ui->grain_sustain_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_sustain(int)));
+    connect(ui->grain_release_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_release(int)));
+    connect(ui->grain_density_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_density(int)));
+    connect(ui->grain_size_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_size(int)));
+    connect(ui->grain_pitch_slider, SIGNAL(valueChanged(int)), this, SLOT(set_grain_pitch(int)));
+}
 
 } // CATE

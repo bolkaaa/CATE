@@ -34,7 +34,7 @@ public:
     inline void reset() { index = 0; }
 
     /* Get next sample value from source. */
-    float synthesize(int phase_incr);
+    float synthesize(int phase);
 
 private:
     AudioBuffer buffer;

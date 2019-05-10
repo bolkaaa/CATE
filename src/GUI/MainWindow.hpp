@@ -67,6 +67,21 @@ private:
     /* Prompt user to select a file path to save to, getting its path. */
     string save_file_dialog(const string &file_types);
 
+    /* Move necessary objects to separate threads. */
+    void setup_threads();
+
+    /* Initialise sliders to their default values. */
+    void initialise_sliders();
+
+    /* Connect signals to slots for data being sent between threads. */
+    void connect_thread_signals();
+
+    /* Connect signals to slots for buttons in GUI. */
+    void connect_button_signals();
+
+    /* Connect signals to slots for sliders in GUI. */
+    void connect_slider_signals();
+
     /* Convert value from an input range to an output range. */
     float scale(float input, float input_min, float input_max, float output_min, float output_max);
 

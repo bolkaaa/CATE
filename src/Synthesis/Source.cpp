@@ -29,10 +29,10 @@ Source::Source(const AudioBuffer &data)
 {
 }
 
-float Source::synthesize(int phase_incr)
+float Source::synthesize(int phase)
 {
     auto sample = buffer[index];
-    index += phase_incr;
+    index += phase;
     return sample;
 }
 
