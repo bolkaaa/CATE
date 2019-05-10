@@ -1,7 +1,7 @@
 # CATE
 A corpus-based concatenative synthesis application written in C++ (work in progress). 
 
-![Window](https://files.catbox.moe/6suxvh.png)
+![Window](https://files.catbox.moe/x7mdsg.png)
 
 ### Build dependencies
 - portaudio
