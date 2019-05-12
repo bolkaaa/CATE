@@ -1,67 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-05-09T08:08:34+01:00</updated><id>/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Overall Improvements to Program</title><link href="/2019/04/28/overall-improvements-to-program.html" rel="alternate" type="text/html" title="Overall Improvements to Program" /><published>2019-04-28T00:00:00+01:00</published><updated>2019-04-28T00:00:00+01:00</updated><id>/2019/04/28/overall-improvements-to-program</id><content type="html" xml:base="/2019/04/28/overall-improvements-to-program.html">&lt;p&gt;Compared to last week, there were many improvements to the program this week, to
-its features as well as the quality of the code through refactoring. While I am
-trying to avoid adding significant new features, I am highly focused on
-improving the existing ones. I will break down the improvements to the program I
-have made this week.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-05-12T19:00:05+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">CATE</title><subtitle>Project blog for the CATE program, updated with my progress and findings.</subtitle><author><name>Liam Wyllie</name></author><entry><title type="html">Final Post</title><link href="http://localhost:4000/2019/05/12/final-post.html" rel="alternate" type="text/html" title="Final Post" /><published>2019-05-12T00:00:00+01:00</published><updated>2019-05-12T00:00:00+01:00</updated><id>http://localhost:4000/2019/05/12/final-post</id><content type="html" xml:base="http://localhost:4000/2019/05/12/final-post.html">&lt;h1 id=&quot;final-improvements-to-synthesis-engine&quot;&gt;Final Improvements to Synthesis Engine&lt;/h1&gt;
+&lt;p&gt;After improving the underlying granular synthesis engine last week, I have added
+another feature, which is control over grain frequency. This was achieved by
+reworking the wavetable lookup code so that the increment depends upon the grain
+table size, frequency parameter and sample rate.&lt;/p&gt;
 
-&lt;h3 id=&quot;synthesis&quot;&gt;Synthesis&lt;/h3&gt;
-&lt;p&gt;The granulation engine is now much more flexible, as the grain size can be
-controlled in real time through a slider. Overall, I am quite happy with how it
-sounds and find it quite aesthetically interesting compared to previous results
-I had.&lt;/p&gt;
+&lt;p&gt;I have also now recombined the analysis and synthesis processes. The system
+works by creating a queue of corpus indices from the analysis process, where
+each index is a unit from the corpus that corresponds to the indices in the
+GrainPool in the Granulator. I was briefly considering a system where the output
+of the analysis process was a more complex data structure, and a table lookup
+would convert this to a corresponding index to be used by Granulator. I later
+realised this was unnecessary, as the corpus indices correspond 1:1 to the grain
+indices anyway. The indices cycled through by the Granulator can then by updated
+with indices from the queue. I am still not fully satisfied with the approach,
+however I will likely finalise the synthesis system at this point.&lt;/p&gt;
 
-&lt;h3 id=&quot;interface&quot;&gt;Interface&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;https://files.catbox.moe/1gctlq.png&quot; alt=&quot;Program Window&quot; /&gt;
-I have improved the interface of the program a lot:&lt;/p&gt;
+&lt;h1 id=&quot;more-tests-and-error-handling&quot;&gt;More Tests and Error Handling&lt;/h1&gt;
+&lt;p&gt;I have also been working on other parts of the program, and writing more tests
+has helped me improved certain areas. For example, I have added error handling
+to the audio file reading/writing functionality, to handle cases such as an
+invalid audio file being loaded. An exception is now thrown by these functions
+which can be handled by the caller. I plan to write some more tests as I wrap up
+writing the program, to ensure that there are no problematic bugs in the final
+version.&lt;/p&gt;
+
+&lt;h1 id=&quot;future-work&quot;&gt;Future Work&lt;/h1&gt;
+&lt;p&gt;With the deadline being extended until the 17th, I have some extra time to do
+some more work on the program and dissertation. My plans for this are mostly to
+focus on the following:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Value of parameters is now visible through number displays&lt;/li&gt;
-  &lt;li&gt;The layout of the window is now better-organised&lt;/li&gt;
-  &lt;li&gt;The window is now fixed in size, so the UI elements cannot be displaced through resizing&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The interface is now mostly complete, however I still need to add an option in the GUI to change the following audio settings:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;sample rate&lt;/li&gt;
-  &lt;li&gt;buffer size&lt;/li&gt;
-  &lt;li&gt;FFT bin size&lt;/li&gt;
-  &lt;li&gt;input device&lt;/li&gt;
-  &lt;li&gt;output device&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;This will be in the form of a secondary window that provides control over each
-of these elements through dropdown menus, similar to how control over these
-elements is provided in software such as PureData or Max/MSP.&lt;/p&gt;
-
-&lt;p&gt;Additionally, I made a minor improvement this week to the interface by altering
-the signals and slots code such that the buttons in the interface that result in
-dialog windows no longer stay highlighted after the action has been carried out.
-This was solved by changing instances of the pressed() signal to clicked()
-instances.&lt;/p&gt;
-
-&lt;h3 id=&quot;audio-settings-class&quot;&gt;Audio Settings Class&lt;/h3&gt;
-&lt;p&gt;As a step towards solving the problem stated previously, I have created a new
-class: AudioSettings, containing the parameters mentioned above. It is designed
-to be used as a “singleton” object, with one instantiation in the main function
-and a reference to it passed to other objects in the program, so that they can
-share the same settings. To this end, I will design the class so that the copy
-constructor and assignment operator functions are private. This is a common C++
-technique when you wish to disallow copying or assigning of an object to another
-object, which is relevant in this case.&lt;/p&gt;
-
-&lt;h3 id=&quot;audio-analysis&quot;&gt;Audio Analysis&lt;/h3&gt;
-&lt;p&gt;Although I do not wish to add many more elements to the program, before
-finalising things, I would like to improve the audio analysis code somewhat. The
-spectral kurtosis feature was added recently to improve the overall unit
-selection performance. I would like to spend some time if possible to improve
-the feature extraction code and make it more modular. Additionally, I may add a
-normalisation stage to the feature extractors.&lt;/p&gt;
-
-&lt;h3 id=&quot;future-plans&quot;&gt;Future Plans&lt;/h3&gt;
-&lt;p&gt;I am aiming to get the writing and documentation finished within the next week
-or so, while also doing a bit more work and unit test writing for the program.
-Then, the final week will be dedicated to improving the program, finalising the
-CMake build/executables and tying up other loose ends.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Compared to last week, there were many improvements to the program this week, to its features as well as the quality of the code through refactoring. While I am trying to avoid adding significant new features, I am highly focused on improving the existing ones. I will break down the improvements to the program I have made this week.</summary></entry><entry><title type="html">Many Improvements and More Testing</title><link href="/2019/04/28/many-improvements-and-more-testing.html" rel="alternate" type="text/html" title="Many Improvements and More Testing" /><published>2019-04-28T00:00:00+01:00</published><updated>2019-04-28T00:00:00+01:00</updated><id>/2019/04/28/many-improvements-and-more-testing</id><content type="html" xml:base="/2019/04/28/many-improvements-and-more-testing.html">&lt;p&gt;This was the busiest week yet of working on the program, as I wanted to improve
+  &lt;li&gt;Code cleanups/refactoring&lt;/li&gt;
+  &lt;li&gt;Polishing the GUI&lt;/li&gt;
+  &lt;li&gt;Final tests and bug fixes&lt;/li&gt;
+  &lt;li&gt;Compiling binary executables for deployment&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Final Improvements to Synthesis Engine After improving the underlying granular synthesis engine last week, I have added another feature, which is control over grain frequency. This was achieved by reworking the wavetable lookup code so that the increment depends upon the grain table size, frequency parameter and sample rate.</summary></entry><entry><title type="html">Many Improvements and More Testing</title><link href="http://localhost:4000/2019/05/05/many-improvements-and-more-testing.html" rel="alternate" type="text/html" title="Many Improvements and More Testing" /><published>2019-05-05T00:00:00+01:00</published><updated>2019-05-05T00:00:00+01:00</updated><id>http://localhost:4000/2019/05/05/many-improvements-and-more-testing</id><content type="html" xml:base="http://localhost:4000/2019/05/05/many-improvements-and-more-testing.html">&lt;p&gt;This was the busiest week yet of working on the program, as I wanted to improve
 it as much as possible before the completion date. Due to the writing being more
 or less finished by this point, I had a lot of time to do this. I tried to focus
 on improving existing features rather than adding new ones. This included the
@@ -192,7 +165,70 @@ from audio file segments. It will also test the various feature extractors used 
 &lt;p&gt;&lt;em&gt;Synthesis&lt;/em&gt;: The synthesis processes used in the program.&lt;/p&gt;
 
 &lt;p&gt;I plan to write a lot more tests over the next week as I finalise the program
-and make sure that it’s as good and bug-free as it can be.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This was the busiest week yet of working on the program, as I wanted to improve it as much as possible before the completion date. Due to the writing being more or less finished by this point, I had a lot of time to do this. I tried to focus on improving existing features rather than adding new ones. This included the following alterations:</summary></entry><entry><title type="html">Lots of Writing and Not Much Progress</title><link href="/2019/04/21/lots-of-writing-and-not-much-progress.html" rel="alternate" type="text/html" title="Lots of Writing and Not Much Progress" /><published>2019-04-21T00:00:00+01:00</published><updated>2019-04-21T00:00:00+01:00</updated><id>/2019/04/21/lots-of-writing-and-not-much-progress</id><content type="html" xml:base="/2019/04/21/lots-of-writing-and-not-much-progress.html">&lt;p&gt;This week there were less changes made in the program as development has started slowing down due to the program mostly being complete, and the fact that I need to work on the project writeup. Most of the changes were minor code cleanups and some interface improvements. Notably, I also improved aspects of the program’s design through separating some functionality into dedicated classes, in the case of AudioRecorder. Next week’s post will be much lengthier as I return to working on the program more intensely, as the writing gets closer to the completion and I try to make the program as good as it can be.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This week there were less changes made in the program as development has started slowing down due to the program mostly being complete, and the fact that I need to work on the project writeup. Most of the changes were minor code cleanups and some interface improvements. Notably, I also improved aspects of the program’s design through separating some functionality into dedicated classes, in the case of AudioRecorder. Next week’s post will be much lengthier as I return to working on the program more intensely, as the writing gets closer to the completion and I try to make the program as good as it can be.</summary></entry><entry><title type="html">Finalising Some Features and Starting Unit Testing</title><link href="/2019/04/14/finalising-some-features-and-starting-unit-testing.html" rel="alternate" type="text/html" title="Finalising Some Features and Starting Unit Testing" /><published>2019-04-14T00:00:00+01:00</published><updated>2019-04-14T00:00:00+01:00</updated><id>/2019/04/14/finalising-some-features-and-starting-unit-testing</id><content type="html" xml:base="/2019/04/14/finalising-some-features-and-starting-unit-testing.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+and make sure that it’s as good and bug-free as it can be.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This was the busiest week yet of working on the program, as I wanted to improve it as much as possible before the completion date. Due to the writing being more or less finished by this point, I had a lot of time to do this. I tried to focus on improving existing features rather than adding new ones. This included the following alterations:</summary></entry><entry><title type="html">Overall Improvements to Program</title><link href="http://localhost:4000/2019/04/28/overall-improvements-to-program.html" rel="alternate" type="text/html" title="Overall Improvements to Program" /><published>2019-04-28T00:00:00+01:00</published><updated>2019-04-28T00:00:00+01:00</updated><id>http://localhost:4000/2019/04/28/overall-improvements-to-program</id><content type="html" xml:base="http://localhost:4000/2019/04/28/overall-improvements-to-program.html">&lt;p&gt;Compared to last week, there were many improvements to the program this week, to
+its features as well as the quality of the code through refactoring. While I am
+trying to avoid adding significant new features, I am highly focused on
+improving the existing ones. I will break down the improvements to the program I
+have made this week.&lt;/p&gt;
+
+&lt;h3 id=&quot;synthesis&quot;&gt;Synthesis&lt;/h3&gt;
+&lt;p&gt;The granulation engine is now much more flexible, as the grain size can be
+controlled in real time through a slider. Overall, I am quite happy with how it
+sounds and find it quite aesthetically interesting compared to previous results
+I had.&lt;/p&gt;
+
+&lt;h3 id=&quot;interface&quot;&gt;Interface&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://files.catbox.moe/1gctlq.png&quot; alt=&quot;Program Window&quot; /&gt;
+I have improved the interface of the program a lot:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Value of parameters is now visible through number displays&lt;/li&gt;
+  &lt;li&gt;The layout of the window is now better-organised&lt;/li&gt;
+  &lt;li&gt;The window is now fixed in size, so the UI elements cannot be displaced through resizing&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The interface is now mostly complete, however I still need to add an option in the GUI to change the following audio settings:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;sample rate&lt;/li&gt;
+  &lt;li&gt;buffer size&lt;/li&gt;
+  &lt;li&gt;FFT bin size&lt;/li&gt;
+  &lt;li&gt;input device&lt;/li&gt;
+  &lt;li&gt;output device&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This will be in the form of a secondary window that provides control over each
+of these elements through dropdown menus, similar to how control over these
+elements is provided in software such as PureData or Max/MSP.&lt;/p&gt;
+
+&lt;p&gt;Additionally, I made a minor improvement this week to the interface by altering
+the signals and slots code such that the buttons in the interface that result in
+dialog windows no longer stay highlighted after the action has been carried out.
+This was solved by changing instances of the pressed() signal to clicked()
+instances.&lt;/p&gt;
+
+&lt;h3 id=&quot;audio-settings-class&quot;&gt;Audio Settings Class&lt;/h3&gt;
+&lt;p&gt;As a step towards solving the problem stated previously, I have created a new
+class: AudioSettings, containing the parameters mentioned above. It is designed
+to be used as a “singleton” object, with one instantiation in the main function
+and a reference to it passed to other objects in the program, so that they can
+share the same settings. To this end, I will design the class so that the copy
+constructor and assignment operator functions are private. This is a common C++
+technique when you wish to disallow copying or assigning of an object to another
+object, which is relevant in this case.&lt;/p&gt;
+
+&lt;h3 id=&quot;audio-analysis&quot;&gt;Audio Analysis&lt;/h3&gt;
+&lt;p&gt;Although I do not wish to add many more elements to the program, before
+finalising things, I would like to improve the audio analysis code somewhat. The
+spectral kurtosis feature was added recently to improve the overall unit
+selection performance. I would like to spend some time if possible to improve
+the feature extraction code and make it more modular. Additionally, I may add a
+normalisation stage to the feature extractors.&lt;/p&gt;
+
+&lt;h3 id=&quot;future-plans&quot;&gt;Future Plans&lt;/h3&gt;
+&lt;p&gt;I am aiming to get the writing and documentation finished within the next week
+or so, while also doing a bit more work and unit test writing for the program.
+Then, the final week will be dedicated to improving the program, finalising the
+CMake build/executables and tying up other loose ends.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Compared to last week, there were many improvements to the program this week, to its features as well as the quality of the code through refactoring. While I am trying to avoid adding significant new features, I am highly focused on improving the existing ones. I will break down the improvements to the program I have made this week.</summary></entry><entry><title type="html">Lots of Writing and Not Much Progress</title><link href="http://localhost:4000/2019/04/21/lots-of-writing-and-not-much-progress.html" rel="alternate" type="text/html" title="Lots of Writing and Not Much Progress" /><published>2019-04-21T00:00:00+01:00</published><updated>2019-04-21T00:00:00+01:00</updated><id>http://localhost:4000/2019/04/21/lots-of-writing-and-not-much-progress</id><content type="html" xml:base="http://localhost:4000/2019/04/21/lots-of-writing-and-not-much-progress.html">&lt;p&gt;This week there were less changes made in the program as development has started slowing down due to the program mostly being complete, and the fact that I need to work on the project writeup. Most of the changes were minor code cleanups and some interface improvements. Notably, I also improved aspects of the program’s design through separating some functionality into dedicated classes, in the case of AudioRecorder. Next week’s post will be much lengthier as I return to working on the program more intensely, as the writing gets closer to the completion and I try to make the program as good as it can be.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">This week there were less changes made in the program as development has started slowing down due to the program mostly being complete, and the fact that I need to work on the project writeup. Most of the changes were minor code cleanups and some interface improvements. Notably, I also improved aspects of the program’s design through separating some functionality into dedicated classes, in the case of AudioRecorder. Next week’s post will be much lengthier as I return to working on the program more intensely, as the writing gets closer to the completion and I try to make the program as good as it can be.</summary></entry><entry><title type="html">Finalising Some Features and Starting Unit Testing</title><link href="http://localhost:4000/2019/04/14/finalising-some-features-and-starting-unit-testing.html" rel="alternate" type="text/html" title="Finalising Some Features and Starting Unit Testing" /><published>2019-04-14T00:00:00+01:00</published><updated>2019-04-14T00:00:00+01:00</updated><id>http://localhost:4000/2019/04/14/finalising-some-features-and-starting-unit-testing</id><content type="html" xml:base="http://localhost:4000/2019/04/14/finalising-some-features-and-starting-unit-testing.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;While continuing to work on the report, I have also added some final features in
 the software. These included adding amplitude following of the microphone input
 for the synthesis output, and adding the functionality for recording output to a
@@ -263,7 +299,7 @@ program and writing the dissertation. Ideally, as discussed with my supervisor,
 I should try to have a feature freeze and stop working on new features, and
 focus on bug fixing, error handling and unit testing. Currently, the only
 features I really intend to work on are improving the analysis code and the GUI.
-In the next week, I hope to have these finished while starting on unit tests.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress While continuing to work on the report, I have also added some final features in the software. These included adding amplitude following of the microphone input for the synthesis output, and adding the functionality for recording output to a file.</summary></entry><entry><title type="html">More GUI Work</title><link href="/2019/04/07/more-GUI-work.html" rel="alternate" type="text/html" title="More GUI Work" /><published>2019-04-07T00:00:00+01:00</published><updated>2019-04-07T00:00:00+01:00</updated><id>/2019/04/07/more-GUI-work</id><content type="html" xml:base="/2019/04/07/more-GUI-work.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+In the next week, I hope to have these finished while starting on unit tests.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress While continuing to work on the report, I have also added some final features in the software. These included adding amplitude following of the microphone input for the synthesis output, and adding the functionality for recording output to a file.</summary></entry><entry><title type="html">More GUI Work</title><link href="http://localhost:4000/2019/04/07/more-GUI-work.html" rel="alternate" type="text/html" title="More GUI Work" /><published>2019-04-07T00:00:00+01:00</published><updated>2019-04-07T00:00:00+01:00</updated><id>http://localhost:4000/2019/04/07/more-GUI-work</id><content type="html" xml:base="http://localhost:4000/2019/04/07/more-GUI-work.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;There has been less progress with the software this week as I have been trying to do more writing. One significant 
 change I have added is that the user may now select a directory of audio files to use when running the program. They 
 may also choose a JSON file of analysis data that they have already saved in an previous session.&lt;/p&gt;
@@ -316,7 +352,7 @@ The main controls I plan to add are for configuring the user’s inputs and outp
 
 &lt;p&gt;Once I’ve finished with adding features to the program, I can focus on improving error handling and testing. I can 
 also do some refactoring to improve the code and make it more readable and efficient while keeping the functionality 
-the same.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress There has been less progress with the software this week as I have been trying to do more writing. One significant change I have added is that the user may now select a directory of audio files to use when running the program. They may also choose a JSON file of analysis data that they have already saved in an previous session.</summary></entry><entry><title type="html">Structural Changes and Working on GUI</title><link href="/2019/03/31/structural-changes-and-working-on-GUI.html" rel="alternate" type="text/html" title="Structural Changes and Working on GUI" /><published>2019-03-31T00:00:00+00:00</published><updated>2019-03-31T00:00:00+00:00</updated><id>/2019/03/31/structural-changes-and-working-on-GUI</id><content type="html" xml:base="/2019/03/31/structural-changes-and-working-on-GUI.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+the same.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress There has been less progress with the software this week as I have been trying to do more writing. One significant change I have added is that the user may now select a directory of audio files to use when running the program. They may also choose a JSON file of analysis data that they have already saved in an previous session.</summary></entry><entry><title type="html">Structural Changes and Working on GUI</title><link href="http://localhost:4000/2019/03/31/structural-changes-and-working-on-GUI.html" rel="alternate" type="text/html" title="Structural Changes and Working on GUI" /><published>2019-03-31T00:00:00+00:00</published><updated>2019-03-31T00:00:00+00:00</updated><id>http://localhost:4000/2019/03/31/structural-changes-and-working-on-GUI</id><content type="html" xml:base="http://localhost:4000/2019/03/31/structural-changes-and-working-on-GUI.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;I have focused on writing my report this week, but have also made some
 improvements and additions to the program, which I will discuss in the following sections.&lt;/p&gt;
 
@@ -376,7 +412,7 @@ of functionality. Otherwise, it is more of a program solely for experimentation
 rather than musical usefulness. Therefore I will try to get this functionality
 working as soon as possible. Besides that, I will be doing more work on the GUI
 as well as thinking about including unit tests to systematically test the
-correctness of certain aspects of the program.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress I have focused on writing my report this week, but have also made some improvements and additions to the program, which I will discuss in the following sections.</summary></entry><entry><title type="html">Expanding Upon Granular Synthesis</title><link href="/2019/03/24/expanding-upon-granular-synthesis.html" rel="alternate" type="text/html" title="Expanding Upon Granular Synthesis" /><published>2019-03-24T00:00:00+00:00</published><updated>2019-03-24T00:00:00+00:00</updated><id>/2019/03/24/expanding-upon-granular-synthesis</id><content type="html" xml:base="/2019/03/24/expanding-upon-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+correctness of certain aspects of the program.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress I have focused on writing my report this week, but have also made some improvements and additions to the program, which I will discuss in the following sections.</summary></entry><entry><title type="html">Expanding Upon Granular Synthesis</title><link href="http://localhost:4000/2019/03/24/expanding-upon-granular-synthesis.html" rel="alternate" type="text/html" title="Expanding Upon Granular Synthesis" /><published>2019-03-24T00:00:00+00:00</published><updated>2019-03-24T00:00:00+00:00</updated><id>http://localhost:4000/2019/03/24/expanding-upon-granular-synthesis</id><content type="html" xml:base="http://localhost:4000/2019/03/24/expanding-upon-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;This week I expanded upon the granular synthesis code I had created in the
 previous week. The grains are now properly derived from the audio files matched
 from the analysis process. The synthesis process is also more efficient and
@@ -440,7 +476,7 @@ general, adding more audio features and making the synthesis process more
 aesthetically pleasing, such as envelope following of the microphone input’s
 amplitude to control the audio output’s amplitude. I am hoping to finish most of
 the functionality of the program in the next week or two so that I can focus on
-the interface, error handling and unit tests.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress This week I expanded upon the granular synthesis code I had created in the previous week. The grains are now properly derived from the audio files matched from the analysis process. The synthesis process is also more efficient and correctly implemented, using object pooling techniques. I also started working on a command line interface for managing the analysis process.</summary></entry><entry><title type="html">Implementing Simple Granular Synthesis</title><link href="/2019/03/17/implementing-simple-granular-synthesis.html" rel="alternate" type="text/html" title="Implementing Simple Granular Synthesis" /><published>2019-03-17T00:00:00+00:00</published><updated>2019-03-17T00:00:00+00:00</updated><id>/2019/03/17/implementing-simple-granular-synthesis</id><content type="html" xml:base="/2019/03/17/implementing-simple-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+the interface, error handling and unit tests.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress This week I expanded upon the granular synthesis code I had created in the previous week. The grains are now properly derived from the audio files matched from the analysis process. The synthesis process is also more efficient and correctly implemented, using object pooling techniques. I also started working on a command line interface for managing the analysis process.</summary></entry><entry><title type="html">Implementing Simple Granular Synthesis</title><link href="http://localhost:4000/2019/03/17/implementing-simple-granular-synthesis.html" rel="alternate" type="text/html" title="Implementing Simple Granular Synthesis" /><published>2019-03-17T00:00:00+00:00</published><updated>2019-03-17T00:00:00+00:00</updated><id>http://localhost:4000/2019/03/17/implementing-simple-granular-synthesis</id><content type="html" xml:base="http://localhost:4000/2019/03/17/implementing-simple-granular-synthesis.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;My goal for this week and the following week was working on a granular synthesis implementation. For the first week, I
  have aimed to just get a simple system working that has the core functionality needed going forwards. Then I plan to
   integrate it with my audio analysis code, so that the grains are derived from the matches found by the KNN search.&lt;/p&gt;
@@ -536,7 +572,7 @@ granular synthesis and understanding how to implement it in C++, while I am stil
   combining it with the analysis aspects of the program. I may look into the concept of &lt;a href=&quot;https://en.wikipedia.org/wiki/Object_pool_pattern&quot;&gt;object pooling&lt;/a&gt;, which is a 
   design pattern that specifies a set of pre-initialised objects that can reused, rather than destroying objects and 
   allocating new ones. Pooled objects can be recalled in a determinant amount of time as opposed to allocated 
-  objects, which may take an indeterminant amount of time (an undesirable property in audio programming).&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress My goal for this week and the following week was working on a granular synthesis implementation. For the first week, I have aimed to just get a simple system working that has the core functionality needed going forwards. Then I plan to integrate it with my audio analysis code, so that the grains are derived from the matches found by the KNN search.</summary></entry><entry><title type="html">Sliding Window Analysis and K-d Tree</title><link href="/2019/03/10/sliding-window-analysis-and-kd-tree.html" rel="alternate" type="text/html" title="Sliding Window Analysis and K-d Tree" /><published>2019-03-10T00:00:00+00:00</published><updated>2019-03-10T00:00:00+00:00</updated><id>/2019/03/10/sliding-window-analysis-and-kd-tree</id><content type="html" xml:base="/2019/03/10/sliding-window-analysis-and-kd-tree.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
+  objects, which may take an indeterminant amount of time (an undesirable property in audio programming).&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress My goal for this week and the following week was working on a granular synthesis implementation. For the first week, I have aimed to just get a simple system working that has the core functionality needed going forwards. Then I plan to integrate it with my audio analysis code, so that the grains are derived from the matches found by the KNN search.</summary></entry><entry><title type="html">Sliding Window Analysis and K-d Tree</title><link href="http://localhost:4000/2019/03/10/sliding-window-analysis-and-kd-tree.html" rel="alternate" type="text/html" title="Sliding Window Analysis and K-d Tree" /><published>2019-03-10T00:00:00+00:00</published><updated>2019-03-10T00:00:00+00:00</updated><id>http://localhost:4000/2019/03/10/sliding-window-analysis-and-kd-tree</id><content type="html" xml:base="http://localhost:4000/2019/03/10/sliding-window-analysis-and-kd-tree.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
 &lt;p&gt;This week I have been building upon the audio analysis code implemented
 previously. I have added functionality to perform that analysis on fixed audio
 files as well as on the live input that was already present. I also added the
@@ -632,93 +668,4 @@ my time and first implement a very simple synthesis system. Then I can add more
 complicated features later. I’m particularly interested in how I can break down
 the granular/concatenative synthesis process into different constituent parts,
 in a flexible way. I will be looking to different code examples to help me
-achieve the best results possible.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress This week I have been building upon the audio analysis code implemented previously. I have added functionality to perform that analysis on fixed audio files as well as on the live input that was already present. I also added the K-d Tree implementation to perform nearest neighbour searches, using the nanoflann library. I also fixed some critical bugs with my program, as well as simplifying the codebase.</summary></entry><entry><title type="html">Analysis Functionality and Data Storage</title><link href="/2019/03/03/analysis-functionality-and-data-storage.html" rel="alternate" type="text/html" title="Analysis Functionality and Data Storage" /><published>2019-03-03T00:00:00+00:00</published><updated>2019-03-03T00:00:00+00:00</updated><id>/2019/03/03/analysis-functionality-and-data-storage</id><content type="html" xml:base="/2019/03/03/analysis-functionality-and-data-storage.html">&lt;h3 id=&quot;progress&quot;&gt;Progress&lt;/h3&gt;
-&lt;p&gt;I have been implementing functionality for audio analysis and storage for the program. I am on schedule with this and will continue working on it next week as well.&lt;/p&gt;
-
-&lt;p&gt;This week’s additions are:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;em&gt;Visualisation of the magnitude spectrum&lt;/em&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;em&gt;Implementing spectral analysis functions&lt;/em&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;em&gt;Implementing persistent storage of analysis data in JSON format&lt;/em&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;em&gt;General Changes to Code Design&lt;/em&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;visualisation-of-the-magnitude-spectrum&quot;&gt;Visualisation of the Magnitude Spectrum&lt;/h3&gt;
-&lt;p&gt;I wanted a way of verifying the workings of my magnitude spectrum computation with visual feedback. I used a &lt;a href=&quot;http://www.martin-kumm.de/wiki/doku.php?id=05Misc:A_Template_for_Audio_DSP_Applications&quot;&gt;code example&lt;/a&gt; found online as a guideline when working on this. I will likely have a very different GUI by the completion of my program, but for now it has been helpful for this purpose, as well as teaching me more about Qt and the Qt plotting library. I may also add some extra plotting of my audio features, as a way of verifying their results easily as well.&lt;/p&gt;
-
-&lt;h3 id=&quot;implementing-spectral-analysis-functions&quot;&gt;Implementing Spectral Analysis Functions&lt;/h3&gt;
-&lt;p&gt;This week, I initially spent some time working with the &lt;a href=&quot;https://essentia.upf.edu/&quot;&gt;Essentia&lt;/a&gt; library, discovering if it would be suitable for my needs. In the end, I decided not to use it. All of the provided examples of its usage are non-real time utilisations, where analysis data is written to a file. It is important for my program to have real-time analysis. I found there to be very little guidance on doing this with Essentia, with the one example provided using an out of date version of Essentia, with numerous functions used within it that no longer exist in the library.&lt;/p&gt;
-
-&lt;p&gt;Therefore, I decided to implement my own audio analysis functionality, which was made easier by the fact that I have already worked on the FFT code. Leading on from that, I chose to implement two features in particular: spectral centroid and spectral flatness. Some reasons for this are as follows:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;They are relatively easy to calculate if you already have a magnitude spectrum computed, which I had functionality for with my previous week’s work&lt;/li&gt;
-  &lt;li&gt;Compared to many other features, they are quite perceptually useful for a broad range of sounds that aren’t necessarily tonal or rhythmic, which is ideal for the audio sources my program is intended to be making use of. Centroids are linked to brightness in timbre, and flatness is a noisiness ratio where 1.0 is white noise and 0.0 is sinusoidal.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I am focusing on implementing just two features right now, and then moving on to working on the nearest neighbours search functionality. Once that is functioning correctly, I will look to add more analysis functions.&lt;/p&gt;
-
-&lt;p&gt;Currently, the analysis code is structured in a way that there is a base “Feature” class that contains data like the sample rate of the system, which other feature classes can inherit from. I may simplify this later if the polymorphism-based approach seems unnecessary, but for now it seems like a logical way to do it.&lt;/p&gt;
-
-&lt;h3 id=&quot;implementing-persistent-storage-of-analysis-data-in-json-format&quot;&gt;Implementing Persistent Storage of Analysis Data in JSON Format&lt;/h3&gt;
-&lt;p&gt;It was important to add a way of persistently storing audio file paths and their associated analysis data arrays in some kind of data format.&lt;/p&gt;
-
-&lt;p&gt;My choices were:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;A database system / SQL&lt;/li&gt;
-  &lt;li&gt;Creating and parsing plain text files&lt;/li&gt;
-  &lt;li&gt;Using a data format like XML or JSON&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I went with JSON for a number of reasons:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;It’s very easy to work with&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;It’s a standard, portable format that is widely used and well-understood&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;There is good functionality for working with it in C++ (through a third-party
-library)&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;One potential drawback could be that the file size may grow large with a lot of
-audio files and associated analysis data. The program likely won’t be working
-with many audio files at once however, and JSON is designed to store data in
-much larger quantities than my program will be using.&lt;/p&gt;
-
-&lt;p&gt;I used the &lt;a href=&quot;https://github.com/nlohmann/json&quot;&gt;following library&lt;/a&gt; to get the functionality required.&lt;/p&gt;
-
-&lt;h3 id=&quot;changes-to-overall-code-design&quot;&gt;Changes to Overall Code Design&lt;/h3&gt;
-&lt;p&gt;One change was to change my usages of unsigned integer types with the simple “int” signed integer type. &lt;a href=&quot;http://soundsoftware.ac.uk/c-pitfall-unsigned.html&quot;&gt;I learned about some bugs that unsigned integers can result in&lt;/a&gt;. Using ints for all integer types also simplifies the code and makes it more readable.&lt;/p&gt;
-
-&lt;p&gt;I also made some other simple type-related revisions, such as using double for sample rate variables, both for the reason that it is consistent with the libraries I am using, and that it makes the values easier to work with when doing calculations.&lt;/p&gt;
-
-&lt;p&gt;I also made more usage of the “auto” keyword in function bodies, which is considered good practice in modern C++. I plan to aim to write most of my code in this way, with the exception of some of audio code where I may have to focus more on efficiency and a more low-level way of doing things if necessary.&lt;/p&gt;
-
-&lt;h3 id=&quot;moving-onwards&quot;&gt;Moving Onwards&lt;/h3&gt;
-&lt;p&gt;My immediate plans moving forwards are as follows:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Performing a sliding-window analysis of audio files, and storing the resulting data in the JSON data file&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Building Kd-tree from data and using KNN algorithm to find closest audio unit to current analysis frame. I plan to use the &lt;a href=&quot;https://github.com/jlblancoc/nanoflann&quot;&gt;following library&lt;/a&gt; for this&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Adding some more audio features, particularly spectral ones&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress I have been implementing functionality for audio analysis and storage for the program. I am on schedule with this and will continue working on it next week as well.</summary></entry></feed>
+achieve the best results possible.&lt;/p&gt;</content><author><name>Liam Wyllie</name></author><summary type="html">Progress This week I have been building upon the audio analysis code implemented previously. I have added functionality to perform that analysis on fixed audio files as well as on the live input that was already present. I also added the K-d Tree implementation to perform nearest neighbour searches, using the nanoflann library. I also fixed some critical bugs with my program, as well as simplifying the codebase.</summary></entry></feed>
