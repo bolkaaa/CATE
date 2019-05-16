@@ -52,11 +52,21 @@ void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
     {
         calculate_magnitude_spectrum();
 
+        auto centroid = Feature::spectral_centroid(magspec);
+        emit send_centroid(&centroid);
+
+        auto flatness = Feature::spectral_flatness(magspec);
+        emit send_flatness(&flatness);
+
+        auto rolloff = Feature::spectral_rolloff(magspec);
+        emit send_rolloff(&rolloff);
+
         const float query[Feature::num_features] = {
-                Feature::spectral_centroid(magspec),
-                Feature::spectral_flatness(magspec),
-                Feature::spectral_rolloff(magspec)
+                centroid,
+                flatness,
+                rolloff
         };
+
 
         corpus->search(query);
 

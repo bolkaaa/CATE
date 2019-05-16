@@ -73,6 +73,7 @@ Magspec Corpus::compute_magnitude_spectrum(const AudioBuffer &buffer)
 
 FeatureVector Corpus::calculate_feature_vector(const AudioBuffer &buffer, int frame_size)
 {
+    auto feature_vector = FeatureVector();
     auto remaining_space = buffer.size() % frame_size;
     auto marker = 0;
     auto magspec = Magspec();

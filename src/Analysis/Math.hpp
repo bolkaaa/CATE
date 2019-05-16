@@ -36,7 +36,7 @@ template<class A, class B>
 inline A geometric_mean(const vector<B> &v)
 {
     auto log_sum = 0.0f;
-    const auto min = 0.0000000001; // value added to avoid log(0)
+    auto min = 0.01; // term added to x to avoid log(0) operations
 
     for (auto x : v)
     {
