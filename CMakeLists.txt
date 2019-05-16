@@ -3,6 +3,8 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+SET(BUILD_SHARED_LIBS OFF)
 
 project(CATE VERSION 1.0)
 set(COMPANY "CATE")
@@ -16,12 +18,14 @@ set(SOURCE_FILES
         src/Audio/AudioProcess.cpp
         src/Audio/AudioBuffer.hpp
         src/Audio/AudioBuffer.cpp
-        src/Audio/AudioSettings.cpp
         src/Audio/AudioSettings.hpp
+        src/Audio/AudioSettings.cpp
         src/Analysis/FFT.hpp
         src/Analysis/FFT.cpp
-        src/Analysis/Feature.cpp
         src/Analysis/Feature.hpp
+        src/Analysis/Feature.cpp
+        src/Analysis/FeatureVector.hpp
+        src/Analysis/FeatureVector.cpp
         src/Corpus/PathTree.hpp
         src/Corpus/PathTree.cpp
         src/Corpus/Corpus.hpp
@@ -30,27 +34,27 @@ set(SOURCE_FILES
         src/Corpus/KdTree.hpp
         src/GUI/MainWindow.hpp
         src/GUI/MainWindow.cpp
-        src/GUI/AudioSettingsWindow.cpp
         src/GUI/AudioSettingsWindow.hpp
+        src/GUI/AudioSettingsWindow.cpp
         src/GUI/QtUtil.hpp
-        src/Synthesis/Granulator.cpp
         src/Synthesis/Granulator.hpp
-        src/Synthesis/Envelope.cpp
+        src/Synthesis/Granulator.cpp
         src/Synthesis/Envelope.hpp
-        src/Synthesis/Source.cpp
+        src/Synthesis/Envelope.cpp
         src/Synthesis/Source.hpp
-        src/Synthesis/Grain.cpp
+        src/Synthesis/Source.cpp
         src/Synthesis/Grain.hpp
-        src/Synthesis/Scheduler.cpp
+        src/Synthesis/Grain.cpp
         src/Synthesis/Scheduler.hpp
+        src/Synthesis/Scheduler.cpp
         src/Synthesis/Rand.hpp
         src/Analysis/Math.hpp
         src/Util/Param.hpp
         src/Util/NonCopyable.hpp
-        src/Audio/RecordWorker.cpp
         src/Audio/RecordWorker.hpp
-        src/Audio/AnalysisWorker.cpp
+        src/Audio/RecordWorker.cpp
         src/Audio/AnalysisWorker.hpp
+        src/Audio/AnalysisWorker.cpp
         src/Audio/RingBuffer.hpp)
 
 set(TEST_FILES
@@ -61,7 +65,7 @@ set(TEST_FILES
         tests/Corpus.cpp
         tests/Audio.cpp
         tests/Synthesis.cpp
-        tests/Analysis.cpp)
+        tests/Analysis.cpp src/Analysis/FeatureVector.cpp src/Analysis/FeatureVector.hpp)
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
@@ -71,9 +75,8 @@ find_package(Boost 1.68.0 COMPONENTS filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 # Qt
-set(CMAKE_PREFIX_PATH /usr/local/Cellar/qt/5.12.0) # Set to system Qt path
 include(QtCommon)
-find_package(Qt5Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
 # Main Executable
 add_executable(${PROJECT_NAME}
@@ -86,7 +89,6 @@ add_executable(${PROJECT_NAME}
 add_executable(TESTS
         ${TEST_FILES})
 
-# Libraries
 set(LIBRARIES
         portaudio
         sndfile

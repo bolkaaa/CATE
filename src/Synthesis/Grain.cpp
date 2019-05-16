@@ -61,7 +61,6 @@ float Grain::synthesize()
     auto env_output = env.synthesize(sample_size, phase, attack, sustain, release);
 
     phase += phase_incr;
-
     remaining_samples -= phase;
 
     return source_output * env_output;

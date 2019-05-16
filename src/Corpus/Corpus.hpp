@@ -17,8 +17,8 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef DATABASE_HPP
-#define DATABASE_HPP
+#ifndef CORPUS_HPP
+#define CORPUS_HPP
 
 #include <memory>
 #include <vector>
@@ -30,7 +30,7 @@
 #include "PointCloud.hpp"
 #include "PathTree.hpp"
 #include "src/Audio/AudioBuffer.hpp"
-#include "src/Analysis/Feature.hpp"
+#include "src/Analysis/FeatureVector.hpp"
 #include "src/Util/NonCopyable.hpp"
 
 using std::unordered_map;
@@ -106,7 +106,6 @@ private:
     FeatureVector feature_vector;
     AudioBufferMap audio_buffer_map;
 };
-
 
 } // CATE
 

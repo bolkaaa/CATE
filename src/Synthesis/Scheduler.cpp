@@ -43,12 +43,19 @@ Scheduler::Scheduler(AudioSettings *audio_settings, Param<float> *grain_attack, 
 {
 }
 
-void Scheduler::activate_next_grain()
+void Scheduler::activate_next_grain(RingBuffer<int> *corpus_index_queue)
 {
     for (auto i : indices)
     {
         if (!grain_pool[i].is_active())
         {
+            if (corpus_index_queue->samples_available())
+            {
+                auto new_index = 0;
+                corpus_index_queue->pop(new_index);
+                i = new_index;
+            }
+
             grain_pool[i].activate(grain_size->value,
                                    grain_pitch->value,
                                    grain_attack->value,
@@ -60,29 +67,11 @@ void Scheduler::activate_next_grain()
     }
 }
 
-void Scheduler::enqueue_grain(RingBuffer<int> *corpus_index_queue)
-{
-    if (corpus_index_queue->samples_available())
-    {
-        auto index = 0;
-        corpus_index_queue->pop(index);
-        indices[index_counter] = index;
-
-        ++index_counter;
-
-        if (index_counter > indices.size())
-        {
-            index_counter -= indices.size();
-        }
-    }
-}
-
 float Scheduler::schedule(RingBuffer<int> *corpus_index_queue)
 {
     if (next_onset == 0)
     {
-        enqueue_grain(corpus_index_queue);
-        activate_next_grain();
+        activate_next_grain(corpus_index_queue);
         next_onset += get_next_inter_onset();
     }
 

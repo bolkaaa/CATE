@@ -86,4 +86,5 @@ float spectral_rolloff(const Magspec &magspec)
 }
 
 } // Feature
+
 } // CATE

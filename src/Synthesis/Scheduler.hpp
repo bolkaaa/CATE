@@ -47,14 +47,11 @@ public:
     void rebuild_grain_pool(const GrainPool &grain_pool);
 
 private:
-    /* Update grain indices based upon index queue. */
-    void enqueue_grain(RingBuffer<int> *corpus_index_queue);
+    /* Iterate over grain indices; if inactive grain is found, activate it and exit the function. */
+    void activate_next_grain(RingBuffer<int> *corpus_index_queue);
 
     /* Mix all currently active grains to a single output. */
     float synthesize_grains();
-
-    /* Iterate over grain indices; if inactive grain is found, activate it and exit the function. */
-    void activate_next_grain();
 
     /* Stochastically generate next inter-onset value according to grain density parameter. */
     int get_next_inter_onset();

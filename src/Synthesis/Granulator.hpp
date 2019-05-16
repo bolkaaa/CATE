@@ -51,7 +51,7 @@ public:
     inline void set_grain_size(float value) { grain_size->value = value; }
     inline void set_grain_pitch(float value) { grain_pitch->value = value; }
     inline void set_grain_density(float value) { grain_density->value = value; }
-    inline void set_max_grains(int selection_index) { max_grains->set(selection_index); }
+    void set_max_grains(int selection_index);
 
     /* Get parameters. */
     inline const Param<float> get_grain_attack() { return *(grain_attack); }

@@ -17,18 +17,11 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <memory>
-
 #include <QApplication>
-#include "include/nanoflann.hpp"
 
-#include "src/Corpus/PointCloud.hpp"
 #include "src/Corpus/Corpus.hpp"
-#include "src/Corpus/KdTree.hpp"
 #include "src/Audio/AudioSettings.hpp"
 #include "src/GUI/MainWindow.hpp"
-
-using CATE::KdTreeParams;
 
 int main(int argc, char *argv[])
 {

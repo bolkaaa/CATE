@@ -32,14 +32,15 @@ namespace CATE {
 namespace Math {
 
 /* Return geometric mean (Nth root of product of N values) of vector. */
-template <class A, class B>
+template<class A, class B>
 inline A geometric_mean(const vector<B> &v)
 {
     auto log_sum = 0.0f;
+    const auto min = 0.0000000001; // value added to avoid log(0)
 
     for (auto x : v)
     {
-        log_sum += log(x);
+        log_sum += log(x + min);
     }
 
     auto mean = exp(log_sum / v.size());
@@ -48,7 +49,7 @@ inline A geometric_mean(const vector<B> &v)
 }
 
 /* Return arithmetic mean (sum of N values divided by n) of vector. */
-template <class A, class B>
+template<class A, class B>
 inline A arithmetic_mean(const vector<B> &v)
 {
     auto sum = 0.0f;

@@ -30,7 +30,7 @@ Granulator::Granulator(AudioSettings *audio_settings)
           grain_release(new Param<float>(0.5f, 0.05f, 0.95f)),
           grain_density(new Param<float>(512.0f, 1.0f, 1024.0f)),
           grain_size(new Param<float>(50.0f, 1.0f, 200.0f)),
-          grain_pitch(new Param<float>(1.0f, 0.5f, 2.0f)),
+          grain_pitch(new Param<float>(0.5f, 0.01f, 1.0f)),
           max_grains(new FixedParam<int>({8, 12, 16, 24, 32, 48, 64}, 4)),
           scheduler(audio_settings, grain_attack, grain_sustain, grain_release, grain_density, grain_size, grain_pitch,
           max_grains)
@@ -64,6 +64,16 @@ float Granulator::synthesize(RingBuffer<int> *audio_index_queue)
 {
     auto output = scheduler.schedule(audio_index_queue);
     return output;
+}
+
+void Granulator::set_max_grains(int selection_index)
+{
+    max_grains->set(selection_index);
+
+    if (!grain_pool.empty())
+    {
+        scheduler.rebuild_grain_pool(grain_pool);
+    }
 }
 
 } // CATE

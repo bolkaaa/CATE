@@ -51,7 +51,7 @@ public:
 private:
     FixedParam<float> sample_rate;
     FixedParam<unsigned long> buffer_size;
-    const int bin_size = 1024;
+    const int bin_size = 8192;
 };
 
 } // CATE

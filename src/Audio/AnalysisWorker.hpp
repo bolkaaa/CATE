@@ -21,6 +21,7 @@
 #define ANALYSISWORKER_HPP
 
 #include "src/Analysis/FFT.hpp"
+#include "src/Analysis/FeatureVector.hpp"
 #include "src/Corpus/Corpus.hpp"
 #include "src/Audio/RingBuffer.hpp"
 #include "src/Audio/AudioSettings.hpp"
@@ -42,15 +43,16 @@ public:
 
 private:
     /* Calculate magnitude spectrum of input from ring buffer. */
-    void do_fft();
+    void calculate_magnitude_spectrum();
 
     AudioSettings *audio_settings;
     Corpus *corpus;
-    const int buffer_size;
-    const int num_search_results = 1;
+    const int num_search_results = 32;
+    const int search_result_queue_size = 128;
     int counter;
-    AudioBuffer buffer = AudioBuffer(buffer_size);
-    Magspec magspec = Magspec(buffer_size);
+    FeatureVector features;
+    AudioBuffer buffer;
+    Magspec magspec;
     RingBuffer<int> *search_results;
     FFT fft;
 
