@@ -85,7 +85,6 @@ private:
     RingBuffer<int> *corpus_index_input_queue;
     RingBuffer<int> *corpus_index_output_queue;
     bool recording;
-    bool audio_loaded;
 
 public slots:
     /* Action to take when signal received from AnalysisWorker. */

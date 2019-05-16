@@ -67,6 +67,9 @@ private:
     /* Prompt user to select a file path to save to, getting its path. */
     string save_file_dialog(const string &file_types);
 
+    /* Display popup message concerning status of audio data. */
+    void audio_status_message();
+
     /* Move necessary objects to separate threads. */
     void setup_threads();
 

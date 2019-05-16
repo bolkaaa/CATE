@@ -38,8 +38,7 @@ AudioProcess::AudioProcess(AudioSettings *audio_settings, Corpus *corpus)
           output_ring_buffer(new RingBuffer<float>(ring_buffer_size)),
           corpus_index_input_queue(new RingBuffer<int>(ring_buffer_size)),
           corpus_index_output_queue(new RingBuffer<int>(ring_buffer_size)),
-          recording(false),
-          audio_loaded(false)
+          recording(false)
 {
 }
 

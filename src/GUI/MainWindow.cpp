@@ -62,6 +62,12 @@ MainWindow::MainWindow(AudioProcess *audio_process, AudioSettings *audio_setting
 
 void MainWindow::start_playback_button_pressed()
 {
+    if (!audio_ready)
+    {
+        audio_status_message();
+        return;
+    }
+
     audio_thread->start();
     analysis_thread->start();
 
@@ -80,12 +86,24 @@ void MainWindow::stop_playback_button_pressed()
 
 void MainWindow::start_recording_button_pressed()
 {
+    if (!audio_ready)
+    {
+        audio_status_message();
+        return;
+    }
+
     record_thread->start();
     audio_process->start_recording();
 }
 
 void MainWindow::stop_recording_button_pressed()
 {
+    if (!audio_ready)
+    {
+        audio_status_message();
+        return;
+    }
+
     audio_process->stop_recording();
     audio_process->stop_stream();
 
@@ -372,6 +390,13 @@ void MainWindow::connect_label_signals()
             SIGNAL(send_rolloff(float * )),
             this,
             SLOT(set_rolloff_label(float * )));
+}
+
+void MainWindow::audio_status_message()
+{
+    QMessageBox msg;
+    msg.setText("No files loaded: audio system not ready.");
+    msg.exec();
 }
 
 } // CATE
