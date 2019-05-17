@@ -60,9 +60,9 @@ void Granulator::calculate_grain_pool(const AudioFrameMap &audio_frame_map)
     scheduler.rebuild_grain_pool(grain_pool);
 }
 
-float Granulator::synthesize(RingBuffer<int> *audio_index_queue)
+float Granulator::synthesize(RingBuffer<int> *corpus_index_queue)
 {
-    auto output = scheduler.schedule(audio_index_queue);
+    auto output = scheduler.schedule(corpus_index_queue);
     return output;
 }
 

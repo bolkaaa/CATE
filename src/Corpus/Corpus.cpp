@@ -73,7 +73,7 @@ Magspec Corpus::compute_magnitude_spectrum(const AudioBuffer &buffer)
 
 FeatureVector Corpus::calculate_feature_vector(const AudioBuffer &buffer, int frame_size)
 {
-    auto feature_vector = FeatureVector();
+    auto features = FeatureVector();
     auto remaining_space = buffer.size() % frame_size;
     auto marker = 0;
     auto magspec = Magspec();
@@ -82,12 +82,12 @@ FeatureVector Corpus::calculate_feature_vector(const AudioBuffer &buffer, int fr
     {
         AudioBuffer segment(it, it + frame_size);
         magspec = compute_magnitude_spectrum(segment);
-        feature_vector.compute_all(magspec);
-        feature_vector.add_marker(marker);
+        features.compute_all(magspec);
+        features.add_marker(marker);
         marker += frame_size;
     }
 
-    return feature_vector;
+    return features;
 }
 
 void Corpus::add_directory(const Path &directory_path)

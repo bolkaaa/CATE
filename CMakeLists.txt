@@ -20,10 +20,16 @@ set(SOURCE_FILES
         src/Audio/AudioBuffer.cpp
         src/Audio/AudioSettings.hpp
         src/Audio/AudioSettings.cpp
+        src/Audio/RecordWorker.hpp
+        src/Audio/RecordWorker.cpp
+        src/Audio/AnalysisWorker.hpp
+        src/Audio/AnalysisWorker.cpp
+        src/Audio/RingBuffer.hpp
         src/Analysis/FFT.hpp
         src/Analysis/FFT.cpp
         src/Analysis/Feature.hpp
         src/Analysis/Feature.cpp
+        src/Analysis/Math.hpp
         src/Analysis/FeatureVector.hpp
         src/Analysis/FeatureVector.cpp
         src/Corpus/PathTree.hpp
@@ -48,14 +54,8 @@ set(SOURCE_FILES
         src/Synthesis/Scheduler.hpp
         src/Synthesis/Scheduler.cpp
         src/Synthesis/Rand.hpp
-        src/Analysis/Math.hpp
         src/Util/Param.hpp
-        src/Util/NonCopyable.hpp
-        src/Audio/RecordWorker.hpp
-        src/Audio/RecordWorker.cpp
-        src/Audio/AnalysisWorker.hpp
-        src/Audio/AnalysisWorker.cpp
-        src/Audio/RingBuffer.hpp)
+        src/Util/NonCopyable.hpp)
 
 set(TEST_FILES
         ${SOURCE_FILES}

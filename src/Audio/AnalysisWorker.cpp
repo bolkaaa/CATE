@@ -67,7 +67,6 @@ void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
                 rolloff
         };
 
-
         corpus->search(query);
 
         for (auto i = 0; i < num_search_results; ++i)
@@ -82,7 +81,6 @@ void AnalysisWorker::input_data_received(RingBuffer<float> *ring_buffer)
     }
 }
 
-
 void AnalysisWorker::calculate_magnitude_spectrum()
 {
     fft.fill(buffer);
@@ -90,6 +88,5 @@ void AnalysisWorker::calculate_magnitude_spectrum()
     fft.compute_magspec();
     fft.get_magspec(magspec);
 }
-
 
 } // CATE
